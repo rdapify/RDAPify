@@ -9,7 +9,7 @@
 RDAPify is a client-side library that queries public RDAP (Registration Data Access Protocol) servers. **By design, the library does not collect, store, or transmit any personal data by default.** This privacy policy explains our approach to data handling, GDPR/CCPA compliance, and how we ensure your applications maintain regulatory compliance when using our library.
 
 ## 1. Data Processing Principles
-
+ 
 As a developer-focused library, RDAPify follows these core principles:
 
 - **Data Minimization**: Only process necessary data; no extraneous collection

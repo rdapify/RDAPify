@@ -10,7 +10,7 @@
 
 RDAPify operates under a **meritocratic stewardship model** where technical excellence, consistent contributions, and adherence to our core values determine maintainer responsibilities. We balance open collaboration with enterprise-grade reliability requirements, ensuring decisions prioritize:
 
-- **Security-first architecture**
+- **Security-first architecture** 
 - **Privacy by default**
 - **Protocol compliance** (RFC 7480 series)
 - **Sustainable operational excellence**

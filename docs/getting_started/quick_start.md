@@ -206,7 +206,7 @@ console.log(await hasRegistrarChangedRecently('example.com'));
 
 **Solution:** Check our [examples repository](../../examples/basic/domain-lookup.js) for reference implementations.
 
----
+--- 
 
 ## 🆘 Need Help?
 

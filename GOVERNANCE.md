@@ -14,7 +14,7 @@
   - [Technical Steering Committee (TSC)](#technical-steering-committee-tsc)
   - [Module Maintainers](#module-maintainers)
   - [Contributors](#contributors)
-  - [Users](#users)
+  - [Users](#users) 
 - [Decision Making Framework](#decision-making-framework)
   - [Routine Decisions](#routine-decisions)
   - [Significant Changes](#significant-changes)

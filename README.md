@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/rdapify/rdapify/ci.yml?branch=main&style=flat-square)](https://github.com/rdapify/rdapify/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/rdapify/rdapify?style=flat-square)](https://codecov.io/gh/rdapify/rdapify)
-[![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
+[![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md) 
 
 **RDAPify** unifies RDAP queries across all global registries (Verisign, ARIN, RIPE, APNIC, LACNIC) with robust security protection, exceptional performance, and an integrated developer experience. This isn't just another RDAP client — it's a complete platform for processing registration data securely.
 
