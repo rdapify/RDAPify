@@ -3,7 +3,7 @@ rdapify/
 ├── LICENSE                             # MIT License
 ├── CHANGELOG.md                        # سجل التغييرات
 ├── SECURITY.md                         # سياسة الأمان + Security Whitepaper
-├── PRIVACY.md                          # سياسة الخصوصية (GDPR Compliance) - موسَّع
+├── PRIVACY.md                          # سياسة الخصوصية (GDPR Compliance) _ موسَّع
 ├── CONTRIBUTING.md                     # دليل المساهمة
 ├── CODE_OF_CONDUCT.md                  # قواعد السلوك
 ├── MAINTAINERS.md                      # المشرفون والصلاحيات
@@ -11,26 +11,26 @@ rdapify/
 │
 ├── docs/                               # مجلد التوثيق الرئيسي
 │   │
-│   ├── getting-started/                # 📖 البدء السريع - مُعاد تصميمه
-│   │   ├── five-minutes.md             # 🆕 "5 دقائق للبدء" تفاعلي
-│   │   ├── learning-path.md            # 🆕 خريطة طريق التعلم
-│   │   ├── production-checklist.md     # 🆕 قائمة تحقق الجاهزية للإنتاج
+│   ├── getting_started/                # 📖 البدء السريع _ مُعاد تصميمه
+│   │   ├── five_minutes.md             # 🆕 "5 دقائق للبدء" تفاعلي
+│   │   ├── learning_path.md            # 🆕 خريطة طريق التعلم
+│   │   ├── production_checklist.md     # 🆕 قائمة تحقق الجاهزية للإنتاج
 │   │   ├── installation.md
-│   │   ├── quick-start.md
-│   │   ├── playground-guide.md         # 🆕 دليل مساحة التجربة
-│   │   └── first-query.md
+│   │   ├── quick_start.md
+│   │   ├── playground_guide.md         # 🆕 دليل مساحة التجربة
+│   │   └── first_query.md
 │   │
-│   ├── core-concepts/                  # 🎓 المفاهيم الأساسية
-│   │   ├── what-is-rdap.md
-│   │   ├── rdap-vs-whois.md
+│   ├── core_concepts/                  # 🎓 المفاهيم الأساسية
+│   │   ├── what_is_rdap.md
+│   │   ├── rdap_vs_whois.md
 │   │   ├── architecture.md             # مع مخططات Mermaid
 │   │   ├── normalization.md
 │   │   ├── discovery.md
-│   │   ├── error-state-machine.md
+│   │   ├── error_state_machine.md
 │   │   ├── caching.md
-│   │   └── offline-mode.md             # 🆕 وضع عدم الاتصال
+│   │   └── offline_mode.md             # 🆕 وضع عدم الاتصال
 │   │
-│   ├── api-reference/                  # 📘 مرجع API
+│   ├── api_reference/                  # 📘 مرجع API
 │   │   ├── client.md
 │   │   ├── methods/
 │   │   │   ├── domain.md
@@ -38,44 +38,44 @@ rdapify/
 │   │   │   └── asn.md
 │   │   ├── types/
 │   │   │   ├── index.md
-│   │   │   ├── domain-response.md
-│   │   │   ├── ip-response.md
-│   │   │   ├── asn-response.md
+│   │   │   ├── domain_response.md
+│   │   │   ├── ip_response.md
+│   │   │   ├── asn_response.md
 │   │   │   ├── contact.md
 │   │   │   ├── event.md
 │   │   │   ├── options.md
 │   │   │   └── errors.md
 │   │   ├── interfaces.md
 │   │   ├── utilities.md
-│   │   └── privacy-controls.md        # 🆕 ضوابط الخصوصية المتقدمة
+│   │   └── privacy_controls.md        # 🆕 ضوابط الخصوصية المتقدمة
 │   │
 │   ├── guides/                         # 📚 أدلة شاملة
-│   │   ├── error-handling.md
-│   │   ├── typescript-usage.md
-│   │   ├── caching-strategies.md       # 🆕 استراتيجيات التخزين المؤقت الديناميكية
-│   │   ├── geo-caching.md              # 🆕 التخزين المؤقت الجغرافي
-│   │   ├── rate-limiting.md
-│   │   ├── batch-processing.md
-│   │   ├── custom-adapters.md
+│   │   ├── error_handling.md
+│   │   ├── typescript_usage.md
+│   │   ├── caching_strategies.md       # 🆕 استراتيجيات التخزين المؤقت الديناميكية
+│   │   ├── geo_caching.md              # 🆕 التخزين المؤقت الجغرافي
+│   │   ├── rate_limiting.md
+│   │   ├── batch_processing.md
+│   │   ├── custom_adapters.md
 │   │   ├── logging.md
 │   │   ├── performance.md
-│   │   ├── security-privacy.md
-│   │   ├── anomaly-detection.md        # 🆕 كشف الاستخدام غير العادي
-│   │   └── priority-queues.md          # 🆕 دعم الأولوية للطلبات
+│   │   ├── security_privacy.md
+│   │   ├── anomaly_detection.md        # 🆕 كشف الاستخدام غير العادي
+│   │   └── priority_queues.md          # 🆕 دعم الأولوية للطلبات
 │   │
-│   ├── integrations/                   # 🔌 التكاملات - موسَّع
+│   ├── integrations/                   # 🔌 التكاملات _ موسَّع
 │   │   ├── cloud/                      # 🆕 قوالب السحابة
-│   │   │   ├── aws-lambda.md
-│   │   │   ├── azure-functions.md
-│   │   │   ├── google-cloud-run.md
+│   │   │   ├── aws_lambda.md
+│   │   │   ├── azure_functions.md
+│   │   │   ├── google_cloud_run.md
 │   │   │   └── kubernetes.md           # 🆕 دعم Kubernetes
 │   │   ├── monitoring/                 # 🆕 تكامل المراقبة
 │   │   │   ├── datadog.md
-│   │   │   ├── new-relic.md
+│   │   │   ├── new_relic.md
 │   │   │   └── prometheus.md
 │   │   ├── databases/                  # 🆕 دعم قواعد البيانات
 │   │   │   ├── schemas.md              # 🆕 مخططات قواعد البيانات النموذجية
-│   │   │   ├── sync-tools.md           # 🆕 أدوات المزامنة
+│   │   │   ├── sync_tools.md           # 🆕 أدوات المزامنة
 │   │   │   └── triggers.md             # 🆕 مشغلات قواعد البيانات
 │   │   ├── express.md
 │   │   ├── nextjs.md
@@ -85,149 +85,149 @@ rdapify/
 │   │   ├── docker.md
 │   │   ├── bun.md
 │   │   ├── deno.md
-│   │   ├── cloudflare-workers.md
+│   │   ├── cloudflare_workers.md
 │   │   └── redis.md
 │   │
 │   ├── playground/                     # 🆕 مساحة التجربة الجديدة
 │   │   ├── overview.md
 │   │   ├── examples.md
-│   │   ├── api-playground.md           # 🆕 API تفاعلي مباشر
-│   │   └── visual-debugger.md          # 🆕 أدوات تصحيح الأخطاء المرئية
+│   │   ├── api_playground.md           # 🆕 API تفاعلي مباشر
+│   │   └── visual_debugger.md          # 🆕 أدوات تصحيح الأخطاء المرئية
 │   │
-│   ├── cli/                            # 🖥️ واجهة الأوامر - موسَّعة
+│   ├── cli/                            # 🖥️ واجهة الأوامر _ موسَّعة
 │   │   ├── installation.md
-│   │   ├── interactive-mode.md         # 🆕 CLI تفاعلي
-│   │   ├── auto-suggestions.md         # 🆕 اقتراحات أوتوماتيكية
+│   │   ├── interactive_mode.md         # 🆕 CLI تفاعلي
+│   │   ├── auto_suggestions.md         # 🆕 اقتراحات أوتوماتيكية
 │   │   ├── commands.md
 │   │   ├── options.md
 │   │   └── examples.md
 │   │
 │   ├── advanced/                       # 🚀 متقدم
-│   │   ├── plugin-system.md
-│   │   ├── custom-fetcher.md
-│   │   ├── custom-resolver.md
-│   │   ├── custom-normalizer.md
+│   │   ├── plugin_system.md
+│   │   ├── custom_fetcher.md
+│   │   ├── custom_resolver.md
+│   │   ├── custom_normalizer.md
 │   │   ├── middleware.md
 │   │   ├── testing.md
-│   │   ├── data-isolation.md           # 🆕 عزل البيانات بين المستخدمين
-│   │   └── cache-poisoning-protection.md # 🆕 حماية ضد تسريبات التخزين المؤقت
+│   │   ├── data_isolation.md           # 🆕 عزل البيانات بين المستخدمين
+│   │   └── cache_poisoning_protection.md # 🆕 حماية ضد تسريبات التخزين المؤقت
 │   │   └── extending.md
 │   │
 │   ├── recipes/                        # 🍳 وصفات جاهزة
-│   │   ├── domain-portfolio.md
-│   │   ├── whois-replacement.md
-│   │   ├── monitoring-service.md
-│   │   ├── api-gateway.md
-│   │   ├── data-aggregation.md
-│   │   ├── webhook-integration.md
-│   │   ├── scheduled-reports.md        # 🆕 تقارير الجدولة التلقائية
-│   │   └── critical-alerts.md          # 🆕 تنبيهات الطلبات الحرجة
+│   │   ├── domain_portfolio.md
+│   │   ├── whois_replacement.md
+│   │   ├── monitoring_service.md
+│   │   ├── api_gateway.md
+│   │   ├── data_aggregation.md
+│   │   ├── webhook_integration.md
+│   │   ├── scheduled_reports.md        # 🆕 تقارير الجدولة التلقائية
+│   │   └── critical_alerts.md          # 🆕 تنبيهات الطلبات الحرجة
 │   │
 │   ├── analytics/                      # 🆕 القسم الجديد للتحليلات المتقدمة
-│   │   ├── dashboard-components.md     # 🆕 لوحات التحكم التفاعلية
-│   │   ├── visualization-tools.md      # 🆕 أدوات التصور للبيانات
-│   │   ├── relationship-mapping.md     # 🆕 خرائط علاقة النطاقات والمسجلين
-│   │   ├── scheduled-reporting.md      # 🆕 التقارير المجدولة
-│   │   └── anomaly-detection.md        # 🆕 كشف الأنماط غير العادية
+│   │   ├── dashboard_components.md     # 🆕 لوحات التحكم التفاعلية
+│   │   ├── visualization_tools.md      # 🆕 أدوات التصور للبيانات
+│   │   ├── relationship_mapping.md     # 🆕 خرائط علاقة النطاقات والمسجلين
+│   │   ├── scheduled_reporting.md      # 🆕 التقارير المجدولة
+│   │   └── anomaly_detection.md        # 🆕 كشف الأنماط غير العادية
 │   │
 │   ├── enterprise/                     # 🆕 القسم الجديد للمؤسسات
-│   │   ├── adoption-guide.md           # 🆕 دليل التبني المؤسسي
-│   │   ├── sla-support.md              # 🆕 دعم اتفاقيات مستوى الخدمة
-│   │   ├── consulting-options.md       # 🆕 استشارات حالات الاستخدام المعقدة
-│   │   ├── multi-tenant.md             # 🆕 دعم تعدد المستأجرين
-│   │   └── audit-logging.md            # 🆕 سجل مراجعة الخصوصية
+│   │   ├── adoption_guide.md           # 🆕 دليل التبني المؤسسي
+│   │   ├── sla_support.md              # 🆕 دعم اتفاقيات مستوى الخدمة
+│   │   ├── consulting_options.md       # 🆕 استشارات حالات الاستخدام المعقدة
+│   │   ├── multi_tenant.md             # 🆕 دعم تعدد المستأجرين
+│   │   └── audit_logging.md            # 🆕 سجل مراجعة الخصوصية
 │   │
 │   ├── localization/                   # 🆕 القسم الجديد للترجمة ودعم اللغات
-│   │   ├── translation-guide.md        # 🆕 دليل الترجمة
+│   │   ├── translation_guide.md        # 🆕 دليل الترجمة
 │   │   ├── chinese.md                  # 🆕 الوثائق الصينية
 │   │   ├── spanish.md                  # 🆕 الوثائق الإسبانية
 │   │   ├── russian.md                  # 🆕 الوثائق الروسية
 │   │   ├── arabic.md                   # 🆕 الوثائق العربية
-│   │   └── community-hubs.md           # 🆕 مجتمعات محلية للنقاش
+│   │   └── community_hubs.md           # 🆕 مجتمعات محلية للنقاش
 │   │
 │   ├── comparisons/                    # ⚖️ مقارنات
-│   │   ├── vs-whois.md
-│   │   ├── vs-other-libraries.md
-│   │   ├── migration-guide.md
+│   │   ├── vs_whois.md
+│   │   ├── vs_other_libraries.md
+│   │   ├── migration_guide.md
 │   │   └── benchmarks.md
 │   │
 │   ├── specifications/
-│   │   ├── rdap-rfc.md
-│   │   ├── rfc-style-spec.md
+│   │   ├── rdap_rfc.md
+│   │   ├── rfc_style_spec.md
 │   │   ├── bootstrap.md
-│   │   ├── response-format.md
-│   │   ├── status-codes.md
-│   │   ├── jsonpath-schema.md
-│   │   └── test-vectors.md
+│   │   ├── response_format.md
+│   │   ├── status_codes.md
+│   │   ├── jsonpath_schema.md
+│   │   └── test_vectors.md
 │   │
 │   ├── testing/
 │   │   ├── overview.md
-│   │   ├── test-vectors.md
-│   │   ├── real-examples.md
+│   │   ├── test_vectors.md
+│   │   ├── real_examples.md
 │   │   ├── fixtures.md
 │   │   ├── mocking.md
-│   │   └── continuous-testing.md
+│   │   └── continuous_testing.md
 │   │
-│   ├── quality-assurance/
+│   ├── quality_assurance/
 │   │   ├── overview.md
-│   │   ├── test-vectors.md
-│   │   ├── jsonpath-reference.md
+│   │   ├── test_vectors.md
+│   │   ├── jsonpath_reference.md
 │   │   ├── benchmarks.md
-│   │   ├── code-coverage.md
-│   │   └── regression-tests.md
+│   │   ├── code_coverage.md
+│   │   └── regression_tests.md
 │   │
 │   ├── performance/
 │   │   ├── benchmarks.md
 │   │   ├── optimization.md
-│   │   ├── caching-impact.md
-│   │   ├── latency-analysis.md
-│   │   └── load-testing.md
+│   │   ├── caching_impact.md
+│   │   ├── latency_analysis.md
+│   │   └── load_testing.md
 │   │
 │   ├── security/
 │   │   ├── whitepaper.md
-│   │   ├── threat-model.md
-│   │   ├── best-practices.md
-│   │   ├── ssrf-prevention.md
-│   │   ├── data-validation.md
-│   │   ├── pii-detection.md            # 🆕 كاشف البيانات الشخصية
-│   │   ├── custom-redaction.md         # 🆕 سياسات إخفاء مخصصة
+│   │   ├── threat_model.md
+│   │   ├── best_practices.md
+│   │   ├── ssrf_prevention.md
+│   │   ├── data_validation.md
+│   │   ├── pii_detection.md            # 🆕 كاشف البيانات الشخصية
+│   │   ├── custom_redaction.md         # 🆕 سياسات إخفاء مخصصة
 │   │   └── compliance.md
 │   │
 │   ├── architecture/
 │   │   ├── overview.md
-│   │   ├── data-flow.md
-│   │   ├── error-flow.md
-│   │   ├── layer-design.md
-│   │   ├── plugin-architecture.md
-│   │   └── decision-records.md
+│   │   ├── data_flow.md
+│   │   ├── error_flow.md
+│   │   ├── layer_design.md
+│   │   ├── plugin_architecture.md
+│   │   └── decision_records.md
 │   │
 │   ├── compatibility/
 │   │   ├── matrix.md
-│   │   ├── nodejs-versions.md
+│   │   ├── nodejs_versions.md
 │   │   ├── bun.md
 │   │   ├── deno.md
-│   │   ├── cloudflare-workers.md
+│   │   ├── cloudflare_workers.md
 │   │   ├── browsers.md
-│   │   └── known-issues.md
+│   │   └── known_issues.md
 │   │
 │   ├── troubleshooting/
-│   │   ├── common-errors.md
+│   │   ├── common_errors.md
 │   │   ├── debugging.md
 │   │   ├── faq.md
-│   │   ├── known-issues.md
-│   │   ├── connection-timeout.md
-│   │   ├── lambda-workers-issues.md
-│   │   └── proxy-rotation.md
+│   │   ├── known_issues.md
+│   │   ├── connection_timeout.md
+│   │   ├── lambda_workers_issues.md
+│   │   └── proxy_rotation.md
 │   │
 │   ├── support/
 │   │   ├── troubleshooting.md
-│   │   ├── verbose-logging.md
-│   │   ├── network-debugging.md
-│   │   └── getting-help.md
+│   │   ├── verbose_logging.md
+│   │   ├── network_debugging.md
+│   │   └── getting_help.md
 │   │
 │   ├── community/
 │   │   ├── contributing.md
-│   │   ├── code-of-conduct.md
+│   │   ├── code_of_conduct.md
 │   │   ├── governance.md
 │   │   ├── roadmap.md
 │   │   ├── changelog.md
@@ -242,82 +242,82 @@ rdapify/
 │       └── rfcs.md
 │
 ├── specifications/
-│   ├── rdapify-spec-v1.md
-│   ├── jsonpath-definitions.json
-│   ├── test-vectors.json
-│   ├── error-state-machine.mmd
-│   └── normalization-rules.md
+│   ├── rdapify_spec_v1.md
+│   ├── jsonpath_definitions.json
+│   ├── test_vectors.json
+│   ├── error_state_machine.mmd
+│   └── normalization_rules.md
 │
 ├── benchmarks/
 │   ├── README.md
 │   ├── results/
-│   │   ├── cache-hit-miss.md
-│   │   ├── latency-comparison.md
+│   │   ├── cache_hit_miss.md
+│   │   ├── latency_comparison.md
 │   │   ├── throughput.md
-│   │   └── memory-usage.md
+│   │   └── memory_usage.md
 │   ├── scripts/
-│   │   ├── domain-lookup.js
-│   │   ├── batch-processing.js
-│   │   └── cache-performance.js
+│   │   ├── domain_lookup.js
+│   │   ├── batch_processing.js
+│   │   └── cache_performance.js
 │   └── data/
-│       └── benchmark-data.json
+│       └── benchmark_data.json
 │
 ├── security/
 │   ├── SECURITY.md
 │   ├── whitepaper.md
-│   ├── threat-model.md
-│   ├── audit-reports/
+│   ├── threat_model.md
+│   ├── audit_reports/
 │   └── advisories/
 │
 ├── examples/
 │   ├── basic/
-│   │   ├── domain-lookup.js
-│   │   ├── ip-lookup.js
-│   │   └── asn-lookup.js
+│   │   ├── domain_lookup.js
+│   │   ├── ip_lookup.js
+│   │   └── asn_lookup.js
 │   ├── typescript/
-│   │   ├── typed-client.ts
-│   │   ├── custom-types.ts
-│   │   └── generic-functions.ts
-│   ├── real-rdap/
-│   │   ├── verisign-response.json
-│   │   ├── arin-response.json
-│   │   ├── ripe-response.json
-│   │   └── sanitized-examples.md
+│   │   ├── typed_client.ts
+│   │   ├── custom_types.ts
+│   │   └── generic_functions.ts
+│   ├── real_rdap/
+│   │   ├── verisign_response.json
+│   │   ├── arin_response.json
+│   │   ├── ripe_response.json
+│   │   └── sanitized_examples.md
 │   ├── frameworks/
-│   │   ├── express-app/
-│   │   ├── nextjs-app/
-│   │   ├── nestjs-app/
-│   │   ├── bun-app/
-│   │   └── deno-app/
+│   │   ├── express_app/
+│   │   ├── nextjs_app/
+│   │   ├── nestjs_app/
+│   │   ├── bun_app/
+│   │   └── deno_app/
 │   ├── advanced/
-│   │   ├── custom-cache.js
-│   │   ├── rate-limiter.js
-│   │   ├── batch-processor.js
-│   │   ├── error-state-handler.js
-│   │   └── geo-distributed-cache.js    # 🆕 مثال على التخزين المؤقت الجغرافي
-│   └── real-world/
-│       ├── domain-monitor/
-│       ├── ip-tracker/
-│       ├── compliance-checker/
-│       └── scheduled-reporting/        # 🆕 مثال على التقارير المجدولة
+│   │   ├── custom_cache.js
+│   │   ├── rate_limiter.js
+│   │   ├── batch_processor.js
+│   │   ├── error_state_handler.js
+│   │   └── geo_distributed_cache.js    # 🆕 مثال على التخزين المؤقت الجغرافي
+│   └── real_world/
+│       ├── domain_monitor/
+│       ├── ip_tracker/
+│       ├── compliance_checker/
+│       └── scheduled_reporting/        # 🆕 مثال على التقارير المجدولة
 │
 ├── diagrams/
-│   ├── architecture-overview.mmd
-│   ├── data-flow.mmd
-│   ├── error-state-machine.mmd
-│   ├── discovery-flow.mmd
-│   ├── normalization-pipeline.mmd
-│   ├── cache-strategy.mmd
-│   └── anomaly-detection.mmd           # 🆕 مخطط كشف الاستخدام غير العادي
+│   ├── architecture_overview.mmd
+│   ├── data_flow.mmd
+│   ├── error_state_machine.mmd
+│   ├── discovery_flow.mmd
+│   ├── normalization_pipeline.mmd
+│   ├── cache_strategy.mmd
+│   └── anomaly_detection.mmd           # 🆕 مخطط كشف الاستخدام غير العادي
 │
-├── test-vectors/
+├── test_vectors/
 │   ├── README.md
-│   ├── domain-vectors.json
-│   ├── ip-vectors.json
-│   ├── asn-vectors.json
-│   ├── error-vectors.json
-│   ├── edge-cases.json
-│   └── anomaly-detection.json          # 🆕 متجهات اختبار لأنماط غير عادية
+│   ├── domain_vectors.json
+│   ├── ip_vectors.json
+│   ├── asn_vectors.json
+│   ├── error_vectors.json
+│   ├── edge_cases.json
+│   └── anomaly_detection.json          # 🆕 متجهات اختبار لأنماط غير عادية
 │
 ├── playground/                          # 🆕 مجلد مساحة التجربة الجديدة
 │   ├── public/
@@ -330,17 +330,17 @@ rdapify/
 │
 ├── templates/                           # 🆕 قوالب جاهزة للنشر
 │   ├── cloud/
-│   │   ├── aws-lambda/
-│   │   ├── azure-functions/
-│   │   └── google-cloud-run/
+│   │   ├── aws_lambda/
+│   │   ├── azure_functions/
+│   │   └── google_cloud_run/
 │   ├── kubernetes/
 │   │   ├── deployment.yaml
 │   │   ├── service.yaml
 │   │   └── configmap.yaml
 │   └── monitoring/
-│       ├── datadog-dashboard.json
-│       ├── prometheus-config.yaml
-│       └── grafana-dashboard.json
+│       ├── datadog_dashboard.json
+│       ├── prometheus_config.yaml
+│       └── grafana_dashboard.json
 │
 └── website/                            # 🌐 موقع التوثيق (Docusaurus)
     ├── docusaurus.config.js
