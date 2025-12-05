@@ -1,0 +1,39 @@
+{
+  "name": "rdapify",
+  "version": "0.1.0",
+  "description": "A modern, type-safe RDAP (Registration Data Access Protocol) client for Node.js for enterprise applications.",
+  "keywords": [
+    "rdap",
+    "whois",
+    "domain",
+    "registry",
+    "iana",
+    "typescript",
+    "nodejs"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "RDAPify Authors",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/rdapify#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rdapify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/rdapify/issues"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "typescript": "^5.0.0"
+  }
+}
