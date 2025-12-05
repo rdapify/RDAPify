@@ -4,7 +4,7 @@ Thank you for your interest in contributing to RDAPify! We welcome contributions
 
 This guide outlines our contribution process, standards, and expectations to help you make valuable contributions efficiently.
 
-## 🌟 Ways to Contribute
+## 🌟 Ways to Contribute 
 
 ### Code Contributions
 - Fix bugs reported in issues

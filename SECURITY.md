@@ -6,7 +6,7 @@ Security is foundational to RDAPify's design. As a library that interacts with i
 
 This document outlines our security policies and procedures. For comprehensive technical details, see our [Security Whitepaper](security/whitepaper.md).
 
-## Supported Versions
+## Supported Versions 
 
 | Version | Supported          |
 | ------- | ------------------ |

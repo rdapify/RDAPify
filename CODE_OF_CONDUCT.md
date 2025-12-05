@@ -6,7 +6,7 @@
 
 ---
 
-## 🌐 Table of Contents
+## 🌐 Table of Contents 
 
 - [Our Pledge and Values](#our-pledge-and-values)
 - [Behavioral Standards](#behavioral-standards)
