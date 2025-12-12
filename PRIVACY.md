@@ -222,7 +222,7 @@ const client = new RDAPClient({
   telemetry: {
     enabled: true,
     anonymize: true, // Strip all identifiers
-    endpoint: 'https://telemetry.rdapify.dev'
+    endpoint: 'https://telemetry.rdapify.com'
   }
 });
 ```
@@ -260,8 +260,8 @@ RDAPify is designed for developer use in enterprise applications and:
 ## 10. Data Protection Officer (DPO)
 
 **Contact for Data Protection Matters**:
-- Email: dpo@rdapify.dev
-- PGP Key: [0xABCD1234EFGH5678](https://rdapify.dev/security/pgp-key.asc)
+- Email: dpo@rdapify.com
+- PGP Key: [0xABCD1234EFGH5678](https://rdapify.com/security/pgp-key.asc)
 - Response Time: 48 business hours
 
 **Responsibilities**:
@@ -326,10 +326,10 @@ We will notify users of material changes via:
 
 ## 15. Contact Information
 
-**Privacy Questions**: privacy@rdapify.dev  
-**Security Issues**: security@rdapify.dev  
-**Data Subject Requests**: dpo@rdapify.dev  
-**Enterprise Compliance**: compliance@rdapify.dev  
+**Privacy Questions**: privacy@rdapify.com  
+**Security Issues**: security@rdapify.com  
+**Data Subject Requests**: dpo@rdapify.com  
+**Enterprise Compliance**: compliance@rdapify.com  
 
 **Postal Address**:  
 RDAPify Privacy Team  

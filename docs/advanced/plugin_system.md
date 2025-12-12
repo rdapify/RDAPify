@@ -861,7 +861,7 @@ export class PluginComplianceManager {
       pluginResponses,
       contactInfo: {
         dpo: this.dpoContact,
-        support: 'support@rdapify.dev'
+        support: 'support@rdapify.com'
       }
     };
     

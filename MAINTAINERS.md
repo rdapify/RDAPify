@@ -27,9 +27,9 @@ This document defines roles, responsibilities, and processes for project maintai
 
 | Role | GitHub | Areas of Responsibility | Contact |
 |------|--------|--------------------------|---------|
-| TSC Chair (To Be Announced) | N/A | Protocol Compliance, Security Architecture | `tsc-chair@rdapify.dev` (PGP) |
-| Core Lead (To Be Announced) | N/A | Core Library, Performance Optimization | `core-lead@rdapify.dev` (PGP) |
-| Privacy Lead (To Be Announced) | N/A | Privacy Engineering, GDPR/CCPA Compliance | `privacy-lead@rdapify.dev` (PGP) |
+| TSC Chair (To Be Announced) | N/A | Protocol Compliance, Security Architecture | `tsc-chair@rdapify.com` (PGP) |
+| Core Lead (To Be Announced) | N/A | Core Library, Performance Optimization | `core-lead@rdapify.com` (PGP) |
+| Privacy Lead (To Be Announced) | N/A | Privacy Engineering, GDPR/CCPA Compliance | `privacy-lead@rdapify.com` (PGP) |
 
 *The TSC has final decision authority on architectural changes and security incidents. Rotates chair quarterly.*
 
@@ -37,19 +37,19 @@ This document defines roles, responsibilities, and processes for project maintai
 
 | Role | GitHub | Modules | Contact |
 |------|--------|---------|---------|
-| Caching Lead (TBA) | N/A | Caching Layer, Redis Integration | `module-caching@rdapify.dev` |
-| CLI Lead (TBA) | N/A | CLI Tools, Developer Experience | `module-cli@rdapify.dev` |
-| Cloud Lead (TBA) | N/A | Cloud Deployments (AWS/Azure/GCP) | `module-cloud@rdapify.dev` |
-| Analytics Lead (TBA) | N/A | Monitoring & Analytics Integration | `module-analytics@rdapify.dev` |
-| i18n Lead (TBA) | N/A | Internationalization, Localization | `module-i18n@rdapify.dev` |
+| Caching Lead (TBA) | N/A | Caching Layer, Redis Integration | `module-caching@rdapify.com` |
+| CLI Lead (TBA) | N/A | CLI Tools, Developer Experience | `module-cli@rdapify.com` |
+| Cloud Lead (TBA) | N/A | Cloud Deployments (AWS/Azure/GCP) | `module-cloud@rdapify.com` |
+| Analytics Lead (TBA) | N/A | Monitoring & Analytics Integration | `module-analytics@rdapify.com` |
+| i18n Lead (TBA) | N/A | Internationalization, Localization | `module-i18n@rdapify.com` |
 
 ### Security Response Team (SRT)
 
 | Role | GitHub | Contact (PGP Encrypted) |
 |------|--------|-------------------------|
-| Security Lead (TBA) | N/A | `security-lead@rdapify.dev` |
-| Security Deputy (TBA) | N/A | `security-deputy@rdapify.dev` |
-| DPO Liaison (TBA) | N/A | `dpo-liaison@rdapify.dev` |
+| Security Lead (TBA) | N/A | `security-lead@rdapify.com` |
+| Security Deputy (TBA) | N/A | `security-deputy@rdapify.com` |
+| DPO Liaison (TBA) | N/A | `dpo-liaison@rdapify.com` |
 
 *SRT operates under [SECURITY.md incident response protocol](SECURITY.md#11-data-breach-protocol)*
 
@@ -188,7 +188,7 @@ This document defines roles, responsibilities, and processes for project maintai
 
 ### Critical Communications
 - **Security Incidents**: PGP-encrypted email + Signal group
-- **Compliance Events**: Encrypted email to `dpo@rdapify.dev` with subject "COMPLIANCE"
+- **Compliance Events**: Encrypted email to `dpo@rdapify.com` with subject "COMPLIANCE"
 - **Enterprise Customer Issues**: Dedicated Slack channel with 4-hour SLA
 
 ### Availability Expectations
@@ -213,9 +213,9 @@ This document is reviewed quarterly by the TSC and updated as needed. All change
 
 | Region | Officer | Responsibilities | Contact |
 |--------|---------|------------------|---------|
-| EMEA | Compliance Officer (EMEA) | GDPR compliance, EU data transfers | `emea-compliance@rdapify.dev` |
-| Americas | Compliance Officer (Americas) | CCPA/CPRA, SOC 2 compliance | `americas-compliance@rdapify.dev` |
-| APAC | Compliance Officer (APAC) | PDPA alignment, regional legal requirements | `apac-compliance@rdapify.dev` |
+| EMEA | Compliance Officer (EMEA) | GDPR compliance, EU data transfers | `emea-compliance@rdapify.com` |
+| Americas | Compliance Officer (Americas) | CCPA/CPRA, SOC 2 compliance | `americas-compliance@rdapify.com` |
+| APAC | Compliance Officer (APAC) | PDPA alignment, regional legal requirements | `apac-compliance@rdapify.com` |
 
 ---
 
@@ -225,11 +225,11 @@ This document is reviewed quarterly by the TSC and updated as needed. All change
 
 **PGP Key Information**  
 All maintainer email addresses have associated PGP keys available at:  
-https://rdapify.dev/security/maintainer-keys.asc
+https://rdapify.com/security/maintainer-keys.asc
 
 **Emergency Contact**  
 For critical security incidents requiring immediate attention:  
-`emergency@rdapify.dev` (PGP encrypted) with subject line "CRITICAL: [Brief Description]"
+`emergency@rdapify.com` (PGP encrypted) with subject line "CRITICAL: [Brief Description]"
 
 ---
 

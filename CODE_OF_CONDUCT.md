@@ -121,9 +121,9 @@ If you experience or witness violations:
 
 1. **Document the incident** (screenshots, links, context)
 2. **Report through appropriate channels**:
-   - Standard issues: `conduct@rdapify.dev`
-   - Critical security/privacy violations: `security@rdapify.dev` (PGP encrypted)
-   - Enterprise compliance concerns: `compliance@rdapify.dev`
+   - Standard issues: `conduct@rdapify.com`
+   - Critical security/privacy violations: `security@rdapify.com` (PGP encrypted)
+   - Enterprise compliance concerns: `compliance@rdapify.com`
 3. **Expect response timeline**:
    - Initial acknowledgment: Within 24 business hours
    - Preliminary assessment: Within 72 business hours
@@ -196,15 +196,15 @@ Contributors working on privacy-sensitive features must:
 
 For questions about this Code of Conduct:
 
-- **General inquiries**: `conduct@rdapify.dev`
-- **Urgent safety concerns**: `security@rdapify.dev` (with PGP encryption)
-- **Enterprise compliance**: `compliance@rdapify.dev`
-- **Data protection matters**: `dpo@rdapify.dev`
+- **General inquiries**: `conduct@rdapify.com`
+- **Urgent safety concerns**: `security@rdapify.com` (with PGP encryption)
+- **Enterprise compliance**: `compliance@rdapify.com`
+- **Data protection matters**: `dpo@rdapify.com`
 
 **Public Channels**:
 - GitHub Discussions: [Community Forum](https://github.com/rdapify/rdapify/discussions)
 - Real-time chat: [Matrix/Element Channel](https://matrix.to/#/#rdapify:matrix.org)
-- Weekly Office Hours: Thursdays 2PM UTC via [Zoom link](https://rdapify.dev/community/office-hours)
+- Weekly Office Hours: Thursdays 2PM UTC via [Zoom link](https://rdapify.com/community/office-hours)
 
 ---
 
