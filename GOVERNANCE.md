@@ -136,7 +136,7 @@ Our governance is guided by these foundational principles:
 
 **Representation:**
 - Bi-annual user surveys to guide roadmap priorities
-- Dedicated feedback channel: `user-feedback@rdapify.dev`
+- Dedicated feedback channel: `user-feedback@rdapify.com`
 - User representatives invited to quarterly roadmap planning sessions
 - Enterprise users may request direct compliance consultation
 
@@ -397,10 +397,10 @@ In extraordinary circumstances (security emergencies, legal requirements), the T
 ## ✉️ Contact
 
 ### Governance Matters
-- **General inquiries:** `governance@rdapify.dev`
-- **TSC Secretary:** `tsc-secretary@rdapify.dev`
-- **Compliance matters:** `compliance@rdapify.dev`
-- **Community Council:** `community-council@rdapify.dev`
+- **General inquiries:** `governance@rdapify.com`
+- **TSC Secretary:** `tsc-secretary@rdapify.com`
+- **Compliance matters:** `compliance@rdapify.com`
+- **Community Council:** `community-council@rdapify.com`
 
 ### Public Channels
 - **GitHub Discussions:** [Governance Forum](https://github.com/rdapify/rdapify/discussions/categories/governance)

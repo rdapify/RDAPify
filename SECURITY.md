@@ -17,8 +17,8 @@ This document outlines our security policies and procedures. For comprehensive t
 ## Reporting a Vulnerability
 
 ### Preferred Method
-Email security reports to: **security@rdapify.dev**  
-PGP Key: [Download PGP Key](https://rdapify.dev/security/pgp-key.asc)  
+Email security reports to: **security@rdapify.com**  
+PGP Key: [Download PGP Key](https://rdapify.com/security/pgp-key.asc)  
 Fingerprint: `A1B2 C3D4 E5F6 7890 1234 5678 9ABC DEF0 1234 5678`
 
 ### Alternative Methods
@@ -161,12 +161,12 @@ RDAPify is designed to help you meet compliance requirements:
 Published security advisories are available at:
 - [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories)
 - [npm Security Advisories](https://www.npmjs.com/advisories?search=rdapify)
-- [RDAPify Security Page](https://rdapify.dev/security/advisories)
+- [RDAPify Security Page](https://rdapify.com/security/advisories)
 
 Subscribe to security notifications:
 - GitHub Watch "Security only" notifications
-- RSS feed: https://rdapify.dev/security/feed.xml
-- Email list: security-announce+subscribe@rdapify.dev
+- RSS feed: https://rdapify.com/security/feed.xml
+- Email list: security-announce+subscribe@rdapify.com
 
 ## Acknowledgements
 
@@ -175,13 +175,13 @@ We thank the following security researchers for their responsible disclosure and
 - [Researcher Name] - [Vulnerability Type] - [Date]
 - [Researcher Name] - [Vulnerability Type] - [Date]
 
-[Learn about our bug bounty program](https://rdapify.dev/security/bug-bounty) (coming Q1 2026).
+[Learn about our bug bounty program](https://rdapify.com/security/bug-bounty) (coming Q1 2026).
 
 ## Contact
 
 For security-related questions or concerns:
-- **Security Team**: security@rdapify.dev (PGP encrypted preferred)
-- **Enterprise Security**: enterprise-security@rdapify.dev
+- **Security Team**: security@rdapify.com (PGP encrypted preferred)
+- **Enterprise Security**: enterprise-security@rdapify.com
 - **Urgent Issues**: +1-555-SEC-RDAP (for enterprise customers with SLA)
 
 ---

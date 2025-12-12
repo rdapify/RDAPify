@@ -423,7 +423,7 @@ interface InvalidResponse {
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://rdapify.dev/schemas/response.json",
+  "$id": "https://rdapify.com/schemas/response.json",
   "title": "RDAP Response Schema",
   "description": "RFC 7483 compliant RDAP response schema",
   "type": "object",

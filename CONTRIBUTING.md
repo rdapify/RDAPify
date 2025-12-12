@@ -196,7 +196,7 @@ All public APIs must include:
  * console.log(result.registrar.name);
  * ```
  * 
- * @see {@link https://rdapify.dev/docs/core-concepts/normalization|Normalization Guide}
+ * @see {@link https://rdapify.com/docs/core-concepts/normalization|Normalization Guide}
  */
 async domain(query: string, options?: DomainOptions): Promise<DomainResponse> {
   // implementation
@@ -225,7 +225,7 @@ sequenceDiagram
 
 ### Vulnerability Disclosure
 Security issues should be reported privately:
-1. Email security@rdapify.dev
+1. Email security@rdapify.com
 2. Include detailed reproduction steps
 3. Do not disclose publicly until fix is released
 4. Allow 90 days for coordinated disclosure
@@ -397,4 +397,4 @@ By contributing to RDAPify, you agree that your contributions will be licensed u
 **Thank you for contributing to RDAPify!** Together, we're building a better, more secure internet infrastructure tool for everyone.
 
 Last updated: December 5, 2025  
-Questions? Contact maintainers@rdapify.dev
+Questions? Contact maintainers@rdapify.com
