@@ -167,10 +167,10 @@ export class SLAManager {
           low: 5 // business days
         },
         escalationPath: {
-          l1: { email: 'support@rdapify.dev', phone: '+1-555-RDAP-001', hours: '24x7' },
-          l2: { email: 'l2-support@rdapify.dev', phone: '+1-555-RDAP-002', hours: '24x7' },
-          l3: { email: 'engineering@rdapify.dev', phone: '+1-555-RDAP-003', hours: '24x7' },
-          executive: { email: 'executive-support@rdapify.dev', phone: '+1-555-RDAP-004', hours: '24x7' }
+          l1: { email: 'support@rdapify.com', phone: '+1-555-RDAP-001', hours: '24x7' },
+          l2: { email: 'l2-support@rdapify.com', phone: '+1-555-RDAP-002', hours: '24x7' },
+          l3: { email: 'engineering@rdapify.com', phone: '+1-555-RDAP-003', hours: '24x7' },
+          executive: { email: 'executive-support@rdapify.com', phone: '+1-555-RDAP-004', hours: '24x7' }
         },
         supportChannels: ['phone', 'email', 'chat', 'portal']
       },
@@ -1131,13 +1131,13 @@ export class SLAIncidentManager {
   private loadNotificationChannels(channels: Record<string, NotificationChannel[]>) {
     // Default notification channels
     this.notificationChannels.set('support-team', [
-      { type: 'email', address: 'support@rdapify.dev' },
+      { type: 'email', address: 'support@rdapify.com' },
       { type: 'slack', webhook: 'https://hooks.slack.com/services/XXXXX' },
       { type: 'pagerduty', serviceId: 'PDXXXXX' }
     ]);
     
     this.notificationChannels.set('engineering-lead', [
-      { type: 'email', address: 'engineering-lead@rdapify.dev' },
+      { type: 'email', address: 'engineering-lead@rdapify.com' },
       { type: 'sms', phone: '+15551234567' },
       { type: 'slack', webhook: 'https://hooks.slack.com/services/YYYYY' }
     ]);

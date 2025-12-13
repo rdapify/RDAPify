@@ -12,27 +12,27 @@ The Technical Steering Committee (TSC) provides strategic direction and governan
 
 | Name | Role | Expertise | Contributions | Contact |
 |------|------|-----------|---------------|---------|
-| **Alex Johnson** | TSC Chair | Protocol Engineering, Security | 1,247 commits, 89 RFCs reviewed, 12 security releases | alex@rdapify.dev |
-| **Maria Schmidt** | TSC Secretary | Software Architecture, Performance | 983 commits, 3 architecture decision records | maria@rdapify.dev |
-| **Wei Chang** | TSC Member | Security, Compliance, Privacy | 876 commits, 17 security advisories, DPO liaison | wei@rdapify.dev |
-| **Carlos Mendez** | TSC Member | Community, Documentation, UX | 754 commits, documentation architecture, i18n framework | carlos@rdapify.dev |
-| **Layla Hassan** | TSC Member | Standards, Operations, Reliability | 692 commits, IETF participation, reliability engineering | layla@rdapify.dev |
+| **Alex Johnson** | TSC Chair | Protocol Engineering, Security | 1,247 commits, 89 RFCs reviewed, 12 security releases | alex@rdapify.com |
+| **Maria Schmidt** | TSC Secretary | Software Architecture, Performance | 983 commits, 3 architecture decision records | maria@rdapify.com |
+| **Wei Chang** | TSC Member | Security, Compliance, Privacy | 876 commits, 17 security advisories, DPO liaison | wei@rdapify.com |
+| **Carlos Mendez** | TSC Member | Community, Documentation, UX | 754 commits, documentation architecture, i18n framework | carlos@rdapify.com |
+| **Layla Hassan** | TSC Member | Standards, Operations, Reliability | 692 commits, IETF participation, reliability engineering | layla@rdapify.com |
 
 ### Module Maintainers
 Module maintainers are responsible for specific areas of the codebase and ensure quality, security, and performance standards:
 
 | Module | Maintainer | Focus Area | Contact |
 |--------|------------|------------|---------|
-| **Core** | Alex Johnson | Architecture, Performance | alex@rdapify.dev |
-| **Security** | Wei Chang | SSRF Protection, PII Redaction | wei@rdapify.dev |
-| **Network** | David Kim | Connection Management, DNS | david@rdapify.dev |
-| **Cache** | Emma Zhang | Performance Optimization | emma@rdapify.dev |
-| **Documentation** | Carlos Mendez | Developer Experience | carlos@rdapify.dev |
-| **Compliance** | Fatima Al-Zahra | GDPR/CCPA Implementation | fatima@rdapify.dev |
-| **Integrations** | Thomas Müller | Cloud Platforms, Frameworks | thomas@rdapify.dev |
-| **Testing** | Sofia Rodriguez | Quality Assurance | sofia@rdapify.dev |
-| **CLI** | James Wilson | Command-line Experience | james@rdapify.dev |
-| **Analytics** | Aisha Patel | Data Visualization, Reporting | aisha@rdapify.dev |
+| **Core** | Alex Johnson | Architecture, Performance | alex@rdapify.com |
+| **Security** | Wei Chang | SSRF Protection, PII Redaction | wei@rdapify.com |
+| **Network** | David Kim | Connection Management, DNS | david@rdapify.com |
+| **Cache** | Emma Zhang | Performance Optimization | emma@rdapify.com |
+| **Documentation** | Carlos Mendez | Developer Experience | carlos@rdapify.com |
+| **Compliance** | Fatima Al-Zahra | GDPR/CCPA Implementation | fatima@rdapify.com |
+| **Integrations** | Thomas Müller | Cloud Platforms, Frameworks | thomas@rdapify.com |
+| **Testing** | Sofia Rodriguez | Quality Assurance | sofia@rdapify.com |
+| **CLI** | James Wilson | Command-line Experience | james@rdapify.com |
+| **Analytics** | Aisha Patel | Data Visualization, Reporting | aisha@rdapify.com |
 
 ## 🏅 Individual Contributors
 
@@ -85,11 +85,11 @@ These individuals build and nurture RDAPify communities across the globe:
 
 | Region | Lead | Events Organized | Community Size | Contact |
 |--------|------|------------------|---------------|---------|
-| **EMEA** | Maria Schmidt | 24 | 1,200+ members | maria@rdapify.dev |
-| **North America** | Alex Johnson | 18 | 850+ members | alex@rdapify.dev |
-| **APAC** | Wei Chang | 15 | 700+ members | wei@rdapify.dev |
-| **Latin America** | Carlos Mendez | 12 | 450+ members | carlos@rdapify.dev |
-| **MENA** | Layla Hassan | 8 | 300+ members | layla@rdapify.dev |
+| **EMEA** | Maria Schmidt | 24 | 1,200+ members | maria@rdapify.com |
+| **North America** | Alex Johnson | 18 | 850+ members | alex@rdapify.com |
+| **APAC** | Wei Chang | 15 | 700+ members | wei@rdapify.com |
+| **Latin America** | Carlos Mendez | 12 | 450+ members | carlos@rdapify.com |
+| **MENA** | Layla Hassan | 8 | 300+ members | layla@rdapify.com |
 
 ### Event Organizers
 Special thanks to these individuals who organize community events:
@@ -285,10 +285,10 @@ Different levels of contribution receive appropriate recognition:
 | **Privacy Compliance** | GDPR-compliant attribution with consent management |
 | **Recognition Threshold** | Minimum 5 substantial contributions for named recognition |
 | **Data Retention** | Attribution data retained for 2 years after last contribution |
-| **Appeal Process** | Formal process for recognition disputes via governance@rdapify.dev |
+| **Appeal Process** | Formal process for recognition disputes via governance@rdapify.com |
 | **Last Updated** | December 5, 2025 |
 
-> 🔐 **Critical Reminder**: All attribution and recognition must comply with GDPR Article 6 and 9 requirements regarding personal data processing. Contributors have the right to request removal of their attribution at any time by contacting privacy@rdapify.dev. For security researchers, disclosure details will only be shared with explicit consent and after coordinated vulnerability disclosure processes are complete.
+> 🔐 **Critical Reminder**: All attribution and recognition must comply with GDPR Article 6 and 9 requirements regarding personal data processing. Contributors have the right to request removal of their attribution at any time by contacting privacy@rdapify.com. For security researchers, disclosure details will only be shared with explicit consent and after coordinated vulnerability disclosure processes are complete.
 
 [← Back to Community](../README.md) | [Next: Events →](events.md)
 

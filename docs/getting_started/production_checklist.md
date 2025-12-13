@@ -398,10 +398,10 @@ app.get('/metrics', (req, res) => {
 ### Critical Contacts
 | Role | Contact | SLA |
 |------|---------|-----|
-| Security Team | security@rdapify.dev | 1 hour (critical) |
-| Compliance Officer | dpo@rdapify.dev | 48 hours |
-| Registry Relations | registries@rdapify.dev | 4 hours |
-| Production Support | support@rdapify.dev | 2 hours |
+| Security Team | security@rdapify.com | 1 hour (critical) |
+| Compliance Officer | dpo@rdapify.com | 48 hours |
+| Registry Relations | registries@rdapify.com | 4 hours |
+| Production Support | support@rdapify.com | 2 hours |
 
 ### Essential Documentation Links
 - [Security Whitepaper](../../security/whitepaper.md)

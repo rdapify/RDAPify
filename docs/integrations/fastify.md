@@ -197,7 +197,7 @@ fastify.setErrorHandler((error, request, reply) => {
   reply.code(statusCode).send({
     error: message,
     code: error.code || 'INTERNAL_ERROR',
-    ...(statusCode === 500 && { support: 'security@rdapify.dev' })
+    ...(statusCode === 500 && { support: 'security@rdapify.com' })
   });
 });
 

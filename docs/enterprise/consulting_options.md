@@ -794,11 +794,11 @@ RDAPify Consultant Certification Requirements
 ### Contact Information
 | Service Type | Contact Method | Response Time |
 |--------------|----------------|---------------|
-| **Initial Inquiry** | consulting@rdapify.dev | 1 business day |
-| **Technical Assessment** | solutions@rdapify.dev | 4 business hours |
-| **Compliance Questions** | compliance@rdapify.dev | 2 business hours |
-| **Urgent Security Issues** | security-emergency@rdapify.dev (PGP encrypted) | 1 hour |
-| **Executive Engagement** | executive-office@rdapify.dev | 24 hours |
+| **Initial Inquiry** | consulting@rdapify.com | 1 business day |
+| **Technical Assessment** | solutions@rdapify.com | 4 business hours |
+| **Compliance Questions** | compliance@rdapify.com | 2 business hours |
+| **Urgent Security Issues** | security-emergency@rdapify.com (PGP encrypted) | 1 hour |
+| **Executive Engagement** | executive-office@rdapify.com | 24 hours |
 | **Regional Contacts** | See [Global Expertise Network](#global-expertise-network) section | Varies by region |
 
 ## 🏷️ Consulting Specifications

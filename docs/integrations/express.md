@@ -271,7 +271,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({
     error: message,
     requestId: req.id,
-    ...(statusCode === 500 && { support: 'security@rdapify.dev' })
+    ...(statusCode === 500 && { support: 'security@rdapify.com' })
   });
 });
 

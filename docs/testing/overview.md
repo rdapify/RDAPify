@@ -381,7 +381,7 @@ echo "📈 Report saved to performance-report.html"
 // test/compliance/gdpr.test.ts
 describe('GDPR Compliance', () => {
   const complianceChecker = new GDPRComplianceChecker({
-    dpoContact: 'dpo@rdapify.dev',
+    dpoContact: 'dpo@rdapify.com',
     dataRetentionDays: 30
   });
 
@@ -411,7 +411,7 @@ describe('GDPR Compliance', () => {
         title: "GDPR COMPLIANCE",
         description: expect.arrayContaining([
           expect.stringContaining("Data controller: "),
-          expect.stringContaining("DPO contact: dpo@rdapify.dev")
+          expect.stringContaining("DPO contact: dpo@rdapify.com")
         ])
       })
     );

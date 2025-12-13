@@ -383,7 +383,7 @@ node ./scripts/registry-connection-limits.js --registries verisign,arin,ripe
 | **Benchmark Version** | RDAPify v2.3.0, tested December 5, 2025 |
 | **Reproducibility** | Full benchmark suite available at github.com/rdapify/benchmarks |
 
-> ⚡ **Performance Guarantee**: RDAPify delivers 95%+ cache hit rates and sub-5ms P95 latency when properly configured for production workloads. For enterprise deployments, we provide performance SLAs with guaranteed response times and throughput commitments. Contact enterprise@rdapify.dev for custom performance optimization services.
+> ⚡ **Performance Guarantee**: RDAPify delivers 95%+ cache hit rates and sub-5ms P95 latency when properly configured for production workloads. For enterprise deployments, we provide performance SLAs with guaranteed response times and throughput commitments. Contact enterprise@rdapify.com for custom performance optimization services.
 
 [← Back to Comparisons](../README.md) | [Next: Migration Guide →](migration_guide.md)
 

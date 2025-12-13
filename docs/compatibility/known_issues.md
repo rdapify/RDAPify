@@ -569,7 +569,7 @@ RDAP_DEBUG_REGISTRY=afrinic node app.js
 | Property | Value |
 |----------|-------|
 | **Issue Tracking System** | GitHub Issues with labels and milestones |
-| **Security Vulnerability Process** | Responsible disclosure via security@rdapify.dev |
+| **Security Vulnerability Process** | Responsible disclosure via security@rdapify.com |
 | **Issue Response Time** | Critical: <24 hours, High: <72 hours, Medium: <1 week |
 | **Fix Prioritization** | Security > Data Integrity > Availability > Performance > Features |
 | **Version Support** | Current + 2 previous minor versions receive bug fixes |
@@ -577,7 +577,7 @@ RDAP_DEBUG_REGISTRY=afrinic node app.js
 | **Changelog Updates** | All issues fixed in a release documented in CHANGELOG.md |
 | **Last Updated** | December 5, 2025 |
 
-> 🔐 **Critical Reminder**: Always check this documentation before reporting new issues. Many environment-specific problems have documented workarounds. For security-related issues, never discuss details publicly - contact security@rdapify.dev directly using PGP encryption. Regularly update RDAPify to receive fixes for known issues, and implement the recommended workarounds for unresolved limitations in your environment.
+> 🔐 **Critical Reminder**: Always check this documentation before reporting new issues. Many environment-specific problems have documented workarounds. For security-related issues, never discuss details publicly - contact security@rdapify.com directly using PGP encryption. Regularly update RDAPify to receive fixes for known issues, and implement the recommended workarounds for unresolved limitations in your environment.
 
 [← Back to Compatibility](../README.md) | [Next: Node.js Versions →](nodejs_versions.md)
 

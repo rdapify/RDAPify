@@ -385,16 +385,16 @@ All terminology follows semantic versioning:
 ### 1. Translation Team Contacts
 | Role | Contact | Response Time |
 |------|---------|--------------|
-| Global Translation Lead | translations@rdapify.dev | 24 business hours |
-| Technical Review Coordinator | tech-review@rdapify.dev | 48 business hours |
-| Security Context Reviewer | security-translations@rdapify.dev | 24 hours for critical items |
-| Regional Compliance Specialist | compliance@rdapify.dev | 72 business hours |
+| Global Translation Lead | translations@rdapify.com | 24 business hours |
+| Technical Review Coordinator | tech-review@rdapify.com | 48 business hours |
+| Security Context Reviewer | security-translations@rdapify.com | 24 hours for critical items |
+| Regional Compliance Specialist | compliance@rdapify.com | 72 business hours |
 
 ### 2. Emergency Translation Requests
 For urgent security fix translations:
 1. Tag GitHub issue with `security-translation-priority`
 2. Include CVSS score and affected jurisdictions
-3. Contact security-translations@rdapify.dev with PGP-encrypted message
+3. Contact security-translations@rdapify.com with PGP-encrypted message
 4. Expect response within 4 hours for Critical (CVSS ≥ 9.0) issues
 
 ### 3. Feedback and Improvement

@@ -336,7 +336,7 @@ Some advanced features are limited in the playground:
 ### Privacy Concerns
 - **Unexpected PII in results:** Verify `redactPII` is enabled in configuration
 - **Session data persistence:** Click "Clear Session" and disable localStorage in browser settings
-- **Suspicious behavior:** Report immediately to `security@rdapify.dev`
+- **Suspicious behavior:** Report immediately to `security@rdapify.com`
 
 ---
 

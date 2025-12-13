@@ -178,11 +178,11 @@ const workshopConfig = {
 ### Regional Community Leads
 | Region | Lead | Responsibilities | Contact |
 |--------|------|-------------------|---------|
-| **EMEA** | Maria Schmidt | European events, GDPR compliance discussions | maria@rdapify.dev |
-| **North America** | Alex Johnson | US/Canada meetups, enterprise workshops | alex@rdapify.dev |
-| **APAC** | Wei Chang | Asian events, language-specific documentation | wei@rdapify.dev |
-| **Latin America** | Carlos Mendez | Spanish/Portuguese outreach, local partnerships | carlos@rdapify.dev |
-| **MENA** | Layla Hassan | Arabic language support, regional compliance | layla@rdapify.dev |
+| **EMEA** | Maria Schmidt | European events, GDPR compliance discussions | maria@rdapify.com |
+| **North America** | Alex Johnson | US/Canada meetups, enterprise workshops | alex@rdapify.com |
+| **APAC** | Wei Chang | Asian events, language-specific documentation | wei@rdapify.com |
+| **Latin America** | Carlos Mendez | Spanish/Portuguese outreach, local partnerships | carlos@rdapify.com |
+| **MENA** | Layla Hassan | Arabic language support, regional compliance | layla@rdapify.com |
 
 ### Language-Specific Events
 ```mermaid
@@ -388,7 +388,7 @@ async function generateEventReport(eventId: string): Promise<EventImpactReport> 
 | **Languages Supported** | English + 9 regional languages with translation support |
 | **Accessibility Standard** | WCAG 2.1 Level AA compliance for virtual events |
 | **Code of Conduct** | [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html) |
-| **Safety Reporting** | Anonymous reporting via [safety@rdapify.dev](mailto:safety@rdapify.dev) |
+| **Safety Reporting** | Anonymous reporting via [safety@rdapify.com](mailto:safety@rdapify.com) |
 | **Recording Policy** | Consent required, recordings available for 3 months |
 | **Data Collection** | Minimal, GDPR-compliant registration with opt-out options |
 | **Sponsorship Policy** | No exclusive sponsors, equal booth space allocation |
