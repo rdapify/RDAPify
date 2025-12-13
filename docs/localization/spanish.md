@@ -407,8 +407,8 @@ module.exports = { trackLatamQuery };
 
 ### 2. Soporte Empresarial
 - **Versión Empresarial**: [https://rdapify.es/empresa](https://rdapify.es/empresa)
-- **Desarrollo Personalizado**: enterprise-es@rdapify.dev
-- **Consultoría de Cumplimiento**: compliance-es@rdapify.dev
+- **Desarrollo Personalizado**: enterprise-es@rdapify.com
+- **Consultoría de Cumplimiento**: compliance-es@rdapify.com
 - **Línea de Soporte Urgente**: +34-900-RDAP-HELP (clientes empresariales)
 
 ## 🧪 Validación Técnica en Español
@@ -461,7 +461,7 @@ Agradecemos a la comunidad hispanohablante de internet, a los equipos de los reg
 > **Nota**: RDAPify es un proyecto independiente que no está afiliado con ningún registro de dominios o autoridad oficial de internet. Todas las marcas comerciales y productos mencionados son propiedad de sus respectivos dueños.
 
 © 2025 RDAPify — Construido para empresas que no comprometen la calidad y seguridad.  
-[Política de Seguridad](../../../SECURITY.md) • [Política de Privacidad](../../../PRIVACY.md) • [Contáctenos](mailto:espanol@rdapify.dev)
+[Política de Seguridad](../../../SECURITY.md) • [Política de Privacidad](../../../PRIVACY.md) • [Contáctenos](mailto:espanol@rdapify.com)
 
 [← Volver a Localización](../README.md) | [Siguiente: Documentación Rusa →](../russian.md)
 

@@ -416,7 +416,7 @@ docker system prune -f
 | **Audit Logging** | Optional local audit log with configurable retention |
 | **Last Updated** | December 7, 2025 |
 
-> 🔐 **Critical Reminder**: Always verify cryptographic signatures before installing CLI binaries. Never run the RDAPify CLI with root/administrator privileges. For enterprise deployments, configure the `--data-residency` flag to ensure compliance with local data storage regulations. Regular security updates are released monthly—subscribe to the [security mailing list](mailto:security-updates@rdapify.dev) for notifications.
+> 🔐 **Critical Reminder**: Always verify cryptographic signatures before installing CLI binaries. Never run the RDAPify CLI with root/administrator privileges. For enterprise deployments, configure the `--data-residency` flag to ensure compliance with local data storage regulations. Regular security updates are released monthly—subscribe to the [security mailing list](mailto:security-updates@rdapify.com) for notifications.
 
 [← Back to CLI](../README.md) | [Next: Interactive Mode →](interactive_mode.md)
 

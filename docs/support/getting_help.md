@@ -55,7 +55,7 @@ RDAPify provides multiple support channels tailored to different user needs and 
 - **Dedicated Technical Account Manager**: For strategic customers
 - **Compliance Assistance**: GDPR/CCPA implementation guidance
 - **Architecture Reviews**: Production deployment validation
-- **Contact**: enterprise-support@rdapify.dev
+- **Contact**: enterprise-support@rdapify.com
 ```
 
 **Self-Service Enterprise Resources**
@@ -121,7 +121,7 @@ RDAPify provides multiple support channels tailored to different user needs and 
 
 **Immediate Actions**:
 1. Contact emergency line: +1-555-SEC-RDAP (24/7 for enterprise customers)
-2. Email: security-emergency@rdapify.dev with PGP encryption
+2. Email: security-emergency@rdapify.com with PGP encryption
 3. Include in subject: [CRITICAL] Your organization name
 4. Provide on-call contact information with phone number
 

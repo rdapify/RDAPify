@@ -280,7 +280,7 @@ git push origin qa/improve-core-tests
 | **QA Team Size** | 3 dedicated QA engineers + maintainers |
 | **Last Updated** | December 7, 2025 |
 
-> 🔐 **Quality Commitment**: RDAPify treats quality as a non-negotiable requirement, not a desirable feature. Every release undergoes rigorous validation against protocol standards, security requirements, performance baselines, and developer experience metrics. For enterprise deployments, contact `qa-enterprise@rdapify.dev` for specialized quality validation packages and SLA-backed quality guarantees.
+> 🔐 **Quality Commitment**: RDAPify treats quality as a non-negotiable requirement, not a desirable feature. Every release undergoes rigorous validation against protocol standards, security requirements, performance baselines, and developer experience metrics. For enterprise deployments, contact `qa-enterprise@rdapify.com` for specialized quality validation packages and SLA-backed quality guarantees.
 
 [← Back to Quality Assurance](../README.md) | [Next: Test Vectors →](test_vectors.md)
 

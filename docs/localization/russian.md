@@ -347,8 +347,8 @@ module.exports = { reportComplianceMetrics, checkFZ152Compliance };
 
 ### 2. Enterprise Support
 - **Enterprise Edition**: [https://rdapify.ru/enterprise](https://rdapify.ru/enterprise)
-- **Custom Development**: enterprise-ru@rdapify.dev
-- **Compliance Consulting**: compliance-ru@rdapify.dev
+- **Custom Development**: enterprise-ru@rdapify.com
+- **Compliance Consulting**: compliance-ru@rdapify.com
 - **Emergency Support Line**: +7-495-RDAP-HELP (enterprise customers only)
 
 ## 🧪 Russian Technical Validation
@@ -401,7 +401,7 @@ We thank the Russian internet community, RU-CENTER team, and Russian registry de
 > **Note**: RDAPify is an independent project not affiliated with any domain registry or official internet authority. All trademarks and products mentioned are property of their respective owners.
 
 © 2025 RDAPify — Built for enterprises that don't compromise on quality and security.  
-[Security Policy](../../../SECURITY.md) • [Privacy Policy](../../../PRIVACY.md) • [Contact Us](mailto:russia@rdapify.dev)
+[Security Policy](../../../SECURITY.md) • [Privacy Policy](../../../PRIVACY.md) • [Contact Us](mailto:russia@rdapify.com)
 
 [← Back to Localization](../README.md) | [Next: Arabic Documentation →](../arabic.md)
 

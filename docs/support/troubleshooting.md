@@ -453,8 +453,8 @@ When contacting support, include this information:
 | **Business Hours** | Monday-Friday, 9AM-5PM UTC |
 | **Emergency Response** | 24/7 for critical security issues |
 | **SLA Response Times** | Critical: 1 hour, High: 4 hours, Medium: 24 hours, Low: 72 hours |
-| **Support Channels** | Email: support@rdapify.dev, Community: Matrix/Element |
-| **Escalation Path** | support@rdapify.dev → senior-support@rdapify.dev → cto@rdapify.dev |
+| **Support Channels** | Email: support@rdapify.com, Community: Matrix/Element |
+| **Escalation Path** | support@rdapify.com → senior-support@rdapify.com → cto@rdapify.com |
 | **Required Information** | Version, logs, reproduction steps, business impact |
 | **Data Collection Policy** | All diagnostic data encrypted in transit and at rest |
 

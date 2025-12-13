@@ -457,7 +457,7 @@ export class EnvironmentDetector {
 | **Test Coverage** | 98% unit tests, 92% integration tests |
 | **Last Updated** | December 7, 2025 |
 
-> 🔐 **Critical Reminder**: Always verify your deployment environment against this compatibility matrix before production deployment. Never disable security features to achieve compatibility - use proper fallbacks or environment-specific implementations instead. For enterprise deployments, contact `compatibility-enterprise@rdapify.dev` for specialized compatibility validation packages and SLA-backed compatibility guarantees.
+> 🔐 **Critical Reminder**: Always verify your deployment environment against this compatibility matrix before production deployment. Never disable security features to achieve compatibility - use proper fallbacks or environment-specific implementations instead. For enterprise deployments, contact `compatibility-enterprise@rdapify.com` for specialized compatibility validation packages and SLA-backed compatibility guarantees.
 
 [← Back to Quality Assurance](../README.md) | [Next: Contribution Guide →](../../community/contributing.md)
 

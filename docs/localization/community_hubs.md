@@ -268,7 +268,7 @@ security_standards:
 Community hubs follow this incident response framework:
 
 1. **Detection & Reporting**:
-   - Security incidents reported to `security@rdapify.dev` with PGP encryption
+   - Security incidents reported to `security@rdapify.com` with PGP encryption
    - Community-specific issues reported to regional Compliance Lead
    - 24/7 emergency contact available for critical incidents
 
@@ -371,7 +371,7 @@ curl https://api.rdapify.dev/community/hubs
       "languages": ["en", "fr", "de", "es", "ar"],
       "members": 342,
       "next_event": "2025-12-15T18:00:00Z",
-      "contact": "emea-community@rdapify.dev"
+      "contact": "emea-community@rdapify.com"
     },
     {
       "id": "apac-03", 
@@ -380,7 +380,7 @@ curl https://api.rdapify.dev/community/hubs
       "languages": ["zh", "en"],
       "members": 287,
       "next_event": "2025-12-10T09:00:00+08:00",
-      "contact": "china-community@rdapify.dev"
+      "contact": "china-community@rdapify.com"
     }
   ]
 }
@@ -414,17 +414,17 @@ To establish a new community hub:
 ### 1. Community Hub Directory
 | Region | Hub Lead | Contact | Meeting Time |
 |--------|----------|---------|-------------|
-| **EMEA** | Maria Schmidt | emea-community@rdapify.dev | Thursdays 17:00 UTC |
-| **North America** | James Rodriguez | na-community@rdapify.dev | Wednesdays 19:00 UTC |
-| **APAC** | Wei Zhang | apac-community@rdapify.dev | Tuesdays 08:00 UTC |
-| **LATAM** | Sofia Mendez | latam-community@rdapify.dev | Mondays 20:00 UTC |
-| **MENA** | Ahmed Al-Farsi | mena-community@rdapify.dev | Sundays 16:00 UTC |
+| **EMEA** | Maria Schmidt | emea-community@rdapify.com | Thursdays 17:00 UTC |
+| **North America** | James Rodriguez | na-community@rdapify.com | Wednesdays 19:00 UTC |
+| **APAC** | Wei Zhang | apac-community@rdapify.com | Tuesdays 08:00 UTC |
+| **LATAM** | Sofia Mendez | latam-community@rdapify.com | Mondays 20:00 UTC |
+| **MENA** | Ahmed Al-Farsi | mena-community@rdapify.com | Sundays 16:00 UTC |
 
 ### 2. Global Community Resources
-- **Community Council**: `community-council@rdapify.dev`
-- **Compliance Office Hours**: `compliance-office-hours@rdapify.dev`
-- **Security Coordination**: `security-community@rdapify.dev`
-- **Emergency Contact**: `community-emergency@rdapify.dev` (PGP encrypted)
+- **Community Council**: `community-council@rdapify.com`
+- **Compliance Office Hours**: `compliance-office-hours@rdapify.com`
+- **Security Coordination**: `security-community@rdapify.com`
+- **Emergency Contact**: `community-emergency@rdapify.com` (PGP encrypted)
 
 ### 3. Upcoming Global Events
 - **Annual Community Summit**: June 15-17, 2026 (Berlin, Germany)

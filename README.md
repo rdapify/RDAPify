@@ -221,4 +221,4 @@ We thank the global RDAP community, IANA teams, and Regional Internet Registry (
 > **Note:** RDAPify is an independent project not affiliated with any domain registry or official internet authority. All trademarks and products mentioned are property of their respective owners.
 >
 > © 2025 RDAPify — Built for enterprises that don't compromise on quality and security.  
-> [Security Policy](SECURITY.md) • [Privacy Policy](PRIVACY.md) • [Contact Us](mailto:hello@rdapify.dev)
+> [Security Policy](SECURITY.md) • [Privacy Policy](PRIVACY.md) • [Contact Us](mailto:hello@rdapify.com)

@@ -356,7 +356,7 @@ export class ComplianceFixtureGenerator {
             description: [
               'This response has been processed in compliance with GDPR Article 6(1)(f).',
               'Data controller: Example Registrar Inc.',
-              'DPO contact: dpo@rdapify.dev'
+              'DPO contact: dpo@rdapify.com'
             ]
           }
         ],
@@ -385,7 +385,7 @@ export class ComplianceFixtureGenerator {
             description: [
               'This response complies with California Consumer Privacy Act requirements.',
               'Do Not Sell preference honored for California residents.',
-              'For consumer rights requests, contact privacy@rdapify.dev'
+              'For consumer rights requests, contact privacy@rdapify.com'
             ]
           }
         ]
