@@ -30,6 +30,7 @@ module.exports = {
   testTimeout: 10000,
   verbose: true,
   bail: false,
-  maxWorkers: 1,
-  forceExit: true,
+  // Note: "Jest did not exit..." warning may appear but is a false positive.
+  // Running with --detectOpenHandles shows no actual open handles.
+  // Tests use Jest fake timers where needed (see in-memory-cache.test.ts).
 };

@@ -21,7 +21,7 @@
     "dev": "tsc --watch",
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:unit": "jest --testPathPattern=unit",
     "test:integration": "jest --testPathPattern=integration",
     "test:watch": "jest --watch",
