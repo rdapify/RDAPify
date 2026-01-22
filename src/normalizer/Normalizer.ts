@@ -9,6 +9,8 @@ import type {
   IPResponse,
   ASNResponse,
   RDAPResponse,
+  RDAPEvent,
+  EventType,
 } from '../types';
 import { ParseError } from '../types/errors';
 
@@ -61,15 +63,15 @@ export class Normalizer {
       query,
       objectClass: 'domain',
       handle: raw.handle,
-      ldhName: raw.ldhName,
-      unicodeName: raw.unicodeName,
-      status: raw.status || [],
+      ldhName: raw['ldhName'],
+      unicodeName: raw['unicodeName'],
+      status: raw['status'] || [],
       nameservers: this.extractNameservers(raw),
-      entities: raw.entities || [],
-      events: raw.events || [],
+      entities: raw['entities'] || [],
+      events: this.normalizeEvents(raw['events'] || []),
       registrar: this.extractRegistrar(raw),
-      links: raw.links || [],
-      remarks: raw.remarks || [],
+      links: raw['links'] || [],
+      remarks: raw['remarks'] || [],
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -98,17 +100,17 @@ export class Normalizer {
       query,
       objectClass: 'ip network',
       handle: raw.handle,
-      startAddress: raw.startAddress,
-      endAddress: raw.endAddress,
-      ipVersion: raw.ipVersion,
-      name: raw.name,
-      type: raw.type,
-      country: raw.country,
-      status: raw.status || [],
-      entities: raw.entities || [],
-      events: raw.events || [],
-      links: raw.links || [],
-      remarks: raw.remarks || [],
+      startAddress: raw['startAddress'],
+      endAddress: raw['endAddress'],
+      ipVersion: raw['ipVersion'],
+      name: raw['name'],
+      type: raw['type'],
+      country: raw['country'],
+      status: raw['status'] || [],
+      entities: raw['entities'] || [],
+      events: this.normalizeEvents(raw['events'] || []),
+      links: raw['links'] || [],
+      remarks: raw['remarks'] || [],
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -137,16 +139,16 @@ export class Normalizer {
       query,
       objectClass: 'autnum',
       handle: raw.handle,
-      startAutnum: raw.startAutnum,
-      endAutnum: raw.endAutnum,
-      name: raw.name,
-      type: raw.type,
-      country: raw.country,
-      status: raw.status || [],
-      entities: raw.entities || [],
-      events: raw.events || [],
-      links: raw.links || [],
-      remarks: raw.remarks || [],
+      startAutnum: raw['startAutnum'],
+      endAutnum: raw['endAutnum'],
+      name: raw['name'],
+      type: raw['type'],
+      country: raw['country'],
+      status: raw['status'] || [],
+      entities: raw['entities'] || [],
+      events: this.normalizeEvents(raw['events'] || []),
+      links: raw['links'] || [],
+      remarks: raw['remarks'] || [],
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -165,11 +167,11 @@ export class Normalizer {
    * Extracts nameserver list from domain response
    */
   private extractNameservers(raw: RawRDAPResponse): string[] {
-    if (!raw.nameservers || !Array.isArray(raw.nameservers)) {
+    if (!raw['nameservers'] || !Array.isArray(raw['nameservers'])) {
       return [];
     }
 
-    return raw.nameservers
+    return raw['nameservers']
       .map((ns: any) => ns.ldhName || ns.unicodeName)
       .filter((name: string) => name);
   }
@@ -178,13 +180,13 @@ export class Normalizer {
    * Extracts registrar information from entities
    */
   private extractRegistrar(raw: RawRDAPResponse): DomainResponse['registrar'] {
-    if (!raw.entities || !Array.isArray(raw.entities)) {
+    if (!raw['entities'] || !Array.isArray(raw['entities'])) {
       return undefined;
     }
 
     // Find entity with registrar role
-    const registrar = raw.entities.find(
-      (entity: any) => entity.roles && entity.roles.includes('registrar')
+    const registrar = raw['entities'].find(
+      (entity: any) => entity.roles?.includes('registrar')
     );
 
     if (!registrar) {
@@ -197,7 +199,7 @@ export class Normalizer {
       const vcard = registrar.vcardArray[1];
       if (Array.isArray(vcard)) {
         const fnField = vcard.find((field: any) => Array.isArray(field) && field[0] === 'fn');
-        if (fnField && fnField[3]) {
+        if (fnField?.[3]) {
           name = fnField[3];
         }
       }
@@ -217,5 +219,21 @@ export class Normalizer {
       handle: registrar.handle,
       url,
     };
+  }
+
+  /**
+   * Normalizes RDAP events array
+   * Converts eventAction to type for consistency
+   */
+  private normalizeEvents(events: any[]): RDAPEvent[] {
+    if (!Array.isArray(events)) {
+      return [];
+    }
+
+    return events.map((event: any) => ({
+      type: (event.eventAction || event.type) as EventType,
+      date: event.eventDate || event.date,
+      actor: event.eventActor || event.actor,
+    }));
   }
 }

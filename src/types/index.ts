@@ -77,6 +77,11 @@ export type CacheStrategy = 'memory' | 'redis' | 'custom' | 'none';
 export type BackoffStrategy = 'linear' | 'exponential' | 'fixed';
 
 /**
+ * Re-export BackoffStrategy for options module
+ */
+export type { BackoffStrategy as BackoffStrategyType };
+
+/**
  * Log levels
  */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';

@@ -3,11 +3,13 @@
  * @module fetcher/Fetcher
  */
 
-import type { TimeoutOptions } from '../types/options';
 import type { RawRDAPResponse } from '../types';
 import { NetworkError, TimeoutError, RDAPServerError } from '../types/errors';
-import { SSRFProtection } from './SSRFProtection';
+import type { TimeoutOptions } from '../types/options';
 import { withTimeout } from '../utils/helpers';
+
+import { SSRFProtection } from './SSRFProtection';
+
 
 /**
  * Fetcher options
@@ -139,7 +141,11 @@ export class Fetcher {
       try {
         errorBody = await response.json();
       } catch {
-        errorBody = await response.text();
+        try {
+          errorBody = await response.text();
+        } catch {
+          errorBody = null;
+        }
       }
 
       throw new RDAPServerError(

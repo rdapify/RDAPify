@@ -3,9 +3,11 @@
  * @module fetcher/BootstrapDiscovery
  */
 
-import type { QueryType } from '../types';
+import * as ipaddr from 'ipaddr.js';
+
 import { NoServerFoundError, NetworkError } from '../types/errors';
 import { extractTLD } from '../utils/helpers';
+
 import { Fetcher } from './Fetcher';
 
 /**
@@ -52,7 +54,7 @@ export class BootstrapDiscovery {
 
     for (const entry of entries) {
       if (entry.patterns.includes(tld.toLowerCase())) {
-        if (entry.servers.length === 0) {
+        if (entry.servers.length === 0 || !entry.servers[0]) {
           throw new NoServerFoundError(`No RDAP server found for TLD: ${tld}`, { domain, tld });
         }
         return entry.servers[0]; // Return first server
@@ -72,7 +74,7 @@ export class BootstrapDiscovery {
     for (const entry of entries) {
       for (const pattern of entry.patterns) {
         if (this.ipMatchesCIDR(ip, pattern)) {
-          if (entry.servers.length === 0) {
+          if (entry.servers.length === 0 || !entry.servers[0]) {
             throw new NoServerFoundError(`No RDAP server found for IPv4: ${ip}`, { ip, pattern });
           }
           return entry.servers[0];
@@ -93,7 +95,7 @@ export class BootstrapDiscovery {
     for (const entry of entries) {
       for (const pattern of entry.patterns) {
         if (this.ipMatchesCIDR(ip, pattern)) {
-          if (entry.servers.length === 0) {
+          if (entry.servers.length === 0 || !entry.servers[0]) {
             throw new NoServerFoundError(`No RDAP server found for IPv6: ${ip}`, { ip, pattern });
           }
           return entry.servers[0];
@@ -112,10 +114,12 @@ export class BootstrapDiscovery {
 
     for (const entry of entries) {
       for (const pattern of entry.patterns) {
-        const [start, end] = pattern.split('-').map((n) => parseInt(n, 10));
+        const parts = pattern.split('-').map((n) => parseInt(n, 10));
+        const start = parts[0];
+        const end = parts[1] ?? start;
 
-        if (asn >= start && asn <= end) {
-          if (entry.servers.length === 0) {
+        if (start !== undefined && end !== undefined && asn >= start && asn <= end) {
+          if (entry.servers.length === 0 || !entry.servers[0]) {
             throw new NoServerFoundError(`No RDAP server found for ASN: ${asn}`, { asn, pattern });
           }
           return entry.servers[0];
@@ -174,12 +178,27 @@ export class BootstrapDiscovery {
 
   /**
    * Checks if an IP matches a CIDR range
-   * Note: This is a simplified implementation
+   * Uses ipaddr.js for proper CIDR matching with fail-closed behavior
    */
   private ipMatchesCIDR(ip: string, cidr: string): boolean {
-    // For now, just do exact match
-    // TODO: Implement proper CIDR matching
-    return ip === cidr || cidr.includes(ip);
+    try {
+      // If CIDR doesn't contain '/', treat as exact IP match
+      if (!cidr.includes('/')) {
+        return ip === cidr;
+      }
+
+      // Parse and validate IP address
+      const addr = ipaddr.process(ip);
+      
+      // Parse and validate CIDR range
+      const range = ipaddr.parseCIDR(cidr);
+      
+      // Check if IP matches the CIDR range
+      return addr.match(range);
+    } catch {
+      // Fail-closed: if parsing fails, return false
+      return false;
+    }
   }
 
   /**

@@ -3,9 +3,10 @@
  * @module cache/CacheManager
  */
 
-import type { CacheOptions } from '../types/options';
 import type { RDAPResponse } from '../types';
 import { CacheError } from '../types/errors';
+import type { CacheOptions } from '../types/options';
+
 import { InMemoryCache } from './InMemoryCache';
 
 /**
