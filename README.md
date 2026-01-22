@@ -1,9 +1,9 @@
 # RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
 
+> **⚠️ ALPHA RELEASE**: This is v0.1.0-alpha.1 — core functionality is working and tested, but some advanced features are still in development. See [What's Ready](#-whats-ready-in-v010-alpha1) below.
+
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/rdapify/rdapify/ci.yml?branch=main&style=flat-square)](https://github.com/rdapify/rdapify/actions)
-[![Coverage](https://img.shields.io/codecov/c/github/rdapify/rdapify?style=flat-square)](https://codecov.io/gh/rdapify/rdapify)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
 
 **RDAPify** unifies RDAP queries across all global registries (Verisign, ARIN, RIPE, APNIC, LACNIC) with robust security protection, exceptional performance, and an integrated developer experience. This isn't just another RDAP client — it's a complete platform for processing registration data securely.
@@ -153,47 +153,35 @@ We don't treat security as an add-on feature — it's fundamental to our design.
 
 Read our [Security Whitepaper](security/whitepaper.md) for deeper technical details and advanced scenarios.
 
-## 📚 Comprehensive Documentation
+## 📚 Documentation
 
-RDAPify provides enterprise-grade documentation covering every scenario:
+RDAPify provides comprehensive documentation:
 
-- **[Getting Started](docs/getting-started/)** - Start in 5 minutes
-- **[Playground](docs/playground/)** - Try the library in your browser
-- **[API Reference](docs/api-reference/)** - Complete TypeScript documentation
-- **[Security & Privacy](docs/security/)** - Enterprise security guide
-- **[Integrations](docs/integrations/)** - Pre-built cloud platform templates
-- **[Enterprise Guide](docs/enterprise/)** - Production best practices
-- **[Analytics](docs/analytics/)** - Dashboard and reporting recipes
+- **[Getting Started](docs/getting_started/)** - Installation and first query
+- **[API Reference](docs/api_reference/)** - Complete TypeScript documentation
+- **[Core Concepts](docs/core_concepts/)** - RDAP fundamentals and architecture
+- **[Security Guide](docs/security/)** - SSRF protection and PII redaction
+- **[Guides](docs/guides/)** - Error handling, caching, performance
 
-[→ View Full Documentation](https://rdapify.com/docs)
+> **Note**: Full documentation site (rdapify.com) is planned for future release. For now, browse the [docs/](docs/) directory.
 
 ## 🌐 Interactive Playground
 
-No installation needed! Try RDAPify instantly in our [Playground](https://playground.rdapify.com):
-
-![Screenshot of RDAPify Playground](https://rdapify.com/images/playground-screenshot.png)
+> **Coming Soon**: Interactive playground is planned for a future release. For now, install the package and try the examples in the [docs/](docs/) directory.
 
 ## 📊 Performance Benchmarks
 
-### Comparison with Alternatives (1000 queries)
-
-| Library     | Time (seconds) | Memory Usage | Avg Response Time |
-| ----------- | -------------- | ------------ | ----------------- |
-| **RDAPify** | **3.2**        | **85 MB**    | **1.8 ms**        |
-| rdap-client | 42.7           | 310 MB       | 214 ms            |
-| node-rdap   | 58.1           | 420 MB       | 290 ms            |
-| whois-json  | 196.5          | 580 MB       | 982 ms            |
-
-> Benchmarks run on Node.js 20, Intel i7, 32GB RAM, 1Gbps connection. Includes caching benefits.
+> **Coming Soon**: Comprehensive benchmarks with real-world data will be published in future releases. Current alpha focuses on correctness and security over performance optimization.
 
 ## 👥 Community & Support
 
-RDAPify is an open source project supported by organizations and developers worldwide:
+RDAPify is an open source project. Get help or contribute:
 
-- **[Matrix/Element](https://matrix.to/#/#rdapify:matrix.org)** - Live chat with developers
+- **[GitHub Issues](https://github.com/rdapify/rdapify/issues)** - Bug reports and feature requests
 - **[GitHub Discussions](https://github.com/rdapify/rdapify/discussions)** - Questions and ideas
-- **[Weekly Office Hours](https://rdapify.com/community/office-hours)** - Live sessions every Thursday
-- **[Enterprise Support](https://rdapify.com/enterprise)** - SLA-backed support for businesses
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+
+> **Note**: Community chat and enterprise support options are planned for future releases.
 
 ## 🤝 Contributing
 
@@ -208,45 +196,53 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Phase**: Pre-Launch (v0.1.0-alpha)
+**Current Release**: v0.1.0-alpha.1 (Alpha)
 
-RDAPify is currently in active development with comprehensive documentation in place. We're building the core implementation and welcome early contributors!
+### ✅ What's Ready in v0.1.0-alpha.1
 
-### What's Ready
+Core functionality is implemented and tested:
 
-- ✅ Complete documentation structure (150+ files)
-- ✅ Architecture and design specifications
-- ✅ CI/CD pipeline with GitHub Actions
-- ✅ Security scanning and quality checks
-- ✅ Test infrastructure setup
+- ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic bootstrap discovery
+- ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, with proper CIDR matching (IPv4/IPv6)
+- ✅ **Data Normalization**: Consistent response format across all registries
+- ✅ **PII Redaction**: Automatic redaction of emails, phones, addresses
+- ✅ **In-Memory Caching**: LRU cache with TTL support
+- ✅ **Error Handling**: Structured errors with retry logic (exponential backoff)
+- ✅ **TypeScript Support**: Full type definitions and strict mode
+- ✅ **Test Coverage**: 146 tests passing (unit + integration with mocked fixtures)
+- ✅ **Node.js Support**: Tested on Node.js 16+
 
-### In Progress
+### 🔄 Alpha Limitations
 
-- 🔄 Core RDAP client implementation
-- 🔄 SSRF protection layer
-- 🔄 PII redaction system
-- 🔄 Caching mechanisms
-- 🔄 Test suite development
+These features are documented but not yet implemented:
 
-### Coming Soon
+- ⏳ **Redis/External Cache**: Only in-memory cache available
+- ⏳ **CLI Tool**: Not yet available (use programmatic API only)
+- ⏳ **Interactive Playground**: Coming in future release
+- ⏳ **Bun/Deno/Cloudflare Workers**: Not tested yet (Node.js only for now)
+- ⏳ **Advanced Analytics**: Dashboard and reporting features planned
+- ⏳ **Geo-distributed Caching**: Single-node caching only
 
-- ⏳ Alpha release (v0.1.0-alpha.1)
-- ⏳ npm package publication
-- ⏳ Interactive playground
-- ⏳ CLI tool
+### 📋 Roadmap to v0.2.0
+
+- Redis cache adapter
+- CLI tool with interactive mode
+- Bun/Deno runtime compatibility testing
+- Live integration tests (optional via LIVE_TESTS=1)
+- Performance benchmarks with real data
+- Rate limiting implementation
 
 **Want to contribute?** Check out our [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md)!
 
-## 🏢 Early Adopters
+## 🏢 Early Adopters & Feedback
 
 We're looking for early adopters and beta testers! If you're interested in:
 
 - Testing the library in your environment
 - Providing feedback on the API design
 - Contributing to the codebase
-- Sponsoring development
 
-**Contact us**: hello@rdapify.com or open a [GitHub Discussion](https://github.com/rdapify/rdapify/discussions)
+**Get involved**: Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) or [Discussion](https://github.com/rdapify/rdapify/discussions)
 
 ## 📜 License
 
@@ -260,5 +256,5 @@ We thank the global RDAP community, IANA teams, and Regional Internet Registry (
 
 > **Note:** RDAPify is an independent project not affiliated with any domain registry or official internet authority. All trademarks and products mentioned are property of their respective owners.
 >
-> © 2025 RDAPify — Built for enterprises that don't compromise on quality and security.  
-> **Website**: [rdapify.com](https://rdapify.com) • [Security Policy](SECURITY.md) • [Privacy Policy](PRIVACY.md) • **Email**: hello@rdapify.com
+> © 2025 RDAPify Contributors — Built for enterprises that don't compromise on quality and security.  
+> [Security Policy](SECURITY.md) • [Privacy Policy](PRIVACY.md) • [License](LICENSE)
