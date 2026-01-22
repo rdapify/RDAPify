@@ -30,6 +30,11 @@ describe('InMemoryCache', () => {
     cache = new InMemoryCache(3); // Small size for testing
   });
 
+  afterEach(() => {
+    // Clean up any pending timers
+    jest.clearAllTimers();
+  });
+
   describe('set and get', () => {
     it('should store and retrieve values', async () => {
       const response = createMockResponse('example.com');
@@ -45,14 +50,16 @@ describe('InMemoryCache', () => {
     });
 
     it('should return null for expired entries', async () => {
+      jest.useFakeTimers();
       const response = createMockResponse('example.com');
       await cache.set('test-key', response, 0.1); // 0.1 seconds
 
-      // Wait for expiration
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      // Advance time past expiration
+      jest.advanceTimersByTime(150);
 
       const result = await cache.get('test-key');
       expect(result).toBeNull();
+      jest.useRealTimers();
     });
   });
 
@@ -69,12 +76,14 @@ describe('InMemoryCache', () => {
     });
 
     it('should return false for expired keys', async () => {
+      jest.useFakeTimers();
       const response = createMockResponse('example.com');
       await cache.set('test-key', response, 0.1);
 
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      jest.advanceTimersByTime(150);
 
       expect(await cache.has('test-key')).toBe(false);
+      jest.useRealTimers();
     });
   });
 
@@ -121,12 +130,14 @@ describe('InMemoryCache', () => {
     });
 
     it('should not count expired entries', async () => {
+      jest.useFakeTimers();
       await cache.set('key1', createMockResponse('example1.com'), 0.1);
       await cache.set('key2', createMockResponse('example2.com'), 3600);
 
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      jest.advanceTimersByTime(150);
 
       expect(await cache.size()).toBe(1);
+      jest.useRealTimers();
     });
   });
 
