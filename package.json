@@ -3,13 +3,12 @@
   "version": "0.1.0-alpha.1",
   "description": "Unified, secure, high-performance RDAP client for enterprise applications with built-in privacy controls",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -20,10 +19,7 @@
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "npm run clean && npm run build:types && npm run build:cjs && npm run build:esm",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build:cjs": "tsc --module commonjs --outDir dist",
-    "build:esm": "tsc --module esnext --outDir dist",
+    "build": "npm run clean && tsc",
     "clean": "rimraf dist",
     "test": "jest",
     "test:unit": "jest --testPathPattern=unit",
