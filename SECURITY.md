@@ -10,20 +10,18 @@ This document outlines our security policies and procedures. For comprehensive t
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.x.x   | ✅ Full support    |
-| 0.9.x   | ⚠️ Security fixes only |
-| < 0.9.x | ❌ Not supported   |
+| 0.1.x-alpha | ⚠️ Alpha - security fixes only |
+| < 0.1.x | ❌ Not supported   |
+
+> **Note**: This is an alpha release. Production use is not recommended until v1.0.0.
 
 ## Reporting a Vulnerability
 
-### Preferred Method
-Email security reports to: **security@rdapify.com**  
-PGP Key: [Download PGP Key](https://rdapify.com/security/pgp-key.asc)  
-Fingerprint: `A1B2 C3D4 E5F6 7890 1234 5678 9ABC DEF0 1234 5678`
+### GitHub Security Advisories (Preferred)
+Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories/new).
 
-### Alternative Methods
-- GitHub Security Advisory (private)
-- HackerOne (coming Q1 2026)
+### Alternative Method
+Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) with the label `security` if the vulnerability is not critical.
 
 ### Information to Include
 For a faster response, please include:
@@ -33,8 +31,8 @@ For a faster response, please include:
 - Suggested fix (optional but helpful)
 
 ### Response Timeline
-- **Initial response**: Within 48 hours
-- **Triage and validation**: 3-5 business days
+- **Initial response**: Within 7 days
+- **Triage and validation**: 7-14 business days
 - **Fix development**: Depends on severity
 - **Coordinated disclosure**: 90 days after initial report
 
@@ -158,34 +156,25 @@ RDAPify is designed to help you meet compliance requirements:
 
 ## Security Advisories
 
-Published security advisories are available at:
+Published security advisories will be available at:
 - [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories)
-- [npm Security Advisories](https://www.npmjs.com/advisories?search=rdapify)
-- [RDAPify Security Page](https://rdapify.com/security/advisories)
 
 Subscribe to security notifications:
 - GitHub Watch "Security only" notifications
-- RSS feed: https://rdapify.com/security/feed.xml
-- Email list: security-announce+subscribe@rdapify.com
 
 ## Acknowledgements
 
-We thank the following security researchers for their responsible disclosure and contributions to RDAPify's security:
+We thank security researchers for their responsible disclosure and contributions to RDAPify's security.
 
-- [Researcher Name] - [Vulnerability Type] - [Date]
-- [Researcher Name] - [Vulnerability Type] - [Date]
-
-[Learn about our bug bounty program](https://rdapify.com/security/bug-bounty) (coming Q1 2026).
+If you discover a security vulnerability, please report it through [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories/new).
 
 ## Contact
 
 For security-related questions or concerns:
-- **Security Team**: security@rdapify.com (PGP encrypted preferred)
-- **Enterprise Security**: enterprise-security@rdapify.com
-- **Urgent Issues**: +1-555-SEC-RDAP (for enterprise customers with SLA)
+- **GitHub Issues**: [rdapify/rdapify/issues](https://github.com/rdapify/rdapify/issues) (label: security)
+- **GitHub Security**: [Security Advisories](https://github.com/rdapify/rdapify/security/advisories/new)
 
 ---
 
-> **Note**: This document is regularly updated. Last reviewed: December 5, 2025  
-> Full technical details available in the [Security Whitepaper](security/whitepaper.md).  
+> **Note**: This document is regularly updated. Last reviewed: January 22, 2026  
 > RDAPify is provided "as is" without warranty. See [LICENSE](LICENSE) for full terms.

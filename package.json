@@ -47,15 +47,25 @@
     "dns",
     "registry",
     "ip",
+    "ipv4",
+    "ipv6",
     "asn",
     "registration-data",
     "privacy",
     "gdpr",
     "ccpa",
+    "pii-redaction",
     "security",
     "ssrf-protection",
     "enterprise",
-    "typescript"
+    "typescript",
+    "iana",
+    "bootstrap",
+    "verisign",
+    "arin",
+    "ripe",
+    "apnic",
+    "lacnic"
   ],
   "author": {
     "name": "RDAPify Contributors"
