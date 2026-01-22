@@ -30,5 +30,6 @@ module.exports = {
   testTimeout: 10000,
   verbose: true,
   bail: false,
-  maxWorkers: '50%',
+  maxWorkers: 1,
+  forceExit: true,
 };
