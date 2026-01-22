@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>RDAPify - Unified, Secure, High-Performance RDAP Client</title>
+    <meta name="description" content="RDAPify is a unified, secure, high-performance RDAP client for enterprise applications. Replace traditional WHOIS with modern RDAP protocol.">
+    <meta name="keywords" content="RDAP, WHOIS, domain, DNS, registry, security, privacy, GDPR, TypeScript, Node.js">
+    <meta name="author" content="RDAPify Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rdapify.com/">
+    <meta property="og:title" content="RDAPify - Unified RDAP Client">
+    <meta property="og:description" content="Unified, secure, high-performance RDAP client for enterprise applications">
+    <meta property="og:image" content="https://rdapify.com/images/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rdapify.com/">
+    <meta property="twitter:title" content="RDAPify - Unified RDAP Client">
+    <meta property="twitter:description" content="Unified, secure, high-performance RDAP client for enterprise applications">
+    <meta property="twitter:image" content="https://rdapify.com/images/twitter-image.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://rdapify.com/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 40px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+            text-align: left;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .feature h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .feature p {
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .status {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fef5e7;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .status h3 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .logo {
+                font-size: 36px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🌐 RDAPify</div>
+        
+        <h1>Unified, Secure, High-Performance RDAP Client</h1>
+        
+        <p class="tagline">
+            Replace traditional WHOIS with modern RDAP protocol. Built for enterprises that don't compromise on quality and security.
+        </p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Security First</h3>
+                <p>Built-in SSRF protection and PII redaction</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>High Performance</h3>
+                <p>Smart caching and parallel processing</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <h3>Unified Interface</h3>
+                <p>Single API for all global registries</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">✅</div>
+                <h3>GDPR Ready</h3>
+                <p>Automatic privacy compliance</p>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <a href="/docs/" class="btn btn-primary">📚 Documentation</a>
+            <a href="https://github.com/rdapify/rdapify" class="btn btn-secondary">⭐ GitHub</a>
+        </div>
+        
+        <div class="status">
+            <h3>🚧 Project Status: Pre-Launch</h3>
+            <p>
+                RDAPify is currently in active development with comprehensive documentation in place. 
+                We're building the core implementation and welcome early contributors!
+            </p>
+        </div>
+        
+        <footer>
+            <p>
+                <strong>Quick Links:</strong>
+                <a href="/docs/getting-started/quick-start">Quick Start</a> •
+                <a href="https://github.com/rdapify/rdapify">GitHub</a> •
+                <a href="https://github.com/rdapify/rdapify/discussions">Discussions</a> •
+                <a href="mailto:hello@rdapify.com">Contact</a>
+            </p>
+            <p style="margin-top: 10px;">
+                © 2025 RDAPify • 
+                <a href="https://rdapify.com/privacy">Privacy</a> •
+                <a href="https://rdapify.com/terms">Terms</a> •
+                <a href="https://github.com/rdapify/rdapify/blob/main/LICENSE">MIT License</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

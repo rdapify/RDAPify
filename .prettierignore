@@ -1,0 +1,29 @@
+# Build outputs
+dist/
+build/
+out/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Documentation build
+.docusaurus/
+website/build/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Generated files
+*.min.js
+*.bundle.js
+
+# Logs
+*.log
+
+# Cache
+.cache/
+.eslintcache

@@ -5,9 +5,74 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] 
+## [Unreleased]
+
+### Planned for v0.2.0-beta.1
+
+- Redis cache adapter
+- Rate limiting implementation
+- CLI tool
+- Batch processing support
+- Enhanced error recovery
+- Performance benchmarks
+- 90%+ test coverage
+
+---
+
+## [0.1.0-alpha.1] - 2025-01-22
 
 ### Added
+
+- **Core Implementation**
+  - RDAPClient with domain, IP, and ASN lookup support
+  - IANA Bootstrap discovery for automatic server detection
+  - HTTP Fetcher with timeout and redirect handling
+  - Response normalizer for consistent data format
+  - In-memory cache with LRU eviction policy
+- **Security Features**
+  - SSRF protection with private IP blocking
+  - Localhost and link-local address filtering
+  - Domain whitelist/blacklist support
+  - HTTPS-only enforcement
+- **Privacy Features**
+  - PII redaction for GDPR/CCPA compliance
+  - Configurable field redaction
+  - vCard data sanitization
+- **Developer Experience**
+  - Full TypeScript support with strict mode
+  - Comprehensive type definitions
+  - Custom error classes with detailed context
+  - Retry logic with exponential backoff
+  - Configurable timeouts
+- **Infrastructure**
+  - Complete project setup (package.json, tsconfig, etc.)
+  - GitHub Actions workflows (CI, security, docs, release)
+  - Issue and PR templates
+  - Code quality tools (ESLint, Prettier)
+  - Testing infrastructure (Jest)
+- **Documentation**
+  - 150+ documentation files
+  - API reference structure
+  - Getting started guides
+  - Security whitepaper
+  - Integration guides
+  - 7 architecture diagrams
+
+### Infrastructure
+
+- TypeScript configuration with strict mode
+- Jest testing framework setup
+- ESLint and Prettier configuration
+- GitHub issue and PR templates
+- Dependabot configuration
+- VS Code workspace settings
+
+---
+
+## [Future Releases]
+
+### Added
+
 - **Advanced Analytics Module**: New dashboard components for domain portfolio monitoring and relationship visualization
 - **Multi-language documentation**: Initial Chinese and Spanish translations for core documentation
 - **Kubernetes deployment templates**: Production-ready Helm charts for cluster deployments
@@ -17,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **PII detection enhancements**: Improved algorithms for identifying and redacting personal information in responses
 
 ### Changed
+
 - **Error state machine**: Refactored to handle more edge cases with clearer state transitions
 - **Cache invalidation strategy**: Now uses TTL + LRU hybrid approach for optimal memory usage
 - **Bootstrap discovery**: Reduced IANA bootstrap lookup time by 40% through parallel DNS resolution
@@ -26,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CLI interface**: Added auto-suggestion feature and command history persistence
 
 ### Fixed
+
 - **SSRF vulnerability**: Fixed edge case where specially crafted Punycode domains could bypass IP validation (#142)
 - **Memory leak**: Resolved cache accumulation issue when using Redis adapter with short TTLs (#156)
 - **Rate limiting**: Corrected timing window calculation that occasionally allowed excess requests (#138)
@@ -35,12 +102,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cloudflare Workers**: Resolved compatibility issue with service worker environment (#163)
 
 ### Removed
+
 - **Legacy Node.js 14 support**: Dropped support as end-of-life reached (Node.js 16+ now minimum)
 - **Experimental GraphQL API**: Removed in favor of more focused REST interface
 
 ## [1.0.0] - 2025-12-05
 
 ### Added
+
 - **Core RDAP client**: Production-ready implementation supporting domain, IP, and ASN queries
 - **Security-first design**: Comprehensive SSRF protection, rate limiting, and PII redaction
 - **Multi-environment support**: Full compatibility with Node.js 16+, Bun 1.0+, Deno 1.35+, Cloudflare Workers
@@ -59,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Governance model**: Maintainer responsibilities and decision-making processes
 
 ### Changed
+
 - **API stabilization**: Finalized public API surface after beta testing with enterprise partners
 - **Documentation reorganization**: Restructured documentation for optimal developer onboarding
 - **Benchmark methodology**: Updated performance tests to reflect production usage patterns
@@ -67,6 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Privacy controls**: Enhanced GDPR compliance with stricter default redaction policies
 
 ### Fixed
+
 - **IANA bootstrap**: Fixed intermittent failures when IANA endpoints are temporarily unavailable
 - **Cache corruption**: Resolved race condition during high-concurrency cache updates
 - **Memory usage**: Optimized response parsing to reduce memory footprint by 35%
@@ -75,6 +146,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Test harness**: Improved test reliability with better network mocking and isolation
 
 ### Security
+
 - **SSRF protection**: Implemented comprehensive domain validation and internal IP blocking
 - **Certificate pinning**: Added optional certificate pinning for high-security environments
 - **Data minimization**: Reduced data retention with automatic cache purging
@@ -84,6 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2025-11-15 (Beta Release)
 
 ### Added
+
 - **Beta release** with core functionality and documentation
 - **Initial enterprise adoption program** with selected partners
 - **Performance optimization** phase with detailed benchmarking
@@ -92,6 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2025-09-01 (Alpha Release)
 
 ### Added
+
 - **Initial implementation** of core RDAP client
 - **Basic normalization** of responses from major registries
 - **Proof-of-concept** security features
@@ -100,6 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-06-15 (Project Initiation)
 
 ### Added
+
 - **Project foundation** with initial architecture design
 - **RFC analysis** and registry compatibility assessment
 - **Threat modeling** and security requirements definition
@@ -107,17 +182,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**Versioning Policy**: 
+**Versioning Policy**:
+
 - Major versions (1.0.0, 2.0.0) may contain breaking changes
 - Minor versions (1.1.0, 1.2.0) add functionality without breaking changes
 - Patch versions (1.0.1, 1.0.2) fix bugs without changing functionality
 
 **Support Policy**:
+
 - Current release: Full support + new features
 - Previous major version: Security fixes only for 12 months
 - Older versions: No support (users should upgrade)
 
 **Upgrade Guidance**:
+
 - Always review breaking changes before upgrading major versions
 - Test in staging environment before production deployment
 - Monitor performance metrics after upgrade

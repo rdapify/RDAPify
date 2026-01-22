@@ -1,0 +1,146 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'website/**'
+      - 'README.md'
+      - '*.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'website/**'
+      - 'README.md'
+      - '*.md'
+
+jobs:
+  validate-links:
+    name: Validate Documentation Links
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Check links in README
+        run: markdown-link-check README.md --config .github/markdown-link-check-config.json
+        continue-on-error: true
+
+      - name: Check links in docs
+        run: |
+          find docs -name "*.md" -exec markdown-link-check {} --config .github/markdown-link-check-config.json \;
+        continue-on-error: true
+
+  lint-markdown:
+    name: Lint Markdown Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+
+      - name: Lint markdown files
+        run: markdownlint '**/*.md' --ignore node_modules --ignore dist
+        continue-on-error: true
+
+  validate-examples:
+    name: Validate Code Examples
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate TypeScript examples
+        run: |
+          echo "Validating TypeScript examples..."
+          # Will be implemented when examples are ready
+        continue-on-error: true
+
+      - name: Validate JavaScript examples
+        run: |
+          echo "Validating JavaScript examples..."
+          # Will be implemented when examples are ready
+        continue-on-error: true
+
+  build-docs:
+    name: Build Documentation Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install website dependencies
+        run: |
+          cd website
+          npm ci
+
+      - name: Build documentation site
+        run: |
+          cd website
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs-build
+          path: website/build/
+          retention-days: 7
+
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: build-docs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: docs-build
+          path: website/build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/build
+          cname: rdapify.com

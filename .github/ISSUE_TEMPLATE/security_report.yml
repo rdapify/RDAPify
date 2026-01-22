@@ -1,0 +1,85 @@
+name: 🔒 Security Vulnerability Report
+description: Report a security vulnerability (PRIVATE - will be handled confidentially)
+title: "[Security]: "
+labels: ["security", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **IMPORTANT**: If this is a critical security vulnerability, please DO NOT file a public issue.
+        Instead, email security@rdapify.com with details.
+        
+        For non-critical security improvements, you can use this form.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe is this security issue?
+      options:
+        - Low (Security improvement suggestion)
+        - Medium (Potential vulnerability with mitigations)
+        - High (Exploitable vulnerability)
+        - Critical (Actively exploitable, high impact)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Vulnerability Description
+      description: Describe the security issue
+      placeholder: The application is vulnerable to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: What is the potential impact of this vulnerability?
+      placeholder: An attacker could...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can this vulnerability be reproduced?
+      placeholder: |
+        1. Configure client with...
+        2. Send request to...
+        3. Observe that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested Mitigation
+      description: How do you suggest fixing this issue?
+      placeholder: This could be fixed by...
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Affected Version(s)
+      description: Which versions are affected?
+      placeholder: e.g., 2.3.0, 2.2.x
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Responsible Disclosure
+      options:
+        - label: I agree to follow responsible disclosure practices
+          required: true
+        - label: I will not publicly disclose this until a fix is released
+          required: true

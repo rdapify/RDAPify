@@ -4,9 +4,10 @@ Thank you for your interest in contributing to RDAPify! We welcome contributions
 
 This guide outlines our contribution process, standards, and expectations to help you make valuable contributions efficiently.
 
-## 🌟 Ways to Contribute 
+## 🌟 Ways to Contribute
 
 ### Code Contributions
+
 - Fix bugs reported in issues
 - Implement new features from the roadmap
 - Improve performance and resource usage
@@ -14,6 +15,7 @@ This guide outlines our contribution process, standards, and expectations to hel
 - Enhance security protections
 
 ### Documentation Contributions
+
 - Improve API documentation
 - Write tutorials and guides
 - Create examples for real-world use cases
@@ -21,6 +23,7 @@ This guide outlines our contribution process, standards, and expectations to hel
 - Update diagrams and visualizations
 
 ### Community Contributions
+
 - Answer questions in discussions
 - Review pull requests (for experienced contributors)
 - Report bugs with detailed reproduction steps
@@ -30,17 +33,20 @@ This guide outlines our contribution process, standards, and expectations to hel
 ## 🚀 Contribution Workflow
 
 ### 1. Find or Create an Issue
+
 - Check existing [issues](https://github.com/rdapify/rdapify/issues) for your topic
 - For bugs: include detailed reproduction steps, environment info, and expected vs. actual behavior
 - For features: explain the use case and why it's valuable
 - Label appropriately (`bug`, `feature`, `documentation`, etc.)
 
 ### 2. Get Feedback
+
 - Wait for maintainer feedback before investing significant effort
 - For major changes: create a [Discussion](https://github.com/rdapify/rdapify/discussions) first
 - Follow the [RFC process](docs/governance/rfc-process.md) for architectural changes
 
 ### 3. Fork and Develop
+
 ```bash
 # Fork the repository
 # Clone your fork
@@ -57,6 +63,7 @@ npm install
 ```
 
 ### 4. Test Thoroughly
+
 ```bash
 # Run all tests
 npm test
@@ -75,6 +82,7 @@ npm run typecheck
 ```
 
 ### 5. Submit Pull Request
+
 - Target the `main` branch
 - Include a clear description linking to related issues
 - Update documentation if needed
@@ -84,6 +92,7 @@ npm run typecheck
 ## 📝 Code Standards
 
 ### TypeScript Guidelines
+
 - Use TypeScript strictly (`strict: true` in tsconfig)
 - Favor functional programming over classes where appropriate
 - Avoid `any` type (use `unknown` + validation instead)
@@ -91,11 +100,12 @@ npm run typecheck
 - Prefer `const enum` over regular enums for performance
 
 ### Error Handling
+
 ```typescript
 // ✅ GOOD: Standardized error handling
 throw new RDAPError('RDAP_TIMEOUT', 'Request timed out', {
   query: domain,
-  timeout: options.timeout
+  timeout: options.timeout,
 });
 
 // ❌ AVOID: Generic errors
@@ -103,6 +113,7 @@ throw new Error('Timeout');
 ```
 
 ### Performance Considerations
+
 - Avoid blocking operations (use async/await)
 - Minimize memory allocations in hot paths
 - Use streams for large data processing
@@ -110,7 +121,9 @@ throw new Error('Timeout');
 - Profile performance before and after changes
 
 ### Security Requirements
+
 All code changes must:
+
 - Validate all inputs from external sources
 - Prevent SSRF vulnerabilities (use our Fetcher class)
 - Sanitize data before display
@@ -129,11 +142,13 @@ const url = `https://example.com?domain=${domain}`; // Vulnerable to injection
 ## 🧪 Testing Requirements
 
 ### Test Coverage
+
 - New features must have ≥95% test coverage
 - Bug fixes must include regression tests
 - Critical paths must have 100% coverage
 
 ### Test Types
+
 ```bash
 # Unit tests (Jest)
 npm run test:unit
@@ -152,7 +167,9 @@ npm run test:e2e
 ```
 
 ### Test Vectors
+
 For RDAP-specific tests, use our standardized test vectors:
+
 - `test-vectors/domain-vectors.json`
 - `test-vectors/ip-vectors.json`
 - `test-vectors/error-vectors.json`
@@ -162,7 +179,7 @@ For RDAP-specific tests, use our standardized test vectors:
 import { testVectors } from '../../test-vectors/domain-vectors.json';
 
 describe('Domain Lookup', () => {
-  testVectors.forEach(vector => {
+  testVectors.forEach((vector) => {
     it(`handles ${vector.description}`, async () => {
       const result = await client.domain(vector.input.query);
       expect(result).toMatchObject(vector.expectedOutput);
@@ -174,44 +191,48 @@ describe('Domain Lookup', () => {
 ## 📚 Documentation Standards
 
 ### API Documentation
+
 All public APIs must include:
+
 - Clear description of purpose
 - Parameter descriptions with types
 - Return type description
 - Example usage
 - Edge cases and error conditions
 
-```typescript
+````typescript
 /**
  * Looks up domain registration information using RDAP protocol
- * 
+ *
  * @param query - Domain name to look up (e.g., 'example.com')
  * @param options - Optional configuration parameters
  * @returns Promise resolving to normalized domain information
  * @throws RDAPError if lookup fails
- * 
+ *
  * @example
  * ```typescript
  * const result = await client.domain('example.com');
  * console.log(result.registrar.name);
  * ```
- * 
+ *
  * @see {@link https://rdapify.com/docs/core-concepts/normalization|Normalization Guide}
  */
 async domain(query: string, options?: DomainOptions): Promise<DomainResponse> {
   // implementation
 }
-```
+````
 
 ### Mermaid Diagrams
+
 For architecture and flow documentation, use Mermaid diagrams:
+
 ```mermaid
 sequenceDiagram
     participant Client
     participant RDAPClient
     participant Cache
     participant RDAPServer
-    
+
     Client->>RDAPClient: domain('example.com')
     RDAPClient->>Cache: check('example.com')
     Cache-->>RDAPClient: cache miss
@@ -224,19 +245,24 @@ sequenceDiagram
 ## 🔒 Security Contribution Guidelines
 
 ### Vulnerability Disclosure
+
 Security issues should be reported privately:
+
 1. Email security@rdapify.com
 2. Include detailed reproduction steps
 3. Do not disclose publicly until fix is released
 4. Allow 90 days for coordinated disclosure
 
 For non-sensitive security improvements:
+
 - Open a regular issue with `security` label
 - Include threat model and mitigation details
 - Reference relevant standards (OWASP, CWE, etc.)
 
 ### Security Testing
+
 When contributing security-sensitive code:
+
 - Include negative tests (attempt to bypass protections)
 - Test with security scanning tools (Bandit, Semgrep)
 - Document threat modeling in PR description
@@ -245,6 +271,7 @@ When contributing security-sensitive code:
 ## 📦 Commit Message Convention
 
 We use [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 <type>[optional scope]: <description>
 
@@ -254,6 +281,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 ### Types
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -265,6 +293,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 - `security`: Security fix or improvement
 
 ### Examples
+
 ```
 feat(core): add WHOIS fallback option for failed RDAP queries
 
@@ -293,24 +322,29 @@ used for performance measurements. Added guidance for reproducing results.
 ## 🤝 Code Review Process
 
 ### Review Timeline
+
 - Bug fixes: 24-48 hours
 - Small features: 48-72 hours
 - Major changes: 1-2 weeks (with RFC process)
 
 ### Review Guidelines
+
 **For contributors:**
+
 - Keep PRs focused (single concern per PR)
 - Respond to feedback promptly
 - Update documentation with code changes
 - Don't force push after review has started
 
 **For maintainers:**
+
 - Provide constructive feedback
 - Explain reasoning behind suggestions
 - Approve PRs that meet standards
 - Escalate architectural decisions when needed
 
 ### Merge Requirements
+
 - ✅ All CI checks pass
 - ✅ Minimum 1 maintainer approval
 - ✅ Documentation updated if needed
@@ -321,13 +355,16 @@ used for performance measurements. Added guidance for reproducing results.
 ## 🌐 Community Guidelines
 
 ### Communication Channels
+
 - **GitHub Issues/PRs**: Technical discussions and code reviews
 - **GitHub Discussions**: General questions and ideas
 - **Matrix/Element**: Real-time chat for quick questions
 - **Office Hours**: Weekly live sessions (Thursdays 2PM UTC)
 
 ### Code of Conduct
+
 All contributors must follow our [Code of Conduct](CODE_OF_CONDUCT.md):
+
 - Be respectful and inclusive
 - Focus on technical merits, not people
 - Assume good faith
@@ -335,6 +372,7 @@ All contributors must follow our [Code of Conduct](CODE_OF_CONDUCT.md):
 - Report unacceptable behavior to maintainers
 
 ### Decision Making
+
 - Small changes: Maintainer approval
 - Medium changes: Discussion + maintainer consensus
 - Large changes: RFC process + maintainer vote
@@ -343,6 +381,7 @@ All contributors must follow our [Code of Conduct](CODE_OF_CONDUCT.md):
 ## 🎯 Getting Help
 
 Stuck while contributing? Get help through:
+
 1. **GitHub Discussions**: Tag with `help-wanted`
 2. **Office Hours**: Join weekly live sessions
 3. **Good First Issues**: Start with beginner-friendly tasks
@@ -351,6 +390,7 @@ Stuck while contributing? Get help through:
 ## 🙏 Recognition
 
 Contributions are recognized through:
+
 - GitHub contributor graph
 - Release notes thank-yous
 - Project maintainer status for consistent contributors
@@ -396,5 +436,6 @@ By contributing to RDAPify, you agree that your contributions will be licensed u
 
 **Thank you for contributing to RDAPify!** Together, we're building a better, more secure internet infrastructure tool for everyone.
 
-Last updated: December 5, 2025  
-Questions? Contact maintainers@rdapify.com
+Last updated: January 22, 2025  
+Questions? Contact maintainers@rdapify.com  
+Website: https://rdapify.com
