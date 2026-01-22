@@ -13,6 +13,9 @@ build/
 out/
 *.tsbuildinfo
 
+# npm package artifacts
+*.tgz
+
 # Testing
 coverage/
 .nyc_output/
