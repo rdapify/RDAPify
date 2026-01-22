@@ -77,7 +77,7 @@ export class PIIRedactor {
         return field;
       }
 
-      const [fieldName, params, type, value] = field;
+      const [fieldName, params, type] = field;
 
       // Check if this field should be redacted
       if (this.shouldRedactField(fieldName)) {

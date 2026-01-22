@@ -3,8 +3,8 @@
  * @module fetcher/SSRFProtection
  */
 
-import type { SSRFProtectionOptions } from '../types/options';
 import { SSRFProtectionError } from '../types/errors';
+import type { SSRFProtectionOptions } from '../types/options';
 import { isPrivateIP, isLocalhost, isLinkLocal, validateIP } from '../utils/validators';
 
 /**

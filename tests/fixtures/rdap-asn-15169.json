@@ -1,0 +1,34 @@
+{
+  "objectClassName": "autnum",
+  "handle": "AS15169",
+  "startAutnum": 15169,
+  "endAutnum": 15169,
+  "name": "GOOGLE",
+  "type": "DIRECT ALLOCATION",
+  "country": "US",
+  "status": ["active"],
+  "entities": [
+    {
+      "objectClassName": "entity",
+      "handle": "GOGL",
+      "roles": ["registrant"],
+      "vcardArray": [
+        "vcard",
+        [
+          ["version", {}, "text", "4.0"],
+          ["fn", {}, "text", "Google LLC"]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "2000-03-30T00:00:00Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2023-06-01T10:30:00Z"
+    }
+  ]
+}

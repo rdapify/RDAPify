@@ -3,7 +3,12 @@
  * @module types/options
  */
 
-import type { CacheStrategy, BackoffStrategy, LogLevel } from './index';
+import type { CacheStrategy, LogLevel } from './index';
+
+/**
+ * Retry backoff strategies
+ */
+export type BackoffStrategy = 'linear' | 'exponential' | 'fixed';
 
 /**
  * Retry configuration options

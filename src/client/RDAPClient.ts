@@ -3,16 +3,21 @@
  * @module client/RDAPClient
  */
 
+import { CacheManager } from '../cache/CacheManager';
+import { BootstrapDiscovery } from '../fetcher/BootstrapDiscovery';
+import { Fetcher } from '../fetcher/Fetcher';
+import { SSRFProtection } from '../fetcher/SSRFProtection';
+import { Normalizer } from '../normalizer/Normalizer';
+import { PIIRedactor } from '../normalizer/PIIRedactor';
+import type { DomainResponse, IPResponse, ASNResponse } from '../types';
+import { ValidationError } from '../types/errors';
+import { DEFAULT_OPTIONS } from '../types/options';
 import type {
   RDAPClientOptions,
   RetryOptions,
   CacheOptions,
-  SSRFProtectionOptions,
-  PrivacyOptions,
 } from '../types/options';
-import type { DomainResponse, IPResponse, ASNResponse } from '../types';
-import { DEFAULT_OPTIONS } from '../types/options';
-import { ValidationError } from '../types/errors';
+import { deepMerge, generateCacheKey, calculateBackoff, sleep } from '../utils/helpers';
 import {
   validateDomain,
   validateIP,
@@ -21,13 +26,6 @@ import {
   normalizeIP,
   normalizeASN,
 } from '../utils/validators';
-import { deepMerge, generateCacheKey, calculateBackoff, sleep } from '../utils/helpers';
-import { CacheManager } from '../cache/CacheManager';
-import { Fetcher } from '../fetcher/Fetcher';
-import { SSRFProtection } from '../fetcher/SSRFProtection';
-import { BootstrapDiscovery } from '../fetcher/BootstrapDiscovery';
-import { Normalizer } from '../normalizer/Normalizer';
-import { PIIRedactor } from '../normalizer/PIIRedactor';
 
 /**
  * Main RDAP client for querying domain, IP, and ASN information
@@ -125,7 +123,7 @@ export class RDAPClient {
     const cacheKey = generateCacheKey('domain', normalized);
     const cached = await this.cache.get(cacheKey);
     if (cached && cached.objectClass === 'domain') {
-      return this.piiRedactor.redact(cached as DomainResponse);
+      return this.piiRedactor.redact(cached);
     }
 
     // Discover RDAP server
@@ -175,7 +173,7 @@ export class RDAPClient {
     const cacheKey = generateCacheKey('ip', normalized);
     const cached = await this.cache.get(cacheKey);
     if (cached && cached.objectClass === 'ip network') {
-      return this.piiRedactor.redact(cached as IPResponse);
+      return this.piiRedactor.redact(cached);
     }
 
     // Discover RDAP server
@@ -227,7 +225,7 @@ export class RDAPClient {
     const cacheKey = generateCacheKey('asn', normalized);
     const cached = await this.cache.get(cacheKey);
     if (cached && cached.objectClass === 'autnum') {
-      return this.piiRedactor.redact(cached as ASNResponse);
+      return this.piiRedactor.redact(cached);
     }
 
     // Discover RDAP server

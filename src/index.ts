@@ -90,7 +90,7 @@ export const VERSION = '0.1.0-alpha.1';
  *
  * @example
  * ```typescript
- * import { RDAPClient } from 'rdapify';
+ * import RDAPClient from 'rdapify';
  *
  * const client = new RDAPClient({
  *   cache: true,
@@ -100,4 +100,5 @@ export const VERSION = '0.1.0-alpha.1';
  * const result = await client.domain('example.com');
  * ```
  */
-export default RDAPClient;
+import { RDAPClient as RDAPClientClass } from './client/RDAPClient';
+export default RDAPClientClass;

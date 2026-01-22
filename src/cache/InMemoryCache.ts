@@ -4,6 +4,7 @@
  */
 
 import type { RDAPResponse } from '../types';
+
 import type { ICache } from './CacheManager';
 
 /**
@@ -143,7 +144,9 @@ export class InMemoryCache implements ICache {
 
     // First entry is least recently used
     const lruKey = this.accessOrder[0];
-    await this.delete(lruKey);
+    if (lruKey) {
+      await this.delete(lruKey);
+    }
   }
 
   /**

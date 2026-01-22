@@ -44,7 +44,11 @@ export function sleep(ms: number): Promise<void> {
  */
 export function extractTLD(domain: string): string {
   const parts = domain.split('.');
-  return parts[parts.length - 1];
+  const tld = parts[parts.length - 1];
+  if (!tld) {
+    throw new Error('Invalid domain: no TLD found');
+  }
+  return tld;
 }
 
 /**
@@ -66,7 +70,7 @@ export function deepMerge<T extends Record<string, any>>(target: T, source: Part
       const targetValue = result[key];
 
       if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
-        result[key] = deepMerge(targetValue, sourceValue);
+        result[key] = deepMerge(targetValue as Record<string, any>, sourceValue as Record<string, any>) as any;
       } else {
         result[key] = sourceValue as any;
       }
@@ -176,7 +180,7 @@ export function truncate(str: string, maxLength: number): string {
  */
 export function isNode(): boolean {
   return (
-    typeof process !== 'undefined' && process.versions != null && process.versions.node != null
+    process?.versions?.node != null
   );
 }
 
@@ -184,21 +188,23 @@ export function isNode(): boolean {
  * Checks if code is running in browser environment
  */
 export function isBrowser(): boolean {
-  return typeof window !== 'undefined' && typeof window.document !== 'undefined';
+  return typeof globalThis !== 'undefined' && 
+         'window' in globalThis && 
+         typeof (globalThis as any).window !== 'undefined';
 }
 
 /**
  * Checks if code is running in Deno environment
  */
 export function isDeno(): boolean {
-  return typeof Deno !== 'undefined';
+  return typeof globalThis !== 'undefined' && 'Deno' in globalThis;
 }
 
 /**
  * Checks if code is running in Bun environment
  */
 export function isBun(): boolean {
-  return typeof Bun !== 'undefined';
+  return typeof globalThis !== 'undefined' && 'Bun' in globalThis;
 }
 
 /**
