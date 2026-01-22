@@ -1,0 +1,102 @@
+{
+  "name": "rdapify",
+  "version": "0.1.0-alpha.1",
+  "description": "Unified, secure, high-performance RDAP client for enterprise applications with built-in privacy controls",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "npm run clean && npm run build:types && npm run build:cjs && npm run build:esm",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:cjs": "tsc --module commonjs --outDir dist",
+    "build:esm": "tsc --module esnext --outDir dist",
+    "clean": "rimraf dist",
+    "test": "jest --coverage",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:security": "jest --testPathPattern=security",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,md}\"",
+    "benchmark": "node benchmarks/scripts/domain_lookup.js",
+    "benchmark:all": "npm run benchmark && node benchmarks/scripts/batch_processing.js && node benchmarks/scripts/cache_performance.js",
+    "docs:dev": "cd website && npm run start",
+    "docs:build": "cd website && npm run build",
+    "prepare": "husky install",
+    "prepublishOnly": "npm run test && npm run build",
+    "audit": "npm audit --audit-level=moderate",
+    "audit:fix": "npm audit fix"
+  },
+  "keywords": [
+    "rdap",
+    "whois",
+    "domain",
+    "dns",
+    "registry",
+    "ip",
+    "asn",
+    "registration-data",
+    "privacy",
+    "gdpr",
+    "ccpa",
+    "security",
+    "ssrf-protection",
+    "enterprise",
+    "typescript"
+  ],
+  "author": {
+    "name": "RDAPify Team",
+    "email": "hello@rdapify.com",
+    "url": "https://rdapify.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdapify/rdapify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rdapify/rdapify/issues"
+  },
+  "homepage": "https://rdapify.com",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/jest": "^29.5.11",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {},
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/rdapify"
+  }
+}

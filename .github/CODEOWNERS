@@ -1,0 +1,34 @@
+# Code Owners for RDAPify
+# These owners will be automatically requested for review when someone opens a pull request
+
+# Default owners for everything in the repo
+* @rdapify/maintainers
+
+# Core source code
+/src/ @rdapify/core-team
+
+# Security-related files
+/security/ @rdapify/security-team
+SECURITY.md @rdapify/security-team
+/docs/security/ @rdapify/security-team
+
+# Documentation
+/docs/ @rdapify/docs-team
+*.md @rdapify/docs-team
+
+# CI/CD and GitHub workflows
+/.github/ @rdapify/devops-team
+
+# Dependencies and package management
+package.json @rdapify/core-team
+package-lock.json @rdapify/core-team
+
+# Test vectors and specifications
+/test_vectors/ @rdapify/qa-team
+/specifications/ @rdapify/qa-team
+
+# Examples
+/examples/ @rdapify/docs-team
+
+# Benchmarks
+/benchmarks/ @rdapify/performance-team

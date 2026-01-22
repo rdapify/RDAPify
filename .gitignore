@@ -104,7 +104,9 @@ wrangler.toml.local
 test-results/
 playwright-report/
 
+# Project-specific
 .x.txt
-RDApify_Document_Structure.md
-.kiro
+
+# Kiro AI assistant
+.kiro/
 

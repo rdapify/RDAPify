@@ -1,0 +1,87 @@
+# Source files (only ship compiled code)
+src/
+tsconfig.json
+.eslintrc.js
+.prettierrc
+jest.config.js
+
+# Tests
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+test/
+tests/
+__tests__/
+coverage/
+.nyc_output/
+
+# Documentation source (ship only README)
+docs/
+website/
+diagrams/
+*.mmd
+
+# Examples and benchmarks
+examples/
+benchmarks/
+
+# Development files
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.tsbuildinfo
+
+# Test vectors (too large for npm)
+test_vectors/
+
+# Security reports
+security-reports/
+audit-reports/
+
+# Specifications (reference only)
+specifications/
+
+# Templates (for users to download separately)
+templates/
+
+# Kiro AI assistant
+.kiro/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Lock files (let users manage their own)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
