@@ -41,8 +41,9 @@ export class CacheManager implements ICache {
         break;
 
       case 'redis':
-        // TODO: Implement Redis cache
-        throw new CacheError('Redis cache not yet implemented');
+        throw new CacheError(
+          'Redis cache not yet implemented in v0.1.0-alpha.1. Use "memory" cache type or provide a custom cache implementation. Redis support is planned for v0.2.0.'
+        );
 
       case 'custom':
         if (!options.customCache) {
