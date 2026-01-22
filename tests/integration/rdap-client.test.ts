@@ -11,23 +11,25 @@ import * as rdapDomain from '../fixtures/rdap-domain-example.json';
 import * as rdapIp from '../fixtures/rdap-ip-8888.json';
 import * as rdapAsn from '../fixtures/rdap-asn-15169.json';
 
-// Mock global fetch
-global.fetch = jest.fn();
-
 describe('RDAPClient Integration Tests (Mocked)', () => {
   let client: RDAPClient;
-  const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+  let mockFetch: jest.MockedFunction<typeof fetch>;
 
   beforeEach(() => {
+    // Mock global fetch for each test
+    mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+    global.fetch = mockFetch;
+
     client = new RDAPClient({ 
       cache: false, // Disable cache for predictable tests
       privacy: { redactPII: false } // Disable PII redaction for testing
     });
-    mockFetch.mockClear();
   });
 
-  afterAll(() => {
+  afterEach(() => {
+    // Clean up mocks after each test
     jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('domain queries', () => {

@@ -147,24 +147,39 @@ export function formatDuration(ms: number): string {
 
 /**
  * Creates a timeout promise that rejects after specified time
+ * Returns both the promise and a cleanup function to cancel the timer
  */
-export function createTimeout(ms: number, message?: string): Promise<never> {
-  return new Promise((_, reject) => {
-    setTimeout(() => {
+export function createTimeout(
+  ms: number,
+  message?: string
+): { promise: Promise<never>; cancel: () => void } {
+  let timeoutId: NodeJS.Timeout;
+  const promise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
       reject(new Error(message || `Operation timed out after ${ms}ms`));
     }, ms);
   });
+  return {
+    promise,
+    cancel: () => clearTimeout(timeoutId),
+  };
 }
 
 /**
  * Races a promise against a timeout
+ * Properly cleans up the timeout when the promise resolves
  */
 export async function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
   timeoutMessage?: string
 ): Promise<T> {
-  return Promise.race([promise, createTimeout(timeoutMs, timeoutMessage)]);
+  const timeout = createTimeout(timeoutMs, timeoutMessage);
+  try {
+    return await Promise.race([promise, timeout.promise]);
+  } finally {
+    timeout.cancel();
+  }
 }
 
 /**
