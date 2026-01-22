@@ -36,7 +36,7 @@ export class SSRFProtection {
 
     try {
       parsedUrl = new URL(url);
-    } catch (error) {
+    } catch {
       throw new SSRFProtectionError(`Invalid URL: ${url}`);
     }
 
@@ -92,7 +92,7 @@ export class SSRFProtection {
     // Validate IP format
     try {
       validateIP(ip);
-    } catch (error) {
+    } catch {
       throw new SSRFProtectionError(`Invalid IP address: ${ip}`, { url, ip });
     }
 
