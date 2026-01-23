@@ -117,3 +117,4 @@ playwright-report/
 .kiro/
 
 .npmrc
+full
