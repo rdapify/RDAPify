@@ -50,10 +50,13 @@ describe('calculateBackoff', () => {
 describe('sleep', () => {
   it('should sleep for specified time', async () => {
     jest.useFakeTimers();
-    const sleepPromise = sleep(100);
-    jest.advanceTimersByTime(100);
-    await sleepPromise;
-    jest.useRealTimers();
+    try {
+      const sleepPromise = sleep(100);
+      jest.advanceTimersByTime(100);
+      await sleepPromise;
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 
