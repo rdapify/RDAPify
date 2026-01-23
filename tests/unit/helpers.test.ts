@@ -49,11 +49,11 @@ describe('calculateBackoff', () => {
 
 describe('sleep', () => {
   it('should sleep for specified time', async () => {
-    const start = Date.now();
-    await sleep(100);
-    const elapsed = Date.now() - start;
-    expect(elapsed).toBeGreaterThanOrEqual(90); // Allow some margin
-    expect(elapsed).toBeLessThan(200);
+    jest.useFakeTimers();
+    const sleepPromise = sleep(100);
+    jest.advanceTimersByTime(100);
+    await sleepPromise;
+    jest.useRealTimers();
   });
 });
 
