@@ -1,0 +1,17 @@
+{
+  "name": "rdapify-express-example",
+  "version": "1.0.0",
+  "description": "Express.js integration example for RDAPify",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "rdapify": "^0.1.0-alpha.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
