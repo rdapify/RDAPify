@@ -1,0 +1,375 @@
+{
+  "dashboard": {
+    "title": "RDAPify Performance Dashboard",
+    "tags": ["rdapify", "rdap", "api", "performance"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Request Rate (req/s)",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(rdapify_requests_total[5m])",
+            "legendFormat": "{{method}} {{endpoint}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "reqps",
+            "label": "Requests/sec"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Response Time (95th percentile)",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rdapify_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 - {{method}} {{endpoint}}",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(rdapify_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 - {{method}} {{endpoint}}",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Duration"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Cache Hit Rate",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(rdapify_cache_hits_total[5m]) / (rate(rdapify_cache_hits_total[5m]) + rate(rdapify_cache_misses_total[5m])) * 100",
+            "legendFormat": "Hit Rate %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Hit Rate",
+            "max": 100,
+            "min": 0
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Cache Size",
+        "type": "graph",
+        "gridPos": {
+          "x": 8,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rdapify_cache_size",
+            "legendFormat": "Cache Entries",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Entries"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Error Rate",
+        "type": "graph",
+        "gridPos": {
+          "x": 16,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(rdapify_errors_total[5m])",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "reqps",
+            "label": "Errors/sec"
+          }
+        ],
+        "alert": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.1],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "60s",
+          "handler": 1,
+          "name": "High Error Rate",
+          "noDataState": "no_data",
+          "notifications": []
+        }
+      },
+      {
+        "id": 6,
+        "title": "Query Types Distribution",
+        "type": "piechart",
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum by (query_type) (rate(rdapify_queries_total[5m]))",
+            "legendFormat": "{{query_type}}",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Active Connections",
+        "type": "graph",
+        "gridPos": {
+          "x": 8,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rdapify_active_connections",
+            "legendFormat": "Active Connections",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Connections"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Memory Usage",
+        "type": "graph",
+        "gridPos": {
+          "x": 16,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes{job='rdapify-api'}",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "bytes",
+            "label": "Memory"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "CPU Usage",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 24,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(process_cpu_seconds_total{job='rdapify-api'}[5m]) * 100",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "CPU %"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Bootstrap Cache Stats",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 24,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rdapify_bootstrap_cache_size",
+            "legendFormat": "Bootstrap Cache Size",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(rdapify_bootstrap_queries_total[5m])",
+            "legendFormat": "Bootstrap Queries/s",
+            "refId": "B"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "SSRF Protection Blocks",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 32,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(rdapify_ssrf_blocks_total[1h]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "PII Redactions",
+        "type": "stat",
+        "gridPos": {
+          "x": 6,
+          "y": 32,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(rdapify_pii_redactions_total[1h]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 13,
+        "title": "Total Requests (24h)",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 32,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(rdapify_requests_total[24h]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 14,
+        "title": "Average Response Time",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 32,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "avg(rate(rdapify_request_duration_seconds_sum[5m]) / rate(rdapify_request_duration_seconds_count[5m]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "unit": "s"
+        }
+      }
+    ]
+  }
+}

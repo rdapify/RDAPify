@@ -1,0 +1,21 @@
+{
+  "name": "rdapify-lambda",
+  "version": "0.1.0-alpha.4",
+  "description": "RDAPify AWS Lambda deployment",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "sam deploy --guided",
+    "build": "sam build",
+    "local": "sam local start-api",
+    "test": "sam local invoke RDAPifyFunction -e test-event.json"
+  },
+  "dependencies": {
+    "rdapify": "^0.1.0-alpha.4"
+  },
+  "devDependencies": {
+    "aws-sam-cli": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
