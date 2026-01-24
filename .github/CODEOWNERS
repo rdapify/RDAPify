@@ -1,34 +1,56 @@
 # Code Owners for RDAPify
-# These owners will be automatically requested for review when someone opens a pull request
+# 
+# These owners will be automatically requested for review when someone 
+# opens a pull request that modifies code in their area.
+#
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default owners for everything in the repo
-* @rdapify/maintainers
+* @rdapify/core
 
 # Core source code
-/src/ @rdapify/core-team
+/src/ @rdapify/core
+/src/client/ @rdapify/core
+/src/fetcher/ @rdapify/core
+/src/normalizer/ @rdapify/core
+/src/cache/ @rdapify/core
+/src/types/ @rdapify/core
+/src/utils/ @rdapify/core
 
-# Security-related files
-/security/ @rdapify/security-team
-SECURITY.md @rdapify/security-team
-/docs/security/ @rdapify/security-team
+# Tests
+/tests/ @rdapify/core
+/test_vectors/ @rdapify/core
 
 # Documentation
-/docs/ @rdapify/docs-team
-*.md @rdapify/docs-team
-
-# CI/CD and GitHub workflows
-/.github/ @rdapify/devops-team
-
-# Dependencies and package management
-package.json @rdapify/core-team
-package-lock.json @rdapify/core-team
-
-# Test vectors and specifications
-/test_vectors/ @rdapify/qa-team
-/specifications/ @rdapify/qa-team
+/docs/ @rdapify/docs @rdapify/core
+/README.md @rdapify/docs @rdapify/core
+/README_AR.md @rdapify/docs @rdapify/core
+/CONTRIBUTING.md @rdapify/docs @rdapify/core
 
 # Examples
-/examples/ @rdapify/docs-team
+/examples/ @rdapify/docs @rdapify/core
 
-# Benchmarks
-/benchmarks/ @rdapify/performance-team
+# Security-sensitive files
+/SECURITY.md @rdapify/security @rdapify/core
+/src/fetcher/SSRFProtection.ts @rdapify/security @rdapify/core
+/src/normalizer/PIIRedactor.ts @rdapify/security @rdapify/core
+/.github/workflows/ @rdapify/core
+
+# Configuration files
+/package.json @rdapify/core
+/tsconfig.json @rdapify/core
+/jest.config.js @rdapify/core
+/.eslintrc.js @rdapify/core
+
+# GitHub configuration
+/.github/ @rdapify/core
+/.github/CODEOWNERS @rdapify/core
+
+# Governance
+/GOVERNANCE.md @rdapify/core
+/MAINTAINERS.md @rdapify/core
+/.github/GOVERNANCE_DETAILED.md @rdapify/core
+
+# License and legal
+/LICENSE @rdapify/core
+/PRIVACY.md @rdapify/core

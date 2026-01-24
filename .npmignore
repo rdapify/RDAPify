@@ -16,11 +16,32 @@ __tests__/
 coverage/
 .nyc_output/
 
-# Documentation source (ship only README)
-docs/
+# Documentation source (ship only README and essential docs)
+docs/project-management/
 website/
 diagrams/
 *.mmd
+BUILD_*.md
+CURRENT_*.md
+DEPLOYMENT_*.md
+DNS_*.md
+DOMAIN_*.md
+EMAIL_*.md
+FINAL_*.md
+GITHUB_*.md
+IMPLEMENTATION_*.md
+IMPROVEMENTS_*.md
+NEXT_*.md
+PROJECT_*.md
+START_*.md
+TESTING_*.md
+RDApify_Structure.md
+INSTALLATION_GUIDE.md
+QUICK_START_GUIDE.md
+NODEJS_INSTALLATION_WINDOWS.md
+CONTACT.md
+.x.txt
+index.html
 
 # Examples and benchmarks
 examples/
