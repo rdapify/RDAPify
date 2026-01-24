@@ -1,0 +1,85 @@
+stateDiagram-v2
+    [*] --> Idle: Client Created
+    
+    Idle --> Validating: Query Request
+    
+    Validating --> ValidationError: Invalid Input
+    Validating --> Discovering: Valid Input
+    
+    Discovering --> BootstrapError: Registry Not Found
+    Discovering --> BootstrapError: Bootstrap Fetch Failed
+    Discovering --> SSRFCheck: Registry Found
+    
+    SSRFCheck --> SSRFError: Blocked URL (Private IP)
+    SSRFCheck --> SSRFError: Blocked URL (Localhost)
+    SSRFCheck --> SSRFError: Invalid Protocol
+    SSRFCheck --> Fetching: Safe URL
+    
+    Fetching --> NetworkError: Connection Failed
+    Fetching --> NetworkError: DNS Resolution Failed
+    Fetching --> TimeoutError: Request Timeout
+    Fetching --> HTTPError: 4xx Client Error
+    Fetching --> HTTPError: 5xx Server Error
+    Fetching --> Normalizing: 200 OK Response
+    
+    Normalizing --> NormalizationError: Invalid JSON
+    Normalizing --> NormalizationError: Missing Required Fields
+    Normalizing --> NormalizationError: Schema Validation Failed
+    Normalizing --> Redacting: Valid Response
+    
+    Redacting --> Caching: PII Removed
+    
+    Caching --> Success: Data Cached
+    Caching --> Success: Cache Disabled
+    
+    ValidationError --> Retry: Retry Enabled
+    NetworkError --> Retry: Retry Enabled
+    TimeoutError --> Retry: Retry Enabled
+    HTTPError --> Retry: 5xx Error + Retry Enabled
+    
+    Retry --> MaxRetriesReached: Max Attempts Exceeded
+    Retry --> Backoff: Retry Attempt < Max
+    
+    Backoff --> Fetching: After Delay
+    
+    MaxRetriesReached --> Failed: Give Up
+    BootstrapError --> Failed: No Retry
+    SSRFError --> Failed: No Retry
+    NormalizationError --> Failed: No Retry
+    HTTPError --> Failed: 4xx Error (No Retry)
+    
+    Success --> [*]: Return Response
+    Failed --> [*]: Throw Error
+    
+    note right of Retry
+        Exponential Backoff:
+        Attempt 1: 0ms
+        Attempt 2: 1000ms
+        Attempt 3: 2000ms
+        Max: 3 attempts
+    end note
+    
+    note right of SSRFCheck
+        Validates:
+        - HTTPS protocol only
+        - No private IPs (RFC 1918)
+        - No localhost (127.0.0.0/8)
+        - No link-local (169.254.0.0/16)
+        - Valid hostname format
+    end note
+    
+    note right of Validating
+        Checks:
+        - Domain: Valid format, TLD
+        - IP: Valid IPv4/IPv6
+        - ASN: Valid number/format
+    end note
+    
+    note right of Normalizing
+        Process:
+        1. Parse JSON
+        2. Validate schema
+        3. Extract fields
+        4. Transform data
+        5. Add metadata
+    end note
