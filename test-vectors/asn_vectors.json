@@ -1,0 +1,248 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for ASN (Autonomous System Number) queries",
+  "updated": "2024-01-24",
+  "valid": [
+    {
+      "id": "asn-001",
+      "description": "Google ASN",
+      "input": "15169",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS15169",
+        "startAutnum": 15169,
+        "endAutnum": 15169,
+        "name": "GOOGLE"
+      }
+    },
+    {
+      "id": "asn-002",
+      "description": "Cloudflare ASN",
+      "input": "13335",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS13335",
+        "startAutnum": 13335,
+        "endAutnum": 13335
+      }
+    },
+    {
+      "id": "asn-003",
+      "description": "Amazon ASN",
+      "input": "16509",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS16509",
+        "startAutnum": 16509,
+        "endAutnum": 16509,
+        "name": "AMAZON-02"
+      }
+    },
+    {
+      "id": "asn-004",
+      "description": "Facebook ASN",
+      "input": "32934",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS32934",
+        "startAutnum": 32934,
+        "endAutnum": 32934
+      }
+    },
+    {
+      "id": "asn-005",
+      "description": "Microsoft ASN",
+      "input": "8075",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS8075",
+        "startAutnum": 8075,
+        "endAutnum": 8075
+      }
+    },
+    {
+      "id": "asn-006",
+      "description": "ASN with AS prefix",
+      "input": "AS15169",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS15169",
+        "startAutnum": 15169,
+        "endAutnum": 15169
+      }
+    },
+    {
+      "id": "asn-007",
+      "description": "Small ASN number",
+      "input": "1",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS1",
+        "startAutnum": 1,
+        "endAutnum": 1
+      }
+    },
+    {
+      "id": "asn-008",
+      "description": "32-bit ASN",
+      "input": "4200000000",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS4200000000",
+        "startAutnum": 4200000000,
+        "endAutnum": 4200000000
+      }
+    },
+    {
+      "id": "asn-009",
+      "description": "ASN with leading zeros",
+      "input": "00015169",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS15169",
+        "startAutnum": 15169,
+        "endAutnum": 15169
+      }
+    },
+    {
+      "id": "asn-010",
+      "description": "Maximum 16-bit ASN",
+      "input": "65535",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS65535",
+        "startAutnum": 65535,
+        "endAutnum": 65535
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "id": "asn-err-001",
+      "description": "Empty string",
+      "input": "",
+      "error": "ValidationError",
+      "message": "ASN cannot be empty"
+    },
+    {
+      "id": "asn-err-002",
+      "description": "Negative ASN",
+      "input": "-1",
+      "error": "ValidationError",
+      "message": "ASN must be positive"
+    },
+    {
+      "id": "asn-err-003",
+      "description": "Zero ASN",
+      "input": "0",
+      "error": "ValidationError",
+      "message": "ASN must be greater than 0"
+    },
+    {
+      "id": "asn-err-004",
+      "description": "ASN exceeding 32-bit maximum",
+      "input": "4294967296",
+      "error": "ValidationError",
+      "message": "ASN exceeds maximum value"
+    },
+    {
+      "id": "asn-err-005",
+      "description": "ASN with letters",
+      "input": "AS15169ABC",
+      "error": "ValidationError",
+      "message": "Invalid ASN format"
+    },
+    {
+      "id": "asn-err-006",
+      "description": "ASN with spaces",
+      "input": "15 169",
+      "error": "ValidationError",
+      "message": "ASN contains whitespace"
+    },
+    {
+      "id": "asn-err-007",
+      "description": "ASN with decimal point",
+      "input": "15169.5",
+      "error": "ValidationError",
+      "message": "ASN must be an integer"
+    },
+    {
+      "id": "asn-err-008",
+      "description": "Null value",
+      "input": null,
+      "error": "ValidationError",
+      "message": "ASN must be a string or number"
+    },
+    {
+      "id": "asn-err-009",
+      "description": "ASN with special characters",
+      "input": "AS@15169",
+      "error": "ValidationError",
+      "message": "Invalid ASN format"
+    },
+    {
+      "id": "asn-err-010",
+      "description": "Multiple AS prefixes",
+      "input": "ASAS15169",
+      "error": "ValidationError",
+      "message": "Invalid ASN format"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "asn-edge-001",
+      "description": "Minimum valid ASN",
+      "input": "1",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS1",
+        "startAutnum": 1,
+        "endAutnum": 1
+      }
+    },
+    {
+      "id": "asn-edge-002",
+      "description": "Maximum 32-bit ASN",
+      "input": "4294967295",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS4294967295",
+        "startAutnum": 4294967295,
+        "endAutnum": 4294967295
+      }
+    },
+    {
+      "id": "asn-edge-003",
+      "description": "Private ASN (16-bit)",
+      "input": "64512",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS64512",
+        "startAutnum": 64512,
+        "endAutnum": 64512
+      }
+    },
+    {
+      "id": "asn-edge-004",
+      "description": "Private ASN (32-bit)",
+      "input": "4200000000",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS4200000000",
+        "startAutnum": 4200000000,
+        "endAutnum": 4200000000
+      }
+    },
+    {
+      "id": "asn-edge-005",
+      "description": "Reserved ASN",
+      "input": "23456",
+      "expected": {
+        "objectClass": "autnum",
+        "handle": "AS23456",
+        "startAutnum": 23456,
+        "endAutnum": 23456
+      }
+    }
+  ]
+}
