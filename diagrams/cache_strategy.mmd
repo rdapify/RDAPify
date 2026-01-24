@@ -1,0 +1,35 @@
+graph TB
+    Start([Query Request]) --> CheckCache{Cache<br/>Exists?}
+    
+    CheckCache -->|Yes| CheckTTL{TTL<br/>Valid?}
+    CheckCache -->|No| FetchData[Fetch from RDAP]
+    
+    CheckTTL -->|Yes| ReturnCached[Return Cached Data]
+    CheckTTL -->|No| Evict[Evict Expired Entry]
+    
+    Evict --> FetchData
+    FetchData --> Normalize[Normalize Response]
+    Normalize --> Redact[Redact PII]
+    Redact --> StoreCache[Store in Cache]
+    
+    StoreCache --> CheckSize{Cache<br/>Full?}
+    CheckSize -->|Yes| LRU[Evict LRU Entry]
+    CheckSize -->|No| AddEntry[Add Entry]
+    
+    LRU --> AddEntry
+    AddEntry --> ReturnData[Return Fresh Data]
+    ReturnCached --> End([Response])
+    ReturnData --> End
+
+    subgraph "Cache Configuration"
+        Config[Max Size: 1000 entries<br/>TTL: 1 hour<br/>Strategy: LRU]
+    end
+
+    style Start fill:#4CAF50
+    style End fill:#4CAF50
+    style CheckCache fill:#2196F3
+    style CheckTTL fill:#2196F3
+    style CheckSize fill:#2196F3
+    style ReturnCached fill:#8BC34A
+    style FetchData fill:#FF9800
+    style LRU fill:#F44336

@@ -1,0 +1,60 @@
+graph LR
+    subgraph "Input"
+        Raw[Raw RDAP JSON<br/>From Registry]
+    end
+
+    subgraph "Validation Stage"
+        Validate[Validate Schema<br/>Check Required Fields]
+        ValidateResult{Valid?}
+    end
+
+    subgraph "Extraction Stage"
+        ExtractHandle[Extract Handle]
+        ExtractStatus[Extract Status Array]
+        ExtractEvents[Extract Events]
+        ExtractEntities[Extract Entities]
+        ExtractLinks[Extract Links]
+    end
+
+    subgraph "Transformation Stage"
+        NormalizeStatus[Normalize Status Codes]
+        NormalizeEvents[Normalize Event Dates]
+        NormalizeEntities[Normalize Entity Roles]
+        NormalizeLinks[Normalize Link Relations]
+    end
+
+    subgraph "Enrichment Stage"
+        AddMetadata[Add Metadata<br/>Timestamp, Source]
+        CalculateAge[Calculate Data Age]
+        DetermineType[Determine Object Type]
+    end
+
+    subgraph "Output"
+        Normalized[Normalized Response<br/>Consistent Format]
+    end
+
+    Raw --> Validate
+    Validate --> ValidateResult
+    ValidateResult -->|Yes| ExtractHandle
+    ValidateResult -->|No| Error[Throw NormalizationError]
+    
+    ExtractHandle --> ExtractStatus
+    ExtractStatus --> ExtractEvents
+    ExtractEvents --> ExtractEntities
+    ExtractEntities --> ExtractLinks
+    
+    ExtractLinks --> NormalizeStatus
+    NormalizeStatus --> NormalizeEvents
+    NormalizeEvents --> NormalizeEntities
+    NormalizeEntities --> NormalizeLinks
+    
+    NormalizeLinks --> AddMetadata
+    AddMetadata --> CalculateAge
+    CalculateAge --> DetermineType
+    
+    DetermineType --> Normalized
+
+    style Raw fill:#2196F3
+    style Normalized fill:#4CAF50
+    style Error fill:#F44336
+    style ValidateResult fill:#FF9800
