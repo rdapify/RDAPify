@@ -14,8 +14,8 @@ import {
   normalizeDomain,
   normalizeIP,
   normalizeASN,
-} from '../../src/utils/validators';
-import { ValidationError } from '../../src/types/errors';
+} from '../../src/shared/utils/validators';
+import { ValidationError } from '../../src/shared/types/errors';
 
 describe('validateDomain', () => {
   it('should accept valid domains', () => {

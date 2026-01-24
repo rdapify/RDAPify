@@ -1,12 +1,13 @@
-# Project Structure
+# Project Structure - Clean Architecture
 
 ## Repository Organization
 
-This is a TypeScript library with comprehensive documentation. The project is in alpha release (v0.1.0-alpha.4) with core functionality implemented and tested.
+This is a TypeScript library with comprehensive documentation following **Clean Architecture** principles. The project is in alpha release (v0.1.0-alpha.4) with core functionality implemented and tested.
 
 ## Current Implementation Status
 
-**Code Structure:** Modular, well-tested TypeScript implementation
+**Architecture:** Clean Architecture (Hexagonal/Ports & Adapters)
+**Code Structure:** Modular, layered, well-tested TypeScript
 **Documentation:** Comprehensive docs with examples
 **Tests:** 146 tests passing (>90% coverage)
 **Build:** TypeScript compilation to CommonJS + ESM
@@ -24,25 +25,128 @@ This is a TypeScript library with comprehensive documentation. The project is in
 - `CHANGELOG.md` - Version history and changes
 - `LICENSE` - MIT License
 
-### Planning Documents
-- `RDApify_Document_Structure.md` - Comprehensive documentation structure plan (in Arabic)
+### Restructure Documentation
+- `RESTRUCTURE_PLAN.md` - Enterprise restructure plan
+- `RESTRUCTURE_COMPLETE.md` - Restructure completion summary
 
-## Actual Directory Structure
+## Source Code Structure - Clean Architecture
 
-### `/src` - Source Code (TypeScript)
-- `client/` - RDAPClient and QueryOrchestrator
-- `fetcher/` - HTTP fetching, Bootstrap discovery, SSRF protection
-- `normalizer/` - Data normalization and PII redaction
-- `cache/` - CacheManager and InMemoryCache
-- `types/` - TypeScript type definitions (split into enums, entities, responses)
-- `utils/` - Validators and helpers (modular structure)
-  - `validators/` - domain, ip, asn, network validators
-  - `helpers/` - async, string, object, cache, http, format, runtime utilities
+### `/src` - Source Code (Clean Architecture)
+
+```
+src/
+├── core/                      # 🎯 Core Business Logic (Framework-agnostic)
+│   ├── domain/               # Domain models & business rules
+│   │   ├── entities/         # Domain entities (Domain, IP, ASN)
+│   │   ├── value-objects/    # Value objects (Status, Event, Entity)
+│   │   └── errors/           # Domain-specific errors
+│   ├── use-cases/            # Application business logic
+│   │   ├── query-domain.ts
+│   │   ├── query-ip.ts
+│   │   ├── query-asn.ts
+│   │   └── batch-query.ts
+│   └── ports/                # Interfaces (Dependency Inversion)
+│       ├── cache.port.ts
+│       ├── fetcher.port.ts
+│       ├── normalizer.port.ts
+│       ├── bootstrap.port.ts
+│       └── pii-redactor.port.ts
+│
+├── infrastructure/            # 🔧 External Implementations
+│   ├── cache/                # Cache implementations
+│   │   ├── in-memory.cache.ts
+│   │   ├── cache.manager.ts
+│   │   └── redis.cache.ts (future)
+│   ├── http/                 # HTTP clients & fetchers
+│   │   ├── fetcher.ts
+│   │   ├── bootstrap-discovery.ts
+│   │   ├── normalizer.ts
+│   │   └── retry-handler.ts
+│   └── security/             # Security implementations
+│       ├── ssrf-protection.ts
+│       └── pii-redactor.ts
+│
+├── application/               # 🎭 Application Layer (Orchestration)
+│   ├── client/               # Main client interface
+│   │   └── rdap-client.ts
+│   ├── services/             # Application services
+│   │   └── query-orchestrator.ts
+│   └── dto/                  # Data Transfer Objects
+│
+├── shared/                    # 🔗 Shared Utilities (Cross-cutting)
+│   ├── types/                # TypeScript types & interfaces
+│   │   ├── options.types.ts
+│   │   ├── response.types.ts
+│   │   ├── enums.ts
+│   │   └── index.ts
+│   ├── utils/                # Utility functions
+│   │   ├── validators/       # Input validation
+│   │   ├── formatters/       # Data formatting
+│   │   └── helpers/          # General helpers
+│   ├── constants/            # Application constants
+│   │   ├── rdap.constants.ts
+│   │   └── http.constants.ts
+│   └── errors/               # Base error classes
+│       └── base.error.ts
+│
+└── index.ts                   # Public API exports
+```
+
+## Architecture Principles
+
+### Dependency Rule
+```
+Shared ← Core ← Application ← Infrastructure
+```
+
+- **Core** doesn't depend on Infrastructure
+- **Infrastructure** implements Core interfaces (Dependency Inversion)
+- **Application** orchestrates Core use cases
+- **Shared** is used by all layers
+
+### Layer Responsibilities
+
+#### Core Layer
+- Pure business logic
+- No external dependencies
+- Framework-agnostic
+- Defines interfaces (ports)
+
+#### Infrastructure Layer
+- External service implementations
+- HTTP clients, caches, security
+- Implements Core ports
+- Can depend on external libraries
+
+#### Application Layer
+- Orchestrates use cases
+- Coordinates between layers
+- Main entry point (RDAPClient)
+- Handles application flow
+
+#### Shared Layer
+- Cross-cutting concerns
+- Types, utilities, constants
+- Used by all other layers
+- No business logic
+
+## Other Directories
 
 ### `/tests` - Test Suite
-- `unit/` - Unit tests for individual modules
-- `integration/` - Integration tests with mocked RDAP responses
-- `fixtures/` - Test data (bootstrap and RDAP response fixtures)
+```
+tests/
+├── unit/                     # Unit tests (mirror src structure)
+│   ├── core/
+│   ├── infrastructure/
+│   ├── application/
+│   └── shared/
+├── integration/              # Integration tests
+│   └── rdap-client.test.ts
+├── fixtures/                 # Test data
+│   ├── bootstrap/
+│   └── rdap-responses/
+└── helpers/                  # Test utilities
+```
 
 ### `/docs` - Main Documentation
 - `getting-started/` - Installation, quick start, tutorials
@@ -50,12 +154,7 @@ This is a TypeScript library with comprehensive documentation. The project is in
 - `api-reference/` - Complete API documentation with TypeScript types
 - `guides/` - How-to guides for common tasks
 - `integrations/` - Cloud platforms, frameworks, databases
-- `playground/` - Interactive testing environment
-- `cli/` - Command-line interface documentation
 - `advanced/` - Plugin system, custom implementations
-- `recipes/` - Real-world use case examples
-- `analytics/` - Dashboard and reporting features
-- `enterprise/` - Enterprise adoption and SLA support
 - `security/` - Security whitepaper and threat models
 - `troubleshooting/` - Common issues and debugging
 
@@ -97,11 +196,57 @@ This is a TypeScript library with comprehensive documentation. The project is in
 - `product.md` - Product overview and value proposition
 - `tech.md` - Technical stack and build commands
 - `structure.md` - This file - project organization
+- `code-generation-rules.md` - Code generation quality rules
 
 ## Key Principles
 
-1. **Documentation-First**: Comprehensive docs before implementation
-2. **Security-Focused**: Security considerations in all documentation
-3. **Compliance-Ready**: GDPR/CCPA guidance throughout
-4. **Multi-Language**: Support for localization and translations
-5. **Enterprise-Grade**: Professional documentation standards
+1. **Clean Architecture**: Separation of concerns with clear dependencies
+2. **Dependency Inversion**: Core defines interfaces, Infrastructure implements
+3. **Single Responsibility**: Each layer has one clear purpose
+4. **Testability**: Easy to mock dependencies via ports
+5. **Scalability**: Easy to add new implementations
+6. **Enterprise-Grade**: Professional standards and patterns
+
+## Import Guidelines
+
+### From Core
+```typescript
+// ✅ GOOD - Core imports from Shared only
+import type { RDAPResponse } from '../../shared/types';
+import { ValidationError } from '../../shared/errors';
+
+// ❌ BAD - Core should NOT import from Infrastructure
+import { Fetcher } from '../../infrastructure/http';
+```
+
+### From Infrastructure
+```typescript
+// ✅ GOOD - Infrastructure implements Core ports
+import type { IFetcherPort } from '../../core/ports';
+import { NetworkError } from '../../shared/errors';
+```
+
+### From Application
+```typescript
+// ✅ GOOD - Application uses all layers
+import { RDAPClient } from './client';
+import type { ICachePort } from '../../core/ports';
+import { CacheManager } from '../../infrastructure/cache';
+```
+
+## Adding New Features
+
+### Add a new cache implementation
+1. Create interface in `core/ports/cache.port.ts` (if not exists)
+2. Implement in `infrastructure/cache/redis.cache.ts`
+3. Export from `infrastructure/cache/index.ts`
+
+### Add a new use case
+1. Create in `core/use-cases/batch-query.ts`
+2. Use existing ports
+3. Call from Application layer
+
+### Add a new validator
+1. Create in `shared/utils/validators/`
+2. Export from `shared/utils/validators/index.ts`
+3. Use anywhere in the codebase

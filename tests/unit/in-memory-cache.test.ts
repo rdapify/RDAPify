@@ -2,8 +2,8 @@
  * Unit tests for InMemoryCache
  */
 
-import { InMemoryCache } from '../../src/cache/InMemoryCache';
-import type { DomainResponse } from '../../src/types';
+import { InMemoryCache } from '../../src/infrastructure/cache/InMemoryCache';
+import type { DomainResponse } from '../../src/shared/types';
 
 // Mock domain response
 const createMockResponse = (domain: string): DomainResponse => ({
