@@ -153,3 +153,6 @@ wrangler.toml.local
 str.txt
 .x.txt
 *.local.*
+
+# Backup directories
+backup-*/

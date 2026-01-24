@@ -3,7 +3,7 @@
  * Uses fixtures to simulate real RDAP responses
  */
 
-import { RDAPClient } from '../../src/client/RDAPClient';
+import { RDAPClient } from '../../src/application/client/RDAPClient';
 import * as bootstrapDns from '../fixtures/bootstrap-dns.json';
 import * as bootstrapIpv4 from '../fixtures/bootstrap-ipv4.json';
 import * as bootstrapAsn from '../fixtures/bootstrap-asn.json';

@@ -2,8 +2,8 @@
  * Unit tests for SSRF Protection
  */
 
-import { SSRFProtection } from '../../src/fetcher/SSRFProtection';
-import { SSRFProtectionError } from '../../src/types/errors';
+import { SSRFProtection } from '../../src/infrastructure/security/SSRFProtection';
+import { SSRFProtectionError } from '../../src/shared/types/errors';
 
 describe('SSRFProtection', () => {
   let protection: SSRFProtection;

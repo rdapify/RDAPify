@@ -4,7 +4,7 @@
  */
 
 // Main client
-export { RDAPClient } from './client/RDAPClient';
+export { RDAPClient } from './application/client';
 
 // Types
 export type {
@@ -19,7 +19,7 @@ export type {
   RDAPRemark,
   RDAPNameserver,
   RawRDAPResponse,
-
+  
   // Enum types
   QueryType,
   ObjectClass,
@@ -29,7 +29,7 @@ export type {
   CacheStrategy,
   BackoffStrategy,
   LogLevel,
-} from './types';
+} from './shared/types';
 
 export type {
   // Option types
@@ -41,7 +41,7 @@ export type {
   TimeoutOptions,
   LoggingOptions,
   RateLimitOptions,
-} from './types/options';
+} from './shared/types/options';
 
 // Errors
 export {
@@ -55,14 +55,14 @@ export {
   ParseError,
   CacheError,
   RateLimitError,
-
+  
   // Type guards
   isRDAPifyError,
   isSSRFProtectionError,
   isNetworkError,
   isTimeoutError,
   isRateLimitError,
-} from './types/errors';
+} from './shared/errors';
 
 // Utilities (for advanced usage)
 export {
@@ -77,28 +77,16 @@ export {
   normalizeDomain,
   normalizeIP,
   normalizeASN,
-} from './utils/validators';
+} from './shared/utils/validators';
 
 // Cache interface (for custom implementations)
-export type { ICache } from './cache/CacheManager';
+export type { ICachePort } from './core/ports';
 
 // Version
 export const VERSION = '0.1.0-alpha.4';
 
 /**
- * Creates a new RDAP client with default options
- *
- * @example
- * ```typescript
- * import RDAPClient from 'rdapify';
- *
- * const client = new RDAPClient({
- *   cache: true,
- *   redactPII: true,
- * });
- *
- * const result = await client.domain('example.com');
- * ```
+ * Default export - RDAPClient class
  */
-import { RDAPClient as RDAPClientClass } from './client/RDAPClient';
+import { RDAPClient as RDAPClientClass } from './application/client';
 export default RDAPClientClass;

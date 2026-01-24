@@ -2,8 +2,8 @@
  * Tests for BootstrapDiscovery CIDR matching
  */
 
-import { BootstrapDiscovery } from '../../src/fetcher/BootstrapDiscovery';
-import { Fetcher } from '../../src/fetcher/Fetcher';
+import { BootstrapDiscovery } from '../../src/infrastructure/http/BootstrapDiscovery';
+import { Fetcher } from '../../src/infrastructure/http/Fetcher';
 
 describe('BootstrapDiscovery', () => {
   describe('CIDR matching (via IPv4 discovery)', () => {

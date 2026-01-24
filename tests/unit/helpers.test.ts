@@ -19,7 +19,7 @@ import {
   isDeno,
   isBun,
   getRuntimeName,
-} from '../../src/utils/helpers';
+} from '../../src/shared/utils/helpers';
 
 describe('calculateBackoff', () => {
   it('should calculate linear backoff', () => {

@@ -18,7 +18,7 @@ import {
   isNetworkError,
   isTimeoutError,
   isRateLimitError,
-} from '../../src/types/errors';
+} from '../../src/shared/types/errors';
 
 describe('RDAPifyError', () => {
   it('should create error with message and code', () => {
