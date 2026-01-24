@@ -29,4 +29,25 @@ RDAPify is a unified, secure, high-performance RDAP (Registration Data Access Pr
 
 ## Project Status
 
-Pre-launch phase with comprehensive documentation structure in place. The project follows RFC 7480 series standards and maintains strict protocol compliance.
+**Current Release:** v0.1.0-alpha.4 (Alpha)
+
+Core functionality is implemented and tested with 146 passing tests. The library is functional for production use with Node.js, though some advanced features are still in development.
+
+**What's Working:**
+- ✅ RDAP Client (domain, IP, ASN queries)
+- ✅ IANA Bootstrap discovery
+- ✅ Data normalization
+- ✅ PII redaction
+- ✅ In-memory caching (LRU with TTL)
+- ✅ SSRF protection
+- ✅ TypeScript support
+- ✅ Error handling with retry logic
+- ✅ 146 tests passing (>90% coverage)
+
+**In Development:**
+- ⏳ Redis cache adapter
+- ⏳ CLI tool
+- ⏳ Multi-runtime support (Bun, Deno, Cloudflare Workers)
+- ⏳ Advanced analytics and dashboards
+
+The project follows RFC 7480 series standards and maintains strict protocol compliance.
