@@ -1,6 +1,6 @@
 # RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
 
-> **⚠️ ALPHA RELEASE**: This is v0.1.0-alpha.1 — core functionality is working and tested, but some advanced features are still in development. See [What's Ready](#-whats-ready-in-v010-alpha1) below.
+> **⚠️ ALPHA RELEASE**: This is v0.1.0-alpha.4 — core functionality is working and tested, but some advanced features are still in development. See [What's Ready](#-whats-ready-in-v010-alpha4) below.
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
@@ -27,7 +27,7 @@ RDAPify intelligently addresses these challenges:
 - ✅ **Data Normalization**: Consistent response regardless of source registry
 - ✅ **SSRF Protection**: Prevent attacks on internal infrastructure
 - ✅ **Exceptional Performance**: Smart caching, parallel processing, memory optimization
-- ✅ **Broad Compatibility**: Works on Node.js, Bun, Deno, Cloudflare Workers
+- ✅ **Node.js Compatibility**: Verified working on Node.js (target: 16+; Bun, Deno, Cloudflare Workers: untested)
 - ✅ **GDPR-ready**: Built-in tools for automatically redacting personal data
 
 ## 📦 Quick Installation
@@ -41,12 +41,38 @@ yarn add rdapify
 
 # Using pnpm
 pnpm add rdapify
+```
 
-# Using Bun
+**Experimental (untested):**
+```bash
+# Using Bun (untested)
 bun add rdapify
 ```
 
 ## ⚡ Get Started in 30 Seconds
+
+### Basic Usage
+
+```typescript
+import { RDAPClient } from 'rdapify';
+
+// Create a client with default settings
+const client = new RDAPClient();
+
+// Query a domain
+const result = await client.domain('example.com');
+
+console.log({
+  domain: result.query,
+  registrar: result.registrar?.name,
+  status: result.status,
+  nameservers: result.nameservers,
+  created: result.events.find((e) => e.type === 'created')?.date,
+  expires: result.events.find((e) => e.type === 'expiration')?.date,
+});
+```
+
+### With Security & Performance Options
 
 ```typescript
 import { RDAPClient } from 'rdapify';
@@ -62,20 +88,13 @@ const client = new RDAPClient({
   },
 });
 
-// Query a domain
-const result = await client.domain('example.com');
-
-console.log({
-  domain: result.query,
-  registrar: result.registrar?.name,
-  status: result.status,
-  nameservers: result.nameservers,
-  created: result.events.find((e) => e.type === 'created')?.date,
-  expires: result.events.find((e) => e.type === 'expiration')?.date,
-});
+// Query domain, IP, or ASN
+const domain = await client.domain('example.com');
+const ip = await client.ip('8.8.8.8');
+const asn = await client.asn('AS15169');
 ```
 
-**Output:**
+**Example Output:**
 
 ```json
 {
@@ -100,21 +119,23 @@ console.log({
 
 ### ⚡ Exceptional Performance
 
-- **Advanced Caching**: Supports In-memory, Redis, and geo-distributed caching
-- **Parallel Processing**: Handle 1000+ domains in seconds
+- **Smart Caching**: In-memory LRU cache with configurable TTL (Redis support planned)
+- **Batch Processing**: Process multiple queries efficiently
 - **Registry Discovery**: Automatic IANA Bootstrap for finding the correct registry
-- **Offline Mode**: Work with cached data during network outages
-- **Priority Queues**: Ensure critical requests are processed first
+- **Offline Mode**: Work with cached data during network outages (planned)
+- **Optimized Parsing**: Fast JSONPath-based normalization
 
 ### 🧩 Seamless Integration
 
 - **Full TypeScript Support**: Strongly typed with embedded documentation
-- **Multi-environment Support**: Works on Node.js (16+), Bun, Deno, Cloudflare Workers
-- **Interactive CLI**: For quick queries and testing
-- **Web Playground**: Try the library directly in your browser
-- **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more
+- **Node.js Support**: Verified working (target: Node.js 16+; other runtimes untested)
+- **Interactive CLI**: For quick queries and testing (planned)
+- **Web Playground**: Try the library directly in your browser (planned)
+- **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more (planned)
 
-### 📊 Advanced Analytics
+### 📊 Advanced Analytics (Planned)
+
+Future releases will include:
 
 - **Customizable Dashboards**: Track critical domains and assets
 - **Automated Reports**: Schedule expiration alerts and important changes
@@ -155,15 +176,16 @@ Read our [Security Whitepaper](security/whitepaper.md) for deeper technical deta
 
 ## 📚 Documentation
 
-RDAPify provides comprehensive documentation:
+RDAPify provides comprehensive documentation in the repository:
 
-- **[Getting Started](docs/getting_started/)** - Installation and first query
-- **[API Reference](docs/api_reference/)** - Complete TypeScript documentation
-- **[Core Concepts](docs/core_concepts/)** - RDAP fundamentals and architecture
-- **[Security Guide](docs/security/)** - SSRF protection and PII redaction
-- **[Guides](docs/guides/)** - Error handling, caching, performance
+- **[Getting Started](docs/getting_started/)** - Installation, quick start, and first query
+- **[API Reference](docs/api_reference/)** - Complete TypeScript API documentation
+- **[Core Concepts](docs/core_concepts/)** - RDAP fundamentals, architecture, and normalization
+- **[Security Guide](docs/security/)** - SSRF protection, PII redaction, and best practices
+- **[Guides](docs/guides/)** - Error handling, caching strategies, and performance optimization
+- **[Examples](examples/)** - Real-world code examples and use cases
 
-> **Note**: Full documentation site (rdapify.com) is planned for future release. For now, browse the [docs/](docs/) directory.
+> **Note**: Full documentation site is planned for future release. For now, browse the [docs/](docs/) directory in the repository.
 
 ## 🌐 Interactive Playground
 
@@ -196,9 +218,9 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.0-alpha.1 (Alpha)
+**Current Release**: v0.1.0-alpha.4 (Alpha)
 
-### ✅ What's Ready in v0.1.0-alpha.1
+### ✅ What's Ready in v0.1.0-alpha.4
 
 Core functionality is implemented and tested:
 
@@ -210,7 +232,7 @@ Core functionality is implemented and tested:
 - ✅ **Error Handling**: Structured errors with retry logic (exponential backoff)
 - ✅ **TypeScript Support**: Full type definitions and strict mode
 - ✅ **Test Coverage**: 146 tests passing (unit + integration with mocked fixtures)
-- ✅ **Node.js Support**: Tested on Node.js 16+
+- ✅ **Node.js Support**: Verified working (CommonJS + ESM imports functional)
 
 ### 🔄 Alpha Limitations
 
@@ -234,6 +256,44 @@ These features are documented but not yet implemented:
 
 **Want to contribute?** Check out our [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md)!
 
+## 🔍 Version Verification
+
+RDAPify intentionally does **not** export `./package.json` in the package exports for security and API surface minimization. Attempting to import it will throw an expected error:
+
+```javascript
+// ❌ This will throw ERR_PACKAGE_PATH_NOT_EXPORTED (expected behavior)
+const pkg = require('rdapify/package.json');
+// Error: Package subpath './package.json' is not defined by "exports"
+```
+
+### Safe Version Verification Methods
+
+**Method 1: Using npm (recommended)**
+```bash
+npm ls rdapify
+# Output: rdapify@0.1.0-alpha.4
+```
+
+**Method 2: Programmatic check via require.resolve**
+```javascript
+const fs = require('fs');
+const path = require('path');
+
+const entry = require.resolve('rdapify');
+const pkgPath = path.join(path.dirname(entry), '..', 'package.json');
+const version = JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version;
+
+console.log('rdapify version:', version);
+// Output: 0.1.0-alpha.4
+```
+
+**Method 3: Check installed version in package.json**
+```bash
+cat node_modules/rdapify/package.json | grep version
+```
+
+This design decision prevents accidental exposure of internal package metadata and maintains a minimal public API surface.
+
 ## 🏢 Early Adopters & Feedback
 
 We're looking for early adopters and beta testers! If you're interested in:
@@ -241,8 +301,19 @@ We're looking for early adopters and beta testers! If you're interested in:
 - Testing the library in your environment
 - Providing feedback on the API design
 - Contributing to the codebase
+- Reporting bugs or suggesting features
 
-**Get involved**: Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) or [Discussion](https://github.com/rdapify/rdapify/discussions)
+**Get involved**: 
+- Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) for bugs or feature requests
+- Start a [GitHub Discussion](https://github.com/rdapify/rdapify/discussions) for questions or ideas
+- Check out [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
+
+### Known Issues & Limitations (Alpha)
+
+- Only in-memory caching available (Redis adapter in development)
+- No CLI tool yet (programmatic API only)
+- Bun/Deno/Cloudflare Workers compatibility not yet tested
+- Live RDAP server tests disabled by default (use `LIVE_TESTS=1` to enable)
 
 ## 📜 License
 
