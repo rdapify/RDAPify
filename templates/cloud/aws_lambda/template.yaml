@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: RDAPify RDAP Client - AWS Lambda Deployment
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs18.x
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        NODE_ENV: production
+        LOG_LEVEL: info
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues:
+      - development
+      - staging
+      - production
+    Description: Deployment environment
+  
+  CacheStrategy:
+    Type: String
+    Default: memory
+    AllowedValues:
+      - memory
+      - redis
+      - none
+    Description: Cache strategy to use
+  
+  RedactPII:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Enable PII redaction
+
+Resources:
+  # Lambda Function
+  RDAPifyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub rdapify-api-${Environment}
+      CodeUri: ./
+      Handler: index.handler
+      Description: RDAPify RDAP Client API
+      Environment:
+        Variables:
+          CACHE_STRATEGY: !Ref CacheStrategy
+          CACHE_TTL: '3600'
+          CACHE_MAX_SIZE: '1000'
+          REDACT_PII: !Ref RedactPII
+          MAX_RETRY_ATTEMPTS: '3'
+          REQUEST_TIMEOUT: '10000'
+          SSRF_PROTECTION_ENABLED: 'true'
+      Events:
+        DomainQuery:
+          Type: Api
+          Properties:
+            Path: /domain/{domain}
+            Method: get
+            RestApiId: !Ref RDAPifyApi
+        IPQuery:
+          Type: Api
+          Properties:
+            Path: /ip/{ip}
+            Method: get
+            RestApiId: !Ref RDAPifyApi
+        ASNQuery:
+          Type: Api
+          Properties:
+            Path: /asn/{asn}
+            Method: get
+            RestApiId: !Ref RDAPifyApi
+        HealthCheck:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: get
+            RestApiId: !Ref RDAPifyApi
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/rdapify-*
+      Tags:
+        Application: RDAPify
+        Environment: !Ref Environment
+        ManagedBy: CloudFormation
+
+  # API Gateway
+  RDAPifyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub rdapify-api-${Environment}
+      StageName: !Ref Environment
+      Cors:
+        AllowMethods: "'GET, OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        ApiKeyRequired: true
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          Description: RDAPify API Usage Plan
+          Quota:
+            Limit: 10000
+            Period: DAY
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
+      DefinitionBody:
+        openapi: '3.0.0'
+        info:
+          title: RDAPify API
+          version: '0.1.0-alpha.4'
+        paths:
+          /domain/{domain}:
+            get:
+              summary: Query domain RDAP information
+              parameters:
+                - name: domain
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+              responses:
+                '200':
+                  description: Successful response
+                '400':
+                  description: Invalid domain
+                '404':
+                  description: Domain not found
+                '500':
+                  description: Server error
+          /ip/{ip}:
+            get:
+              summary: Query IP address RDAP information
+              parameters:
+                - name: ip
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+              responses:
+                '200':
+                  description: Successful response
+          /asn/{asn}:
+            get:
+              summary: Query ASN RDAP information
+              parameters:
+                - name: asn
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+              responses:
+                '200':
+                  description: Successful response
+          /health:
+            get:
+              summary: Health check endpoint
+              responses:
+                '200':
+                  description: Service is healthy
+      Tags:
+        Application: RDAPify
+        Environment: !Ref Environment
+
+  # CloudWatch Log Group
+  RDAPifyLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/rdapify-api-${Environment}
+      RetentionInDays: 30
+
+  # CloudWatch Alarms
+  RDAPifyErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub rdapify-errors-${Environment}
+      AlarmDescription: Alert when error rate is high
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 10
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref RDAPifyFunction
+      TreatMissingData: notBreaching
+
+  RDAPifyThrottleAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub rdapify-throttles-${Environment}
+      AlarmDescription: Alert when function is throttled
+      MetricName: Throttles
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref RDAPifyFunction
+      TreatMissingData: notBreaching
+
+  # X-Ray Tracing
+  RDAPifyFunctionTracingConfig:
+    Type: AWS::Lambda::Function
+    Properties:
+      TracingConfig:
+        Mode: Active
+
+Outputs:
+  RDAPifyApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${RDAPifyApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+    Export:
+      Name: !Sub ${AWS::StackName}-ApiUrl
+
+  RDAPifyFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt RDAPifyFunction.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}-FunctionArn
+
+  RDAPifyApiId:
+    Description: API Gateway ID
+    Value: !Ref RDAPifyApi
+    Export:
+      Name: !Sub ${AWS::StackName}-ApiId

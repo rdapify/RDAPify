@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdapify-api
+  labels:
+    app: rdapify
+    component: api
+    version: v0.1.0-alpha.4
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rdapify
+      component: api
+  template:
+    metadata:
+      labels:
+        app: rdapify
+        component: api
+        version: v0.1.0-alpha.4
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: rdapify
+        image: rdapify/rdapify:0.1.0-alpha.4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        - name: metrics
+          containerPort: 9090
+          protocol: TCP
+        env:
+        # Cache Configuration
+        - name: CACHE_STRATEGY
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: cache-strategy
+        - name: CACHE_TTL
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: cache-ttl
+        - name: CACHE_MAX_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: cache-max-size
+        # Redis Configuration (if using Redis cache)
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: rdapify-secrets
+              key: redis-url
+              optional: true
+        # Privacy Configuration
+        - name: REDACT_PII
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: redact-pii
+        # Retry Configuration
+        - name: MAX_RETRY_ATTEMPTS
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: max-retry-attempts
+        # Timeout Configuration
+        - name: REQUEST_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: request-timeout
+        # SSRF Protection
+        - name: SSRF_PROTECTION_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: ssrf-protection-enabled
+        # Logging
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: rdapify-config
+              key: log-level
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        fsGroup: 1000
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - rdapify
+              topologyKey: kubernetes.io/hostname

@@ -1,0 +1,20 @@
+{
+  "name": "rdapify-azure-functions",
+  "version": "0.1.0-alpha.4",
+  "description": "RDAPify Azure Functions deployment",
+  "main": "index.js",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet\"",
+    "deploy": "func azure functionapp publish rdapify-function-app"
+  },
+  "dependencies": {
+    "rdapify": "^0.1.0-alpha.4"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

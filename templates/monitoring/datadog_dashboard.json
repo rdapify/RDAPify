@@ -1,0 +1,368 @@
+{
+  "title": "RDAPify Performance & Monitoring",
+  "description": "Comprehensive monitoring dashboard for RDAPify RDAP client",
+  "widgets": [
+    {
+      "id": 1,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:rdapify.requests.count{*}.as_rate()",
+            "display_type": "line",
+            "style": {
+              "palette": "dog_classic",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ],
+        "title": "Request Rate (req/s)",
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": ["avg", "min", "max", "value", "sum"]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 2,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:rdapify.request.duration.p95{*}",
+            "display_type": "line",
+            "style": {
+              "palette": "warm"
+            }
+          },
+          {
+            "q": "avg:rdapify.request.duration.p99{*}",
+            "display_type": "line",
+            "style": {
+              "palette": "orange"
+            }
+          }
+        ],
+        "title": "Response Time (p95/p99)",
+        "yaxis": {
+          "label": "",
+          "scale": "linear",
+          "min": "auto",
+          "max": "auto",
+          "include_zero": true
+        }
+      },
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 3,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:rdapify.cache.hits{*}/(sum:rdapify.cache.hits{*}+sum:rdapify.cache.misses{*})*100",
+            "aggregator": "avg"
+          }
+        ],
+        "title": "Cache Hit Rate",
+        "precision": 2,
+        "unit": "%"
+      },
+      "layout": {
+        "x": 8,
+        "y": 0,
+        "width": 2,
+        "height": 2
+      }
+    },
+    {
+      "id": 4,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:rdapify.errors.count{*}.as_rate()",
+            "aggregator": "avg"
+          }
+        ],
+        "title": "Error Rate",
+        "precision": 2,
+        "unit": "errors/s"
+      },
+      "layout": {
+        "x": 10,
+        "y": 0,
+        "width": 2,
+        "height": 2
+      }
+    },
+    {
+      "id": 5,
+      "definition": {
+        "type": "toplist",
+        "requests": [
+          {
+            "q": "top(sum:rdapify.queries.count{*} by {query_type}.as_rate(), 10, 'mean', 'desc')"
+          }
+        ],
+        "title": "Top Query Types"
+      },
+      "layout": {
+        "x": 0,
+        "y": 2,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 6,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:rdapify.cache.size{*}",
+            "display_type": "area",
+            "style": {
+              "palette": "cool"
+            }
+          }
+        ],
+        "title": "Cache Size",
+        "yaxis": {
+          "label": "Entries"
+        }
+      },
+      "layout": {
+        "x": 4,
+        "y": 2,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 7,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:rdapify.errors.count{*} by {error_type}.as_rate()",
+            "display_type": "bars",
+            "style": {
+              "palette": "warm"
+            }
+          }
+        ],
+        "title": "Errors by Type"
+      },
+      "layout": {
+        "x": 8,
+        "y": 2,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 8,
+      "definition": {
+        "type": "heatmap",
+        "requests": [
+          {
+            "q": "avg:rdapify.request.duration{*}"
+          }
+        ],
+        "title": "Request Duration Heatmap"
+      },
+      "layout": {
+        "x": 0,
+        "y": 4,
+        "width": 6,
+        "height": 2
+      }
+    },
+    {
+      "id": 9,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:system.mem.used{app:rdapify}",
+            "display_type": "line"
+          }
+        ],
+        "title": "Memory Usage",
+        "yaxis": {
+          "label": "Bytes"
+        }
+      },
+      "layout": {
+        "x": 6,
+        "y": 4,
+        "width": 3,
+        "height": 2
+      }
+    },
+    {
+      "id": 10,
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:system.cpu.user{app:rdapify}",
+            "display_type": "line"
+          }
+        ],
+        "title": "CPU Usage",
+        "yaxis": {
+          "label": "%"
+        }
+      },
+      "layout": {
+        "x": 9,
+        "y": 4,
+        "width": 3,
+        "height": 2
+      }
+    },
+    {
+      "id": 11,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:rdapify.ssrf.blocks{*}",
+            "aggregator": "sum"
+          }
+        ],
+        "title": "SSRF Blocks (24h)",
+        "precision": 0
+      },
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "width": 2,
+        "height": 1
+      }
+    },
+    {
+      "id": 12,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:rdapify.pii.redactions{*}",
+            "aggregator": "sum"
+          }
+        ],
+        "title": "PII Redactions (24h)",
+        "precision": 0
+      },
+      "layout": {
+        "x": 2,
+        "y": 6,
+        "width": 2,
+        "height": 1
+      }
+    },
+    {
+      "id": 13,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "avg:rdapify.active.connections{*}",
+            "aggregator": "avg"
+          }
+        ],
+        "title": "Active Connections",
+        "precision": 0
+      },
+      "layout": {
+        "x": 4,
+        "y": 6,
+        "width": 2,
+        "height": 1
+      }
+    },
+    {
+      "id": 14,
+      "definition": {
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:rdapify.bootstrap.queries{*}",
+            "aggregator": "sum"
+          }
+        ],
+        "title": "Bootstrap Queries (24h)",
+        "precision": 0
+      },
+      "layout": {
+        "x": 6,
+        "y": 6,
+        "width": 2,
+        "height": 1
+      }
+    },
+    {
+      "id": 15,
+      "definition": {
+        "type": "distribution",
+        "requests": [
+          {
+            "q": "avg:rdapify.request.duration{*}"
+          }
+        ],
+        "title": "Request Duration Distribution"
+      },
+      "layout": {
+        "x": 8,
+        "y": 6,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 16,
+      "definition": {
+        "type": "log_stream",
+        "query": "source:rdapify status:error",
+        "columns": ["host", "service", "message"],
+        "title": "Recent Errors",
+        "message_display": "expanded-md"
+      },
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 2
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "env",
+      "default": "production",
+      "prefix": "env"
+    },
+    {
+      "name": "service",
+      "default": "rdapify",
+      "prefix": "service"
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": [],
+  "reflow_type": "fixed"
+}
