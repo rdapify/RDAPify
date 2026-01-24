@@ -248,6 +248,83 @@ These features are documented but not yet implemented:
 ### 📋 Roadmap to v0.2.0
 
 - Redis cache adapter
+- CLI tool
+- Rate limiting improvements
+- Batch processing optimization
+
+See [ROADMAP.md](ROADMAP.md) for the complete roadmap.
+
+## 🏗️ Code Architecture
+
+RDAPify follows a clean, modular architecture with clear separation of concerns:
+
+### Source Structure (`/src`)
+
+```
+src/
+├── client/           # Client orchestration layer
+│   ├── RDAPClient.ts          # Main client (242 LOC)
+│   └── QueryOrchestrator.ts   # Query pattern extraction (169 LOC)
+│
+├── fetcher/          # HTTP and registry discovery
+│   ├── Fetcher.ts             # HTTP client (196 LOC)
+│   ├── BootstrapDiscovery.ts  # IANA bootstrap (224 LOC)
+│   └── SSRFProtection.ts      # Security validation (219 LOC)
+│
+├── normalizer/       # Data transformation
+│   ├── Normalizer.ts          # Response normalization (239 LOC)
+│   └── PIIRedactor.ts         # Privacy protection (140 LOC)
+│
+├── cache/            # Caching layer
+│   ├── CacheManager.ts        # Cache orchestration (188 LOC)
+│   └── InMemoryCache.ts       # LRU implementation (185 LOC)
+│
+├── types/            # TypeScript definitions
+│   ├── enums.ts               # Type aliases (87 LOC)
+│   ├── entities.ts            # Entity interfaces (74 LOC)
+│   ├── responses.ts           # Response types (100 LOC)
+│   ├── errors.ts              # Error classes (154 LOC)
+│   ├── options.ts             # Configuration types (201 LOC)
+│   └── index.ts               # Barrel export (36 LOC)
+│
+└── utils/            # Utilities
+    ├── validators/            # Input validation
+    │   ├── domain.ts          # Domain validation (55 LOC)
+    │   ├── ip.ts              # IP validation (86 LOC)
+    │   ├── asn.ts             # ASN validation (42 LOC)
+    │   └── network.ts         # Network utilities (76 LOC)
+    │
+    └── helpers/               # Helper functions
+        ├── async.ts           # Async utilities (77 LOC)
+        ├── string.ts          # String manipulation (38 LOC)
+        ├── object.ts          # Object utilities (33 LOC)
+        ├── cache.ts           # Cache helpers (11 LOC)
+        ├── http.ts            # HTTP utilities (25 LOC)
+        ├── format.ts          # Formatting (27 LOC)
+        └── runtime.ts         # Runtime detection (47 LOC)
+```
+
+### Key Design Principles
+
+1. **Modular Architecture**: Each file has a single, clear responsibility
+2. **Small Files**: All files <250 LOC for easy maintenance
+3. **Type Safety**: Strict TypeScript with explicit types throughout
+4. **Testability**: 146 tests with >90% coverage
+5. **Security First**: SSRF protection and PII redaction built-in
+6. **Performance**: Smart caching and optimized parsing
+
+### Recent Improvements (Phase 2 Refactoring)
+
+- ✅ Extracted QueryOrchestrator from RDAPClient (-29% LOC)
+- ✅ Split validators into focused modules (-87% in main file)
+- ✅ Split helpers into focused modules (-80% in main file)
+- ✅ Split types into enums, entities, responses (-87% in main file)
+- ✅ 712 lines of duplication eliminated
+- ✅ 100% backward compatible (re-export shims)
+
+See [REFACTOR_STATUS.md](REFACTOR_STATUS.md) for detailed refactoring progress.
+
+### 📋 Roadmap to v0.2.0 (Continued)
 - CLI tool with interactive mode
 - Bun/Deno runtime compatibility testing
 - Live integration tests (optional via LIVE_TESTS=1)
