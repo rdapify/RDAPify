@@ -2,9 +2,9 @@
 
 This document outlines the planned features and improvements for RDAPify. The roadmap is subject to change based on community feedback and priorities.
 
-## Current Status: Pre-Launch (v0.1.0-alpha)
+## Current Status: Alpha Release (v0.1.0-alpha.4)
 
-We are currently in the documentation and planning phase, preparing for the initial code implementation.
+Core functionality is implemented and tested. The library is functional but some advanced features are still in development.
 
 ---
 
@@ -12,30 +12,30 @@ We are currently in the documentation and planning phase, preparing for the init
 
 ### Core Features
 - [x] Comprehensive documentation structure
-- [ ] Basic RDAP client implementation
-  - [ ] Domain lookup
-  - [ ] IP address lookup
-  - [ ] ASN lookup
-- [ ] IANA Bootstrap discovery
-- [ ] Basic data normalization
-- [ ] PII redaction (privacy-by-default)
-- [ ] In-memory caching
-- [ ] SSRF protection
-- [ ] TypeScript support with full type definitions
-- [ ] Basic error handling
+- [x] Basic RDAP client implementation
+  - [x] Domain lookup
+  - [x] IP address lookup
+  - [x] ASN lookup
+- [x] IANA Bootstrap discovery
+- [x] Basic data normalization
+- [x] PII redaction (privacy-by-default)
+- [x] In-memory caching
+- [x] SSRF protection
+- [x] TypeScript support with full type definitions
+- [x] Basic error handling
 
 ### Testing & Quality
-- [ ] Unit tests (>90% coverage)
-- [ ] Integration tests with real RDAP servers
-- [ ] Security tests
-- [ ] Test vectors for all query types
+- [x] Unit tests (>90% coverage) - 146 tests passing
+- [x] Integration tests with real RDAP servers
+- [x] Security tests
+- [x] Test vectors for all query types
 - [ ] CI/CD pipeline
 
 ### Documentation
-- [ ] API reference
-- [ ] Quick start guide
-- [ ] Core concepts documentation
-- [ ] 5+ working examples
+- [x] API reference
+- [x] Quick start guide
+- [x] Core concepts documentation
+- [x] 5+ working examples
 
 **Target Release**: March 2025
 

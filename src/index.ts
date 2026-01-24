@@ -83,7 +83,7 @@ export {
 export type { ICache } from './cache/CacheManager';
 
 // Version
-export const VERSION = '0.1.0-alpha.1';
+export const VERSION = '0.1.0-alpha.4';
 
 /**
  * Creates a new RDAP client with default options

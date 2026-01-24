@@ -17,15 +17,8 @@ import type {
   RetryOptions,
   CacheOptions,
 } from '../types/options';
-import { deepMerge, generateCacheKey, calculateBackoff, sleep } from '../utils/helpers';
-import {
-  validateDomain,
-  validateIP,
-  validateASN,
-  normalizeDomain,
-  normalizeIP,
-  normalizeASN,
-} from '../utils/validators';
+import { deepMerge, calculateBackoff, sleep } from '../utils/helpers';
+import { QueryOrchestrator } from './QueryOrchestrator';
 
 /**
  * Main RDAP client for querying domain, IP, and ASN information
@@ -49,6 +42,7 @@ export class RDAPClient {
   private readonly bootstrap: BootstrapDiscovery;
   private readonly normalizer: Normalizer;
   private readonly piiRedactor: PIIRedactor;
+  private readonly orchestrator: QueryOrchestrator;
 
   constructor(options: RDAPClientOptions = {}) {
     // Merge with defaults
@@ -99,6 +93,17 @@ export class RDAPClient {
         ? { redactPII: this.options.privacy }
         : this.options.privacy;
     this.piiRedactor = new PIIRedactor(privacyOptions);
+
+    // Initialize query orchestrator
+    this.orchestrator = new QueryOrchestrator({
+      cache: this.cache,
+      bootstrap: this.bootstrap,
+      fetcher: this.fetcher,
+      normalizer: this.normalizer,
+      piiRedactor: this.piiRedactor,
+      includeRaw: this.options.includeRaw,
+      fetchWithRetry: this.fetchWithRetry.bind(this),
+    });
   }
 
   /**
@@ -115,40 +120,7 @@ export class RDAPClient {
    * ```
    */
   async domain(domain: string): Promise<DomainResponse> {
-    // Validate and normalize
-    validateDomain(domain);
-    const normalized = normalizeDomain(domain);
-
-    // Check cache
-    const cacheKey = generateCacheKey('domain', normalized);
-    const cached = await this.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'domain') {
-      return this.piiRedactor.redact(cached);
-    }
-
-    // Discover RDAP server
-    const serverUrl = await this.bootstrap.discoverDomain(normalized);
-
-    // Build query URL
-    const queryUrl = `${serverUrl}/domain/${normalized}`;
-
-    // Fetch with retry
-    const raw = await this.fetchWithRetry(queryUrl);
-
-    // Normalize response
-    const response = this.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.options.includeRaw
-    ) as DomainResponse;
-
-    // Cache the response
-    await this.cache.set(cacheKey, response);
-
-    // Redact PII
-    return this.piiRedactor.redact(response);
+    return this.orchestrator.queryDomain(domain);
   }
 
   /**
@@ -165,43 +137,7 @@ export class RDAPClient {
    * ```
    */
   async ip(ip: string): Promise<IPResponse> {
-    // Validate and normalize
-    const version = validateIP(ip);
-    const normalized = normalizeIP(ip);
-
-    // Check cache
-    const cacheKey = generateCacheKey('ip', normalized);
-    const cached = await this.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'ip network') {
-      return this.piiRedactor.redact(cached);
-    }
-
-    // Discover RDAP server
-    const serverUrl =
-      version === 'v4'
-        ? await this.bootstrap.discoverIPv4(normalized)
-        : await this.bootstrap.discoverIPv6(normalized);
-
-    // Build query URL
-    const queryUrl = `${serverUrl}/ip/${normalized}`;
-
-    // Fetch with retry
-    const raw = await this.fetchWithRetry(queryUrl);
-
-    // Normalize response
-    const response = this.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.options.includeRaw
-    ) as IPResponse;
-
-    // Cache the response
-    await this.cache.set(cacheKey, response);
-
-    // Redact PII
-    return this.piiRedactor.redact(response);
+    return this.orchestrator.queryIP(ip);
   }
 
   /**
@@ -217,40 +153,7 @@ export class RDAPClient {
    * ```
    */
   async asn(asn: string | number): Promise<ASNResponse> {
-    // Validate and normalize
-    const asnNumber = validateASN(asn);
-    const normalized = normalizeASN(asnNumber);
-
-    // Check cache
-    const cacheKey = generateCacheKey('asn', normalized);
-    const cached = await this.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'autnum') {
-      return this.piiRedactor.redact(cached);
-    }
-
-    // Discover RDAP server
-    const serverUrl = await this.bootstrap.discoverASN(asnNumber);
-
-    // Build query URL
-    const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
-
-    // Fetch with retry
-    const raw = await this.fetchWithRetry(queryUrl);
-
-    // Normalize response
-    const response = this.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.options.includeRaw
-    ) as ASNResponse;
-
-    // Cache the response
-    await this.cache.set(cacheKey, response);
-
-    // Redact PII
-    return this.piiRedactor.redact(response);
+    return this.orchestrator.queryASN(asn);
   }
 
   /**
