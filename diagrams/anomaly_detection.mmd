@@ -1,0 +1,56 @@
+graph TB
+    Start([RDAP Response]) --> Analyze[Analyze Response]
+    
+    subgraph "Detection Checks"
+        Analyze --> CheckSize{Response<br/>Size OK?}
+        CheckSize -->|Too Large| AnomalySize[Size Anomaly<br/>>10MB]
+        CheckSize -->|OK| CheckFields
+        
+        CheckFields{Required<br/>Fields?}
+        CheckFields -->|Missing| AnomalyFields[Missing Fields<br/>Anomaly]
+        CheckFields -->|OK| CheckStatus
+        
+        CheckStatus{Status<br/>Valid?}
+        CheckStatus -->|Invalid| AnomalyStatus[Invalid Status<br/>Anomaly]
+        CheckStatus -->|OK| CheckDates
+        
+        CheckDates{Dates<br/>Logical?}
+        CheckDates -->|Illogical| AnomalyDates[Date Anomaly<br/>Future/Invalid]
+        CheckDates -->|OK| CheckEntities
+        
+        CheckEntities{Entities<br/>Present?}
+        CheckEntities -->|Suspicious| AnomalyEntities[Entity Anomaly<br/>No Contacts]
+        CheckEntities -->|OK| CheckLinks
+        
+        CheckLinks{Links<br/>Valid?}
+        CheckLinks -->|Broken| AnomalyLinks[Link Anomaly<br/>Invalid URLs]
+        CheckLinks -->|OK| Normal
+    end
+    
+    subgraph "Actions"
+        AnomalySize --> Log[Log Anomaly]
+        AnomalyFields --> Log
+        AnomalyStatus --> Log
+        AnomalyDates --> Log
+        AnomalyEntities --> Log
+        AnomalyLinks --> Log
+        
+        Log --> Decide{Severity?}
+        Decide -->|Critical| Reject[Reject Response]
+        Decide -->|Warning| Accept[Accept with Warning]
+        
+        Normal --> Clean[Mark as Clean]
+    end
+    
+    Reject --> End([Error Response])
+    Accept --> End2([Response with Warnings])
+    Clean --> End3([Clean Response])
+
+    style Start fill:#2196F3
+    style Normal fill:#4CAF50
+    style Clean fill:#4CAF50
+    style Log fill:#FF9800
+    style Reject fill:#F44336
+    style AnomalySize fill:#F44336
+    style AnomalyFields fill:#F44336
+    style AnomalyStatus fill:#F44336

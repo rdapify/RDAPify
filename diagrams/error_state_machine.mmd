@@ -1,0 +1,52 @@
+stateDiagram-v2
+    [*] --> Idle
+    
+    Idle --> Validating: Query Request
+    
+    Validating --> ValidationError: Invalid Input
+    Validating --> Discovering: Valid Input
+    
+    Discovering --> BootstrapError: Registry Not Found
+    Discovering --> SSRFCheck: Registry Found
+    
+    SSRFCheck --> SSRFError: Blocked URL
+    SSRFCheck --> Fetching: Safe URL
+    
+    Fetching --> NetworkError: Connection Failed
+    Fetching --> TimeoutError: Request Timeout
+    Fetching --> Normalizing: Response Received
+    
+    Normalizing --> NormalizationError: Invalid Format
+    Normalizing --> Redacting: Valid Format
+    
+    Redacting --> Caching: PII Removed
+    
+    Caching --> Success: Data Cached
+    
+    ValidationError --> Retry: Retry Logic
+    NetworkError --> Retry
+    TimeoutError --> Retry
+    
+    Retry --> MaxRetriesReached: Max Attempts
+    Retry --> Fetching: Retry Attempt
+    
+    MaxRetriesReached --> Failed
+    BootstrapError --> Failed
+    SSRFError --> Failed
+    NormalizationError --> Failed
+    
+    Success --> [*]
+    Failed --> [*]
+    
+    note right of Retry
+        Exponential Backoff
+        Max 3 Retries
+        Delay: 1s, 2s, 4s
+    end note
+    
+    note right of SSRFCheck
+        Validates:
+        - Protocol (HTTPS only)
+        - Private IPs blocked
+        - Localhost blocked
+    end note

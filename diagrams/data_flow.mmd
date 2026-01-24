@@ -1,0 +1,47 @@
+sequenceDiagram
+    participant User
+    participant Client as RDAPClient
+    participant Cache as CacheManager
+    participant Bootstrap as BootstrapDiscovery
+    participant SSRF as SSRFProtection
+    participant Fetcher
+    participant Normalizer
+    participant PII as PIIRedactor
+    participant RDAP as RDAP Server
+
+    User->>Client: queryDomain('example.com')
+    Client->>Cache: get('example.com')
+    
+    alt Cache Hit
+        Cache-->>Client: Return cached data
+        Client-->>User: RDAPResponse
+    else Cache Miss
+        Cache-->>Client: null
+        Client->>Bootstrap: discoverServer('example.com')
+        Bootstrap->>RDAP: Query IANA Bootstrap
+        RDAP-->>Bootstrap: Registry URL
+        Bootstrap-->>Client: https://rdap.verisign.com
+        
+        Client->>SSRF: validateUrl(url)
+        
+        alt URL Valid
+            SSRF-->>Client: ✓ Valid
+            Client->>Fetcher: fetch(url, query)
+            Fetcher->>RDAP: HTTPS Request
+            RDAP-->>Fetcher: Raw RDAP JSON
+            Fetcher-->>Client: Response
+            
+            Client->>Normalizer: normalize(response)
+            Normalizer-->>Client: Normalized Data
+            
+            Client->>PII: redact(data)
+            PII-->>Client: Sanitized Data
+            
+            Client->>Cache: set('example.com', data)
+            Cache-->>Client: ✓ Cached
+            Client-->>User: RDAPResponse
+        else URL Invalid
+            SSRF-->>Client: ✗ SSRF Risk
+            Client-->>User: SSRFProtectionError
+        end
+    end

@@ -1,0 +1,59 @@
+graph TB
+    subgraph "Application Layer"
+        Client[RDAPClient<br/>Main Entry Point]
+        Orchestrator[QueryOrchestrator<br/>Coordinates Queries]
+    end
+
+    subgraph "Core Layer - Business Logic"
+        UseCases[Use Cases<br/>Domain/IP/ASN Queries]
+        Ports[Ports/Interfaces<br/>Dependency Inversion]
+    end
+
+    subgraph "Infrastructure Layer"
+        Cache[CacheManager<br/>In-Memory LRU]
+        Fetcher[Fetcher<br/>HTTP Client]
+        Bootstrap[BootstrapDiscovery<br/>IANA Registry]
+        Normalizer[Normalizer<br/>Data Transform]
+        SSRF[SSRFProtection<br/>Security Validation]
+        PII[PIIRedactor<br/>Privacy Protection]
+    end
+
+    subgraph "Shared Layer"
+        Types[Types & Interfaces]
+        Utils[Validators & Helpers]
+        Errors[Error Classes]
+        Constants[Constants]
+    end
+
+    subgraph "External"
+        IANA[IANA Bootstrap<br/>Registry Discovery]
+        RDAP[RDAP Servers<br/>Verisign, ARIN, RIPE]
+    end
+
+    Client --> Orchestrator
+    Orchestrator --> UseCases
+    UseCases --> Ports
+    Ports -.implements.-> Cache
+    Ports -.implements.-> Fetcher
+    Ports -.implements.-> Bootstrap
+    Ports -.implements.-> Normalizer
+    Ports -.implements.-> PII
+    
+    Fetcher --> SSRF
+    Fetcher --> RDAP
+    Bootstrap --> IANA
+    
+    Cache --> Types
+    Fetcher --> Types
+    Normalizer --> Types
+    UseCases --> Utils
+    Fetcher --> Errors
+
+    style Client fill:#4CAF50
+    style Orchestrator fill:#4CAF50
+    style UseCases fill:#2196F3
+    style Ports fill:#2196F3
+    style Cache fill:#FF9800
+    style Fetcher fill:#FF9800
+    style SSRF fill:#F44336
+    style PII fill:#F44336

@@ -1,0 +1,39 @@
+graph TB
+    Start([Query Input]) --> Validate{Input<br/>Type?}
+    
+    Validate -->|Domain| ParseDomain[Parse Domain<br/>Extract TLD]
+    Validate -->|IP| ParseIP[Parse IP<br/>Determine Version]
+    Validate -->|ASN| ParseASN[Parse ASN<br/>Extract Number]
+    
+    ParseDomain --> QueryBootstrap[Query IANA Bootstrap<br/>DNS Registry]
+    ParseIP --> QueryBootstrap2[Query IANA Bootstrap<br/>IP Registry]
+    ParseASN --> QueryBootstrap3[Query IANA Bootstrap<br/>ASN Registry]
+    
+    QueryBootstrap --> CheckCache{Bootstrap<br/>Cached?}
+    QueryBootstrap2 --> CheckCache
+    QueryBootstrap3 --> CheckCache
+    
+    CheckCache -->|Yes| GetCached[Get Cached Registry]
+    CheckCache -->|No| FetchBootstrap[Fetch Bootstrap JSON]
+    
+    FetchBootstrap --> ParseBootstrap[Parse Bootstrap Data]
+    ParseBootstrap --> CacheBootstrap[Cache Bootstrap<br/>TTL: 24h]
+    CacheBootstrap --> FindRegistry[Find Matching Registry]
+    GetCached --> FindRegistry
+    
+    FindRegistry --> Match{Registry<br/>Found?}
+    
+    Match -->|Yes| BuildURL[Build RDAP URL]
+    Match -->|No| Error[BootstrapError]
+    
+    BuildURL --> ValidateURL[SSRF Validation]
+    ValidateURL --> Return([Return Registry URL])
+    Error --> End([Throw Error])
+
+    style Start fill:#4CAF50
+    style Return fill:#4CAF50
+    style End fill:#F44336
+    style CheckCache fill:#2196F3
+    style Match fill:#2196F3
+    style FetchBootstrap fill:#FF9800
+    style ValidateURL fill:#F44336
