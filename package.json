@@ -76,7 +76,7 @@
   "bugs": {
     "url": "https://github.com/rdapify/rdapify/issues"
   },
-  "homepage": "https://github.com/rdapify/rdapify#readme",
+  "homepage": "https://rdapify.com",
   "engines": {
     "node": ">=16.0.0"
   },
