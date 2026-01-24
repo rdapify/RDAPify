@@ -1,0 +1,281 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RDAPify JSONPath Definitions",
+  "description": "JSONPath mappings for extracting and normalizing RDAP response data",
+  "version": "1.0",
+  "definitions": {
+    "domain": {
+      "description": "JSONPath mappings for domain responses",
+      "paths": {
+        "ldhName": "$.ldhName",
+        "unicodeName": "$.unicodeName",
+        "handle": "$.handle",
+        "status": "$.status[*]",
+        "nameservers": "$.nameservers[*].ldhName",
+        "nameserversUnicode": "$.nameservers[*].unicodeName",
+        "secureDNS": {
+          "delegationSigned": "$.secureDNS.delegationSigned",
+          "dsData": "$.secureDNS.dsData[*]"
+        },
+        "entities": "$.entities[*]",
+        "registrar": "$.entities[?(@.roles[*] == 'registrar')]",
+        "registrant": "$.entities[?(@.roles[*] == 'registrant')]",
+        "administrative": "$.entities[?(@.roles[*] == 'administrative')]",
+        "technical": "$.entities[?(@.roles[*] == 'technical')]",
+        "events": "$.events[*]",
+        "registrationDate": "$.events[?(@.eventAction == 'registration')].eventDate",
+        "expirationDate": "$.events[?(@.eventAction == 'expiration')].eventDate",
+        "lastChangedDate": "$.events[?(@.eventAction == 'last changed')].eventDate",
+        "links": "$.links[*]",
+        "remarks": "$.remarks[*]",
+        "notices": "$.notices[*]"
+      }
+    },
+    "ip": {
+      "description": "JSONPath mappings for IP network responses",
+      "paths": {
+        "handle": "$.handle",
+        "startAddress": "$.startAddress",
+        "endAddress": "$.endAddress",
+        "ipVersion": "$.ipVersion",
+        "name": "$.name",
+        "type": "$.type",
+        "country": "$.country",
+        "parentHandle": "$.parentHandle",
+        "status": "$.status[*]",
+        "entities": "$.entities[*]",
+        "registrant": "$.entities[?(@.roles[*] == 'registrant')]",
+        "events": "$.events[*]",
+        "registrationDate": "$.events[?(@.eventAction == 'registration')].eventDate",
+        "lastChangedDate": "$.events[?(@.eventAction == 'last changed')].eventDate",
+        "links": "$.links[*]",
+        "remarks": "$.remarks[*]"
+      }
+    },
+    "asn": {
+      "description": "JSONPath mappings for ASN responses",
+      "paths": {
+        "handle": "$.handle",
+        "startAutnum": "$.startAutnum",
+        "endAutnum": "$.endAutnum",
+        "name": "$.name",
+        "type": "$.type",
+        "country": "$.country",
+        "status": "$.status[*]",
+        "entities": "$.entities[*]",
+        "registrant": "$.entities[?(@.roles[*] == 'registrant')]",
+        "events": "$.events[*]",
+        "registrationDate": "$.events[?(@.eventAction == 'registration')].eventDate",
+        "lastChangedDate": "$.events[?(@.eventAction == 'last changed')].eventDate",
+        "links": "$.links[*]",
+        "remarks": "$.remarks[*]"
+      }
+    },
+    "entity": {
+      "description": "JSONPath mappings for entity objects",
+      "paths": {
+        "handle": "$.handle",
+        "roles": "$.roles[*]",
+        "publicIds": "$.publicIds[*]",
+        "vcardArray": "$.vcardArray",
+        "entities": "$.entities[*]",
+        "events": "$.events[*]",
+        "links": "$.links[*]",
+        "remarks": "$.remarks[*]",
+        "vcard": {
+          "fn": "$.vcardArray[1][?(@[0] == 'fn')][3]",
+          "email": "$.vcardArray[1][?(@[0] == 'email')][3]",
+          "tel": "$.vcardArray[1][?(@[0] == 'tel')][3]",
+          "adr": "$.vcardArray[1][?(@[0] == 'adr')][3]",
+          "org": "$.vcardArray[1][?(@[0] == 'org')][3]"
+        }
+      }
+    },
+    "event": {
+      "description": "JSONPath mappings for event objects",
+      "paths": {
+        "eventAction": "$.eventAction",
+        "eventDate": "$.eventDate",
+        "eventActor": "$.eventActor",
+        "links": "$.links[*]"
+      }
+    },
+    "link": {
+      "description": "JSONPath mappings for link objects",
+      "paths": {
+        "value": "$.value",
+        "rel": "$.rel",
+        "href": "$.href",
+        "hreflang": "$.hreflang[*]",
+        "title": "$.title",
+        "media": "$.media",
+        "type": "$.type"
+      }
+    },
+    "remark": {
+      "description": "JSONPath mappings for remark/notice objects",
+      "paths": {
+        "title": "$.title",
+        "type": "$.type",
+        "description": "$.description[*]",
+        "links": "$.links[*]"
+      }
+    }
+  },
+  "transformations": {
+    "status": {
+      "description": "Status code normalization",
+      "rules": [
+        {
+          "from": "clientTransferProhibited",
+          "to": "client-transfer-prohibited"
+        },
+        {
+          "from": "clientUpdateProhibited",
+          "to": "client-update-prohibited"
+        },
+        {
+          "from": "clientDeleteProhibited",
+          "to": "client-delete-prohibited"
+        },
+        {
+          "from": "serverTransferProhibited",
+          "to": "server-transfer-prohibited"
+        },
+        {
+          "from": "serverUpdateProhibited",
+          "to": "server-update-prohibited"
+        },
+        {
+          "from": "serverDeleteProhibited",
+          "to": "server-delete-prohibited"
+        }
+      ]
+    },
+    "eventAction": {
+      "description": "Event action normalization",
+      "rules": [
+        {
+          "from": "registration",
+          "to": "registration"
+        },
+        {
+          "from": "expiration",
+          "to": "expiration"
+        },
+        {
+          "from": "last changed",
+          "to": "last-changed"
+        },
+        {
+          "from": "last update of RDAP database",
+          "to": "last-update"
+        }
+      ]
+    },
+    "roles": {
+      "description": "Entity role normalization",
+      "rules": [
+        {
+          "from": "registrant",
+          "to": "registrant"
+        },
+        {
+          "from": "registrar",
+          "to": "registrar"
+        },
+        {
+          "from": "administrative",
+          "to": "administrative"
+        },
+        {
+          "from": "technical",
+          "to": "technical"
+        },
+        {
+          "from": "billing",
+          "to": "billing"
+        },
+        {
+          "from": "abuse",
+          "to": "abuse"
+        }
+      ]
+    }
+  },
+  "examples": {
+    "domain_query": {
+      "input": {
+        "objectClassName": "domain",
+        "ldhName": "example.com",
+        "handle": "DOM123",
+        "status": ["active", "clientTransferProhibited"],
+        "nameservers": [
+          {
+            "objectClassName": "nameserver",
+            "ldhName": "ns1.example.com"
+          }
+        ],
+        "events": [
+          {
+            "eventAction": "registration",
+            "eventDate": "1995-08-14T04:00:00Z"
+          }
+        ]
+      },
+      "extracted": {
+        "ldhName": "example.com",
+        "handle": "DOM123",
+        "status": ["active", "client-transfer-prohibited"],
+        "nameservers": ["ns1.example.com"],
+        "registrationDate": "1995-08-14T04:00:00Z"
+      }
+    },
+    "ip_query": {
+      "input": {
+        "objectClassName": "ip network",
+        "handle": "NET-8-0-0-0-1",
+        "startAddress": "8.0.0.0",
+        "endAddress": "8.255.255.255",
+        "ipVersion": "v4",
+        "name": "LVLT-ORG-8-8",
+        "type": "DIRECT ALLOCATION",
+        "country": "US"
+      },
+      "extracted": {
+        "handle": "NET-8-0-0-0-1",
+        "startAddress": "8.0.0.0",
+        "endAddress": "8.255.255.255",
+        "ipVersion": "v4",
+        "name": "LVLT-ORG-8-8",
+        "type": "direct allocation",
+        "country": "US"
+      }
+    },
+    "asn_query": {
+      "input": {
+        "objectClassName": "autnum",
+        "handle": "AS15169",
+        "startAutnum": 15169,
+        "endAutnum": 15169,
+        "name": "GOOGLE",
+        "type": "DIRECT ALLOCATION",
+        "country": "US"
+      },
+      "extracted": {
+        "handle": "AS15169",
+        "startAutnum": 15169,
+        "endAutnum": 15169,
+        "name": "GOOGLE",
+        "type": "direct allocation",
+        "country": "US"
+      }
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2026-01-24",
+    "author": "RDAPify Contributors",
+    "license": "MIT"
+  }
+}

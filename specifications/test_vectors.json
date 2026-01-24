@@ -1,0 +1,413 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RDAPify Test Vectors",
+  "description": "Standardized test cases for RDAPify implementation validation",
+  "version": "1.0",
+  "testVectors": {
+    "validation": {
+      "description": "Input validation test cases",
+      "domain": {
+        "valid": [
+          "example.com",
+          "sub.example.com",
+          "example.co.uk",
+          "xn--e1afmkfd.xn--p1ai",
+          "123.com",
+          "a.b.c.d.example.com"
+        ],
+        "invalid": [
+          "",
+          ".",
+          ".com",
+          "example",
+          "example.",
+          "-example.com",
+          "example-.com",
+          "exam ple.com",
+          "example..com",
+          "verylongdomainnamethatisgreaterthan253charactersverylongdomainnamethatisgreaterthan253charactersverylongdomainnamethatisgreaterthan253charactersverylongdomainnamethatisgreaterthan253charactersverylongdomainnamethatisgreaterthan253charactersverylongdomainname.com"
+        ]
+      },
+      "ip": {
+        "valid": {
+          "ipv4": [
+            "8.8.8.8",
+            "192.168.1.1",
+            "10.0.0.1",
+            "172.16.0.1",
+            "0.0.0.0",
+            "255.255.255.255"
+          ],
+          "ipv6": [
+            "2001:db8::1",
+            "::1",
+            "::",
+            "2001:0db8:0000:0000:0000:0000:0000:0001",
+            "fe80::1",
+            "::ffff:192.0.2.1"
+          ]
+        },
+        "invalid": [
+          "",
+          "256.1.1.1",
+          "1.1.1",
+          "1.1.1.1.1",
+          "gggg::1",
+          "2001:db8::gggg",
+          "not-an-ip"
+        ]
+      },
+      "asn": {
+        "valid": [
+          "15169",
+          "AS15169",
+          "as15169",
+          "1",
+          "4294967295"
+        ],
+        "invalid": [
+          "",
+          "0",
+          "-1",
+          "4294967296",
+          "AS",
+          "ASABC",
+          "15169.5"
+        ]
+      }
+    },
+    "ssrf": {
+      "description": "SSRF protection test cases",
+      "blocked": {
+        "privateIPv4": [
+          "10.0.0.1",
+          "172.16.0.1",
+          "192.168.1.1",
+          "127.0.0.1",
+          "169.254.1.1"
+        ],
+        "privateIPv6": [
+          "::1",
+          "fc00::1",
+          "fe80::1"
+        ],
+        "domains": [
+          "localhost",
+          "internal.local",
+          "192.168.1.1.example.com"
+        ]
+      },
+      "allowed": [
+        "8.8.8.8",
+        "1.1.1.1",
+        "2001:4860:4860::8888",
+        "example.com",
+        "google.com"
+      ]
+    },
+    "normalization": {
+      "description": "Data normalization test cases",
+      "domain": {
+        "input": {
+          "objectClassName": "domain",
+          "ldhName": "EXAMPLE.COM",
+          "handle": "DOM123",
+          "status": ["active", "clientTransferProhibited", "active"],
+          "nameservers": [
+            {
+              "objectClassName": "nameserver",
+              "ldhName": "NS1.EXAMPLE.COM"
+            },
+            {
+              "objectClassName": "nameserver",
+              "ldhName": "NS2.EXAMPLE.COM"
+            }
+          ],
+          "events": [
+            {
+              "eventAction": "registration",
+              "eventDate": "1995-08-14T04:00:00Z"
+            },
+            {
+              "eventAction": "expiration",
+              "eventDate": "2026-08-13T04:00:00Z"
+            }
+          ]
+        },
+        "expected": {
+          "ldhName": "example.com",
+          "handle": "DOM123",
+          "status": ["active", "client-transfer-prohibited"],
+          "nameservers": ["ns1.example.com", "ns2.example.com"],
+          "events": [
+            {
+              "type": "registration",
+              "date": "1995-08-14T04:00:00.000Z"
+            },
+            {
+              "type": "expiration",
+              "date": "2026-08-13T04:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "ip": {
+        "input": {
+          "objectClassName": "ip network",
+          "handle": "NET-8-0-0-0-1",
+          "startAddress": "8.0.0.0",
+          "endAddress": "8.255.255.255",
+          "ipVersion": "v4",
+          "name": "LVLT-ORG-8-8",
+          "type": "DIRECT ALLOCATION",
+          "country": "us"
+        },
+        "expected": {
+          "handle": "NET-8-0-0-0-1",
+          "startAddress": "8.0.0.0",
+          "endAddress": "8.255.255.255",
+          "ipVersion": "v4",
+          "name": "LVLT-ORG-8-8",
+          "type": "direct allocation",
+          "country": "US"
+        }
+      },
+      "asn": {
+        "input": {
+          "objectClassName": "autnum",
+          "handle": "AS15169",
+          "startAutnum": 15169,
+          "endAutnum": 15169,
+          "name": "GOOGLE",
+          "type": "DIRECT ALLOCATION",
+          "country": "us"
+        },
+        "expected": {
+          "handle": "AS15169",
+          "startAutnum": 15169,
+          "endAutnum": 15169,
+          "name": "GOOGLE",
+          "type": "direct allocation",
+          "country": "US"
+        }
+      }
+    },
+    "pii": {
+      "description": "PII redaction test cases",
+      "input": {
+        "entities": [
+          {
+            "handle": "ENTITY123",
+            "roles": ["registrant"],
+            "vcardArray": [
+              "vcard",
+              [
+                ["version", {}, "text", "4.0"],
+                ["fn", {}, "text", "John Doe"],
+                ["email", {}, "text", "john.doe@example.com"],
+                ["tel", {}, "text", "+1-555-123-4567"],
+                ["adr", {}, "text", ["", "", "123 Main St", "City", "State", "12345", "US"]]
+              ]
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "entities": [
+          {
+            "handle": "ENTITY123",
+            "roles": ["registrant"],
+            "vcardArray": [
+              "vcard",
+              [
+                ["version", {}, "text", "4.0"],
+                ["fn", {}, "text", "[REDACTED]"],
+                ["email", {}, "text", "[REDACTED_EMAIL]"],
+                ["tel", {}, "text", "[REDACTED_PHONE]"],
+                ["adr", {}, "text", "[REDACTED_ADDRESS]"]
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "errors": {
+      "description": "Error handling test cases",
+      "cases": [
+        {
+          "name": "Invalid domain format",
+          "input": "invalid..domain",
+          "expectedError": "VALIDATION_ERROR",
+          "expectedMessage": "Invalid domain format"
+        },
+        {
+          "name": "SSRF attempt",
+          "input": "127.0.0.1",
+          "expectedError": "SSRF_PROTECTION_ERROR",
+          "expectedMessage": "Blocked private IP address"
+        },
+        {
+          "name": "Network timeout",
+          "input": "example.com",
+          "mockTimeout": true,
+          "expectedError": "TIMEOUT_ERROR",
+          "expectedMessage": "Request timeout"
+        },
+        {
+          "name": "Invalid JSON response",
+          "input": "example.com",
+          "mockResponse": "not json",
+          "expectedError": "NORMALIZATION_ERROR",
+          "expectedMessage": "Invalid JSON"
+        },
+        {
+          "name": "Missing required fields",
+          "input": "example.com",
+          "mockResponse": {
+            "objectClassName": "domain"
+          },
+          "expectedError": "NORMALIZATION_ERROR",
+          "expectedMessage": "Missing required fields"
+        }
+      ]
+    },
+    "cache": {
+      "description": "Cache behavior test cases",
+      "scenarios": [
+        {
+          "name": "Cache miss then hit",
+          "steps": [
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": false
+            },
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": true
+            }
+          ]
+        },
+        {
+          "name": "Cache expiration",
+          "steps": [
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": false
+            },
+            {
+              "action": "wait",
+              "duration": 3700000
+            },
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": false
+            }
+          ]
+        },
+        {
+          "name": "Cache disabled",
+          "config": {
+            "cache": false
+          },
+          "steps": [
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": false
+            },
+            {
+              "action": "query",
+              "input": "example.com",
+              "expectedCached": false
+            }
+          ]
+        }
+      ]
+    },
+    "retry": {
+      "description": "Retry logic test cases",
+      "scenarios": [
+        {
+          "name": "Successful retry after network error",
+          "config": {
+            "retry": {
+              "maxAttempts": 3,
+              "backoff": "exponential"
+            }
+          },
+          "mockResponses": [
+            {
+              "attempt": 1,
+              "error": "NETWORK_ERROR"
+            },
+            {
+              "attempt": 2,
+              "success": true
+            }
+          ],
+          "expectedAttempts": 2,
+          "expectedSuccess": true
+        },
+        {
+          "name": "Max retries exceeded",
+          "config": {
+            "retry": {
+              "maxAttempts": 3,
+              "backoff": "exponential"
+            }
+          },
+          "mockResponses": [
+            {
+              "attempt": 1,
+              "error": "NETWORK_ERROR"
+            },
+            {
+              "attempt": 2,
+              "error": "NETWORK_ERROR"
+            },
+            {
+              "attempt": 3,
+              "error": "NETWORK_ERROR"
+            }
+          ],
+          "expectedAttempts": 3,
+          "expectedError": "NETWORK_ERROR"
+        },
+        {
+          "name": "No retry on validation error",
+          "config": {
+            "retry": {
+              "maxAttempts": 3
+            }
+          },
+          "mockResponses": [
+            {
+              "attempt": 1,
+              "error": "VALIDATION_ERROR"
+            }
+          ],
+          "expectedAttempts": 1,
+          "expectedError": "VALIDATION_ERROR"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2026-01-24",
+    "totalVectors": 50,
+    "categories": [
+      "validation",
+      "ssrf",
+      "normalization",
+      "pii",
+      "errors",
+      "cache",
+      "retry"
+    ]
+  }
+}
