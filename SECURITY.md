@@ -17,11 +17,21 @@ This document outlines our security policies and procedures. For comprehensive t
 
 ## Reporting a Vulnerability
 
-### GitHub Security Advisories (Preferred)
-Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories/new).
+### 🔒 Preferred Methods
 
-### Alternative Method
-Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) with the label `security` if the vulnerability is not critical.
+1. **GitHub Security Advisories** (Most Secure)
+   - Report privately: [GitHub Security Advisories](https://github.com/rdapify/rdapify/security/advisories/new)
+   - Automatic CVE assignment
+   - Private discussion with maintainers
+
+2. **Email** (For Critical Issues)
+   - **Critical/Emergency**: emergency@rdapify.com
+   - **Standard Security**: security@rdapify.com
+   - **PGP Encryption**: Available at https://rdapify.com/security/pgp-key.asc (optional)
+
+3. **GitHub Issues** (Non-Critical Only)
+   - Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) with label `security`
+   - Only for low-severity, non-exploitable issues
 
 ### Information to Include
 For a faster response, please include:
@@ -31,9 +41,21 @@ For a faster response, please include:
 - Suggested fix (optional but helpful)
 
 ### Response Timeline
-- **Initial response**: Within 7 days
-- **Triage and validation**: 7-14 business days
-- **Fix development**: Depends on severity
+- **Critical Issues** (emergency@rdapify.com):
+  - Initial response: Within 4 hours
+  - Triage: Within 24 hours
+  - Patch: Within 7 days
+  
+- **High Severity** (security@rdapify.com):
+  - Initial response: Within 24 hours
+  - Triage: Within 7 days
+  - Patch: Within 30 days
+
+- **Medium/Low Severity**:
+  - Initial response: Within 7 days
+  - Triage: 7-14 business days
+  - Patch: Next minor/major release
+
 - **Coordinated disclosure**: 90 days after initial report
 
 ## Security Vulnerability Classification
