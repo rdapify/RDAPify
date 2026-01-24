@@ -5,6 +5,8 @@
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
+[![Website](https://img.shields.io/badge/website-rdapify.com-blue?style=flat-square)](https://rdapify.com)
+[![GitHub](https://img.shields.io/github/stars/rdapify/RDAPify?style=flat-square)](https://github.com/rdapify/RDAPify)
 
 **RDAPify** unifies RDAP queries across all global registries (Verisign, ARIN, RIPE, APNIC, LACNIC) with robust security protection, exceptional performance, and an integrated developer experience. This isn't just another RDAP client — it's a complete platform for processing registration data securely.
 
@@ -381,9 +383,11 @@ We're looking for early adopters and beta testers! If you're interested in:
 - Reporting bugs or suggesting features
 
 **Get involved**: 
-- Open a [GitHub Issue](https://github.com/rdapify/rdapify/issues) for bugs or feature requests
-- Start a [GitHub Discussion](https://github.com/rdapify/rdapify/discussions) for questions or ideas
-- Check out [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
+- 🌐 Visit our website: [rdapify.com](https://rdapify.com)
+- 🐛 Open a [GitHub Issue](https://github.com/rdapify/RDAPify/issues) for bugs or feature requests
+- 💬 Start a [GitHub Discussion](https://github.com/rdapify/RDAPify/discussions) for questions or ideas
+- 📖 Read the [Documentation](https://rdapify.com/docs)
+- 🤝 Check out [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
 
 ### Known Issues & Limitations (Alpha)
 
