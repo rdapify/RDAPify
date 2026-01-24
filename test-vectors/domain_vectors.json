@@ -1,0 +1,298 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for domain name queries",
+  "updated": "2024-01-24",
+  "valid": [
+    {
+      "id": "domain-001",
+      "description": "Simple ASCII domain",
+      "input": "example.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.com",
+        "handle": "EXAMPLE-COM"
+      }
+    },
+    {
+      "id": "domain-002",
+      "description": "Subdomain",
+      "input": "www.example.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "www.example.com"
+      }
+    },
+    {
+      "id": "domain-003",
+      "description": "Multi-level subdomain",
+      "input": "api.v2.example.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "api.v2.example.com"
+      }
+    },
+    {
+      "id": "domain-004",
+      "description": "Country code TLD",
+      "input": "example.co.uk",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.co.uk"
+      }
+    },
+    {
+      "id": "domain-005",
+      "description": "New gTLD",
+      "input": "example.tech",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.tech"
+      }
+    },
+    {
+      "id": "domain-006",
+      "description": "Hyphenated domain",
+      "input": "my-example-domain.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "my-example-domain.com"
+      }
+    },
+    {
+      "id": "domain-007",
+      "description": "Numeric domain",
+      "input": "123456.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "123456.com"
+      }
+    },
+    {
+      "id": "domain-008",
+      "description": "Single character domain",
+      "input": "x.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "x.com"
+      }
+    },
+    {
+      "id": "domain-009",
+      "description": "Maximum length label (63 chars)",
+      "input": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk.com"
+      }
+    },
+    {
+      "id": "domain-010",
+      "description": "IDN domain (Punycode)",
+      "input": "xn--e1afmkfd.xn--p1ai",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "xn--e1afmkfd.xn--p1ai",
+        "unicodeName": "пример.рф"
+      }
+    },
+    {
+      "id": "domain-011",
+      "description": "Domain with numbers and hyphens",
+      "input": "test-123-domain.org",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "test-123-domain.org"
+      }
+    },
+    {
+      "id": "domain-012",
+      "description": "Four-level domain",
+      "input": "sub.domain.example.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "sub.domain.example.com"
+      }
+    },
+    {
+      "id": "domain-013",
+      "description": "Domain with all lowercase",
+      "input": "lowercase.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "lowercase.com"
+      }
+    },
+    {
+      "id": "domain-014",
+      "description": "Domain with mixed case (should normalize)",
+      "input": "MixedCase.COM",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "mixedcase.com"
+      }
+    },
+    {
+      "id": "domain-015",
+      "description": "Domain with trailing dot (FQDN)",
+      "input": "example.com.",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.com"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "id": "domain-err-001",
+      "description": "Empty string",
+      "input": "",
+      "error": "ValidationError",
+      "message": "Domain cannot be empty"
+    },
+    {
+      "id": "domain-err-002",
+      "description": "Domain with spaces",
+      "input": "invalid domain.com",
+      "error": "ValidationError",
+      "message": "Domain contains invalid characters"
+    },
+    {
+      "id": "domain-err-003",
+      "description": "Domain starting with hyphen",
+      "input": "-example.com",
+      "error": "ValidationError",
+      "message": "Label cannot start with hyphen"
+    },
+    {
+      "id": "domain-err-004",
+      "description": "Domain ending with hyphen",
+      "input": "example-.com",
+      "error": "ValidationError",
+      "message": "Label cannot end with hyphen"
+    },
+    {
+      "id": "domain-err-005",
+      "description": "Domain with consecutive dots",
+      "input": "example..com",
+      "error": "ValidationError",
+      "message": "Domain contains consecutive dots"
+    },
+    {
+      "id": "domain-err-006",
+      "description": "Domain starting with dot",
+      "input": ".example.com",
+      "error": "ValidationError",
+      "message": "Domain cannot start with dot"
+    },
+    {
+      "id": "domain-err-007",
+      "description": "Domain with special characters",
+      "input": "example@domain.com",
+      "error": "ValidationError",
+      "message": "Domain contains invalid characters"
+    },
+    {
+      "id": "domain-err-008",
+      "description": "Domain exceeding maximum length (253 chars)",
+      "input": "a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.com",
+      "error": "ValidationError",
+      "message": "Domain exceeds maximum length"
+    },
+    {
+      "id": "domain-err-009",
+      "description": "Label exceeding 63 characters",
+      "input": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl.com",
+      "error": "ValidationError",
+      "message": "Label exceeds maximum length"
+    },
+    {
+      "id": "domain-err-010",
+      "description": "Domain with underscore",
+      "input": "example_domain.com",
+      "error": "ValidationError",
+      "message": "Domain contains invalid characters"
+    },
+    {
+      "id": "domain-err-011",
+      "description": "Missing TLD",
+      "input": "example",
+      "error": "ValidationError",
+      "message": "Domain must have at least one dot"
+    },
+    {
+      "id": "domain-err-012",
+      "description": "Numeric TLD",
+      "input": "example.123",
+      "error": "ValidationError",
+      "message": "TLD cannot be numeric"
+    },
+    {
+      "id": "domain-err-013",
+      "description": "Domain with whitespace",
+      "input": " example.com ",
+      "error": "ValidationError",
+      "message": "Domain contains whitespace"
+    },
+    {
+      "id": "domain-err-014",
+      "description": "Domain with unicode (not punycode)",
+      "input": "例え.com",
+      "error": "ValidationError",
+      "message": "Domain must be ASCII or Punycode"
+    },
+    {
+      "id": "domain-err-015",
+      "description": "Null value",
+      "input": null,
+      "error": "ValidationError",
+      "message": "Domain must be a string"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "domain-edge-001",
+      "description": "Single letter TLD",
+      "input": "example.x",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.x"
+      }
+    },
+    {
+      "id": "domain-edge-002",
+      "description": "Two letter domain",
+      "input": "ab.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "ab.com"
+      }
+    },
+    {
+      "id": "domain-edge-003",
+      "description": "All numeric subdomain",
+      "input": "123.example.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "123.example.com"
+      }
+    },
+    {
+      "id": "domain-edge-004",
+      "description": "Domain with maximum labels",
+      "input": "a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.com"
+      }
+    },
+    {
+      "id": "domain-edge-005",
+      "description": "Domain near maximum length (250 chars)",
+      "input": "subdomain.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing.com",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "subdomain.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing-purposes-only.example-domain-with-very-long-name-for-testing.com"
+      }
+    }
+  ]
+}

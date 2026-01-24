@@ -1,0 +1,313 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for IP address queries",
+  "updated": "2024-01-24",
+  "valid": [
+    {
+      "id": "ip-001",
+      "description": "Google DNS IPv4",
+      "input": "8.8.8.8",
+      "expected": {
+        "objectClass": "ip network",
+        "startAddress": "8.8.8.0",
+        "endAddress": "8.8.8.255",
+        "ipVersion": "v4",
+        "cidr": "8.8.8.0/24"
+      }
+    },
+    {
+      "id": "ip-002",
+      "description": "Cloudflare DNS IPv4",
+      "input": "1.1.1.1",
+      "expected": {
+        "objectClass": "ip network",
+        "startAddress": "1.1.1.0",
+        "endAddress": "1.1.1.255",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-003",
+      "description": "Private IPv4 (RFC 1918)",
+      "input": "192.168.1.1",
+      "expected": {
+        "objectClass": "ip network",
+        "startAddress": "192.168.0.0",
+        "endAddress": "192.168.255.255",
+        "ipVersion": "v4",
+        "cidr": "192.168.0.0/16"
+      }
+    },
+    {
+      "id": "ip-004",
+      "description": "Localhost IPv4",
+      "input": "127.0.0.1",
+      "expected": {
+        "objectClass": "ip network",
+        "startAddress": "127.0.0.0",
+        "endAddress": "127.255.255.255",
+        "ipVersion": "v4",
+        "cidr": "127.0.0.0/8"
+      }
+    },
+    {
+      "id": "ip-005",
+      "description": "Class A network",
+      "input": "10.0.0.1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-006",
+      "description": "Class B network",
+      "input": "172.16.0.1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-007",
+      "description": "Google DNS IPv6",
+      "input": "2001:4860:4860::8888",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6",
+        "startAddress": "2001:4860:4860::",
+        "endAddress": "2001:4860:4860:ffff:ffff:ffff:ffff:ffff"
+      }
+    },
+    {
+      "id": "ip-008",
+      "description": "Cloudflare DNS IPv6",
+      "input": "2606:4700:4700::1111",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    },
+    {
+      "id": "ip-009",
+      "description": "IPv6 localhost",
+      "input": "::1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6",
+        "startAddress": "::1",
+        "endAddress": "::1"
+      }
+    },
+    {
+      "id": "ip-010",
+      "description": "IPv6 unspecified",
+      "input": "::",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    },
+    {
+      "id": "ip-011",
+      "description": "IPv6 with full notation",
+      "input": "2001:0db8:0000:0000:0000:0000:0000:0001",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6",
+        "startAddress": "2001:db8::"
+      }
+    },
+    {
+      "id": "ip-012",
+      "description": "IPv6 compressed notation",
+      "input": "2001:db8::1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    },
+    {
+      "id": "ip-013",
+      "description": "IPv4 with leading zeros",
+      "input": "008.008.008.008",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4",
+        "startAddress": "8.8.8.0"
+      }
+    },
+    {
+      "id": "ip-014",
+      "description": "IPv4 broadcast address",
+      "input": "255.255.255.255",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-015",
+      "description": "IPv4 network address",
+      "input": "0.0.0.0",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "id": "ip-err-001",
+      "description": "Empty string",
+      "input": "",
+      "error": "ValidationError",
+      "message": "IP address cannot be empty"
+    },
+    {
+      "id": "ip-err-002",
+      "description": "Invalid IPv4 format",
+      "input": "256.1.1.1",
+      "error": "ValidationError",
+      "message": "Invalid IPv4 address"
+    },
+    {
+      "id": "ip-err-003",
+      "description": "IPv4 with too many octets",
+      "input": "1.1.1.1.1",
+      "error": "ValidationError",
+      "message": "Invalid IPv4 address format"
+    },
+    {
+      "id": "ip-err-004",
+      "description": "IPv4 with too few octets",
+      "input": "1.1.1",
+      "error": "ValidationError",
+      "message": "Invalid IPv4 address format"
+    },
+    {
+      "id": "ip-err-005",
+      "description": "IPv4 with letters",
+      "input": "1.1.1.a",
+      "error": "ValidationError",
+      "message": "Invalid IPv4 address"
+    },
+    {
+      "id": "ip-err-006",
+      "description": "IPv4 with negative numbers",
+      "input": "-1.1.1.1",
+      "error": "ValidationError",
+      "message": "Invalid IPv4 address"
+    },
+    {
+      "id": "ip-err-007",
+      "description": "IPv6 with invalid characters",
+      "input": "2001:db8::gggg",
+      "error": "ValidationError",
+      "message": "Invalid IPv6 address"
+    },
+    {
+      "id": "ip-err-008",
+      "description": "IPv6 with too many groups",
+      "input": "2001:db8:0:0:0:0:0:0:1",
+      "error": "ValidationError",
+      "message": "Invalid IPv6 address format"
+    },
+    {
+      "id": "ip-err-009",
+      "description": "IPv6 with multiple double colons",
+      "input": "2001::db8::1",
+      "error": "ValidationError",
+      "message": "Invalid IPv6 address"
+    },
+    {
+      "id": "ip-err-010",
+      "description": "IPv6 with invalid compression",
+      "input": ":::",
+      "error": "ValidationError",
+      "message": "Invalid IPv6 address"
+    },
+    {
+      "id": "ip-err-011",
+      "description": "Domain name instead of IP",
+      "input": "example.com",
+      "error": "ValidationError",
+      "message": "Not a valid IP address"
+    },
+    {
+      "id": "ip-err-012",
+      "description": "IPv4 with spaces",
+      "input": "1.1.1. 1",
+      "error": "ValidationError",
+      "message": "IP address contains whitespace"
+    },
+    {
+      "id": "ip-err-013",
+      "description": "Null value",
+      "input": null,
+      "error": "ValidationError",
+      "message": "IP address must be a string"
+    },
+    {
+      "id": "ip-err-014",
+      "description": "IPv4 CIDR notation (not supported in query)",
+      "input": "192.168.1.0/24",
+      "error": "ValidationError",
+      "message": "CIDR notation not supported"
+    },
+    {
+      "id": "ip-err-015",
+      "description": "IPv6 with zone ID",
+      "input": "fe80::1%eth0",
+      "error": "ValidationError",
+      "message": "Zone ID not supported"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "ip-edge-001",
+      "description": "IPv4 minimum value",
+      "input": "0.0.0.1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-edge-002",
+      "description": "IPv4 maximum value",
+      "input": "255.255.255.254",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "ip-edge-003",
+      "description": "IPv6 link-local",
+      "input": "fe80::1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    },
+    {
+      "id": "ip-edge-004",
+      "description": "IPv6 multicast",
+      "input": "ff02::1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    },
+    {
+      "id": "ip-edge-005",
+      "description": "IPv6 documentation prefix",
+      "input": "2001:db8::1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v6"
+      }
+    }
+  ]
+}

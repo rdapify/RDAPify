@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for anomaly detection and malformed responses",
+  "updated": "2024-01-24",
+  "missing_required_fields": [
+    {
+      "id": "anom-miss-001",
+      "description": "Missing objectClass",
+      "response": {
+        "handle": "EXAMPLE-COM",
+        "ldhName": "example.com"
+      },
+      "expected": {
+        "error": "MalformedResponseError",
+        "message": "Missing required field: objectClass"
+      }
+    },
+    {
+      "id": "anom-miss-002",
+      "description": "Missing ldhName for domain",
+      "response": {
+        "objectClass": "domain",
+        "handle": "EXAMPLE-COM"
+      },
+      "expected": {
+        "error": "MalformedResponseError",
+        "message": "Missing required field: ldhName"
+      }
+    }
+  ],
+  "invalid_data_types": [
+    {
+      "id": "anom-type-001",
+      "description": "objectClass as number",
+      "response": {
+        "objectClass": 123,
+        "handle": "EXAMPLE-COM"
+      },
+      "expected": {
+        "error": "MalformedResponseError",
+        "message": "Invalid data type for objectClass"
+      }
+    },
+    {
+      "id": "anom-type-002",
+      "description": "status as string instead of array",
+      "response": {
+        "objectClass": "domain",
+        "ldhName": "example.com",
+        "status": "active"
+      },
+      "expected": {
+        "error": "MalformedResponseError",
+        "message": "Invalid data type for status"
+      }
+    }
+  ],
+  "protocol_violations": [
+    {
+      "id": "anom-proto-001",
+      "description": "Invalid objectClass value",
+      "response": {
+        "objectClass": "invalid-class",
+        "handle": "TEST"
+      },
+      "expected": {
+        "error": "ProtocolViolationError",
+        "message": "Invalid objectClass value"
+      }
+    },
+    {
+      "id": "anom-proto-002",
+      "description": "Invalid status value",
+      "response": {
+        "objectClass": "domain",
+        "ldhName": "example.com",
+        "status": ["invalid-status"]
+      },
+      "expected": {
+        "warning": "Unknown status value"
+      }
+    }
+  ],
+  "malformed_json": [
+    {
+      "id": "anom-json-001",
+      "description": "Empty response",
+      "response": "",
+      "expected": {
+        "error": "EmptyResponseError",
+        "message": "Empty response from server"
+      }
+    },
+    {
+      "id": "anom-json-002",
+      "description": "Null response",
+      "response": null,
+      "expected": {
+        "error": "NullResponseError",
+        "message": "Null response from server"
+      }
+    }
+  ]
+}

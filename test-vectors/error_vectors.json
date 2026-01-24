@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for error handling scenarios",
+  "updated": "2024-01-24",
+  "http_errors": [
+    {
+      "id": "err-http-001",
+      "description": "404 Not Found",
+      "statusCode": 404,
+      "input": "nonexistent-domain-12345.com",
+      "expected": {
+        "error": "NoServerFoundError",
+        "message": "No RDAP server found",
+        "statusCode": 404
+      }
+    },
+    {
+      "id": "err-http-002",
+      "description": "429 Rate Limited",
+      "statusCode": 429,
+      "input": "example.com",
+      "expected": {
+        "error": "RateLimitError",
+        "message": "Rate limit exceeded",
+        "statusCode": 429
+      }
+    },
+    {
+      "id": "err-http-003",
+      "description": "500 Internal Server Error",
+      "statusCode": 500,
+      "input": "example.com",
+      "expected": {
+        "error": "ServerError",
+        "message": "RDAP server error",
+        "statusCode": 500
+      }
+    }
+  ],
+  "network_errors": [
+    {
+      "id": "err-net-001",
+      "description": "Connection timeout",
+      "input": "example.com",
+      "error": "ETIMEDOUT",
+      "expected": {
+        "error": "TimeoutError",
+        "message": "Connection timeout"
+      }
+    },
+    {
+      "id": "err-net-002",
+      "description": "Connection refused",
+      "input": "example.com",
+      "error": "ECONNREFUSED",
+      "expected": {
+        "error": "NetworkError",
+        "message": "Connection refused"
+      }
+    }
+  ],
+  "validation_errors": [
+    {
+      "id": "err-val-001",
+      "description": "Invalid domain format",
+      "input": "invalid domain.com",
+      "expected": {
+        "error": "ValidationError",
+        "message": "Domain contains invalid characters"
+      }
+    },
+    {
+      "id": "err-val-002",
+      "description": "Invalid IP format",
+      "input": "999.999.999.999",
+      "expected": {
+        "error": "ValidationError",
+        "message": "Invalid IPv4 address"
+      }
+    }
+  ],
+  "ssrf_errors": [
+    {
+      "id": "err-ssrf-001",
+      "description": "Private IP (RFC 1918)",
+      "input": "192.168.1.1",
+      "expected": {
+        "error": "SSRFError",
+        "message": "Private IP address not allowed"
+      }
+    },
+    {
+      "id": "err-ssrf-002",
+      "description": "Localhost",
+      "input": "127.0.0.1",
+      "expected": {
+        "error": "SSRFError",
+        "message": "Localhost not allowed"
+      }
+    }
+  ]
+}

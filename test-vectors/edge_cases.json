@@ -1,0 +1,93 @@
+{
+  "version": "1.0.0",
+  "description": "Test vectors for edge cases and boundary conditions",
+  "updated": "2024-01-24",
+  "length_boundaries": [
+    {
+      "id": "edge-len-001",
+      "description": "Minimum domain length",
+      "input": "a.b",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "a.b"
+      }
+    },
+    {
+      "id": "edge-len-002",
+      "description": "Maximum label length (63 chars)",
+      "input": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk.com",
+      "expected": {
+        "objectClass": "domain"
+      }
+    }
+  ],
+  "character_encoding": [
+    {
+      "id": "edge-enc-001",
+      "description": "IDN domain (Punycode)",
+      "input": "xn--e1afmkfd.xn--p1ai",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "xn--e1afmkfd.xn--p1ai"
+      }
+    },
+    {
+      "id": "edge-enc-002",
+      "description": "Arabic IDN",
+      "input": "xn--mgbaam7a8h.xn--mgbaam7a8h",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "xn--mgbaam7a8h.xn--mgbaam7a8h"
+      }
+    }
+  ],
+  "numeric_boundaries": [
+    {
+      "id": "edge-num-001",
+      "description": "IPv4 minimum value",
+      "input": "0.0.0.1",
+      "expected": {
+        "objectClass": "ip network",
+        "ipVersion": "v4"
+      }
+    },
+    {
+      "id": "edge-num-002",
+      "description": "ASN minimum",
+      "input": "1",
+      "expected": {
+        "objectClass": "autnum",
+        "startAutnum": 1
+      }
+    },
+    {
+      "id": "edge-num-003",
+      "description": "ASN 32-bit maximum",
+      "input": "4294967295",
+      "expected": {
+        "objectClass": "autnum",
+        "startAutnum": 4294967295
+      }
+    }
+  ],
+  "case_sensitivity": [
+    {
+      "id": "edge-case-001",
+      "description": "Uppercase domain (normalize to lowercase)",
+      "input": "EXAMPLE.COM",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.com"
+      }
+    },
+    {
+      "id": "edge-case-002",
+      "description": "Mixed case domain",
+      "input": "ExAmPlE.CoM",
+      "expected": {
+        "objectClass": "domain",
+        "ldhName": "example.com"
+      }
+    }
+  ]
+}
