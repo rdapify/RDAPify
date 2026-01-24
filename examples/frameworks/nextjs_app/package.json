@@ -1,0 +1,21 @@
+{
+  "name": "rdapify-nextjs-example",
+  "version": "1.0.0",
+  "description": "Next.js integration example for RDAPify",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rdapify": "^0.1.0-alpha.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
