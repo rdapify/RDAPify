@@ -706,7 +706,7 @@ describe('Rate Limiting Resilience', () => {
     
     // Expect most requests to succeed using cache
     const successes = results.filter(r => r.status === 'fulfilled').length;
-    expect(successes).toBeGreaterThan(25); // >80% success rate
+    expect(successes).toBeGreaterThan(25); // &gt;80% success rate
     
     // No unhandled errors
     results.filter(r => r.status === 'rejected').forEach(r => {
@@ -777,7 +777,7 @@ monitoringClient.on('rate_limit:warning', (event) => {
 });
 
 monitoringClient.on('rate_limit:critical', (event) => {
-  if (event.successRate < 0.7) { // <70% success rate
+  if (event.successRate < 0.7) { // &lt;70% success rate
     alertSystem.send({
       severity: 'critical',
       title: 'Service Degradation Due to Rate Limiting',

@@ -1,0 +1,57 @@
+name: Examples
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - 'src/**'
+      - '.github/workflows/examples.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - 'src/**'
+
+jobs:
+  validate-examples:
+    name: Validate Examples
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build library
+        run: npm run build
+      
+      - name: Validate basic examples
+        run: |
+          echo "✓ Validating basic examples..."
+          # Add validation logic when examples are ready
+          ls -la examples/basic/
+        continue-on-error: true
+      
+      - name: Validate advanced examples
+        run: |
+          echo "✓ Validating advanced examples..."
+          # Add validation logic when examples are ready
+          ls -la examples/advanced/
+        continue-on-error: true
+      
+      - name: Validate TypeScript examples
+        run: |
+          echo "✓ Validating TypeScript examples..."
+          # Add validation logic when examples are ready
+          ls -la examples/typescript/
+        continue-on-error: true

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed prism-react-renderer theme import in Docusaurus configuration
+- Fixed MDX compilation errors caused by unescaped `<` and `>` characters in markdown tables
+- Fixed self-closing HTML tags (`<br>` → `<br/>`) in documentation
+- Fixed deprecated GitHub Actions (upload-artifact@v3 → v4, actions/create-release → softprops/action-gh-release)
+- Fixed empty workflow file (examples.yml)
+- Fixed missing sidebars.js configuration
+- Removed empty pages causing build failures
+
+### Changed
+- Standardized Node.js version to v20 across all GitHub Actions workflows
+- Updated all workflows to use `node-version-file: .nvmrc` for consistency
+- Improved npm caching in CI/CD workflows for faster builds
+- Added `NODE_ENV: production` to website build workflow
+- Added `onBrokenMarkdownImages: 'warn'` to Docusaurus config
+- Enhanced release workflow with better error handling
+
+### Added
+- Created SVG placeholder icons for homepage features (typescript, performance, security, multi-env, unified, privacy)
+- Added examples validation workflow
+- Added fork check for Snyk security scans to prevent token exposure
+- Added comprehensive CI/CD fixes documentation
+
 ## [0.1.0] - 2025-01-25
 
 ### Added

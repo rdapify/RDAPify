@@ -761,7 +761,7 @@ function getRegionalRegistryPriorities(): Record<string, number> {
 
 ### 1. Global Domain Monitoring Platform
 **Client**: Large domain registrar (Top 10 globally)  
-**Challenge**: Monitor 500,000 domains hourly with <100ms p99 latency  
+**Challenge**: Monitor 500,000 domains hourly with &lt;100ms p99 latency  
 **Solution**:
 - Geo-distributed cache clusters in 6 regions
 - Registry-specific connection pools with adaptive timeouts

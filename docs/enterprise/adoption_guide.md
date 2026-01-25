@@ -54,10 +54,10 @@ graph TD
 #### Critical Assessment Areas
 | Area | Assessment Questions | Tools & Templates |
 |------|----------------------|-------------------|
-| **Security** | • What are your SSRF protection requirements?<br>• How do you handle PII in registration data?<br>• What certificate validation policies are required? | [Security Requirements Checklist](security_requirements_checklist.xlsx)<br>[Threat Model Template](threat_model_template.md) |
-| **Compliance** | • Which jurisdictions require data processing agreements?<br>• What retention policies apply to registration data?<br>• How are data subject access requests handled? | [Compliance Mapping Worksheet](compliance_mapping.xlsx)<br>[DPA Template](dpa_template.md) |
-| **Technical** | • What are your performance SLAs?<br>• What deployment architectures are supported?<br>• How are schema changes handled? | [Technical Assessment Guide](technical_assessment.md)<br>[Architecture Decision Record Template](adr_template.md) |
-| **Operational** | • What monitoring and alerting is required?<br>• How are incidents escalated?<br>• What on-call responsibilities exist? | [Operations Runbook Template](operations_runbook.md)<br>[Incident Response Plan](incident_response.md) |
+| **Security** | • What are your SSRF protection requirements?<br/>• How do you handle PII in registration data?<br/>• What certificate validation policies are required? | [Security Requirements Checklist](security_requirements_checklist.xlsx)<br/>[Threat Model Template](threat_model_template.md) |
+| **Compliance** | • Which jurisdictions require data processing agreements?<br/>• What retention policies apply to registration data?<br/>• How are data subject access requests handled? | [Compliance Mapping Worksheet](compliance_mapping.xlsx)<br/>[DPA Template](dpa_template.md) |
+| **Technical** | • What are your performance SLAs?<br/>• What deployment architectures are supported?<br/>• How are schema changes handled? | [Technical Assessment Guide](technical_assessment.md)<br/>[Architecture Decision Record Template](adr_template.md) |
+| **Operational** | • What monitoring and alerting is required?<br/>• How are incidents escalated?<br/>• What on-call responsibilities exist? | [Operations Runbook Template](operations_runbook.md)<br/>[Incident Response Plan](incident_response.md) |
 
 #### Resource Planning
 ```typescript
@@ -1603,7 +1603,7 @@ interface ComplianceRecommendation {
 | **Availability** | 99.99% SLA with active-active failover |
 | **Data Residency** | Configurable per jurisdiction with audit trails |
 | **Integration Points** | SIEM, IAM, DLP, GRC, Ticketing systems |
-| **Support Model** | 24/7 enterprise support with <1 hour response time |
+| **Support Model** | 24/7 enterprise support with &lt;1 hour response time |
 | **Training** | Role-based training paths with certification options |
 | **Professional Services** | Architecture review, implementation assistance, compliance assessment |
 | **Last Updated** | December 5, 2025 |

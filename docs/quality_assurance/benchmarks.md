@@ -157,7 +157,7 @@ pie
 | **CPU** | Intel Xeon Platinum 8380 @ 2.3GHz (32 cores/64 threads) |
 | **Memory** | 256GB DDR4-3200 |
 | **Storage** | 2TB NVMe SSD (7.2GB/s read) |
-| **Network** | 10Gbps fiber with <1ms latency to major RDAP servers |
+| **Network** | 10Gbps fiber with &lt;1ms latency to major RDAP servers |
 | **OS** | Ubuntu 22.04 LTS, kernel 6.2 |
 | **Software** | Node.js 20.10.0, Bun 1.0.0, Deno 1.38.3, Redis 7.2.3 |
 

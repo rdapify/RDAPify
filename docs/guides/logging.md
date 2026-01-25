@@ -315,7 +315,7 @@ const logger = new MemoryEfficientLogger({
   compression: {
     enabled: true,
     algorithm: 'gzip',          // Compress log entries
-    threshold: 1024             // Only compress entries >1KB
+    threshold: 1024             // Only compress entries &gt;1KB
   },
   persistence: {
     enabled: true,
@@ -652,11 +652,11 @@ describe('Logging Performance', () => {
       
       // Assert reasonable performance
       if (name.includes('async') || name.includes('batched')) {
-        expect(overheadPerLog).toBeLessThan(0.1); // <0.1ms per entry
+        expect(overheadPerLog).toBeLessThan(0.1); // &lt;0.1ms per entry
       } else if (name.includes('sampling')) {
-        expect(overheadPerLog).toBeLessThan(0.5); // <0.5ms per entry
+        expect(overheadPerLog).toBeLessThan(0.5); // &lt;0.5ms per entry
       } else if (name === 'sync_logger') {
-        expect(overheadPerLog).toBeLessThan(2.0); // <2ms per entry
+        expect(overheadPerLog).toBeLessThan(2.0); // &lt;2ms per entry
       }
     }, 30000); // 30 second timeout
   });

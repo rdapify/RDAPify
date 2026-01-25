@@ -1052,7 +1052,7 @@ describe('Priority Queue Resilience', () => {
     
     const metrics = processor.getQueueMetrics();
     expect(metrics.starvationEvents).toBeGreaterThan(0);
-    expect(metrics.high.processingTime).toBeLessThan(5000); // <5 seconds
+    expect(metrics.high.processingTime).toBeLessThan(5000); // &lt;5 seconds
   });
 });
 ```

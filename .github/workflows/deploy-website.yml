@@ -36,6 +36,8 @@ jobs:
       - name: Build website
         working-directory: website
         run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

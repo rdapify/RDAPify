@@ -180,12 +180,12 @@ See `ROADMAP.md` for detailed timeline.
 - **Unit Tests:** Individual module behavior
 - **Integration Tests:** End-to-end client functionality
 - **Fixtures:** Real RDAP responses from major registries
-- **Coverage:** >90% code coverage maintained
+- **Coverage:** &gt;90% code coverage maintained
 
 ### Performance Characteristics
 
 - **Cold start:** ~50-100ms (bootstrap fetch)
-- **Cached query:** <1ms
+- **Cached query:** &lt;1ms
 - **Uncached query:** ~100-500ms (network dependent)
 - **Memory:** ~10-50MB (depends on cache size)
 - **Throughput:** 100+ queries/second (cached)

@@ -711,8 +711,8 @@ class ThreatIntelligenceIntegrator {
       const createdDate = new Date(createdEvent.date);
       const daysSinceCreation = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
       
-      if (daysSinceCreation < 7) factors.push('Very new registration (<7 days)');
-      else if (daysSinceCreation < 30) factors.push('Recent registration (<30 days)');
+      if (daysSinceCreation < 7) factors.push('Very new registration (&lt;7 days)');
+      else if (daysSinceCreation < 30) factors.push('Recent registration (&lt;30 days)');
     }
     
     if (registration.entities?.some(e => e.roles.includes('registrant') && 
@@ -1036,7 +1036,7 @@ const mockRDAPService = {
           { type: 'expiration', date: '2026-11-15T00:00:00Z' }
         ],
         warnings: [
-          'Recently registered (<30 days)',
+          'Recently registered (&lt;30 days)',
           'Privacy-protected registrant information',
           'Unusual nameserver configuration'
         ]
@@ -1056,7 +1056,7 @@ const mockRDAPService = {
         { type: 'registration', date: '2023-01-01T00:00:00Z' },
         { type: 'expiration', date: '2026-01-01T00:00:00Z' }
       ],
-      warnings: domain.includes('new') ? ['Recently registered (<90 days)'] : []
+      warnings: domain.includes('new') ? ['Recently registered (&lt;90 days)'] : []
     };
   }
 };

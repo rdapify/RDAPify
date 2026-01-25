@@ -189,7 +189,7 @@ graph LR
 ### 1. Public Quality Dashboard
 RDAPify maintains transparent quality metrics visible to all stakeholders:
 
-![Quality Dashboard](../../static/quality/dashboard-screenshot.png)
+<!-- ![Quality Dashboard](../../static/quality/dashboard-screenshot.png) -->
 
 **Key Public Metrics**:
 - Test coverage percentage (overall and by module)

@@ -528,7 +528,7 @@ describe('Performance Tests', () => {
     console.log(`P95 Latency: ${getP95Latency(results)}ms`);
     
     expect(throughput).toBeGreaterThan(500); // 500 req/s minimum
-    expect(getP95Latency(results)).toBeLessThan(100); // <100ms P95
+    expect(getP95Latency(results)).toBeLessThan(100); // &lt;100ms P95
   });
   
   test('memory usage under sustained load', async () => {

@@ -128,9 +128,9 @@ export class ArchitectureReviewService {
 #### Architecture Review Packages
 | Package | Duration | Experts | Deliverables | Investment |
 |---------|----------|---------|-------------|------------|
-| **Essential** | 3-5 days | 1 Senior Architect | • Architecture assessment report<br>• Critical risk identification<br>• High-priority recommendations | $15,000-$25,000 |
-| **Comprehensive** | 1-2 weeks | 3 Domain Experts | • Full architecture documentation<br>• Security and compliance gap analysis<br>• Detailed implementation roadmap<br>• Performance optimization plan | $40,000-$65,000 |
-| **Enterprise** | 3-4 weeks | 5+ Specialists | • End-to-end system design<br>• Regulatory compliance validation<br>• Disaster recovery planning<br>• Team knowledge transfer program<br>• 30-day post-engagement support | $90,000-$150,000 |
+| **Essential** | 3-5 days | 1 Senior Architect | • Architecture assessment report<br/>• Critical risk identification<br/>• High-priority recommendations | $15,000-$25,000 |
+| **Comprehensive** | 1-2 weeks | 3 Domain Experts | • Full architecture documentation<br/>• Security and compliance gap analysis<br/>• Detailed implementation roadmap<br/>• Performance optimization plan | $40,000-$65,000 |
+| **Enterprise** | 3-4 weeks | 5+ Specialists | • End-to-end system design<br/>• Regulatory compliance validation<br/>• Disaster recovery planning<br/>• Team knowledge transfer program<br/>• 30-day post-engagement support | $90,000-$150,000 |
 
 ### 2. Implementation Support
 ```typescript
@@ -421,9 +421,9 @@ export class ComplianceValidationService {
 #### Compliance Assessment Packages
 | Package | Frameworks Covered | Duration | Deliverables | Investment |
 |---------|-------------------|----------|-------------|------------|
-| **Quick Assessment** | 1 framework (GDPR or CCPA) | 1 week | • Gap analysis report<br>• Critical findings summary<br>• Prioritized action plan | $8,000-$15,000 |
-| **Standard Assessment** | 2 frameworks (GDPR + CCPA) | 2 weeks | • Comprehensive compliance report<br>• Data flow mapping<br>• Risk assessment<br>• Remediation roadmap | $20,000-$35,000 |
-| **Enterprise Assessment** | 3+ frameworks + industry standards | 3-4 weeks | • Full compliance program<br>• Processing activity register<br>• Data protection impact assessment<br>• Training program<br>• Audit preparation | $45,000-$75,000 |
+| **Quick Assessment** | 1 framework (GDPR or CCPA) | 1 week | • Gap analysis report<br/>• Critical findings summary<br/>• Prioritized action plan | $8,000-$15,000 |
+| **Standard Assessment** | 2 frameworks (GDPR + CCPA) | 2 weeks | • Comprehensive compliance report<br/>• Data flow mapping<br/>• Risk assessment<br/>• Remediation roadmap | $20,000-$35,000 |
+| **Enterprise Assessment** | 3+ frameworks + industry standards | 3-4 weeks | • Full compliance program<br/>• Processing activity register<br/>• Data protection impact assessment<br/>• Training program<br/>• Audit preparation | $45,000-$75,000 |
 
 ## 💼 Engagement Models
 
@@ -673,10 +673,10 @@ export class CustomEngagementBuilder {
 ### Regional Consulting Teams
 | Region | Office Locations | Languages Supported | Specializations | Contact |
 |--------|------------------|---------------------|----------------|---------|
-| **Americas** | New York, San Francisco, Toronto, São Paulo | English, Spanish, Portuguese, French | • FINRA/SEC compliance<br>• CCPA/CPRA implementation<br>• PCI DSS integration | americas@rdapify.consulting |
-| **EMEA** | London, Berlin, Paris, Dubai | English, German, French, Arabic, Russian | • GDPR Article 32 implementation<br>• NIS2 compliance<br>• Middle East data residency | emea@rdapify.consulting |
-| **APAC** | Singapore, Tokyo, Sydney, Mumbai | English, Mandarin, Japanese, Hindi | • PDPA compliance (Singapore)<br>• Chinese data localization<br>• APAC registry integrations | apac@rdapify.consulting |
-| **Global** | Remote, On-site | 20+ languages via partners | • Multi-jurisdiction compliance<br>• Distributed architecture<br>• Incident response | global@rdapify.consulting |
+| **Americas** | New York, San Francisco, Toronto, São Paulo | English, Spanish, Portuguese, French | • FINRA/SEC compliance<br/>• CCPA/CPRA implementation<br/>• PCI DSS integration | americas@rdapify.consulting |
+| **EMEA** | London, Berlin, Paris, Dubai | English, German, French, Arabic, Russian | • GDPR Article 32 implementation<br/>• NIS2 compliance<br/>• Middle East data residency | emea@rdapify.consulting |
+| **APAC** | Singapore, Tokyo, Sydney, Mumbai | English, Mandarin, Japanese, Hindi | • PDPA compliance (Singapore)<br/>• Chinese data localization<br/>• APAC registry integrations | apac@rdapify.consulting |
+| **Global** | Remote, On-site | 20+ languages via partners | • Multi-jurisdiction compliance<br/>• Distributed architecture<br/>• Incident response | global@rdapify.consulting |
 
 ### Expert Certification Requirements
 All RDAPify consultants undergo rigorous certification before client engagement:

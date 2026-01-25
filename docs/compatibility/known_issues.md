@@ -11,9 +11,9 @@ RDAPify uses a standardized classification system to categorize known issues by 
 
 | Severity Level | Impact | Resolution Timeline | User Action Required |
 |----------------|--------|---------------------|----------------------|
-| **🔴 Critical** | System unusable, security vulnerability | Immediate (<72 hours) | Stop using affected feature |
-| **🟠 High** | Major functionality affected | Short-term (<2 weeks) | Apply workaround immediately |
-| **🟡 Medium** | Moderate impact on usability | Medium-term (<1 month) | Apply workaround when convenient |
+| **🔴 Critical** | System unusable, security vulnerability | Immediate (&lt;72 hours) | Stop using affected feature |
+| **🟠 High** | Major functionality affected | Short-term (&lt;2 weeks) | Apply workaround immediately |
+| **🟡 Medium** | Moderate impact on usability | Medium-term (&lt;1 month) | Apply workaround when convenient |
 | **🟢 Low** | Minor inconvenience or edge case | Long-term (future releases) | No immediate action required |
 | **🔵 Informational** | Documentation or clarification needed | Ongoing | None |
 
@@ -570,7 +570,7 @@ RDAP_DEBUG_REGISTRY=afrinic node app.js
 |----------|-------|
 | **Issue Tracking System** | GitHub Issues with labels and milestones |
 | **Security Vulnerability Process** | Responsible disclosure via security@rdapify.com |
-| **Issue Response Time** | Critical: <24 hours, High: <72 hours, Medium: <1 week |
+| **Issue Response Time** | Critical: &lt;24 hours, High: &lt;72 hours, Medium: &lt;1 week |
 | **Fix Prioritization** | Security > Data Integrity > Availability > Performance > Features |
 | **Version Support** | Current + 2 previous minor versions receive bug fixes |
 | **End-of-Life Policy** | 6 months notice before deprecating environment support |

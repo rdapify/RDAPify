@@ -1701,7 +1701,7 @@ export class HighVolumeAuditProcessor {
     }
     
     if (context.retentionPeriod > 365) {
-      recommendations.push('Implement tiered storage architecture for long-term retention (>1 year)');
+      recommendations.push('Implement tiered storage architecture for long-term retention (&gt;1 year)');
     }
     
     if (context.complianceRequirements.includes('gdpr')) {
@@ -1745,7 +1745,7 @@ grep "key_rotation" /var/log/rdapify/security.log
 ```
 
 **Solutions**:
-✅ **Clock Synchronization**: Implement NTP synchronization across all audit logging servers with <10ms accuracy  
+✅ **Clock Synchronization**: Implement NTP synchronization across all audit logging servers with &lt;10ms accuracy  
 ✅ **Storage Redundancy**: Use RAID 10 or ZFS with checksums for audit log storage systems  
 ✅ **Graceful Key Rotation**: Implement dual-signing during key rotation with overlap periods  
 ✅ **Write-Ahead Logging**: Implement WAL pattern to ensure atomic writes with crash recovery  
