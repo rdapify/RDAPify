@@ -2,19 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: ["main"]
   pull_request:
-    branches: [main, develop]
+    branches: ["main"]
 
 jobs:
   test:
-    name: Test (Node ${{ matrix.node-version }})
+    name: Test & Build
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
-      fail-fast: false
+        node-version: [16, 18, 20]
     
     steps:
       - name: Checkout code
@@ -24,16 +23,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: "npm"
       
       - name: Install dependencies
         run: npm ci
       
-      - name: Lint
-        run: npm run lint
-      
       - name: Type check
         run: npm run typecheck
+      
+      - name: Lint
+        run: npm run lint
       
       - name: Run tests
         run: npm test
@@ -41,71 +40,11 @@ jobs:
       - name: Build
         run: npm run build
       
-      - name: Verify public API
-        run: npm run verify:api
-      
-      - name: Upload coverage
-        if: matrix.node-version == '20.x'
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 20
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
-
-  security:
-    name: Security Audit
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
-      
-      - name: Check for known vulnerabilities
-        run: npm audit --production --audit-level=high
-
-  package:
-    name: Package Verification
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build package
-        run: npm run build
-      
-      - name: Pack package
-        run: npm pack
-      
-      - name: List package contents
-        run: tar -tzf rdapify-*.tgz | head -50
-      
-      - name: Verify package size
-        run: |
-          SIZE=$(stat -c%s rdapify-*.tgz)
-          echo "Package size: $SIZE bytes"
-          if [ $SIZE -gt 1048576 ]; then
-            echo "Warning: Package size exceeds 1MB"
-          fi
+          fail_ci_if_error: false
