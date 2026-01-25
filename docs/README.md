@@ -90,7 +90,7 @@ Welcome to the RDAPify documentation! This comprehensive guide will help you get
 
 ## 📝 Contributing to Documentation
 
-Found an error or want to improve the docs? See our [Contributing Guide](../CONTRIBUTING.md) for how to submit documentation improvements.
+Found an error or want to improve the docs? See our [Contributing Guide](https://github.com/rdapify/rdapify/blob/main/CONTRIBUTING.md) for how to submit documentation improvements.
 
 ---
 

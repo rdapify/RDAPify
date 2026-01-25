@@ -2,8 +2,7 @@
 
 🎯 **Purpose**: Comprehensive guide for implementing scalable, secure data aggregation systems for RDAP registration data with real-time processing, compliance controls, and advanced analytics capabilities  
 📚 **Related**: [Domain Portfolio](domain_portfolio.md) | [API Gateway](api_gateway.md) | [Monitoring Service](monitoring_service.md) | [Analytics Dashboard](../analytics/dashboard_components.md)  
-⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Data Aggregation Simulator](../../playground/data-aggregation-simulator.md) to model your aggregation patterns and test performance before production deployment
+⏱️ **Reading Time**: 8 minutes
 
 ## 🌐 Data Aggregation Architecture Overview
 
@@ -1232,7 +1231,6 @@ clinic doctor --autocannon [ -c 500 /api/aggregate -d 30 ] -- node ./dist/aggreg
 | [API Gateway](api_gateway.md) | Secure API access patterns | [api_gateway.md](api_gateway.md) |
 | [Monitoring Service](monitoring_service.md) | Real-time monitoring for aggregated data | [monitoring_service.md](monitoring_service.md) |
 | [Analytics Dashboard](../analytics/dashboard_components.md) | Visualization components for aggregated data | [../analytics/dashboard_components.md](../analytics/dashboard_components.md) |
-| [Data Aggregation Simulator](../../playground/data-aggregation-simulator.md) | Interactive tool for testing aggregation patterns | [../../playground/data-aggregation-simulator.md](../../playground/data-aggregation-simulator.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Stream Processing](../guides/stream_processing.md) | Advanced streaming data patterns | [../guides/stream_processing.md](../guides/stream_processing.md) |
 
