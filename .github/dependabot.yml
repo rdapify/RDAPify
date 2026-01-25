@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # npm dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -9,37 +9,24 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
     reviewers:
-      - "rdapify/core-team"
+      - "rdapify/maintainers"
     labels:
       - "dependencies"
       - "automated"
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
-    ignore:
-      # Ignore major version updates for stable dependencies
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    groups:
-      development-dependencies:
-        dependency-type: "development"
-        patterns:
-          - "@types/*"
-          - "eslint*"
-          - "prettier"
-          - "jest"
-          - "typescript"
-      
-  # Enable version updates for GitHub Actions
+    
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-    reviewers:
-      - "rdapify/devops-team"
+      time: "09:00"
+    open-pull-requests-limit: 5
     labels:
-      - "ci/cd"
-      - "automated"
+      - "dependencies"
+      - "github-actions"
     commit-message:
-      prefix: "chore(ci)"
+      prefix: "ci(deps)"
