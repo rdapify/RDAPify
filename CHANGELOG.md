@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2025-01-25
+
+### Added
+- Initial public release of RDAPify
+- Core RDAP client with domain, IP, and ASN query support
+- Automatic RDAP server discovery via IANA Bootstrap
+- SSRF protection with proper CIDR matching for IPv4 and IPv6
+- PII redaction for GDPR/CCPA compliance
+- In-memory caching with configurable TTL
+- Data normalization for consistent response format
+- Comprehensive TypeScript types and interfaces
+- Input validation for domains, IPs, and ASNs
+- Retry logic with configurable backoff strategies
+- Interactive playground for testing RDAP queries
+- Playground API proxy server with Express
+- Comprehensive community health files (SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SUPPORT.md)
+- Issue templates (bug report, feature request, question)
+- Pull request template with comprehensive checklist
+- Funding configuration for GitHub Sponsors and Open Collective
+- Organization profile with professional presentation
+
+### Infrastructure
+- CI/CD workflows for Node.js 16, 18, and 20
+- CodeQL security analysis (weekly scans)
+- Dependabot for automated dependency updates
+- Dependency review for pull requests
+- Automated testing and linting
+- GitHub Actions for release automation
+
+### Security
+- SSRF protection blocks private IPs, localhost, and internal domains
+- Certificate validation enforced (HTTPS only)
+- Proper CIDR matching using ipaddr.js library
+- Input validation prevents injection attacks
+- Automated security scanning with CodeQL
+- Secret scanning configuration
+- Dependabot security updates
+
+### Documentation
+- Comprehensive README with examples
+- API documentation
+- Security policy
+- Contributing guidelines
+- Code of conduct
+- Support resources
+
+### Testing
+- 146+ unit and integration tests
+- Mocked fixtures for reliable testing
+- Coverage reporting
+
 ## [0.1.0-alpha.4] - 2025-01-25
 
 ### Added
