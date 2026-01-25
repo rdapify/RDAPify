@@ -3,7 +3,7 @@
  */
 
 import { SSRFProtection } from '../../src/infrastructure/security/SSRFProtection';
-import { SSRFProtectionError } from '../../src/shared/types/errors';
+import { SSRFProtectionError } from '../../src/shared/errors';
 
 describe('SSRFProtection', () => {
   let protection: SSRFProtection;

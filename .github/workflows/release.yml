@@ -24,7 +24,7 @@ jobs:
         run: npm ci
       
       - name: Run tests
-        run: npm test || true  # Allow tests to fail temporarily
+        run: npm test
       
       - name: Run linter
         run: npm run lint
