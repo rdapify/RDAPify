@@ -141,11 +141,8 @@ wrangler.toml.local
 # ============================================
 # Kiro AI Assistant
 # ============================================
-# Keep steering rules and skills for development
-.kiro/*
-!.kiro/steering/
-!.kiro/skills/
-!.kiro/README.md
+# Hide entire .kiro directory from GitHub
+.kiro/
 
 # ============================================
 # Project-Specific Temporary Files
