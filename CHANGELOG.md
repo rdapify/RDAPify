@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Dependabot configuration for automated dependency updates
+- Enhanced CI/CD workflows with multi-version Node.js testing
+- CodeQL security analysis workflow
+- Dependency review workflow for pull requests
+- Interactive playground for testing RDAP queries
+- Comprehensive community health files
+- Organization profile with professional presentation
+
+### Changed
+- Improved CI workflow to test on Node.js 16, 18, and 20
+- Simplified CodeQL configuration
+- Hidden .kiro directory from public repository
+
+### Security
+- Added automated security scanning with CodeQL
+- Enabled dependency review for pull requests
+- Configured Dependabot for security updates
+
+## [0.1.0-alpha.4] - 2025-01-25
+
+### Added
+- Interactive playground with real-time RDAP queries
+- Playground API proxy server with Express
+- Community health files (SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SUPPORT.md)
+- Issue templates (bug report, feature request, question)
+- Pull request template with comprehensive checklist
+- Funding configuration for GitHub Sponsors and Open Collective
+
+### Changed
+- Updated organization profile with professional presentation
+- Enhanced documentation structure
+- Improved .gitignore to exclude .kiro directory
+
+### Infrastructure
+- Added CI/CD workflows for automated testing
+- Configured Dependabot for dependency management
+- Set up CodeQL for security analysis
+
 ## [0.1.0-alpha.2] - 2026-01-22
 
 ### Fixed
