@@ -4,11 +4,8 @@
  */
 
 import { CacheManager } from '../../infrastructure/cache';
-import { BootstrapDiscovery } from '../../infrastructure/http';
-import { Fetcher } from '../../infrastructure/http';
-import { SSRFProtection } from '../../infrastructure/security';
-import { Normalizer } from '../../infrastructure/http';
-import { PIIRedactor } from '../../infrastructure/security';
+import { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
+import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
 import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
 import { ValidationError } from '../../shared/errors';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
