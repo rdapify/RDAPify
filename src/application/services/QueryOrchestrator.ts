@@ -5,9 +5,7 @@
  */
 
 import type { CacheManager } from '../../infrastructure/cache';
-import type { BootstrapDiscovery } from '../../infrastructure/http';
-import type { Fetcher } from '../../infrastructure/http';
-import type { Normalizer } from '../../infrastructure/http';
+import type { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
 import type { PIIRedactor } from '../../infrastructure/security';
 import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
 import { generateCacheKey } from '../../shared/utils/helpers';

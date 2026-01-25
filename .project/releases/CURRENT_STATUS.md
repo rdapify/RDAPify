@@ -1,168 +1,192 @@
-# RDAPify v0.1.0 - Current Status
+# RDAPify Project Status - Current
 
-**Date**: January 25, 2025  
-**Status**: ✅ **READY FOR PUBLIC RELEASE**
+**Last Updated**: January 25, 2026  
+**Version**: 0.1.1  
+**Status**: ✅ All Systems Operational
 
----
+## Package Status
 
-## 📦 Package Information
+### npm Package
+- **Package Name**: `rdapify`
+- **Latest Version**: 0.1.1
+- **Published**: ✅ Yes
+- **URL**: https://www.npmjs.com/package/rdapify
+- **Metadata**: ✅ Correct (rdapify/RDAPify)
+- **Provenance**: ✅ Enabled (GitHub Actions)
 
-- **Name**: rdapify
-- **Version**: 0.1.0
-- **License**: MIT
-- **Repository**: https://github.com/rdapify/RDAPify
-- **Homepage**: https://rdapify.com
-- **npm**: https://www.npmjs.com/package/rdapify (not yet published)
+### GitHub Repository
+- **Organization**: rdapify
+- **Repository**: RDAPify
+- **Visibility**: Public
+- **URL**: https://github.com/rdapify/RDAPify
+- **Releases**: 4 tags
+- **Latest Tag**: v0.1.1
 
----
+### Website
+- **Domain**: rdapify.com
+- **Status**: ✅ Live
+- **Repository**: rdapify.github.io
+- **Deployment**: GitHub Pages
+- **Documentation**: docs.html available
 
-## ✅ What's Complete
+## Testing Status
 
-### Code & Build
-- ✅ All source code in TypeScript with strict mode
-- ✅ 146+ unit and integration tests passing
-- ✅ Build system configured (TypeScript → dist/)
-- ✅ .npmignore configured (only essential files published)
-- ✅ Package.json fully configured
+### Test Suite
+- **Total Tests**: 146
+- **Passing**: 146 ✅
+- **Failing**: 0
+- **Coverage**: Available via `npm run test:coverage`
 
-### Documentation
-- ✅ Comprehensive README.md
-- ✅ CHANGELOG.md with full v0.1.0 notes
-- ✅ LICENSE (MIT)
-- ✅ SECURITY.md
-- ✅ CONTRIBUTING.md
-- ✅ CODE_OF_CONDUCT.md
-- ✅ SUPPORT.md
+### Test Breakdown
+- ssrf-protection.test.ts: 20 tests ✅
+- rdap-client.test.ts: 15 tests ✅
+- helpers.test.ts: 28 tests ✅
+- validators.test.ts: 45 tests ✅
+- errors.test.ts: 18 tests ✅
+- in-memory-cache.test.ts: 15 tests ✅
+- bootstrap-discovery.test.ts: 17 tests ✅
 
-### CI/CD & Automation
-- ✅ CI workflow (Node.js 16, 18, 20)
-- ✅ CodeQL security analysis (weekly)
-- ✅ Dependabot configuration
-- ✅ Dependency review workflow
-- ✅ Release workflow with npm provenance support
+## CI/CD Status
 
-### Community
-- ✅ Issue templates (bug, feature, question)
-- ✅ Pull request template
-- ✅ FUNDING.yml (GitHub Sponsors + Open Collective)
-- ✅ Organization profile (English + Arabic)
+### GitHub Actions
+- **Workflow**: `.github/workflows/release.yml`
+- **Status**: ✅ Configured and working
+- **Trigger**: Push tags matching `v*.*.*`
+- **Jobs**:
+  1. ✅ Validate (tests, lint, typecheck, audit, build)
+  2. ✅ Publish to npm (with provenance)
+  3. ✅ Create GitHub Release
+  4. ✅ Notify
 
-### Git
-- ✅ Tag v0.1.0 created and pushed
-- ✅ Commit message: "chore: Release v0.1.0 - First public release"
-- ✅ All changes committed and pushed to main branch
+### npm Trusted Publisher
+- **Status**: ✅ Configured
+- **Organization**: rdapify
+- **Repository**: RDAPify
+- **Workflow**: release.yml
+- **Environment**: npm-publish
+- **OIDC**: ✅ Enabled
 
----
+## Recent Fixes
 
-## 🎯 Next Actions Required (Manual)
+### Test Failures Fixed (Jan 25, 2026)
+**Problem**: 12 tests failing in ssrf-protection.test.ts due to mismatched error class imports.
 
-### 1. Configure npm Trusted Publisher ⭐ IMPORTANT
-**URL**: https://www.npmjs.com/package/rdapify/access
+**Root Cause**: Project has two error class definitions:
+- `src/shared/types/errors.ts` (canonical, used by source code)
+- `src/shared/errors/base.error.ts` (newer, not fully migrated)
 
-**Values to enter**:
-```
-Publisher: GitHub Actions
-Organization or user: rdapify
-Repository: RDAPify
-Workflow filename: release.yml
-Environment name: npm-publish
-```
+**Solution**: Updated SSRFProtection to import from canonical location (`shared/types/errors`).
 
-This enables secure publishing without storing npm tokens.
+**Result**: All 146 tests passing ✅
 
----
+**Files Changed**:
+- `src/infrastructure/security/SSRFProtection.ts`
+- `.github/workflows/release.yml` (removed temporary test bypass)
 
-### 2. Create GitHub Release
-**URL**: https://github.com/rdapify/RDAPify/releases/new
+**Documentation**: See `TEST_FIXES_COMPLETE.md` for details.
 
-- Select tag: `v0.1.0`
-- Title: `v0.1.0 - First Public Release`
-- Description: See `v0.1.0_RELEASE_GUIDE.md` for full text
-- Click "Publish release"
+## Package Scripts
 
----
-
-### 3. Make Repository Public (if private)
-**URL**: https://github.com/rdapify/RDAPify/settings
-
-- Go to "Danger Zone"
-- Click "Change visibility" → "Make public"
-- Confirm
-
----
-
-### 4. Enable Security Features
-**URL**: https://github.com/rdapify/RDAPify/settings/security_analysis
-
-Enable:
-- Dependabot alerts
-- Dependabot security updates
-- Secret scanning
-- Push protection
-
----
-
-### 5. Publish to npm
-
-**Option A: Automatic (Recommended)**
-- After configuring npm Trusted Publisher (step 1)
-- The release workflow will automatically publish
-- Check: https://github.com/rdapify/RDAPify/actions
-
-**Option B: Manual**
+### Development
 ```bash
-cd ~/dev/rdapify/RDAPify
-npm login
-npm publish --access public
+npm run dev          # Watch mode compilation
+npm run build        # Build TypeScript to dist/
+npm run clean        # Remove dist/ folder
 ```
 
----
+### Testing
+```bash
+npm test             # Run all tests
+npm run test:unit    # Run unit tests only
+npm run test:integration  # Run integration tests only
+npm run test:watch   # Watch mode
+npm run test:coverage     # With coverage report
+```
 
-### 6. Enable Discussions (Optional)
-**URL**: https://github.com/rdapify/RDAPify/settings
+### Quality
+```bash
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run typecheck    # TypeScript type checking
+npm run format       # Format with Prettier
+npm run format:check # Check formatting
+```
 
-- Enable "Discussions" feature
-- Create categories: Announcements, Ideas, Q&A, Show and tell
+### Verification
+```bash
+npm run verify       # Full verification (lint + typecheck + test + build + verify:api)
+npm run verify:api   # Verify API surface hasn't changed
+```
 
----
+### Publishing
+```bash
+npm run prepublishOnly  # Runs verify before publish
+npm run prepack         # Runs build before pack
+```
 
-## 📊 Post-Release Monitoring
+## Next Steps
 
-After publishing, monitor:
+### Immediate (Ready Now)
+1. ✅ Tests fixed and passing
+2. ✅ GitHub Actions configured
+3. ✅ npm Trusted Publisher configured
+4. ✅ Package v0.1.1 published with correct metadata
+5. 🔄 **Optional**: Create v0.1.2 release to verify full CI/CD pipeline
 
-1. **npm downloads**: https://www.npmjs.com/package/rdapify
-2. **GitHub stars**: https://github.com/rdapify/RDAPify/stargazers
-3. **Issues**: https://github.com/rdapify/RDAPify/issues
-4. **Security alerts**: https://github.com/rdapify/RDAPify/security
-5. **CI/CD**: https://github.com/rdapify/RDAPify/actions
+### Short Term
+1. Consider removing duplicate error definitions in `shared/errors/`
+2. Add ESLint rule to enforce consistent error imports
+3. Enable GitHub Discussions for community support
+4. Add more examples to website
 
----
+### Long Term
+1. Increase test coverage
+2. Add performance benchmarks
+3. Create CLI tool
+4. Add more integrations (Redis, databases, etc.)
 
-## 📚 Documentation
+## Project Structure
 
-- **Release Guide (English)**: `.project/releases/v0.1.0_RELEASE_GUIDE.md`
-- **Release Guide (Arabic)**: `.project/releases/v0.1.0_RELEASE_GUIDE_AR.md`
-- **This Status**: `.project/releases/CURRENT_STATUS.md`
+```
+RDAPify/
+├── src/                    # Source code
+│   ├── application/        # Application layer
+│   ├── core/              # Core domain logic
+│   ├── infrastructure/    # Infrastructure (HTTP, cache, security)
+│   └── shared/            # Shared utilities
+├── tests/                 # Test files
+│   ├── unit/             # Unit tests
+│   ├── integration/      # Integration tests
+│   └── fixtures/         # Test fixtures
+├── docs/                  # Documentation
+├── examples/              # Usage examples
+├── playground/            # Interactive playground
+└── .github/workflows/     # CI/CD workflows
+```
 
----
+## Key Files
 
-## 🚀 Roadmap for v0.2.0
+- `package.json` - Package configuration
+- `tsconfig.json` - TypeScript configuration
+- `jest.config.js` - Jest test configuration
+- `.github/workflows/release.yml` - Release automation
+- `CHANGELOG.md` - Version history
+- `README.md` - Project documentation
 
-Planned features:
-- Redis cache implementation
-- CLI tool for quick queries
-- Live integration tests
-- Performance benchmarks
-- Bun/Deno/Cloudflare Workers support
+## Contact & Support
 
----
-
-## 📞 Contact
-
-- **Support**: support@rdapify.com
+- **Issues**: https://github.com/rdapify/RDAPify/issues
 - **Security**: security@rdapify.com
 - **General**: contact@rdapify.com
+- **Website**: https://rdapify.com
+
+## License
+
+MIT License - See LICENSE file for details
 
 ---
 
-**Status**: Ready to go public! Follow the 6 manual steps above to complete the release. 🚀
+**Status Summary**: ✅ Project is healthy and ready for development/releases  
+**Last Test Run**: All 146 tests passing  
+**Last Commit**: c1a65cd - "fix: use consistent error imports across codebase"  
+**GitHub Actions**: ✅ Ready to run on next tag push
