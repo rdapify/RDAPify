@@ -1,0 +1,29 @@
+{
+  "name": "rdapify-playground",
+  "version": "0.1.0",
+  "description": "Interactive web-based playground for testing RDAPify queries",
+  "private": true,
+  "main": "api/proxy.js",
+  "scripts": {
+    "start": "node api/proxy.js",
+    "dev": "NODE_ENV=development nodemon api/proxy.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "rdap",
+    "playground",
+    "interactive",
+    "demo"
+  ],
+  "author": "RDAPify Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
