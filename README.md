@@ -1,6 +1,6 @@
 # RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
 
-> **⚠️ ALPHA RELEASE**: This is v0.1.0-alpha.4 — core functionality is working and tested, but some advanced features are still in development. See [What's Ready](#-whats-ready-in-v010-alpha4) below.
+> **🎉 STABLE RELEASE**: This is v0.1.0 — the first stable public release with production-ready core functionality. See [What's Ready](#-whats-ready-in-v010) below.
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
@@ -201,11 +201,22 @@ RDAPify provides comprehensive documentation in the repository:
 
 RDAPify is an open source project. Get help or contribute:
 
-- **[GitHub Issues](https://github.com/rdapify/rdapify/issues)** - Bug reports and feature requests
-- **[GitHub Discussions](https://github.com/rdapify/rdapify/discussions)** - Questions and ideas
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+### 🐛 Bug Reports & Feature Requests
+- **[GitHub Issues](https://github.com/rdapify/RDAPify/issues)** - Report bugs or request features
 
-> **Note**: Community chat and enterprise support options are planned for future releases.
+### 💬 Questions & Discussions
+- **[GitHub Discussions](https://github.com/rdapify/RDAPify/discussions)** - Ask questions, share ideas, and show what you've built
+
+### 📧 Direct Contact
+- **General inquiries**: contact@rdapify.com
+- **Security issues**: security@rdapify.com (see [SECURITY.md](SECURITY.md))
+- **Support**: support@rdapify.com
+
+### 🤝 Contributing
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
+
+> **Enterprise Support**: For SLA-backed support, consulting, or custom features, contact enterprise@rdapify.com
 
 ## 🤝 Contributing
 
@@ -220,11 +231,11 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.0-alpha.4 (Alpha)
+**Current Release**: v0.1.0 (Stable)
 
-### ✅ What's Ready in v0.1.0-alpha.4
+### ✅ What's Ready in v0.1.0
 
-Core functionality is implemented and tested:
+Core functionality is production-ready and fully tested:
 
 - ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic bootstrap discovery
 - ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, with proper CIDR matching (IPv4/IPv6)
@@ -236,16 +247,16 @@ Core functionality is implemented and tested:
 - ✅ **Test Coverage**: 146 tests passing (unit + integration with mocked fixtures)
 - ✅ **Node.js Support**: Verified working (CommonJS + ESM imports functional)
 
-### 🔄 Alpha Limitations
+### 🔄 Planned Features
 
-These features are documented but not yet implemented:
+These features are planned for future releases:
 
-- ⏳ **Redis/External Cache**: Only in-memory cache available
-- ⏳ **CLI Tool**: Not yet available (use programmatic API only)
-- ⏳ **Interactive Playground**: Coming in future release
-- ⏳ **Bun/Deno/Cloudflare Workers**: Not tested yet (Node.js only for now)
-- ⏳ **Advanced Analytics**: Dashboard and reporting features planned
-- ⏳ **Geo-distributed Caching**: Single-node caching only
+- ⏳ **Redis/External Cache**: External cache adapters coming in v0.2.0
+- ⏳ **CLI Tool**: Command-line interface planned
+- ⏳ **Interactive Playground**: Web-based testing environment
+- ⏳ **Bun/Deno/Cloudflare Workers**: Additional runtime support
+- ⏳ **Advanced Analytics**: Dashboard and reporting features
+- ⏳ **Geo-distributed Caching**: Multi-region cache support
 
 ### 📋 Roadmap to v0.2.0
 
@@ -350,7 +361,7 @@ const pkg = require('rdapify/package.json');
 **Method 1: Using npm (recommended)**
 ```bash
 npm ls rdapify
-# Output: rdapify@0.1.0-alpha.4
+# Output: rdapify@0.1.0
 ```
 
 **Method 2: Programmatic check via require.resolve**
@@ -363,7 +374,7 @@ const pkgPath = path.join(path.dirname(entry), '..', 'package.json');
 const version = JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version;
 
 console.log('rdapify version:', version);
-// Output: 0.1.0-alpha.4
+// Output: 0.1.0
 ```
 
 **Method 3: Check installed version in package.json**
@@ -389,9 +400,9 @@ We're looking for early adopters and beta testers! If you're interested in:
 - 📖 Read the [Documentation](https://rdapify.com/docs)
 - 🤝 Check out [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
 
-### Known Issues & Limitations (Alpha)
+### Known Issues & Limitations
 
-- Only in-memory caching available (Redis adapter in development)
+- Only in-memory caching available (Redis adapter planned for v0.2.0)
 - No CLI tool yet (programmatic API only)
 - Bun/Deno/Cloudflare Workers compatibility not yet tested
 - Live RDAP server tests disabled by default (use `LIVE_TESTS=1` to enable)
