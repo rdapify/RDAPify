@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unified, secure, high-performance RDAP client for enterprise applications with built-in privacy controls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
