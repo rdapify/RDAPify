@@ -7,39 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-alpha.4] - 2025-01-25
+
 ### Added
 - Dependabot configuration for automated dependency updates
-- Enhanced CI/CD workflows with multi-version Node.js testing
-- CodeQL security analysis workflow
+- Enhanced CI/CD workflows with multi-version Node.js testing (Node.js 16, 18, 20)
+- CodeQL security analysis workflow (weekly scans)
 - Dependency review workflow for pull requests
 - Interactive playground for testing RDAP queries
-- Comprehensive community health files
+- Playground API proxy server with Express
+- Comprehensive community health files (SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SUPPORT.md)
+- Issue templates (bug report, feature request, question)
+- Pull request template with comprehensive checklist
+- Funding configuration for GitHub Sponsors and Open Collective
 - Organization profile with professional presentation
 
 ### Changed
-- Improved CI workflow to test on Node.js 16, 18, and 20
+- Improved CI workflow to test on multiple Node.js versions
 - Simplified CodeQL configuration
-- Hidden .kiro directory from public repository
+- Updated organization profile with professional presentation
+- Enhanced documentation structure
+- Improved .gitignore to exclude .kiro directory
 
 ### Security
 - Added automated security scanning with CodeQL
 - Enabled dependency review for pull requests
 - Configured Dependabot for security updates
-
-## [0.1.0-alpha.4] - 2025-01-25
-
-### Added
-- Interactive playground with real-time RDAP queries
-- Playground API proxy server with Express
-- Community health files (SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SUPPORT.md)
-- Issue templates (bug report, feature request, question)
-- Pull request template with comprehensive checklist
-- Funding configuration for GitHub Sponsors and Open Collective
-
-### Changed
-- Updated organization profile with professional presentation
-- Enhanced documentation structure
-- Improved .gitignore to exclude .kiro directory
+- Set up weekly security scans
 
 ### Infrastructure
 - Added CI/CD workflows for automated testing
