@@ -3,7 +3,8 @@
 # Verification Script for Docs Build Fixes
 # This script verifies all fixes are properly applied
 
-set -e
+# Don't exit on error - we want to collect all results
+set +e
 
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║                                                              ║"
@@ -45,10 +46,10 @@ echo "1️⃣  Checking Main Project"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-check "TypeScript compilation" "npm run typecheck"
-check "ESLint checks" "npm run lint"
-check "Unit tests" "npm test"
-check "Main build" "npm run build"
+check "TypeScript compilation" "npm run typecheck" || true
+check "ESLint checks" "npm run lint" || true
+check "Unit tests" "npm test" || true
+check "Main build" "npm run build" || true
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -105,7 +106,6 @@ if npm ci > /dev/null 2>&1; then
 else
     echo -e "${RED}❌ Failed to install dependencies${NC}"
     ((FAILED++))
-    exit 1
 fi
 
 echo "Building documentation..."
@@ -117,9 +117,9 @@ if npm run build > /tmp/docs-build.log 2>&1; then
     LOCALES=("en" "ar" "es" "zh" "ru")
     for locale in "${LOCALES[@]}"; do
         if [ "$locale" = "en" ]; then
-            check "Locale: $locale" "test -f build/index.html"
+            check "Locale: $locale" "test -f build/index.html" || true
         else
-            check "Locale: $locale" "test -f build/$locale/index.html"
+            check "Locale: $locale" "test -f build/$locale/index.html" || true
         fi
     done
 else
@@ -128,7 +128,6 @@ else
     echo "Last 20 lines of build log:"
     tail -20 /tmp/docs-build.log
     ((FAILED++))
-    exit 1
 fi
 
 cd ..
