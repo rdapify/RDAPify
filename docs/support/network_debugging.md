@@ -234,10 +234,10 @@ sudo tcpdump -i any -w rdap_verisign.pcap host rdap.verisign.com and port 443
 sudo tcpdump -i any -w tls_handshake.pcap 'tcp port 443 and (tcp[tcpflags] & (tcp-syn|tcp-ack) != 0)'
 
 # HTTP traffic analysis
-sudo tcpdump -i any -A 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
+sudo tcpdump -i any -A 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<&lt;2)) - ((tcp[12]&0xf0)>&gt;2)) != 0)'
 
 # Real-time registry response analysis
-sudo tcpdump -i any -nn -X 'tcp port 443 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
+sudo tcpdump -i any -nn -X 'tcp port 443 and (((ip[2:2] - ((ip[0]&0xf)<&lt;2)) - ((tcp[12]&0xf0)>&gt;2)) != 0)'
 ```
 
 ### 2. Application-Level Network Tracing

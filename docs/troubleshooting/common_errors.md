@@ -11,10 +11,10 @@ RDAPify categorizes errors using a severity-based system to help prioritize trou
 
 | Severity | Color Code | Impact | Resolution Priority | Example |
 |----------|------------|--------|---------------------|---------|
-| **Critical** | 🔴 | System unusable | Immediate (<1 hour) | Certificate validation failure |
-| **High** | 🟠 | Major functionality lost | High (<4 hours) | SSRF protection blocking |
-| **Medium** | 🟡 | Partial functionality | Medium (<24 hours) | Cache inconsistency |
-| **Low** | 🟢 | Minor inconvenience | Low (<1 week) | Log formatting issues |
+| **Critical** | 🔴 | System unusable | Immediate (&lt;1 hour) | Certificate validation failure |
+| **High** | 🟠 | Major functionality lost | High (&lt;4 hours) | SSRF protection blocking |
+| **Medium** | 🟡 | Partial functionality | Medium (&lt;24 hours) | Cache inconsistency |
+| **Low** | 🟢 | Minor inconvenience | Low (&lt;1 week) | Log formatting issues |
 | **Informational** | 💠 | No functional impact | When convenient | Deprecation warnings |
 
 ## 🔴 Critical Errors

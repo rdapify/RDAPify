@@ -377,7 +377,7 @@ cache_isolation:
 ### 1. Enterprise Customer Case Study
 **Client**: Global domain registrar (Top 5 worldwide)  
 **Workload**: 5 million domains monitored hourly  
-**Requirements**: 99.99% uptime, <100ms p99 latency, GDPR compliance
+**Requirements**: 99.99% uptime, &lt;100ms p99 latency, GDPR compliance
 
 **Before Caching**:
 - 42 server instances required
@@ -429,7 +429,7 @@ Where:
 - `Cache Size = (50 × 3600 × 0.45) × 1.2 = 97,200 entries`
 
 ### 2. Performance Tuning Checklist
-| Parameter | Low Traffic (<10 QPS) | Medium Traffic (10-100 QPS) | High Traffic (>100 QPS) |
+| Parameter | Low Traffic (&lt;10 QPS) | Medium Traffic (10-100 QPS) | High Traffic (&gt;100 QPS) |
 |-----------|------------------------|------------------------------|------------------------|
 | **Cache Size** | 1,000 entries | 10,000 entries | 100,000+ entries |
 | **TTL** | 3600 seconds | 1800 seconds | 600 seconds |

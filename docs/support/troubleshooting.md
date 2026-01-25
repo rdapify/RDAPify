@@ -384,8 +384,8 @@ readinessProbe:
 - Compliance violations (GDPR, CCPA breaches)
 
 **Contact support within 24 hours**:
-- Performance degradation >50% from baseline
-- Increasing error rates (>5% of requests)
+- Performance degradation &gt;50% from baseline
+- Increasing error rates (&gt;5% of requests)
 - Cache inconsistency across multiple instances
 - Registry-specific failures affecting critical domains
 

@@ -376,9 +376,9 @@ const testConfig = {
     { duration: '30s', target: 0 }     // Ramp down
   ],
   thresholds: {
-    'http_req_duration': ['p(95)<200', 'p(99)<500'], // 95% < 200ms, 99% < 500ms
-    'http_req_failed': ['rate<0.01'],   // Error rate < 1%
-    'checks': ['rate>0.99']             // Success rate > 99%
+    'http_req_duration': ['p(95)&lt;200', 'p(99)&lt;500'], // 95% < 200ms, 99% < 500ms
+    'http_req_failed': ['rate&lt;0.01'],   // Error rate < 1%
+    'checks': ['rate&gt;0.99']             // Success rate > 99%
   }
 };
 

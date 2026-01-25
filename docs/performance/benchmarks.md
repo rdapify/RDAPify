@@ -201,7 +201,7 @@ NODE_OPTIONS='--max-old-space-size=128' \
 ### 1. Domain Monitoring Service
 **Client**: Large domain registrar (Top 10 globally)  
 **Workload**: 500,000 domains monitored hourly  
-**Requirements**: 99.99% uptime, <100ms p99 latency
+**Requirements**: 99.99% uptime, &lt;100ms p99 latency
 
 **Implementation**:
 - Kubernetes cluster with 24 nodes
@@ -304,7 +304,7 @@ npm run benchmark:full
 | **CPU** | Intel Xeon Platinum 8380 @ 2.3GHz (32 cores/64 threads) |
 | **Memory** | 256GB DDR4-3200 |
 | **Storage** | 2TB NVMe SSD (7.2GB/s read) |
-| **Network** | 10Gbps fiber with <1ms latency to major RDAP servers |
+| **Network** | 10Gbps fiber with &lt;1ms latency to major RDAP servers |
 | **OS** | Ubuntu 22.04 LTS, kernel 6.2 |
 
 ### Software Stack

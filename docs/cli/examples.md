@@ -107,7 +107,7 @@ stackoverflow.com
 ```
 
 **Performance Tip**:  
-> ⚡ For large batch operations (>1000 domains), use `--concurrency=10` with `--rate-limit=100/60` to maximize throughput while respecting registry rate limits. Add `--output=results.json` for structured results.
+> ⚡ For large batch operations (&gt;1000 domains), use `--concurrency=10` with `--rate-limit=100/60` to maximize throughput while respecting registry rate limits. Add `--output=results.json` for structured results.
 
 ### 2. Security-Focused Domain Analysis
 ```bash

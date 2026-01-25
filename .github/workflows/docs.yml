@@ -29,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: npm
 
       - name: Install markdown-link-check
         run: npm install -g markdown-link-check
@@ -54,6 +55,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: npm
 
       - name: Install markdownlint-cli
         run: npm install -g markdownlint-cli
@@ -114,6 +116,8 @@ jobs:
       - name: Build documentation site
         working-directory: website
         run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

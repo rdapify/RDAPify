@@ -38,7 +38,7 @@ graph TD
 ```
 
 ### Core Dashboard Principles
-✅ **Real-time Intelligence**: Live updates for critical registration changes with <1s latency  
+✅ **Real-time Intelligence**: Live updates for critical registration changes with &lt;1s latency  
 ✅ **Compliance-Aware Visualization**: Automatic PII redaction and jurisdiction-aware data display  
 ✅ **Role-Based Data Access**: Granular permissions controlling dashboard visibility by user role  
 ✅ **Zero-Trust Architecture**: All data access validated against security policies before visualization  
