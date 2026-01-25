@@ -1,0 +1,137 @@
+name: Verify Docs Build Fix
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'docs/**'
+      - '.github/workflows/verify-docs-fix.yml'
+      - 'scripts/verify-docs-build.sh'
+
+jobs:
+  verify-fixes:
+    name: Verify All Docs Fixes
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
+      
+      - name: Install main dependencies
+        run: npm ci
+      
+      - name: Run verification script
+        run: bash scripts/verify-docs-build.sh
+      
+      - name: Check for critical warnings
+        working-directory: website
+        run: |
+          npm run build 2>&1 | tee build.log
+          
+          # Check for critical errors (not warnings)
+          if grep -i "error:" build.log | grep -v "warning"; then
+            echo "❌ Build has critical errors"
+            exit 1
+          fi
+          
+          echo "✅ No critical errors found"
+      
+      - name: Verify all locales built
+        run: |
+          LOCALES=("en" "ar" "es" "zh" "ru")
+          
+          for locale in "${LOCALES[@]}"; do
+            if [ "$locale" = "en" ]; then
+              FILE="website/build/index.html"
+            else
+              FILE="website/build/$locale/index.html"
+            fi
+            
+            if [ ! -f "$FILE" ]; then
+              echo "❌ Missing: $FILE"
+              exit 1
+            fi
+            
+            echo "✅ Found: $FILE"
+          done
+          
+          echo "✅ All locales built successfully"
+      
+      - name: Check SVG assets
+        run: |
+          REQUIRED_SVGS=(
+            "website/static/img/typescript.svg"
+            "website/static/img/performance.svg"
+            "website/static/img/security.svg"
+            "website/static/img/multi-env.svg"
+            "website/static/img/unified.svg"
+            "website/static/img/privacy.svg"
+          )
+          
+          for svg in "${REQUIRED_SVGS[@]}"; do
+            if [ ! -f "$svg" ]; then
+              echo "❌ Missing: $svg"
+              exit 1
+            fi
+            echo "✅ Found: $svg"
+          done
+          
+          echo "✅ All required SVG assets found"
+      
+      - name: Verify configuration
+        run: |
+          # Check docusaurus.config.js
+          if grep -q "onBrokenMarkdownLinks:" website/docusaurus.config.js; then
+            echo "❌ Found deprecated onBrokenMarkdownLinks"
+            exit 1
+          fi
+          
+          if ! grep -q "markdown:" website/docusaurus.config.js; then
+            echo "❌ Missing markdown configuration"
+            exit 1
+          fi
+          
+          # Check sidebars.js exists
+          if [ ! -f "website/sidebars.js" ]; then
+            echo "❌ Missing sidebars.js"
+            exit 1
+          fi
+          
+          echo "✅ Configuration verified"
+      
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-build-verification
+          path: website/build/
+          retention-days: 7
+      
+      - name: Summary
+        if: success()
+        run: |
+          echo "## ✅ Verification Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All docs build fixes verified successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Checks Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Main project builds" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Documentation builds (5 locales)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All SVG assets present" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Configuration updated" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ No critical errors" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Output" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh website/build/ >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
