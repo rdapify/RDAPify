@@ -17,11 +17,11 @@ const config = {
   projectName: 'rdapify',
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
 
   markdown: {
     mermaid: true,
     hooks: {
+      onBrokenMarkdownLinks: 'warn',
       onBrokenMarkdownImages: 'warn',
     },
   },
