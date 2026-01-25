@@ -36,7 +36,9 @@
     "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run verify:api",
     "prepublishOnly": "npm run verify",
     "prepack": "npm run build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "playground": "npm run build && cd playground && npm install && npm start",
+    "playground:dev": "npm run build && cd playground && npm install && npm run dev"
   },
   "keywords": [
     "rdap",
