@@ -5,7 +5,11 @@
 
 import { CacheManager } from '../../infrastructure/cache';
 import { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
+import { RateLimiter } from '../../infrastructure/http/RateLimiter';
+import { ConnectionPool } from '../../infrastructure/http/ConnectionPool';
 import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
+import { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
+import { Logger } from '../../infrastructure/logging/Logger';
 import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
 import { ValidationError } from '../../shared/errors';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
@@ -13,9 +17,11 @@ import type {
   RDAPClientOptions,
   RetryOptions,
   CacheOptions,
+  RateLimitOptions,
 } from '../../shared/types/options';
 import { deepMerge, calculateBackoff, sleep } from '../../shared/utils/helpers';
 import { QueryOrchestrator } from '../services';
+import { BatchProcessor } from '../services/BatchProcessor';
 
 /**
  * Main RDAP client for querying domain, IP, and ASN information
@@ -40,7 +46,11 @@ export class RDAPClient {
   private readonly normalizer: Normalizer;
   private readonly piiRedactor: PIIRedactor;
   private readonly orchestrator: QueryOrchestrator;
-
+  private readonly rateLimiter: RateLimiter;
+  private readonly batchProcessor: BatchProcessor;
+  private readonly connectionPool: ConnectionPool;
+  private readonly metricsCollector: MetricsCollector;
+  private readonly logger: Logger;
   constructor(options: RDAPClientOptions = {}) {
     // Merge with defaults
     this.options = this.normalizeOptions(options);
@@ -91,6 +101,38 @@ export class RDAPClient {
         : this.options.privacy;
     this.piiRedactor = new PIIRedactor(privacyOptions);
 
+    // Initialize rate limiter
+    const rateLimitOptions =
+      typeof this.options.rateLimit === 'boolean'
+        ? this.options.rateLimit
+          ? (DEFAULT_OPTIONS.rateLimit as RateLimitOptions)
+          : { enabled: false }
+        : this.options.rateLimit;
+    this.rateLimiter = new RateLimiter(rateLimitOptions);
+
+    // Initialize connection pool
+    this.connectionPool = new ConnectionPool({
+      maxConnections: 10,
+      keepAlive: true,
+    });
+
+    // Initialize metrics collector
+    this.metricsCollector = new MetricsCollector({
+      enabled: true,
+      maxMetrics: 10000,
+    });
+
+    // Initialize logger
+    this.logger = new Logger({
+      level: (this.options.logging?.level as any) || 'info',
+      enabled: true,
+      logRequests: true,
+      logResponses: true,
+    });
+
+    // Initialize batch processor
+    this.batchProcessor = new BatchProcessor(this);
+
     // Initialize query orchestrator
     this.orchestrator = new QueryOrchestrator({
       cache: this.cache,
@@ -100,6 +142,9 @@ export class RDAPClient {
       piiRedactor: this.piiRedactor,
       includeRaw: this.options.includeRaw,
       fetchWithRetry: this.fetchWithRetry.bind(this),
+      rateLimiter: this.rateLimiter,
+      metricsCollector: this.metricsCollector,
+      logger: this.logger,
     });
   }
 
@@ -235,5 +280,65 @@ export class RDAPClient {
    */
   getConfig(): Required<RDAPClientOptions> {
     return { ...this.options };
+  }
+
+  /**
+   * Gets rate limiter instance for advanced usage
+   */
+  getRateLimiter(): RateLimiter {
+    return this.rateLimiter;
+  }
+
+  /**
+   * Gets batch processor instance for batch operations
+   */
+  getBatchProcessor(): BatchProcessor {
+    return this.batchProcessor;
+  }
+
+  /**
+   * Gets metrics summary
+   */
+  getMetrics(since?: number) {
+    return this.metricsCollector.getSummary(since);
+  }
+
+  /**
+   * Gets connection pool statistics
+   */
+  getConnectionPoolStats() {
+    return this.connectionPool.getStats();
+  }
+
+  /**
+   * Gets logger instance
+   */
+  getLogger(): Logger {
+    return this.logger;
+  }
+
+  /**
+   * Gets recent logs
+   */
+  getLogs(count?: number) {
+    return this.logger.getLogs(count);
+  }
+
+  /**
+   * Clears all caches, metrics, and logs
+   */
+  async clearAll(): Promise<void> {
+    await this.cache.clear();
+    this.bootstrap.clearCache();
+    this.metricsCollector.clear();
+    this.logger.clear();
+  }
+
+  /**
+   * Destroys the client and cleans up resources
+   */
+  destroy(): void {
+    this.rateLimiter.destroy();
+    this.connectionPool.destroy();
   }
 }

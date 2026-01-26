@@ -19,6 +19,7 @@
     "outDir": "./dist",
     "removeComments": true,
     "importHelpers": true,
+    "inlineSources": false,
     
     /* Interop Constraints */
     "isolatedModules": true,
