@@ -1,7 +1,16 @@
 /**
  * RDAPify Playground API Proxy Server
  * 
- * Handles CORS and proxies RDAP requests to the actual RDAPify library
+ * ⚠️ LOCAL DEVELOPMENT ONLY ⚠️
+ * 
+ * This Express server is used for local development to handle CORS
+ * and proxy RDAP requests. In production, API requests are handled
+ * by a Cloudflare Worker deployed at /api/* routes.
+ * 
+ * Production Setup:
+ * - Frontend: GitHub Pages (static files from public/)
+ * - Backend: Cloudflare Worker (handles /api/* routes)
+ * - See CLOUDFLARE_WORKER.md for production configuration
  * 
  * @author RDAPify Contributors
  * @license MIT
@@ -157,74 +166,6 @@ app.post('/api/query', async (req, res) => {
             success: false,
             error: error.message || 'Internal server error',
             queryTime,
-            timestamp: new Date().toISOString()
-        });
-    }
-});
-
-/**
- * Batch query endpoint (optional)
- */
-app.post('/api/batch', async (req, res) => {
-    try {
-        const { queries } = req.body;
-        
-        if (!Array.isArray(queries) || queries.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'queries must be a non-empty array'
-            });
-        }
-        
-        if (queries.length > 10) {
-            return res.status(400).json({
-                success: false,
-                error: 'Maximum 10 queries per batch request'
-            });
-        }
-        
-        // Process queries in parallel
-        const results = await Promise.allSettled(
-            queries.map(async ({ type, query, options = {} }) => {
-                const clientOptions = {
-                    cache: options.cache !== false,
-                    redactPII: options.redactPII === true
-                };
-                
-                switch (type) {
-                    case 'domain':
-                        return await rdapClient.domain(query, clientOptions);
-                    case 'ip':
-                        return await rdapClient.ip(query, clientOptions);
-                    case 'asn':
-                        const asnNumber = query.replace(/^AS/i, '');
-                        return await rdapClient.asn(parseInt(asnNumber, 10), clientOptions);
-                    default:
-                        throw new Error(`Invalid query type: ${type}`);
-                }
-            })
-        );
-        
-        // Format results
-        const formattedResults = results.map((result, index) => ({
-            query: queries[index],
-            success: result.status === 'fulfilled',
-            data: result.status === 'fulfilled' ? result.value : null,
-            error: result.status === 'rejected' ? result.reason.message : null
-        }));
-        
-        res.json({
-            success: true,
-            results: formattedResults,
-            timestamp: new Date().toISOString()
-        });
-        
-    } catch (error) {
-        console.error('Batch query error:', error.message);
-        
-        res.status(500).json({
-            success: false,
-            error: error.message || 'Internal server error',
             timestamp: new Date().toISOString()
         });
     }

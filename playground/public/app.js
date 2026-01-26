@@ -6,12 +6,26 @@
  */
 
 // ============================================
+// Client ID Management
+// ============================================
+const CLIENT_KEY = "rdapify_client_id";
+let clientId = localStorage.getItem(CLIENT_KEY);
+if (!clientId) {
+    clientId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+    localStorage.setItem(CLIENT_KEY, clientId);
+}
+
+// ============================================
 // State Management
 // ============================================
 const state = {
     queryHistory: [],
     currentQuery: null,
-    isLoading: false
+    isLoading: false,
+    quotaInfo: {
+        remainingToday: null,
+        resetAt: null
+    }
 };
 
 // ============================================
@@ -32,7 +46,9 @@ const elements = {
     exampleButtons: document.querySelectorAll('.example-btn'),
     optionCache: document.getElementById('optionCache'),
     optionRedact: document.getElementById('optionRedact'),
-    optionVerbose: document.getElementById('optionVerbose')
+    optionVerbose: document.getElementById('optionVerbose'),
+    quotaInfo: document.getElementById('quotaInfo'),
+    installSection: document.getElementById('installSection')
 };
 
 // ============================================
@@ -135,24 +151,73 @@ function displayResults(data, queryTime) {
     // Show status bar
     elements.statusBar.style.display = 'flex';
     elements.statusText.textContent = '✅ Query successful';
+    elements.statusText.style.color = 'var(--success, #10b981)';
     elements.statusTime.textContent = `${queryTime}ms`;
 }
 
 /**
- * Display error
+ * Update quota display and disable button if quota is exhausted
  */
-function displayError(error) {
+function updateQuotaDisplay() {
+    if (!elements.quotaInfo) return;
+    
+    if (state.quotaInfo.remainingToday !== null) {
+        const resetDate = state.quotaInfo.resetAt ? new Date(state.quotaInfo.resetAt).toLocaleString() : 'Unknown';
+        elements.quotaInfo.innerHTML = `
+            <span class="quota-remaining">Remaining today: <strong>${state.quotaInfo.remainingToday}</strong></span>
+            <span class="quota-reset">Resets at: ${resetDate}</span>
+        `;
+        elements.quotaInfo.style.display = 'flex';
+        
+        // Disable query button if quota is exhausted
+        if (state.quotaInfo.remainingToday === 0) {
+            elements.queryButton.disabled = true;
+            elements.queryButton.title = 'Daily limit reached. Install the package to continue.';
+        } else {
+            elements.queryButton.disabled = false;
+            elements.queryButton.title = '';
+        }
+    }
+}
+
+/**
+ * Display error with optional retry-after hint
+ */
+function displayError(error, isQuotaExceeded = false, retryAfter = null) {
+    let errorMessage = error;
+    
+    if (isQuotaExceeded) {
+        let retryHint = '';
+        if (retryAfter) {
+            const seconds = parseInt(retryAfter, 10);
+            if (!isNaN(seconds)) {
+                const minutes = Math.ceil(seconds / 60);
+                retryHint = `<p style="color: var(--gray-600); margin-top: 0.5rem; font-size: 0.9rem;">Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.</p>`;
+            }
+        }
+        
+        errorMessage = `
+            <p style="color: var(--error); font-weight: 600;">Daily Limit Reached</p>
+            <p style="color: var(--gray-600); margin: 1rem 0;">You've reached the daily limit for playground queries.</p>
+            ${retryHint}
+            <p style="color: var(--gray-600);">Install RDAPify to continue with unlimited queries:</p>
+            <pre style="background: var(--gray-100); padding: 1rem; border-radius: 8px; margin-top: 1rem;">npm install rdapify</pre>
+        `;
+    }
+    
     elements.resultsContainer.innerHTML = `
         <div class="placeholder fade-in">
             <div class="placeholder-icon">❌</div>
-            <p style="color: var(--error); font-weight: 600;">Error</p>
-            <p style="color: var(--gray-600);">${error}</p>
+            ${typeof errorMessage === 'string' && !isQuotaExceeded ? `
+                <p style="color: var(--error); font-weight: 600;">Error</p>
+                <p style="color: var(--gray-600);">${errorMessage}</p>
+            ` : errorMessage}
         </div>
     `;
     
     // Show status bar
     elements.statusBar.style.display = 'flex';
-    elements.statusText.textContent = '❌ Query failed';
+    elements.statusText.textContent = isQuotaExceeded ? '⚠️ Quota exceeded' : '❌ Query failed';
     elements.statusText.style.color = 'var(--error)';
 }
 
@@ -251,7 +316,8 @@ async function performQuery(query, type, options = {}) {
         const response = await fetch('/api/query', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Client-Id': clientId
             },
             body: JSON.stringify({
                 type,
@@ -261,6 +327,24 @@ async function performQuery(query, type, options = {}) {
         });
 
         const result = await response.json();
+        
+        // Update quota information if available
+        if (result.remainingToday !== undefined) {
+            state.quotaInfo.remainingToday = result.remainingToday;
+            state.quotaInfo.resetAt = result.resetAt;
+            updateQuotaDisplay();
+        }
+
+        // Handle quota exceeded (429)
+        if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After');
+            return {
+                success: false,
+                error: result.error || 'Daily quota exceeded',
+                quotaExceeded: true,
+                retryAfter: retryAfter
+            };
+        }
 
         if (!response.ok || !result.success) {
             throw new Error(result.error || 'Query failed');
@@ -320,7 +404,7 @@ async function handleQuery() {
         displayResults(result.data, result.queryTime);
         addToHistory(validation.query, type, true);
     } else {
-        displayError(result.error);
+        displayError(result.error, result.quotaExceeded, result.retryAfter);
         addToHistory(validation.query, type, false);
     }
 }
