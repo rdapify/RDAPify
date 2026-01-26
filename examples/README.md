@@ -33,6 +33,8 @@ node domain_lookup.js
 Learn advanced patterns and optimizations:
 
 - **batch_processor.js** - Process multiple queries in parallel
+- **batch_processing_example.js** - Comprehensive batch processing guide
+- **rate_limiting_example.js** - Rate limiting patterns and strategies
 - **custom_cache.js** - Implement custom cache adapters
 - **rate_limiter.js** - Add rate limiting to queries
 - **error_state_handler.js** - Comprehensive error handling
@@ -40,7 +42,8 @@ Learn advanced patterns and optimizations:
 
 ```bash
 cd examples/advanced
-node batch_processor.js
+node batch_processing_example.js
+node rate_limiting_example.js
 ```
 
 ### TypeScript Examples

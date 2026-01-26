@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Unified, secure, high-performance RDAP client for enterprise applications with built-in privacy controls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,8 +9,24 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.js"
+    },
+    "./errors": {
+      "types": "./dist/shared/errors/base.error.d.ts",
+      "require": "./dist/shared/errors/base.error.js",
+      "import": "./dist/shared/errors/base.error.js"
+    },
+    "./types": {
+      "types": "./dist/shared/types/index.d.ts",
+      "require": "./dist/shared/types/index.js",
+      "import": "./dist/shared/types/index.js"
+    },
+    "./validators": {
+      "types": "./dist/shared/utils/validators/index.d.ts",
+      "require": "./dist/shared/utils/validators/index.js",
+      "import": "./dist/shared/utils/validators/index.js"
     }
   },
+  "sideEffects": false,
   "files": [
     "dist",
     "README.md",

@@ -6,7 +6,10 @@
 
 import type { CacheManager } from '../../infrastructure/cache';
 import type { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
+import type { RateLimiter } from '../../infrastructure/http/RateLimiter';
 import type { PIIRedactor } from '../../infrastructure/security';
+import type { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
+import type { Logger } from '../../infrastructure/logging/Logger';
 import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
 import { generateCacheKey } from '../../shared/utils/helpers';
 import {
@@ -29,6 +32,9 @@ export interface QueryOrchestratorConfig {
   piiRedactor: PIIRedactor;
   includeRaw: boolean;
   fetchWithRetry: (url: string) => Promise<any>;
+  rateLimiter?: RateLimiter;
+  metricsCollector?: MetricsCollector;
+  logger?: Logger;
 }
 
 /**
@@ -46,122 +52,315 @@ export class QueryOrchestrator {
    * Executes a domain query
    */
   async queryDomain(domain: string): Promise<DomainResponse> {
-    // Validate and normalize
-    validateDomain(domain);
-    const normalized = normalizeDomain(domain);
+    const startTime = Date.now();
+    
+    // Log request
+    this.config.logger?.logRequest('domain', domain);
 
-    // Check cache
-    const cacheKey = generateCacheKey('domain', normalized);
-    const cached = await this.config.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'domain') {
-      return this.config.piiRedactor.redact(cached) as DomainResponse;
+    // Check rate limit
+    if (this.config.rateLimiter) {
+      await this.config.rateLimiter.checkLimit();
     }
 
-    // Discover RDAP server
-    const serverUrl = await this.config.bootstrap.discoverDomain(normalized);
+    try {
+      // Validate and normalize
+      validateDomain(domain);
+      const normalized = normalizeDomain(domain);
 
-    // Build query URL
-    const queryUrl = `${serverUrl}/domain/${normalized}`;
+      // Check cache
+      const cacheKey = generateCacheKey('domain', normalized);
+      const cached = await this.config.cache.get(cacheKey);
+      
+      if (cached && cached.objectClass === 'domain') {
+        this.config.logger?.logCache('hit', cacheKey);
+        const duration = Date.now() - startTime;
+        
+        // Record metrics
+        this.config.metricsCollector?.record({
+          type: 'domain',
+          query: normalized,
+          success: true,
+          duration,
+          cached: true,
+          timestamp: Date.now(),
+        });
+        
+        this.config.logger?.logResponse('domain', normalized, true, duration);
+        return this.config.piiRedactor.redact(cached) as DomainResponse;
+      }
 
-    // Fetch with retry
-    const raw = await this.config.fetchWithRetry(queryUrl);
+      this.config.logger?.logCache('miss', cacheKey);
 
-    // Normalize response
-    const response = this.config.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.config.includeRaw
-    ) as DomainResponse;
+      // Discover RDAP server
+      const serverUrl = await this.config.bootstrap.discoverDomain(normalized);
+      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
 
-    // Cache the response
-    await this.config.cache.set(cacheKey, response);
+      // Build query URL
+      const queryUrl = `${serverUrl}/domain/${normalized}`;
 
-    // Redact PII
-    return this.config.piiRedactor.redact(response) as DomainResponse;
+      // Fetch with retry
+      const raw = await this.config.fetchWithRetry(queryUrl);
+
+      // Normalize response
+      const response = this.config.normalizer.normalize(
+        raw,
+        normalized,
+        serverUrl,
+        false,
+        this.config.includeRaw
+      ) as DomainResponse;
+
+      // Cache the response
+      await this.config.cache.set(cacheKey, response);
+      this.config.logger?.logCache('set', cacheKey);
+
+      const duration = Date.now() - startTime;
+
+      // Record metrics
+      this.config.metricsCollector?.record({
+        type: 'domain',
+        query: normalized,
+        success: true,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+      });
+
+      this.config.logger?.logResponse('domain', normalized, true, duration);
+
+      // Redact PII
+      return this.config.piiRedactor.redact(response) as DomainResponse;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      
+      // Record failure metrics
+      this.config.metricsCollector?.record({
+        type: 'domain',
+        query: domain,
+        success: false,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+        error: error instanceof Error ? error.name : 'Unknown',
+      });
+
+      this.config.logger?.logResponse('domain', domain, false, duration, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      throw error;
+    }
   }
 
   /**
    * Executes an IP query
    */
   async queryIP(ip: string): Promise<IPResponse> {
-    // Validate and normalize
-    const version = validateIP(ip);
-    const normalized = normalizeIP(ip);
+    const startTime = Date.now();
+    
+    // Log request
+    this.config.logger?.logRequest('ip', ip);
 
-    // Check cache
-    const cacheKey = generateCacheKey('ip', normalized);
-    const cached = await this.config.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'ip network') {
-      return this.config.piiRedactor.redact(cached) as IPResponse;
+    // Check rate limit
+    if (this.config.rateLimiter) {
+      await this.config.rateLimiter.checkLimit();
     }
 
-    // Discover RDAP server
-    const serverUrl =
-      version === 'v4'
-        ? await this.config.bootstrap.discoverIPv4(normalized)
-        : await this.config.bootstrap.discoverIPv6(normalized);
+    try {
+      // Validate and normalize
+      const version = validateIP(ip);
+      const normalized = normalizeIP(ip);
 
-    // Build query URL
-    const queryUrl = `${serverUrl}/ip/${normalized}`;
+      // Check cache
+      const cacheKey = generateCacheKey('ip', normalized);
+      const cached = await this.config.cache.get(cacheKey);
+      
+      if (cached && cached.objectClass === 'ip network') {
+        this.config.logger?.logCache('hit', cacheKey);
+        const duration = Date.now() - startTime;
+        
+        // Record metrics
+        this.config.metricsCollector?.record({
+          type: 'ip',
+          query: normalized,
+          success: true,
+          duration,
+          cached: true,
+          timestamp: Date.now(),
+        });
+        
+        this.config.logger?.logResponse('ip', normalized, true, duration);
+        return this.config.piiRedactor.redact(cached) as IPResponse;
+      }
 
-    // Fetch with retry
-    const raw = await this.config.fetchWithRetry(queryUrl);
+      this.config.logger?.logCache('miss', cacheKey);
 
-    // Normalize response
-    const response = this.config.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.config.includeRaw
-    ) as IPResponse;
+      // Discover RDAP server
+      const serverUrl =
+        version === 'v4'
+          ? await this.config.bootstrap.discoverIPv4(normalized)
+          : await this.config.bootstrap.discoverIPv6(normalized);
+      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
 
-    // Cache the response
-    await this.config.cache.set(cacheKey, response);
+      // Build query URL
+      const queryUrl = `${serverUrl}/ip/${normalized}`;
 
-    // Redact PII
-    return this.config.piiRedactor.redact(response) as IPResponse;
+      // Fetch with retry
+      const raw = await this.config.fetchWithRetry(queryUrl);
+
+      // Normalize response
+      const response = this.config.normalizer.normalize(
+        raw,
+        normalized,
+        serverUrl,
+        false,
+        this.config.includeRaw
+      ) as IPResponse;
+
+      // Cache the response
+      await this.config.cache.set(cacheKey, response);
+      this.config.logger?.logCache('set', cacheKey);
+
+      const duration = Date.now() - startTime;
+
+      // Record metrics
+      this.config.metricsCollector?.record({
+        type: 'ip',
+        query: normalized,
+        success: true,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+      });
+
+      this.config.logger?.logResponse('ip', normalized, true, duration);
+
+      // Redact PII
+      return this.config.piiRedactor.redact(response) as IPResponse;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      
+      // Record failure metrics
+      this.config.metricsCollector?.record({
+        type: 'ip',
+        query: ip,
+        success: false,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+        error: error instanceof Error ? error.name : 'Unknown',
+      });
+
+      this.config.logger?.logResponse('ip', ip, false, duration, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      throw error;
+    }
   }
 
   /**
    * Executes an ASN query
    */
   async queryASN(asn: string | number): Promise<ASNResponse> {
-    // Validate and normalize
-    const asnNumber = validateASN(asn);
-    const normalized = normalizeASN(asnNumber);
+    const startTime = Date.now();
+    const asnStr = typeof asn === 'number' ? `AS${asn}` : asn;
+    
+    // Log request
+    this.config.logger?.logRequest('asn', asnStr);
 
-    // Check cache
-    const cacheKey = generateCacheKey('asn', normalized);
-    const cached = await this.config.cache.get(cacheKey);
-    if (cached && cached.objectClass === 'autnum') {
-      return this.config.piiRedactor.redact(cached) as ASNResponse;
+    // Check rate limit
+    if (this.config.rateLimiter) {
+      await this.config.rateLimiter.checkLimit();
     }
 
-    // Discover RDAP server
-    const serverUrl = await this.config.bootstrap.discoverASN(asnNumber);
+    try {
+      // Validate and normalize
+      const asnNumber = validateASN(asn);
+      const normalized = normalizeASN(asnNumber);
 
-    // Build query URL
-    const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
+      // Check cache
+      const cacheKey = generateCacheKey('asn', normalized);
+      const cached = await this.config.cache.get(cacheKey);
+      
+      if (cached && cached.objectClass === 'autnum') {
+        this.config.logger?.logCache('hit', cacheKey);
+        const duration = Date.now() - startTime;
+        
+        // Record metrics
+        this.config.metricsCollector?.record({
+          type: 'asn',
+          query: normalized,
+          success: true,
+          duration,
+          cached: true,
+          timestamp: Date.now(),
+        });
+        
+        this.config.logger?.logResponse('asn', normalized, true, duration);
+        return this.config.piiRedactor.redact(cached) as ASNResponse;
+      }
 
-    // Fetch with retry
-    const raw = await this.config.fetchWithRetry(queryUrl);
+      this.config.logger?.logCache('miss', cacheKey);
 
-    // Normalize response
-    const response = this.config.normalizer.normalize(
-      raw,
-      normalized,
-      serverUrl,
-      false,
-      this.config.includeRaw
-    ) as ASNResponse;
+      // Discover RDAP server
+      const serverUrl = await this.config.bootstrap.discoverASN(asnNumber);
+      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
 
-    // Cache the response
-    await this.config.cache.set(cacheKey, response);
+      // Build query URL
+      const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
 
-    // Redact PII
-    return this.config.piiRedactor.redact(response) as ASNResponse;
+      // Fetch with retry
+      const raw = await this.config.fetchWithRetry(queryUrl);
+
+      // Normalize response
+      const response = this.config.normalizer.normalize(
+        raw,
+        normalized,
+        serverUrl,
+        false,
+        this.config.includeRaw
+      ) as ASNResponse;
+
+      // Cache the response
+      await this.config.cache.set(cacheKey, response);
+      this.config.logger?.logCache('set', cacheKey);
+
+      const duration = Date.now() - startTime;
+
+      // Record metrics
+      this.config.metricsCollector?.record({
+        type: 'asn',
+        query: normalized,
+        success: true,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+      });
+
+      this.config.logger?.logResponse('asn', normalized, true, duration);
+
+      // Redact PII
+      return this.config.piiRedactor.redact(response) as ASNResponse;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      
+      // Record failure metrics
+      this.config.metricsCollector?.record({
+        type: 'asn',
+        query: asnStr,
+        success: false,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+        error: error instanceof Error ? error.name : 'Unknown',
+      });
+
+      this.config.logger?.logResponse('asn', asnStr, false, duration, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      throw error;
+    }
   }
 }
