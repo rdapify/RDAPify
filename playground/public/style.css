@@ -497,6 +497,136 @@ body {
 }
 
 /* ============================================
+   Quota Information
+   ============================================ */
+.quota-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: 0.875rem;
+}
+
+.quota-remaining {
+    color: var(--gray-700);
+}
+
+.quota-remaining strong {
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.quota-reset {
+    color: var(--gray-600);
+    font-size: 0.8rem;
+}
+
+/* ============================================
+   Install Section
+   ============================================ */
+.install-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.install-card {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.install-card h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.install-card > p {
+    font-size: 1.125rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-lg);
+}
+
+.install-commands {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+}
+
+.install-code {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--gray-900);
+    border-radius: var(--radius-lg);
+}
+
+.install-code code {
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 1rem;
+    color: #10b981;
+    font-weight: 600;
+    flex: 1;
+}
+
+.copy-install-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.copy-install-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.install-example {
+    text-align: left;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.install-example p {
+    margin-bottom: var(--spacing-sm);
+    color: var(--gray-700);
+    font-weight: 600;
+}
+
+.install-example pre {
+    background: var(--gray-900);
+    color: #e5e7eb;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.install-example code {
+    color: inherit;
+}
+
+/* ============================================
    Features Section
    ============================================ */
 .features {

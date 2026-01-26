@@ -83,6 +83,9 @@
                             <span class="btn-loader" style="display: none;">⏳</span>
                         </button>
                     </div>
+                    
+                    <!-- Quota Information -->
+                    <div id="quotaInfo" class="quota-info" style="display: none;"></div>
 
                     <!-- Examples -->
                     <div class="examples">
@@ -152,6 +155,44 @@
                 </div>
                 <div id="historyContainer" class="history-container">
                     <p class="history-empty">No queries yet</p>
+                </div>
+            </section>
+
+            <!-- Install Section -->
+            <section id="installSection" class="install-section">
+                <div class="install-card">
+                    <h3>🚀 Ready for More?</h3>
+                    <p>Install RDAPify for unlimited queries and advanced features:</p>
+                    
+                    <!-- Package Manager Commands -->
+                    <div class="install-commands">
+                        <div class="install-code">
+                            <code>npm install rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('npm install rdapify')" title="Copy npm command">📋</button>
+                        </div>
+                        <div class="install-code">
+                            <code>yarn add rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('yarn add rdapify')" title="Copy yarn command">📋</button>
+                        </div>
+                        <div class="install-code">
+                            <code>pnpm add rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('pnpm add rdapify')" title="Copy pnpm command">📋</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Example Usage -->
+                    <div class="install-example">
+                        <p><strong>Example Usage:</strong></p>
+                        <pre><code>import { RDAPClient } from 'rdapify';
+
+const client = new RDAPClient();
+const result = await client.domain('example.com');
+console.log(result);</code></pre>
+                    </div>
+                    
+                    <a href="https://rdapify.com/docs/getting-started" target="_blank" class="btn btn-primary">
+                        📖 View Documentation
+                    </a>
                 </div>
             </section>
 
