@@ -98,6 +98,11 @@ const config = {
             label: 'Docs',
           },
           {
+            to: '/playground',
+            position: 'left',
+            label: 'Playground',
+          },
+          {
             href: 'https://github.com/rdapify/rdapify',
             label: 'GitHub',
             position: 'right',
