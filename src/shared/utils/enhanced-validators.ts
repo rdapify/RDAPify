@@ -188,7 +188,8 @@ export function validateAsnRange(asn: string | number): { start: number; end?: n
  * Detects if a string is an IDN domain
  */
 export function isIdnDomain(domain: string): boolean {
-  // Check for non-ASCII characters
+  // Check for non-ASCII characters (characters outside the ASCII range)
+  // eslint-disable-next-line no-control-regex
   return /[^\x00-\x7F]/.test(domain);
 }
 
@@ -212,7 +213,7 @@ export function validateEmail(email: string): boolean {
  */
 export function validatePhone(phone: string): boolean {
   // Remove common formatting characters
-  const cleaned = phone.replace(/[\s\-\(\)\.]/g, '');
+  const cleaned = phone.replace(/[\s\-().]/g, '');
   
   // Check if it's a valid phone number (10-15 digits, optional + prefix)
   const phoneRegex = /^\+?\d{10,15}$/;

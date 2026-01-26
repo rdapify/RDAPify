@@ -152,6 +152,7 @@ export class Logger {
    */
   private defaultOutput(entry: LogEntry): void {
     if (this.format === 'json') {
+      // eslint-disable-next-line no-console
       console.log(JSON.stringify(entry));
       return;
     }
@@ -171,6 +172,7 @@ export class Logger {
     const reset = '\x1b[0m';
     const color = colors[entry.level];
 
+    // eslint-disable-next-line no-console
     console.log(`${color}[${timestamp}] ${level}${reset} ${entry.message}${contextStr}`);
   }
 
