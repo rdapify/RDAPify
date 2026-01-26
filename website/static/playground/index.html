@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive playground for testing RDAPify queries in real-time">
+    <meta name="keywords" content="rdap, whois, domain, ip, asn, playground">
+    <meta name="author" content="RDAPify Contributors">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="RDAPify Playground">
+    <meta property="og:description" content="Interactive playground for testing RDAP queries">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rdapify.com/playground">
+    
+    <title>RDAPify Playground - Interactive RDAP Query Tool</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🌐</span>
+                    <h1>RDAPify Playground</h1>
+                </div>
+                <nav class="nav">
+                    <a href="https://rdapify.com" target="_blank">Home</a>
+                    <a href="https://rdapify.com/docs" target="_blank">Docs</a>
+                    <a href="https://github.com/rdapify/RDAPify" target="_blank">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Introduction -->
+            <section class="intro">
+                <h2>Interactive RDAP Query Tool</h2>
+                <p>Test RDAP queries for domains, IP addresses, and ASNs in real-time. No installation required!</p>
+            </section>
+
+            <!-- Query Section -->
+            <section class="query-section">
+                <div class="query-panel">
+                    <h3>Query Input</h3>
+                    
+                    <!-- Query Type Selector -->
+                    <div class="query-type">
+                        <label>Query Type:</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="queryType" value="domain" checked>
+                                <span>Domain</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="queryType" value="ip">
+                                <span>IP Address</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="queryType" value="asn">
+                                <span>ASN</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Query Input -->
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="queryInput" 
+                            class="query-input" 
+                            placeholder="Enter domain, IP, or ASN..."
+                            autocomplete="off"
+                        >
+                        <button id="queryButton" class="btn btn-primary">
+                            <span class="btn-text">Query</span>
+                            <span class="btn-loader" style="display: none;">⏳</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Quota Information -->
+                    <div id="quotaInfo" class="quota-info" style="display: none;"></div>
+
+                    <!-- Examples -->
+                    <div class="examples">
+                        <span class="examples-label">Examples:</span>
+                        <button class="example-btn" data-type="domain" data-query="example.com">example.com</button>
+                        <button class="example-btn" data-type="ip" data-query="8.8.8.8">8.8.8.8</button>
+                        <button class="example-btn" data-type="ip" data-query="2001:4860:4860::8888">2001:4860:4860::8888</button>
+                        <button class="example-btn" data-type="asn" data-query="AS15169">AS15169</button>
+                    </div>
+
+                    <!-- Options (Expandable) -->
+                    <details class="options">
+                        <summary>Advanced Options</summary>
+                        <div class="options-content">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optionCache" checked>
+                                <span>Enable caching</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optionRedact">
+                                <span>Redact PII</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optionVerbose">
+                                <span>Verbose output</span>
+                            </label>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div class="results-header">
+                        <h3>Response</h3>
+                        <div class="results-actions">
+                            <button id="copyButton" class="btn btn-small" title="Copy to clipboard">
+                                📋 Copy
+                            </button>
+                            <button id="clearButton" class="btn btn-small" title="Clear results">
+                                🗑️ Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Bar -->
+                    <div id="statusBar" class="status-bar" style="display: none;">
+                        <span id="statusText"></span>
+                        <span id="statusTime"></span>
+                    </div>
+
+                    <!-- Results Display -->
+                    <div id="resultsContainer" class="results-container">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">🔍</div>
+                            <p>Enter a query above to see results</p>
+                            <p class="placeholder-hint">Try: example.com, 8.8.8.8, or AS15169</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Query History -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h3>Query History</h3>
+                    <button id="clearHistoryButton" class="btn btn-small">Clear History</button>
+                </div>
+                <div id="historyContainer" class="history-container">
+                    <p class="history-empty">No queries yet</p>
+                </div>
+            </section>
+
+            <!-- Install Section -->
+            <section id="installSection" class="install-section">
+                <div class="install-card">
+                    <h3>🚀 Ready for More?</h3>
+                    <p>Install RDAPify for unlimited queries and advanced features:</p>
+                    
+                    <!-- Package Manager Commands -->
+                    <div class="install-commands">
+                        <div class="install-code">
+                            <code>npm install rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('npm install rdapify')" title="Copy npm command">📋</button>
+                        </div>
+                        <div class="install-code">
+                            <code>yarn add rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('yarn add rdapify')" title="Copy yarn command">📋</button>
+                        </div>
+                        <div class="install-code">
+                            <code>pnpm add rdapify</code>
+                            <button class="copy-install-btn" onclick="navigator.clipboard.writeText('pnpm add rdapify')" title="Copy pnpm command">📋</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Example Usage -->
+                    <div class="install-example">
+                        <p><strong>Example Usage:</strong></p>
+                        <pre><code>import { RDAPClient } from 'rdapify';
+
+const client = new RDAPClient();
+const result = await client.domain('example.com');
+console.log(result);</code></pre>
+                    </div>
+                    
+                    <a href="https://rdapify.com/docs/getting-started" target="_blank" class="btn btn-primary">
+                        📖 View Documentation
+                    </a>
+                </div>
+            </section>
+
+            <!-- Features -->
+            <section class="features">
+                <h3>Features</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h4>Real-time Queries</h4>
+                        <p>Instant RDAP lookups with live results</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h4>Syntax Highlighting</h4>
+                        <p>Beautiful JSON formatting and colors</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h4>Copy & Share</h4>
+                        <p>Easy copy to clipboard functionality</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h4>Privacy First</h4>
+                        <p>Optional PII redaction built-in</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>
+                Built with ❤️ by the <a href="https://github.com/rdapify" target="_blank">RDAPify</a> team
+                | <a href="https://rdapify.com/docs" target="_blank">Documentation</a>
+                | <a href="https://github.com/rdapify/RDAPify" target="_blank">GitHub</a>
+                | <a href="https://rdapify.com/security" target="_blank">Security</a>
+            </p>
+            <p class="footer-note">
+                This playground uses the RDAPify library. All queries are proxied through our server.
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
