@@ -94,4 +94,4 @@ Found an error or want to improve the docs? See our [Contributing Guide](https:/
 
 ---
 
-**Note:** This documentation is for RDAPify v0.1.3. For other versions, check the version selector or browse the [GitHub releases](https://github.com/rdapify/rdapify/releases).
+**Note:** This documentation is for RDAPify v0.1.4. For other versions, check the version selector or browse the [GitHub releases](https://github.com/rdapify/rdapify/releases).

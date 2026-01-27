@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-01-27
+
+### Added
+- **Interactive Playground**: Try-before-install experience for rdapify.com
+  - Client ID management with localStorage persistence
+  - Real-time quota tracking (remainingToday, resetAt)
+  - 429 rate limit handling with retry hints
+  - Multiple package manager support (npm, yarn, pnpm)
+  - Integrated into website navigation
+  - Production-ready documentation and testing guides
+
+### Changed
+- Updated website navigation to include Playground link
+- Enhanced documentation for production deployment
+
+### Fixed
+- ESLint errors in Logger.ts and enhanced-validators.ts (6 issues resolved)
+
 ## [0.1.3] - 2026-01-26
 
 ### Added - Phase 3 Improvements
