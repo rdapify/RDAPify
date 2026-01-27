@@ -1,6 +1,6 @@
 # RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
 
-> **🎉 LATEST RELEASE**: v0.1.3 — Production-ready with advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.3](#-whats-new-in-v013) below.
+> **🎉 LATEST RELEASE**: v0.1.4 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.4](#-whats-new-in-v014) below.
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
@@ -365,9 +365,20 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.3 (Production Ready)
+**Current Release**: v0.1.4 (Production Ready)
 
-### 🎉 What's New in v0.1.3
+### 🎉 What's New in v0.1.4
+
+**Interactive Playground & Developer Experience**
+- ✅ **Try Before Install**: Interactive playground at rdapify.com/playground
+- ✅ **Client ID Tracking**: Stable browser identification with localStorage
+- ✅ **Quota Management**: Real-time quota display (remainingToday, resetAt)
+- ✅ **Rate Limit Handling**: Graceful 429 responses with retry hints
+- ✅ **Multi-Package Manager**: npm, yarn, and pnpm install commands
+- ✅ **Website Integration**: Playground accessible from main navigation
+- ✅ **Code Quality**: ESLint errors resolved (6 issues fixed)
+
+**Previous Release (v0.1.3)**
 
 **Phase 3: Authentication & Network** (52 new tests)
 - ✅ **Authentication Support**: Basic, Bearer Token, API Key, OAuth2
@@ -385,14 +396,15 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 - ✅ **Metrics & Monitoring**: Comprehensive query tracking
 - ✅ **Request/Response Logging**: Detailed debugging capabilities
 
-**Total Improvements**: 10 major features, 145 new tests (all passing)
+**Total Improvements**: 11 major features, 145+ tests (all passing)
 
 See [ALL_PHASES_COMPLETE.md](./docs/releases/ALL_PHASES_COMPLETE.md) for detailed documentation.
 
-### ✅ What's Ready in v0.1.3
+### ✅ What's Ready in v0.1.4
 
 Core functionality is production-ready and fully tested:
 
+- ✅ **Interactive Playground**: Try RDAPify without installing (rdapify.com/playground)
 - ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic bootstrap discovery
 - ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, with proper CIDR matching (IPv4/IPv6)
 - ✅ **Data Normalization**: Consistent response format across all registries
@@ -419,7 +431,6 @@ These features are planned for future releases:
 
 - ⏳ **Redis/External Cache**: External cache adapters coming in v0.2.0
 - ⏳ **CLI Tool**: Command-line interface planned
-- ⏳ **Interactive Playground**: Web-based testing environment
 - ⏳ **Bun/Deno/Cloudflare Workers**: Additional runtime support
 - ⏳ **Advanced Analytics**: Dashboard and reporting features
 - ⏳ **Geo-distributed Caching**: Multi-region cache support
