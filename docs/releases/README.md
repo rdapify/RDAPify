@@ -58,11 +58,11 @@ This directory contains comprehensive documentation for all RDAPify releases and
 
 | Phase | Version | Features | Tests | Status |
 |-------|---------|----------|-------|--------|
-| Phase 1 | v0.1.2 | 3 | 38 | ✅ Complete |
-| Phase 2 | v0.1.3 | 4 | 55 | ✅ Complete |
-| Phase 3 | v0.1.3 | 3 | 52 | ✅ Complete |
-| Playground | v0.1.4 | 1 | - | ✅ Complete |
-| **Total** | **v0.1.4** | **11** | **145** | ✅ **Complete** |
+| Phase 1 | v0.1.1 | 3 | 38 | ✅ Complete |
+| Phase 2 | v0.1.1 | 4 | 55 | ✅ Complete |
+| Phase 3 | v0.1.1 | 3 | 52 | ✅ Complete |
+| Playground | v0.1.2 | 1 | - | ✅ Complete |
+| **Total** | **v0.1.2** | **11** | **145** | ✅ **Complete** |
 
 ---
 
@@ -83,14 +83,18 @@ Start with [ALL_PHASES_COMPLETE.md](./ALL_PHASES_COMPLETE.md) for a complete ove
 
 ## 📝 Version History
 
-### v0.1.4 (January 27, 2026)
+### v0.1.2 (January 27, 2026)
 - ✅ Interactive Playground: Try-before-install experience
 - ✅ Client ID tracking with localStorage
 - ✅ Real-time quota management
 - ✅ Website navigation integration
 - ✅ ESLint fixes (6 issues resolved)
 
-### v0.1.3 (January 26, 2026)
+### v0.1.1 (January 25, 2026)
+- ✅ Fixed repository metadata in package.json
+- ✅ Updated homepage URL to rdapify.com
+
+### v0.1.0 (January 24, 2026)
 - ✅ Phase 3: Authentication, Proxy, Compression (52 tests)
 - ✅ Phase 2: Retry, Priority, Validation, Cache (55 tests)
 
