@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.4] - 2026-01-27
+## [0.1.2] - 2026-01-27
 
 ### Added
 - **Interactive Playground**: Try-before-install experience for rdapify.com
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ESLint errors in Logger.ts and enhanced-validators.ts (6 issues resolved)
 
-## [0.1.3] - 2026-01-26
+## [0.1.1] - 2026-01-25
 
 ### Added - Phase 3 Improvements
 - **Authentication Support**: Multiple authentication methods for RDAP servers

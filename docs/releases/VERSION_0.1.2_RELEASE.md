@@ -1,7 +1,7 @@
-# RDAPify v0.1.4 Release Notes
+# RDAPify v0.1.2 Release Notes
 
 **Release Date:** January 27, 2026  
-**Version:** 0.1.4  
+**Version:** 0.1.2  
 **Status:** ✅ Production Ready
 
 ---
@@ -122,8 +122,8 @@ Visit [rdapify.com/playground](https://rdapify.com/playground) to try RDAPify wi
 
 ### Updated Documentation
 
-- **[README.md](../../README.md)** - Updated to v0.1.4
-- **[CHANGELOG.md](../../CHANGELOG.md)** - Added v0.1.4 entry
+- **[README.md](../../README.md)** - Updated to v0.1.2
+- **[CHANGELOG.md](../../CHANGELOG.md)** - Added v0.1.2 entry
 - **[docs/README.md](../README.md)** - Version reference updated
 - **[docs/localization/README_AR.md](../localization/README_AR.md)** - Arabic version updated
 
@@ -163,7 +163,7 @@ npm update rdapify
 
 ### Commits
 
-- Total commits in v0.1.4: 6
+- Total commits in v0.1.2: 6
 - Branch: `fix/docs-build-issues`
 - Latest commit: `509ddbb`
 
@@ -183,4 +183,4 @@ Thanks to all contributors who helped make this release possible!
 
 ---
 
-**🎉 Happy querying with RDAPify v0.1.4! 🎉**
+**🎉 Happy querying with RDAPify v0.1.2! 🎉**

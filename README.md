@@ -1,6 +1,6 @@
 # RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
 
-> **🎉 LATEST RELEASE**: v0.1.4 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.4](#-whats-new-in-v014) below.
+> **🎉 LATEST RELEASE**: v0.1.2 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.2](#-whats-new-in-v012) below.
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
@@ -365,9 +365,9 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.4 (Production Ready)
+**Current Release**: v0.1.2 (Production Ready)
 
-### 🎉 What's New in v0.1.4
+### 🎉 What's New in v0.1.2
 
 **Interactive Playground & Developer Experience**
 - ✅ **Try Before Install**: Interactive playground at rdapify.com/playground
@@ -378,9 +378,9 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 - ✅ **Website Integration**: Playground accessible from main navigation
 - ✅ **Code Quality**: ESLint errors resolved (6 issues fixed)
 
-**Previous Release (v0.1.3)**
+**Previous Releases**
 
-**Phase 3: Authentication & Network** (52 new tests)
+**Phase 3: Authentication & Network** (52 new tests - v0.1.1+)
 - ✅ **Authentication Support**: Basic, Bearer Token, API Key, OAuth2
 - ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5 with bypass lists
 - ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
@@ -400,7 +400,7 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 See [ALL_PHASES_COMPLETE.md](./docs/releases/ALL_PHASES_COMPLETE.md) for detailed documentation.
 
-### ✅ What's Ready in v0.1.4
+### ✅ What's Ready in v0.1.2
 
 Core functionality is production-ready and fully tested:
 
