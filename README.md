@@ -2,6 +2,8 @@
 
 > **🎉 LATEST RELEASE**: v0.1.2 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.2](#-whats-new-in-v012) below.
 
+> **⚠️ UPGRADE NOTICE**: If you're using v0.1.0 or v0.1.1, please upgrade to v0.1.2 for new features and bug fixes. **No breaking changes** - seamless upgrade! See [Migration Guide](./MIGRATION_TO_0.1.2.md) or simply run: `npm install rdapify@latest`
+
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
