@@ -1,0 +1,69 @@
+═══════════════════════════════════════════════════════════
+🔔 أوامر Deprecate للإصدارات القديمة
+═══════════════════════════════════════════════════════════
+
+✅ تم إنشاء:
+   - MIGRATION_TO_0.1.2.md (دليل الترقية)
+   - DEPRECATE_OLD_VERSIONS.md (شرح كامل)
+   - إشعار في README.md
+
+───────────────────────────────────────────────────────────
+
+🎯 الأمر الموصى به (الأسهل):
+───────────────────────────────────────────────────────────
+
+npm deprecate rdapify@"<0.1.2" "⚠️ Outdated version. Please upgrade to 0.1.2 or later for new features and bug fixes. No breaking changes - seamless upgrade! Migration guide: https://github.com/rdapify/RDAPify/blob/main/MIGRATION_TO_0.1.2.md"
+
+───────────────────────────────────────────────────────────
+
+📝 أو بشكل منفصل:
+───────────────────────────────────────────────────────────
+
+# Alpha versions
+npm deprecate rdapify@0.1.0-alpha.1 "⚠️ Alpha version - Please use stable release 0.1.2"
+npm deprecate rdapify@0.1.0-alpha.2 "⚠️ Alpha version - Please use stable release 0.1.2"
+npm deprecate rdapify@0.1.0-alpha.3 "⚠️ Alpha version - Please use stable release 0.1.2"
+npm deprecate rdapify@0.1.0-alpha.4 "⚠️ Alpha version - Please use stable release 0.1.2"
+
+# Stable but outdated
+npm deprecate rdapify@0.1.0 "⚠️ Outdated - Please upgrade to 0.1.2. Migration guide: https://github.com/rdapify/RDAPify/blob/main/MIGRATION_TO_0.1.2.md"
+npm deprecate rdapify@0.1.1 "⚠️ Outdated - Please upgrade to 0.1.2. Migration guide: https://github.com/rdapify/RDAPify/blob/main/MIGRATION_TO_0.1.2.md"
+
+───────────────────────────────────────────────────────────
+
+⚠️ ملاحظة:
+───────────────────────────────────────────────────────────
+
+عند تشغيل الأمر، سيطلب npm المصادقة:
+1. اضغط ENTER عندما يظهر الرابط
+2. سجل الدخول في المتصفح
+3. اضغط "Authenticate"
+4. ارجع للـ terminal
+
+───────────────────────────────────────────────────────────
+
+✅ بعد التنفيذ:
+───────────────────────────────────────────────────────────
+
+المستخدمون الذين يحاولون تثبيت الإصدارات القديمة سيرون:
+
+npm WARN deprecated rdapify@0.1.0: ⚠️ Outdated version. Please upgrade to 0.1.2...
+
+───────────────────────────────────────────────────────────
+
+🎯 التحقق:
+───────────────────────────────────────────────────────────
+
+# تحقق من حالة deprecation
+npm view rdapify versions --json
+
+# أو
+npm info rdapify
+
+═══════════════════════════════════════════════════════════
+
+📚 للمزيد من التفاصيل:
+   - DEPRECATE_OLD_VERSIONS.md
+   - MIGRATION_TO_0.1.2.md
+
+═══════════════════════════════════════════════════════════
