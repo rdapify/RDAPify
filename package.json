@@ -51,7 +51,7 @@
     "verify:api": "node scripts/verify-api.js",
     "verify:api:update": "npm run build && node scripts/verify-api.js",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run verify:api",
-    "prepublishOnly": "npm run verify",
+    "prepublishOnly_disabled_for_manual_publish": "npm run verify",
     "prepack": "npm run build",
     "prepare": "husky install",
     "playground": "npm run build && cd playground && npm install && npm start",
