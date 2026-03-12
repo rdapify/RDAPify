@@ -33,7 +33,7 @@ assignees: ''
 
 ## Environment
 
-- **RDAPify Version:** <!-- e.g., 0.1.0-alpha.4 -->
+- **RDAPify Version:** <!-- e.g., 0.1.2 -->
 - **Node.js Version:** <!-- e.g., 18.17.0 -->
 - **Operating System:** <!-- e.g., Ubuntu 22.04, macOS 13.0, Windows 11 -->
 - **Package Manager:** <!-- npm, yarn, pnpm, bun -->
