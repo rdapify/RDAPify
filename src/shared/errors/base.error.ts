@@ -12,6 +12,9 @@ export class RDAPifyError extends Error {
   public readonly context?: Record<string, any>;
   public readonly timestamp: number;
   public readonly suggestion?: string;
+  public readonly queryType?: string;
+  public readonly queryValue?: string;
+  public readonly serverUrl?: string;
 
   constructor(
     message: string,
@@ -27,6 +30,9 @@ export class RDAPifyError extends Error {
     this.context = context;
     this.timestamp = Date.now();
     this.suggestion = suggestion;
+    this.queryType = context?.['queryType'];
+    this.queryValue = context?.['queryValue'];
+    this.serverUrl = context?.['serverUrl'];
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
@@ -46,6 +52,9 @@ export class RDAPifyError extends Error {
       context: this.context,
       timestamp: this.timestamp,
       suggestion: this.suggestion,
+      queryType: this.queryType,
+      queryValue: this.queryValue,
+      serverUrl: this.serverUrl,
     };
   }
 
@@ -57,6 +66,27 @@ export class RDAPifyError extends Error {
     if (this.suggestion) {
       parts.push(`Suggestion: ${this.suggestion}`);
     }
+    return parts.join('. ');
+  }
+
+  /**
+   * Returns a detailed error message with context
+   */
+  getDetailedMessage(): string {
+    const parts = [this.message];
+    
+    if (this.queryType && this.queryValue) {
+      parts.push(`Query: ${this.queryType} ${this.queryValue}`);
+    }
+    
+    if (this.serverUrl) {
+      parts.push(`Server: ${this.serverUrl}`);
+    }
+    
+    if (this.suggestion) {
+      parts.push(`Suggestion: ${this.suggestion}`);
+    }
+    
     return parts.join('. ');
   }
 }
@@ -72,6 +102,21 @@ export class ValidationError extends RDAPifyError {
       400,
       context,
       suggestion || 'Please check your input and try again'
+    );
+  }
+}
+
+/**
+ * Validation error for configuration options
+ */
+export class ConfigurationError extends RDAPifyError {
+  constructor(message: string, context?: Record<string, any>, suggestion?: string) {
+    super(
+      message,
+      'CONFIGURATION_ERROR',
+      400,
+      context,
+      suggestion || 'Please check your configuration and try again'
     );
   }
 }
@@ -208,4 +253,11 @@ export function isTimeoutError(error: unknown): error is TimeoutError {
  */
 export function isRateLimitError(error: unknown): error is RateLimitError {
   return error instanceof RateLimitError;
+}
+
+/**
+ * Type guard to check if error is ConfigurationError
+ */
+export function isConfigurationError(error: unknown): error is ConfigurationError {
+  return error instanceof ConfigurationError;
 }

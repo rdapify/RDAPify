@@ -36,6 +36,30 @@ import { BatchProcessor } from '../services/BatchProcessor';
  * const result = await client.domain('example.com');
  * console.log(result.registrar?.name);
  * ```
+ *
+ * @example Debug Mode
+ * ```typescript
+ * const client = new RDAPClient({
+ *   debug: true,
+ * });
+ *
+ * // Logs RDAP server discovery, request duration, cache hits/misses, retries, redirects
+ * const result = await client.domain('example.com');
+ * ```
+ *
+ * @example Custom Logger
+ * ```typescript
+ * const customLogger = {
+ *   debug: (msg, meta) => console.debug('[DEBUG]', msg, meta),
+ *   info: (msg, meta) => console.info('[INFO]', msg, meta),
+ *   warn: (msg, meta) => console.warn('[WARN]', msg, meta),
+ *   error: (msg, meta) => console.error('[ERROR]', msg, meta),
+ * };
+ *
+ * const client = new RDAPClient({
+ *   debug: { logger: customLogger },
+ * });
+ * ```
  */
 export class RDAPClient {
   private readonly options: Required<RDAPClientOptions>;
@@ -51,6 +75,13 @@ export class RDAPClient {
   private readonly connectionPool: ConnectionPool;
   private readonly metricsCollector: MetricsCollector;
   private readonly logger: Logger;
+  private readonly debugEnabled: boolean;
+  private readonly debugLogger?: {
+    debug: (message: string, metadata?: Record<string, any>) => void;
+    info: (message: string, metadata?: Record<string, any>) => void;
+    warn: (message: string, metadata?: Record<string, any>) => void;
+    error: (message: string, metadata?: Record<string, any>) => void;
+  };
   constructor(options: RDAPClientOptions = {}) {
     // Merge with defaults
     this.options = this.normalizeOptions(options);
@@ -77,6 +108,15 @@ export class RDAPClient {
       followRedirects: this.options.followRedirects,
       maxRedirects: this.options.maxRedirects,
       ssrfProtection: this.ssrfProtection,
+      logRedirect: (fromUrl, toUrl) => {
+        this.logger?.warn(`Redirect: ${fromUrl} → ${toUrl}`);
+        if (this.debugEnabled && this.debugLogger) {
+          this.debugLogger.debug('Redirect occurred', {
+            fromUrl,
+            toUrl,
+          });
+        }
+      },
     });
 
     // Initialize bootstrap discovery
@@ -130,6 +170,11 @@ export class RDAPClient {
       logResponses: true,
     });
 
+    // Initialize debug logger
+    const debugOptions = this.options.debug;
+    this.debugEnabled = typeof debugOptions === 'boolean' ? debugOptions : debugOptions?.enabled ?? false;
+    this.debugLogger = typeof debugOptions === 'object' && debugOptions?.logger ? debugOptions.logger : undefined;
+
     // Initialize batch processor
     this.batchProcessor = new BatchProcessor(this);
 
@@ -145,6 +190,8 @@ export class RDAPClient {
       rateLimiter: this.rateLimiter,
       metricsCollector: this.metricsCollector,
       logger: this.logger,
+      debugEnabled: this.debugEnabled,
+      debugLogger: this.debugLogger,
     });
   }
 

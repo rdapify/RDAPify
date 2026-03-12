@@ -79,15 +79,19 @@ export class Logger {
   }
 
   /**
-   * Logs a request
+   * Logs a request with structured metadata
    */
   logRequest(type: string, query: string, context?: Record<string, any>): void {
     if (!this.logRequests) return;
-    this.info(`REQUEST → ${type}: ${query}`, context);
+    this.info(`REQUEST → ${type}: ${query}`, {
+      queryType: type,
+      queryValue: query,
+      ...context,
+    });
   }
 
   /**
-   * Logs a response
+   * Logs a response with structured metadata
    */
   logResponse(
     type: string,
@@ -102,25 +106,45 @@ export class Logger {
     const message = `RESPONSE ${status} ${type}: ${query} (${duration}ms)`;
 
     if (success) {
-      this.info(message, context);
+      this.info(message, {
+        queryType: type,
+        queryValue: query,
+        success,
+        durationMs: duration,
+        ...context,
+      });
     } else {
-      this.warn(message, context);
+      this.warn(message, {
+        queryType: type,
+        queryValue: query,
+        success,
+        durationMs: duration,
+        ...context,
+      });
     }
   }
 
   /**
-   * Logs performance metrics
+   * Logs performance metrics with structured metadata
    */
   logPerformance(operation: string, duration: number, context?: Record<string, any>): void {
-    this.debug(`PERFORMANCE: ${operation} took ${duration}ms`, context);
+    this.debug(`PERFORMANCE: ${operation} took ${duration}ms`, {
+      operation,
+      durationMs: duration,
+      ...context,
+    });
   }
 
   /**
-   * Logs cache operations
+   * Logs cache operations with structured metadata
    */
   logCache(operation: 'hit' | 'miss' | 'set', key: string, context?: Record<string, any>): void {
     const emoji = operation === 'hit' ? '✓' : operation === 'miss' ? '✗' : '→';
-    this.debug(`CACHE ${emoji} ${operation}: ${key}`, context);
+    this.debug(`CACHE ${emoji} ${operation}: ${key}`, {
+      operation,
+      cacheKey: key,
+      ...context,
+    });
   }
 
   /**
