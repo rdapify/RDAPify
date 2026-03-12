@@ -130,4 +130,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on:
 ---
 
 **Last Updated**: January 24, 2026  
-**Version**: 0.1.0-alpha.4
+**Version**: 0.1.2

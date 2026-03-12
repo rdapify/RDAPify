@@ -136,7 +136,7 @@ git diff
 
 ### 2. تحديث package.json
 تأكد من:
-- ✅ الإصدار صحيح: `0.1.0-alpha.4`
+- ✅ الإصدار صحيح: `0.1.2`
 - ✅ repository URL صحيح
 - ✅ keywords مناسبة
 - ✅ homepage URL (إذا كان متاحاً)
@@ -229,4 +229,4 @@ npm view rdapify
 
 **تم التنظيف بواسطة:** Kiro AI Assistant  
 **التاريخ:** 2025-01-24  
-**الإصدار:** v0.1.0-alpha.4
+**الإصدار:** v0.1.2

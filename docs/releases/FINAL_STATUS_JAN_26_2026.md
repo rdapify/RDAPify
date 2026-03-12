@@ -58,7 +58,7 @@
 
 ## 🎯 Features Implemented
 
-### Core RDAP Features (v0.1.0-0.1.1)
+### Core RDAP Features (v0.1.2)
 - ✅ Domain queries
 - ✅ IP queries (IPv4/IPv6)
 - ✅ ASN queries

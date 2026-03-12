@@ -59,7 +59,7 @@
 
 ---
 
-### Previous Work (v0.1.1) - COMPLETE ✅
+### Previous Work (v0.1.2) - COMPLETE ✅
 
 **Release Date:** January 25, 2026
 
@@ -223,7 +223,7 @@ RDAPify/
 
 ## 🎯 Goals Achieved
 
-### Original Goals (v0.1.0)
+### Original Goals (v0.1.2)
 - ✅ Unified RDAP client
 - ✅ Security (SSRF protection)
 - ✅ Performance (caching)
@@ -231,7 +231,7 @@ RDAPify/
 - ✅ TypeScript support
 - ✅ Comprehensive documentation
 
-### Enhancement Goals (v0.1.1)
+### Enhancement Goals (v0.1.2)
 - ✅ Rate limiting
 - ✅ Batch processing
 - ✅ Enhanced error handling
