@@ -3,7 +3,7 @@
 ## 🎉 Success! All Phase 2 Features Implemented
 
 **Date:** January 26, 2026  
-**Version:** 0.1.3  
+**Version:** 0.1.2  
 **Status:** ✅ READY FOR RELEASE
 
 ---
@@ -105,7 +105,7 @@ Status:      ✅ ALL PASSING
 ## 🎯 Version Update
 
 - **Previous**: 0.1.2
-- **Current**: 0.1.3
+- **Current**: 0.1.2
 - **Changes**: CHANGELOG.md updated
 - **Exports**: index.ts updated with new features
 
@@ -119,7 +119,7 @@ Status:      ✅ ALL PASSING
 - Request/Response Logging
 - **38 tests**
 
-### Phase 2 (v0.1.3)
+### Phase 2 (v0.1.2)
 - Retry Strategies
 - Query Prioritization
 - Enhanced Validation
@@ -136,7 +136,7 @@ Status:      ✅ ALL PASSING
 ## ✅ Ready for Release
 
 **Package Status**: Production Ready  
-**Version**: 0.1.3  
+**Version**: 0.1.2  
 **Tests**: 93 new tests passing  
 **Documentation**: Complete  
 **Breaking Changes**: None  
