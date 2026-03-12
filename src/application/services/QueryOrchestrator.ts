@@ -35,6 +35,13 @@ export interface QueryOrchestratorConfig {
   rateLimiter?: RateLimiter;
   metricsCollector?: MetricsCollector;
   logger?: Logger;
+  debugEnabled: boolean;
+  debugLogger?: {
+    debug: (message: string, metadata?: Record<string, any>) => void;
+    info: (message: string, metadata?: Record<string, any>) => void;
+    warn: (message: string, metadata?: Record<string, any>) => void;
+    error: (message: string, metadata?: Record<string, any>) => void;
+  };
 }
 
 /**
@@ -73,6 +80,13 @@ export class QueryOrchestrator {
       
       if (cached && cached.objectClass === 'domain') {
         this.config.logger?.logCache('hit', cacheKey);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('Cache hit', {
+            queryType: 'domain',
+            query: normalized,
+            cacheKey,
+          });
+        }
         const duration = Date.now() - startTime;
         
         // Record metrics
@@ -90,10 +104,24 @@ export class QueryOrchestrator {
       }
 
       this.config.logger?.logCache('miss', cacheKey);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Cache miss', {
+          queryType: 'domain',
+          query: normalized,
+          cacheKey,
+        });
+      }
 
       // Discover RDAP server
       const serverUrl = await this.config.bootstrap.discoverDomain(normalized);
       this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('RDAP server discovered', {
+          queryType: 'domain',
+          query: normalized,
+          serverUrl,
+        });
+      }
 
       // Build query URL
       const queryUrl = `${serverUrl}/domain/${normalized}`;
@@ -127,6 +155,14 @@ export class QueryOrchestrator {
       });
 
       this.config.logger?.logResponse('domain', normalized, true, duration);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Request completed', {
+          queryType: 'domain',
+          query: normalized,
+          durationMs: duration,
+          serverUrl,
+        });
+      }
 
       // Redact PII
       return this.config.piiRedactor.redact(response) as DomainResponse;
@@ -147,6 +183,15 @@ export class QueryOrchestrator {
       this.config.logger?.logResponse('domain', domain, false, duration, {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.error('Request failed', {
+          queryType: 'domain',
+          query: domain,
+          durationMs: duration,
+          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorName: error instanceof Error ? error.name : 'Unknown',
+        });
+      }
 
       throw error;
     }
@@ -177,6 +222,13 @@ export class QueryOrchestrator {
       
       if (cached && cached.objectClass === 'ip network') {
         this.config.logger?.logCache('hit', cacheKey);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('Cache hit', {
+            queryType: 'ip',
+            query: normalized,
+            cacheKey,
+          });
+        }
         const duration = Date.now() - startTime;
         
         // Record metrics
@@ -194,6 +246,13 @@ export class QueryOrchestrator {
       }
 
       this.config.logger?.logCache('miss', cacheKey);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Cache miss', {
+          queryType: 'ip',
+          query: normalized,
+          cacheKey,
+        });
+      }
 
       // Discover RDAP server
       const serverUrl =
@@ -201,6 +260,13 @@ export class QueryOrchestrator {
           ? await this.config.bootstrap.discoverIPv4(normalized)
           : await this.config.bootstrap.discoverIPv6(normalized);
       this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('RDAP server discovered', {
+          queryType: 'ip',
+          query: normalized,
+          serverUrl,
+        });
+      }
 
       // Build query URL
       const queryUrl = `${serverUrl}/ip/${normalized}`;
@@ -234,6 +300,14 @@ export class QueryOrchestrator {
       });
 
       this.config.logger?.logResponse('ip', normalized, true, duration);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Request completed', {
+          queryType: 'ip',
+          query: normalized,
+          durationMs: duration,
+          serverUrl,
+        });
+      }
 
       // Redact PII
       return this.config.piiRedactor.redact(response) as IPResponse;
@@ -254,6 +328,15 @@ export class QueryOrchestrator {
       this.config.logger?.logResponse('ip', ip, false, duration, {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.error('Request failed', {
+          queryType: 'ip',
+          query: ip,
+          durationMs: duration,
+          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorName: error instanceof Error ? error.name : 'Unknown',
+        });
+      }
 
       throw error;
     }
@@ -285,6 +368,13 @@ export class QueryOrchestrator {
       
       if (cached && cached.objectClass === 'autnum') {
         this.config.logger?.logCache('hit', cacheKey);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('Cache hit', {
+            queryType: 'asn',
+            query: normalized,
+            cacheKey,
+          });
+        }
         const duration = Date.now() - startTime;
         
         // Record metrics
@@ -302,10 +392,24 @@ export class QueryOrchestrator {
       }
 
       this.config.logger?.logCache('miss', cacheKey);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Cache miss', {
+          queryType: 'asn',
+          query: normalized,
+          cacheKey,
+        });
+      }
 
       // Discover RDAP server
       const serverUrl = await this.config.bootstrap.discoverASN(asnNumber);
       this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('RDAP server discovered', {
+          queryType: 'asn',
+          query: normalized,
+          serverUrl,
+        });
+      }
 
       // Build query URL
       const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
@@ -339,6 +443,14 @@ export class QueryOrchestrator {
       });
 
       this.config.logger?.logResponse('asn', normalized, true, duration);
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.debug('Request completed', {
+          queryType: 'asn',
+          query: normalized,
+          durationMs: duration,
+          serverUrl,
+        });
+      }
 
       // Redact PII
       return this.config.piiRedactor.redact(response) as ASNResponse;
@@ -359,6 +471,15 @@ export class QueryOrchestrator {
       this.config.logger?.logResponse('asn', asnStr, false, duration, {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      if (this.config.debugEnabled && this.config.debugLogger) {
+        this.config.debugLogger.error('Request failed', {
+          queryType: 'asn',
+          query: asnStr,
+          durationMs: duration,
+          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorName: error instanceof Error ? error.name : 'Unknown',
+        });
+      }
 
       throw error;
     }

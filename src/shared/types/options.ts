@@ -95,6 +95,21 @@ export interface LoggingOptions {
 }
 
 /**
+ * Debug logging configuration
+ */
+export interface DebugOptions {
+  /** Enable debug logging */
+  enabled?: boolean;
+  /** Custom logger for debug output */
+  logger?: {
+    debug: (message: string, metadata?: Record<string, any>) => void;
+    info: (message: string, metadata?: Record<string, any>) => void;
+    warn: (message: string, metadata?: Record<string, any>) => void;
+    error: (message: string, metadata?: Record<string, any>) => void;
+  };
+}
+
+/**
  * Rate limiting configuration
  */
 export interface RateLimitOptions {
@@ -130,6 +145,9 @@ export interface RDAPClientOptions {
 
   /** Rate limiting configuration */
   rateLimit?: boolean | RateLimitOptions;
+
+  /** Debug configuration */
+  debug?: boolean | DebugOptions;
 
   /** User agent string */
   userAgent?: string;
@@ -192,7 +210,10 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
     maxRequests: 100,
     windowMs: 60000, // 1 minute
   },
-  userAgent: 'RDAPify/0.1.2 (https://rdapify.com)',
+  debug: {
+    enabled: false,
+  },
+  userAgent: 'RDAPify/0.1.4 (https://rdapify.com)',
   includeRaw: false,
   followRedirects: true,
   maxRedirects: 5,

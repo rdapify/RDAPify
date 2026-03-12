@@ -21,6 +21,7 @@ export interface FetcherOptions {
   followRedirects?: boolean;
   maxRedirects?: number;
   ssrfProtection?: SSRFProtection;
+  logRedirect?: (fromUrl: string, toUrl: string) => void;
 }
 
 /**
@@ -33,6 +34,7 @@ export class Fetcher {
   private readonly followRedirects: boolean;
   private readonly maxRedirects: number;
   private readonly ssrfProtection?: SSRFProtection;
+  private readonly logRedirect?: (fromUrl: string, toUrl: string) => void;
 
   constructor(options: FetcherOptions = {}) {
     this.timeout = {
@@ -41,11 +43,12 @@ export class Fetcher {
       dns: options.timeout?.dns || 3000,
     };
 
-    this.userAgent = options.userAgent || 'RDAPify/0.1.2 (https://rdapify.com)';
+    this.userAgent = options.userAgent || 'RDAPify/0.1.4 (https://rdapify.com)';
     this.headers = options.headers || {};
     this.followRedirects = options.followRedirects ?? true;
     this.maxRedirects = options.maxRedirects || 5;
     this.ssrfProtection = options.ssrfProtection;
+    this.logRedirect = options.logRedirect;
   }
 
   /**
@@ -111,6 +114,7 @@ export class Fetcher {
 
     // Handle redirects manually
     if (response.status >= 300 && response.status < 400) {
+      const fromUrl = url;
       if (!this.followRedirects) {
         throw new NetworkError(
           `Redirect not allowed (status: ${response.status})`,
@@ -136,6 +140,9 @@ export class Fetcher {
       if (this.ssrfProtection) {
         await this.ssrfProtection.validateUrl(redirectUrl);
       }
+
+      // Log redirect event
+      this.logRedirect?.(fromUrl, redirectUrl);
 
       return this.makeRequest(redirectUrl, redirectCount + 1);
     }
