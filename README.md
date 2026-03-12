@@ -150,7 +150,7 @@ logs.forEach((log) => {
 client.destroy();
 ```
 
-### With Authentication & Proxy (v0.1.3+)
+### With Authentication & Proxy (v0.1.2+)
 
 ```typescript
 import { RDAPClient, AuthenticationManager, ProxyManager } from 'rdapify';
@@ -182,7 +182,7 @@ const proxyUrl = proxy.shouldBypass('example.com')
   : proxy.getProxyUrl();
 ```
 
-### With Advanced Features (v0.1.3+)
+### With Advanced Features (v0.1.2+)
 
 ```typescript
 import {
@@ -237,19 +237,19 @@ const compression = new CompressionManager({
 - **Certificate Validation**: Reject insecure connections to RDAP servers
 - **Rate Limiting**: Prevent service blocking due to excessive requests
 - **Secure Data Handling**: PII redaction according to GDPR/CCPA requirements
-- **Authentication Support** (v0.1.3+): Basic, Bearer Token, API Key, OAuth2
-- **Proxy Support** (v0.1.3+): HTTP/HTTPS/SOCKS4/SOCKS5 with authentication
+- **Authentication Support** (v0.1.2+): Basic, Bearer Token, API Key, OAuth2
+- **Proxy Support** (v0.1.2+): HTTP/HTTPS/SOCKS4/SOCKS5 with authentication
 - **Full Audit Trail**: Track all critical operations for compliance purposes
 
 ### ⚡ Exceptional Performance
 
 - **Smart Caching**: In-memory LRU cache with configurable TTL
-- **Persistent Cache** (v0.1.3+): File-based cache that survives restarts
+- **Persistent Cache** (v0.1.2+): File-based cache that survives restarts
 - **Connection Pooling** (v0.1.2+): HTTP connection reuse for 30-40% performance improvement
 - **Batch Processing**: Process multiple queries efficiently (5-10x faster)
-- **Response Compression** (v0.1.3+): gzip/brotli support for 60-80% bandwidth reduction
-- **Retry Strategies** (v0.1.3+): Circuit breaker with exponential backoff
-- **Query Prioritization** (v0.1.3+): High/normal/low priority queue
+- **Response Compression** (v0.1.2+): gzip/brotli support for 60-80% bandwidth reduction
+- **Retry Strategies** (v0.1.2+): Circuit breaker with exponential backoff
+- **Query Prioritization** (v0.1.2+): High/normal/low priority queue
 - **Registry Discovery**: Automatic IANA Bootstrap for finding the correct registry
 - **Optimized Parsing**: Fast JSONPath-based normalization
 
@@ -266,7 +266,7 @@ const compression = new CompressionManager({
 
 - **Full TypeScript Support**: Strongly typed with embedded documentation
 - **Node.js Support**: Verified working (target: Node.js 20+)
-- **Enhanced Validation** (v0.1.3+): IDN domains, IPv6 zones, ASN ranges
+- **Enhanced Validation** (v0.1.2+): IDN domains, IPv6 zones, ASN ranges
 - **Interactive CLI**: For quick queries and testing (planned)
 - **Web Playground**: Try the library directly in your browser (planned)
 - **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more (planned)

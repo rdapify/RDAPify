@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.1.0-alpha.4
+ * @version 0.1.2
  * 
  * @example Basic Usage
  * ```typescript
@@ -187,7 +187,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.0-alpha.4';
+export const VERSION = '0.1.2';
 
 // ============================================================================
 // Service Exports (Advanced Usage)

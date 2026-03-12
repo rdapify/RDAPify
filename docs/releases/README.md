@@ -15,7 +15,7 @@ This directory contains comprehensive documentation for all RDAPify releases and
 - Metrics & Monitoring (11 tests)
 - Request/Response Logging (18 tests)
 
-#### Phase 2: Advanced Features (v0.1.3)
+#### Phase 2: Advanced Features (v0.1.2)
 - **[PHASE_2_COMPLETE.md](./PHASE_2_COMPLETE.md)** - English documentation
 - **[PHASE_2_COMPLETE_AR.md](./PHASE_2_COMPLETE_AR.md)** - Arabic documentation
 
@@ -25,7 +25,7 @@ This directory contains comprehensive documentation for all RDAPify releases and
 - Enhanced Validation (21 tests)
 - Persistent Cache (13 tests)
 
-#### Phase 3: Authentication & Network (v0.1.3)
+#### Phase 3: Authentication & Network (v0.1.2)
 - **[PHASE_3_COMPLETE.md](./PHASE_3_COMPLETE.md)** - English documentation
 - **[PHASE_3_COMPLETE_AR.md](./PHASE_3_COMPLETE_AR.md)** - Arabic documentation
 

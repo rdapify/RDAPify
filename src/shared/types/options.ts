@@ -192,7 +192,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
     maxRequests: 100,
     windowMs: 60000, // 1 minute
   },
-  userAgent: 'RDAPify/0.1.0 (https://rdapify.com)',
+  userAgent: 'RDAPify/0.1.2 (https://rdapify.com)',
   includeRaw: false,
   followRedirects: true,
   maxRedirects: 5,

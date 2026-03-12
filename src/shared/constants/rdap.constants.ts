@@ -26,7 +26,7 @@ export const BOOTSTRAP_CACHE_TTL = 86400000;
 /**
  * Default user agent
  */
-export const DEFAULT_USER_AGENT = 'RDAPify/0.1.0-alpha.4 (https://github.com/rdapify/rdapify)';
+export const DEFAULT_USER_AGENT = 'RDAPify/0.1.2 (https://github.com/rdapify/rdapify)';
 
 /**
  * RDAP content types

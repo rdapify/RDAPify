@@ -1,6 +1,6 @@
 # Architecture Overview
 
-## Current Architecture (v0.1.3)
+## Current Architecture (v0.1.2)
 
 RDAPify follows a **modular, layered design** with clear separation of concerns.
 
@@ -208,4 +208,4 @@ See `ROADMAP.md` for detailed timeline.
 ---
 
 **Last Updated:** 2026-01-26  
-**Version:** 0.1.3
+**Version:** 0.1.2

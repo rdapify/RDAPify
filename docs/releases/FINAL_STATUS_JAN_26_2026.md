@@ -3,7 +3,7 @@
 
 ---
 
-## 📦 Current Version: **0.1.3**
+## 📦 Current Version: **0.1.2**
 
 ---
 
@@ -21,7 +21,7 @@
 
 ---
 
-### Phase 2 (v0.1.3) - COMPLETE ✅
+### Phase 2 (v0.1.2) - COMPLETE ✅
 **Released:** January 26, 2026 (Afternoon)
 
 **Features:**
@@ -49,7 +49,7 @@
 - **All Tests:** PASSING ✅
 
 ### Package Information
-- **Version:** 0.1.3
+- **Version:** 0.1.2
 - **License:** MIT
 - **Node.js:** 16+ (verified working)
 - **Package Size:** Optimized with tree shaking
@@ -78,7 +78,7 @@
 - ✅ Performance monitoring
 - ✅ Connection pool statistics
 
-### Phase 2 Features (v0.1.3)
+### Phase 2 Features (v0.1.2)
 - ✅ Retry strategies (exponential, linear, fixed)
 - ✅ Circuit breaker pattern
 - ✅ Query prioritization (high/normal/low)
@@ -288,7 +288,7 @@ const result = await client.domain(ascii);
 
 ## 📦 Release Readiness
 
-### Version 0.1.3
+### Version 0.1.2
 - ✅ All features implemented
 - ✅ All tests passing
 - ✅ Documentation complete
@@ -308,14 +308,14 @@ const result = await client.domain(ascii);
 
 ## 🎉 Summary
 
-**RDAPify v0.1.3** is a significant milestone with **7 major features** added across two phases:
+**RDAPify v0.1.2** is a significant milestone with **7 major features** added across two phases:
 
 ### Phase 1 (v0.1.2)
 - Connection Pooling
 - Metrics & Monitoring
 - Request/Response Logging
 
-### Phase 2 (v0.1.3)
+### Phase 2 (v0.1.2)
 - Retry Strategies with Circuit Breaker
 - Query Prioritization
 - Enhanced Validation (IDN, IPv6 zones, ASN ranges)
@@ -333,7 +333,7 @@ const result = await client.domain(ascii);
 ## 🚀 Ready for Production
 
 **Status:** ✅ PRODUCTION READY  
-**Version:** 0.1.3  
+**Version:** 0.1.2  
 **Tests:** 93+ new tests passing  
 **Documentation:** Complete  
 **Quality:** High  
@@ -345,4 +345,4 @@ const result = await client.domain(ascii);
 
 ---
 
-**🎉 Congratulations! RDAPify v0.1.3 is ready for release! 🎉**
+**🎉 Congratulations! RDAPify v0.1.2 is ready for release! 🎉**
