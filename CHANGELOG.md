@@ -7,6 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-03-12
+
+### Fixed
+
+- **Normalizer.ts**: Added defensive null checks for nameserver extraction
+  - Handle null/undefined nameservers array entries
+  - Filter out empty string nameserver names
+  - Prevent crashes on malformed nameserver data
+
+- **Normalizer.ts**: Added defensive null checks for registrar extraction
+  - Validate vcardArray length before accessing elements
+  - Validate fnField array length before accessing index 3
+  - Handle missing registrar name gracefully
+
+- **BootstrapDiscovery.ts**: Added NaN validation for ASN range parsing
+  - Skip malformed ASN range patterns that parse to NaN
+  - Prevent silent failures in ASN discovery
+
+- **Fetcher.ts**: Added URL validation for redirects
+  - Catch and report invalid redirect URLs
+  - Prevent SSRF bypass through malformed redirect URLs
+
+- **ConnectionPool.ts**: Added timeout for connection acquisition
+  - Prevent infinite wait when all connections are in use
+  - Add configurable timeout parameter to acquire()
+  - Default timeout of 5 seconds
+
+- **PIIRedactor.ts**: Improved deep copy with structuredClone
+  - Use structuredClone for proper deep copying
+  - Handle Date, Map, Set, and circular references
+  - Fallback to JSON.parse for non-serializable values
+
+- **SSRFProtection.ts**: Added IPv6 bracket handling
+  - Strip brackets from IPv6 addresses before validation
+  - Support both bracketed and non-bracketed IPv6 formats
+
+- **MetricsCollector.ts**: Added division by zero protection
+  - Guard against division by zero in avgResponseTime calculation
+  - Return 0 for empty metrics instead of Infinity
+
+### Security
+
+- **SSRFProtection.ts**: Improved IPv6 zone ID handling
+  - Extract zone ID before IP validation
+  - Validate IP without zone ID for SSRF checks
+
+### Performance
+
+- **ConnectionPool.ts**: Added timeout parameter to acquire()
+  - Prevent deadlocks in high-concurrency scenarios
+  - Allow configurable timeout per request
+
+### Testing
+
+- Added 15+ new test cases for edge cases
+- Added tests for Normalizer defensive checks
+- Added tests for ConnectionPool timeout handling
+- Added tests for MetricsCollector edge cases
+- Added tests for SSRFProtection IPv6 handling
+
 ## [0.1.2] - 2026-01-27
 
 ### Added

@@ -75,9 +75,10 @@ export class MetricsCollector {
     const cached = relevantMetrics.filter((m) => m.cached).length;
 
     const durations = relevantMetrics.map((m) => m.duration);
-    const avgResponseTime = durations.reduce((a, b) => a + b, 0) / durations.length;
-    const minResponseTime = Math.min(...durations);
-    const maxResponseTime = Math.max(...durations);
+    const totalDuration = durations.reduce((a, b) => a + b, 0);
+    const avgResponseTime = durations.length > 0 ? totalDuration / durations.length : 0;
+    const minResponseTime = durations.length > 0 ? Math.min(...durations) : 0;
+    const maxResponseTime = durations.length > 0 ? Math.max(...durations) : 0;
 
     const queriesByType = {
       domain: relevantMetrics.filter((m) => m.type === 'domain').length,
@@ -97,12 +98,12 @@ export class MetricsCollector {
       total: relevantMetrics.length,
       successful,
       failed,
-      successRate: (successful / relevantMetrics.length) * 100,
+      successRate: relevantMetrics.length > 0 ? (successful / relevantMetrics.length) * 100 : 0,
       avgResponseTime,
       minResponseTime,
       maxResponseTime,
-      cacheHitRate: (cached / relevantMetrics.length) * 100,
-      totalDuration: durations.reduce((a, b) => a + b, 0),
+      cacheHitRate: relevantMetrics.length > 0 ? (cached / relevantMetrics.length) * 100 : 0,
+      totalDuration,
       queriesByType,
       errorsByType,
     };

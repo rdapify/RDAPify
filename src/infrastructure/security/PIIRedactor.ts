@@ -28,8 +28,17 @@ export class PIIRedactor {
       return response;
     }
 
-    // Create a deep copy to avoid mutating the original
-    const redacted = JSON.parse(JSON.stringify(response)) as T;
+    // Use structuredClone for deep copy (handles Date, Map, Set, circular refs)
+    // Fallback to JSON.parse for environments without structuredClone
+    let redacted: T;
+    try {
+      redacted = structuredClone(response);
+    } catch {
+      // Fallback for non-serializable values (Date, Map, Set, etc.)
+      // This is safer than JSON.parse which fails on these types
+      const jsonString = JSON.stringify(response);
+      redacted = JSON.parse(jsonString) as T;
+    }
 
     // Redact entities
     if (redacted.entities && Array.isArray(redacted.entities)) {

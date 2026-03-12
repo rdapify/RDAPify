@@ -89,15 +89,22 @@ export class SSRFProtection {
    * Validates an IP address for SSRF protection
    */
   private async validateIPAddress(ip: string, url: string): Promise<void> {
+    // Extract zone ID if present (e.g., fe80::1%eth0)
+    const zoneIndex = ip.indexOf('%');
+    const ipWithoutZone = zoneIndex > 0 ? ip.substring(0, zoneIndex) : ip;
+
+    // Remove brackets if present (e.g., [2001:db8::1])
+    const ipClean = ipWithoutZone.replace(/^\[|\]$/g, '');
+
     // Validate IP format
     try {
-      validateIP(ip);
+      validateIP(ipClean);
     } catch {
       throw new SSRFProtectionError(`Invalid IP address: ${ip}`, { url, ip });
     }
 
     // Check localhost
-    if (this.options.blockLocalhost && isLocalhost(ip)) {
+    if (this.options.blockLocalhost && isLocalhost(ipClean)) {
       throw new SSRFProtectionError(`Localhost IP addresses are blocked: ${ip}`, {
         url,
         ip,
@@ -106,7 +113,7 @@ export class SSRFProtection {
     }
 
     // Check private IPs
-    if (this.options.blockPrivateIPs && isPrivateIP(ip)) {
+    if (this.options.blockPrivateIPs && isPrivateIP(ipClean)) {
       throw new SSRFProtectionError(`Private IP addresses are blocked: ${ip}`, {
         url,
         ip,
@@ -115,7 +122,7 @@ export class SSRFProtection {
     }
 
     // Check link-local
-    if (this.options.blockLinkLocal && isLinkLocal(ip)) {
+    if (this.options.blockLinkLocal && isLinkLocal(ipClean)) {
       throw new SSRFProtectionError(`Link-local IP addresses are blocked: ${ip}`, {
         url,
         ip,

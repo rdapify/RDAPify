@@ -124,8 +124,13 @@ export class Fetcher {
         throw new NetworkError('Redirect without Location header', response.status, { url });
       }
 
-      // Resolve relative URLs
-      const redirectUrl = new URL(location, url).toString();
+      // Validate and resolve redirect URL
+      let redirectUrl: string;
+      try {
+        redirectUrl = new URL(location, url).toString();
+      } catch {
+        throw new NetworkError('Invalid redirect URL', response.status, { url, location });
+      }
 
       // SSRF protection for redirect
       if (this.ssrfProtection) {

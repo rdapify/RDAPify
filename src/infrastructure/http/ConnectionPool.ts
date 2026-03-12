@@ -39,9 +39,9 @@ export class ConnectionPool {
   }
 
   /**
-   * Gets a connection from the pool or creates a new one
+   * Acquires a connection from the pool or creates a new one
    */
-  async acquire(host: string): Promise<string> {
+  async acquire(host: string, timeout?: number): Promise<string> {
     const hostConnections = this.connections.get(host) || [];
 
     // Find available connection
@@ -66,8 +66,8 @@ export class ConnectionPool {
       return connection.id;
     }
 
-    // Wait for available connection
-    return this.waitForConnection(host);
+    // Wait for available connection with timeout
+    return this.waitForConnection(host, timeout ?? 5000);
   }
 
   /**
@@ -87,8 +87,9 @@ export class ConnectionPool {
   /**
    * Waits for an available connection
    */
-  private async waitForConnection(host: string): Promise<string> {
-    return new Promise((resolve) => {
+  private async waitForConnection(host: string, timeout: number = 5000): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const startTime = Date.now();
       const checkInterval = setInterval(() => {
         const hostConnections = this.connections.get(host) || [];
         const available = hostConnections.find((conn) => !conn.inUse);
@@ -98,6 +99,12 @@ export class ConnectionPool {
           available.inUse = true;
           available.lastUsed = Date.now();
           resolve(available.id);
+        }
+
+        // Timeout check
+        if (Date.now() - startTime >= timeout) {
+          clearInterval(checkInterval);
+          reject(new Error(`Timeout waiting for connection to ${host} after ${timeout}ms`));
         }
       }, 100);
     });

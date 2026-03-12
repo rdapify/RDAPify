@@ -4,6 +4,7 @@
 
 import { BootstrapDiscovery } from '../../src/infrastructure/http/BootstrapDiscovery';
 import { Fetcher } from '../../src/infrastructure/http/Fetcher';
+import { NoServerFoundError } from '../../src/shared/errors';
 
 describe('BootstrapDiscovery', () => {
   describe('CIDR matching (via IPv4 discovery)', () => {
@@ -226,6 +227,79 @@ describe('BootstrapDiscovery', () => {
       });
 
       await expect(discovery.discoverIPv6('2001:db8::1')).rejects.toThrow('No RDAP server found');
+    });
+  });
+
+  describe('ASN discovery', () => {
+    let discovery: BootstrapDiscovery;
+    let mockFetcher: jest.Mocked<Fetcher>;
+
+    beforeEach(() => {
+      mockFetcher = {
+        fetch: jest.fn(),
+      } as any;
+      discovery = new BootstrapDiscovery('https://test.example', mockFetcher);
+    });
+
+    it('should discover ASN with valid range', async () => {
+      mockFetcher.fetch.mockResolvedValueOnce({
+        version: '1.0',
+        services: [
+          [['15169-15200'], ['https://rdap.example.com']],
+        ],
+      });
+
+      const result = await discovery.discoverASN(15169);
+      expect(result).toBe('https://rdap.example.com');
+    });
+
+    it('should discover ASN at range boundary', async () => {
+      mockFetcher.fetch.mockResolvedValueOnce({
+        version: '1.0',
+        services: [
+          [['15169-15200'], ['https://rdap.example.com']],
+        ],
+      });
+
+      const result = await discovery.discoverASN(15200);
+      expect(result).toBe('https://rdap.example.com');
+    });
+
+    it('should not discover ASN outside range', async () => {
+      mockFetcher.fetch.mockResolvedValueOnce({
+        version: '1.0',
+        services: [
+          [['15169-15200'], ['https://rdap.example.com']],
+        ],
+      });
+
+      await expect(discovery.discoverASN(15201)).rejects.toThrow('No RDAP server found');
+    });
+
+    it('should skip malformed ASN range patterns', async () => {
+      mockFetcher.fetch.mockResolvedValueOnce({
+        version: '1.0',
+        services: [
+          [['invalid-range'], ['https://rdap.example.com']],
+          [['15169-15200'], ['https://rdap.example.com']],
+        ],
+      });
+
+      const result = await discovery.discoverASN(15169);
+      expect(result).toBe('https://rdap.example.com');
+    });
+
+    it('should skip patterns with NaN values', async () => {
+      mockFetcher.fetch.mockResolvedValueOnce({
+        version: '1.0',
+        services: [
+          [['abc-def'], ['https://rdap.example.com']],
+          [['15169-15200'], ['https://rdap.example.com']],
+        ],
+      });
+
+      const result = await discovery.discoverASN(15169);
+      expect(result).toBe('https://rdap.example.com');
     });
   });
 });
