@@ -167,26 +167,33 @@ export class Normalizer {
    * Extracts nameserver list from domain response
    */
   private extractNameservers(raw: RawRDAPResponse): string[] {
-    if (!raw['nameservers'] || !Array.isArray(raw['nameservers'])) {
+    const nameservers = raw['nameservers'];
+    if (!nameservers || !Array.isArray(nameservers)) {
       return [];
     }
 
-    return raw['nameservers']
-      .map((ns: any) => ns.ldhName || ns.unicodeName)
-      .filter((name: string) => name);
+    return nameservers
+      .map((ns: any) => {
+        if (!ns || typeof ns !== 'object') {
+          return undefined;
+        }
+        return ns.ldhName || ns.unicodeName;
+      })
+      .filter((name: string | undefined): name is string => name !== undefined && name !== '');
   }
 
   /**
    * Extracts registrar information from entities
    */
   private extractRegistrar(raw: RawRDAPResponse): DomainResponse['registrar'] {
-    if (!raw['entities'] || !Array.isArray(raw['entities'])) {
+    const entities = raw['entities'];
+    if (!entities || !Array.isArray(entities)) {
       return undefined;
     }
 
     // Find entity with registrar role
-    const registrar = raw['entities'].find(
-      (entity: any) => entity.roles?.includes('registrar')
+    const registrar = entities.find(
+      (entity: any) => entity && typeof entity === 'object' && entity.roles?.includes('registrar')
     );
 
     if (!registrar) {
@@ -195,11 +202,11 @@ export class Normalizer {
 
     // Extract registrar name from vCard
     let name: string | undefined;
-    if (registrar.vcardArray && Array.isArray(registrar.vcardArray)) {
+    if (registrar.vcardArray && Array.isArray(registrar.vcardArray) && registrar.vcardArray.length >= 2) {
       const vcard = registrar.vcardArray[1];
       if (Array.isArray(vcard)) {
         const fnField = vcard.find((field: any) => Array.isArray(field) && field[0] === 'fn');
-        if (fnField?.[3]) {
+        if (fnField && Array.isArray(fnField) && fnField.length >= 4) {
           name = fnField[3];
         }
       }
@@ -208,7 +215,7 @@ export class Normalizer {
     // Extract URL from links
     let url: string | undefined;
     if (registrar.links && Array.isArray(registrar.links)) {
-      const selfLink = registrar.links.find((link: any) => link.rel === 'self');
+      const selfLink = registrar.links.find((link: any) => link && link.rel === 'self');
       if (selfLink) {
         url = selfLink.href;
       }

@@ -116,9 +116,14 @@ export class BootstrapDiscovery {
       for (const pattern of entry.patterns) {
         const parts = pattern.split('-').map((n) => parseInt(n, 10));
         const start = parts[0];
-        const end = parts[1] ?? start;
+        const end = parts[1];
 
-        if (start !== undefined && end !== undefined && asn >= start && asn <= end) {
+        // Validate parsed integers to prevent NaN comparison issues
+        if (start === undefined || end === undefined || isNaN(start) || isNaN(end)) {
+          continue;
+        }
+
+        if (asn >= start && asn <= end) {
           if (entry.servers.length === 0 || !entry.servers[0]) {
             throw new NoServerFoundError(`No RDAP server found for ASN: ${asn}`, { asn, pattern });
           }
