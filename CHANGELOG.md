@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-03-17
+
+### Added
+
+- **isCloudflareWorkers()**: New runtime detection function for Cloudflare Workers environment
+- **CLI Tool**: New `rdapify` CLI command with zero external dependencies
+  - `rdapify domain <name>` — query domain RDAP data
+  - `rdapify ip <addr>` — query IP RDAP data
+  - `rdapify asn <num>` — query ASN RDAP data
+  - Flags: `--json`, `--no-cache`, `--timeout`
+
+### Fixed
+
+- **RedisCache.clear() (Critical)**: Previously called `flushDb()` which wiped the entire Redis database; now only deletes keys matching the configured prefix using SCAN
+- **RedisCache.size() (Critical)**: Previously used `dbSize()` returning total DB size; now counts only prefixed keys accurately
+- **RedisCache SCAN (Performance)**: Replaced blocking `KEYS` command with non-blocking `SCAN` iteration; added `scanAll()` private helper; added optional `scan?()` to `RedisClientLike` interface; removed unused `flushDb?()` and `dbSize?()` from interface
+- **runtime.ts (Compatibility)**: `isNode()` wrapped with `typeof process !== 'undefined'` guard to prevent `ReferenceError` in Cloudflare Workers
+
+## [0.1.5] - 2026-03-14
+
+### Added
+
+- **RedisCache**: Redis adapter with peer-dependency pattern, compatible with ioredis and node-redis v4+
+- **AuthenticationManager**: Support for Bearer tokens, API keys, Basic auth, and OAuth2
+- **ProxyManager**: HTTP/HTTPS/SOCKS proxy support for RDAP requests
+- **CompressionManager**: gzip/deflate/brotli compression for requests/responses
+- **PersistentCache**: File-system backed cache that survives process restarts
+- **MiddlewareManager**: Full lifecycle hooks — `beforeQuery`, `afterQuery`, `onError`, `onCacheHit`
+- **QueryDeduplicator**: Collapses in-flight duplicate queries into a single upstream request
+- **AuditLogger**: GDPR/SOC2-compliant audit trail with `InMemoryAuditAdapter` and `FileAuditAdapter`
+- **ResponseValidator**: RFC 7483 response validation with strict and lenient modes
+- All new classes exported from main entry point
+
+## [0.1.4] - 2026-03-13
+
+### Added
+
+- **MiddlewareHooks**: Middleware hooks system (`src/application/hooks/MiddlewareHooks.ts`)
+- **QueryDeduplicator**: Initial implementation (`src/application/deduplication/QueryDeduplicator.ts`)
+- **AuditLogger**: Initial implementation (`src/infrastructure/logging/AuditLogger.ts`)
+- **ResponseValidator**: RFC 7483 compliance validation (`src/infrastructure/validation/ResponseValidator.ts`)
+
+### Changed
+
+- **TypeScript strict mode**: Enabled and enforced strict mode improvements across the codebase
+- **Generic types**: Enhanced type safety in `src/shared/types/generics.ts`
+- **QueryPriority**: Improved type safety in `src/application/services/QueryPriority.ts`
+- **BatchProcessor**: Improved type safety in `src/application/services/BatchProcessor.ts`
+
+### Testing
+
+- Additional test coverage for edge cases across existing and new modules
+
 ## [0.1.3] - 2026-03-12
 
 ### Fixed

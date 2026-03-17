@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.1.3
+ * @version 0.1.6
  * 
  * @example Basic Usage
  * ```typescript
@@ -187,7 +187,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.5';
+export const VERSION = '0.1.6';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -340,6 +340,32 @@ export type {
   ValidationMode,
   ResponseValidatorOptions,
 } from './infrastructure/validation/ResponseValidator';
+
+// ============================================================================
+// v0.1.6 — Bug Fixes & CLI
+// ============================================================================
+
+/**
+ * Runtime environment detection utilities
+ *
+ * @example
+ * ```typescript
+ * import { isCloudflareWorkers, getRuntimeName } from 'rdapify';
+ *
+ * if (isCloudflareWorkers()) {
+ *   console.log('Running on Cloudflare Workers');
+ * }
+ * console.log(getRuntimeName()); // 'Node.js' | 'Bun' | 'Deno' | 'Cloudflare Workers' | 'Browser'
+ * ```
+ */
+export {
+  isNode,
+  isBrowser,
+  isDeno,
+  isBun,
+  isCloudflareWorkers,
+  getRuntimeName,
+} from './shared/utils/helpers/runtime';
 
 // ============================================================================
 // Default Export
