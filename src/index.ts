@@ -187,7 +187,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.4';
+export const VERSION = '0.1.5';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -289,6 +289,57 @@ export type { ProxyOptions, ProxyProtocol } from './infrastructure/http/ProxyMan
  */
 export { CompressionManager } from './infrastructure/http/CompressionManager';
 export type { CompressionOptions, CompressionType } from './infrastructure/http/CompressionManager';
+
+// ============================================================================
+// v0.1.5 — Enterprise Features
+// ============================================================================
+
+/**
+ * Redis cache adapter (peer-dependency pattern — pass your own Redis client)
+ */
+export { RedisCache } from './infrastructure/cache/RedisCache';
+export type { RedisClientLike, RedisCacheOptions } from './infrastructure/cache/RedisCache';
+
+/**
+ * Middleware / lifecycle hooks system
+ */
+export { MiddlewareManager } from './application/hooks/MiddlewareHooks';
+export type {
+  MiddlewareOptions,
+  QueryContext,
+  QueryResultContext,
+  HookFn,
+} from './application/hooks/MiddlewareHooks';
+
+/**
+ * In-flight query deduplicator
+ */
+export { QueryDeduplicator } from './application/deduplication/QueryDeduplicator';
+
+/**
+ * GDPR/SOC2-compliant audit logger
+ */
+export {
+  AuditLogger,
+  InMemoryAuditAdapter,
+  FileAuditAdapter,
+} from './infrastructure/logging/AuditLogger';
+export type {
+  AuditEvent,
+  AuditEventType,
+  AuditLogAdapter,
+  AuditLoggerOptions,
+} from './infrastructure/logging/AuditLogger';
+
+/**
+ * RFC 7483 response validator
+ */
+export { ResponseValidator } from './infrastructure/validation/ResponseValidator';
+export type {
+  ValidationResult,
+  ValidationMode,
+  ResponseValidatorOptions,
+} from './infrastructure/validation/ResponseValidator';
 
 // ============================================================================
 // Default Export

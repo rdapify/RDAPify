@@ -20,6 +20,8 @@ import {
   normalizeIP,
   normalizeASN,
 } from '../../shared/utils/validators';
+import type { MiddlewareManager } from '../hooks/MiddlewareHooks';
+import type { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
 
 /**
  * Query orchestrator configuration
@@ -31,16 +33,19 @@ export interface QueryOrchestratorConfig {
   normalizer: Normalizer;
   piiRedactor: PIIRedactor;
   includeRaw: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchWithRetry: (url: string) => Promise<any>;
   rateLimiter?: RateLimiter;
   metricsCollector?: MetricsCollector;
   logger?: Logger;
+  middleware?: MiddlewareManager;
+  deduplicator?: QueryDeduplicator;
   debugEnabled: boolean;
   debugLogger?: {
-    debug: (message: string, metadata?: Record<string, any>) => void;
-    info: (message: string, metadata?: Record<string, any>) => void;
-    warn: (message: string, metadata?: Record<string, any>) => void;
-    error: (message: string, metadata?: Record<string, any>) => void;
+    debug: (message: string, metadata?: Record<string, unknown>) => void;
+    info: (message: string, metadata?: Record<string, unknown>) => void;
+    warn: (message: string, metadata?: Record<string, unknown>) => void;
+    error: (message: string, metadata?: Record<string, unknown>) => void;
   };
 }
 
@@ -60,7 +65,7 @@ export class QueryOrchestrator {
    */
   async queryDomain(domain: string): Promise<DomainResponse> {
     const startTime = Date.now();
-    
+
     // Log request
     this.config.logger?.logRequest('domain', domain);
 
@@ -69,15 +74,25 @@ export class QueryOrchestrator {
       await this.config.rateLimiter.checkLimit();
     }
 
-    try {
-      // Validate and normalize
-      validateDomain(domain);
-      const normalized = normalizeDomain(domain);
+    // Validate and normalize early so we can build context / cache key
+    validateDomain(domain);
+    const normalized = normalizeDomain(domain);
+    const cacheKey = generateCacheKey('domain', normalized);
 
+    const baseCtx = {
+      queryType: 'domain' as const,
+      query: domain,
+      normalized,
+      startTime,
+    };
+
+    // beforeQuery hook
+    await this.config.middleware?.runBeforeQuery(baseCtx);
+
+    try {
       // Check cache
-      const cacheKey = generateCacheKey('domain', normalized);
       const cached = await this.config.cache.get(cacheKey);
-      
+
       if (cached && cached.objectClass === 'domain') {
         this.config.logger?.logCache('hit', cacheKey);
         if (this.config.debugEnabled && this.config.debugLogger) {
@@ -88,7 +103,7 @@ export class QueryOrchestrator {
           });
         }
         const duration = Date.now() - startTime;
-        
+
         // Record metrics
         this.config.metricsCollector?.record({
           type: 'domain',
@@ -98,9 +113,22 @@ export class QueryOrchestrator {
           cached: true,
           timestamp: Date.now(),
         });
-        
+
+        // Cache hit hook
+        await this.config.middleware?.runOnCacheHit({ ...baseCtx, cached: true });
+
         this.config.logger?.logResponse('domain', normalized, true, duration);
-        return this.config.piiRedactor.redact(cached) as DomainResponse;
+        const result = this.config.piiRedactor.redact(cached) as DomainResponse;
+
+        // afterQuery hook
+        await this.config.middleware?.runAfterQuery({
+          ...baseCtx,
+          duration,
+          result,
+          fromCache: true,
+        });
+
+        return result;
       }
 
       this.config.logger?.logCache('miss', cacheKey);
@@ -112,35 +140,47 @@ export class QueryOrchestrator {
         });
       }
 
-      // Discover RDAP server
-      const serverUrl = await this.config.bootstrap.discoverDomain(normalized);
-      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
-      if (this.config.debugEnabled && this.config.debugLogger) {
-        this.config.debugLogger.debug('RDAP server discovered', {
-          queryType: 'domain',
-          query: normalized,
+      // Cache miss hook
+      await this.config.middleware?.runOnCacheMiss({ ...baseCtx, cached: false });
+
+      // Fetch + normalize (with optional deduplication)
+      const fetchAndNormalize = async (): Promise<DomainResponse> => {
+        // Discover RDAP server
+        const serverUrl = await this.config.bootstrap.discoverDomain(normalized);
+        this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('RDAP server discovered', {
+            queryType: 'domain',
+            query: normalized,
+            serverUrl,
+          });
+        }
+
+        // Build query URL
+        const queryUrl = `${serverUrl}/domain/${normalized}`;
+
+        // Fetch with retry
+        const raw = await this.config.fetchWithRetry(queryUrl);
+
+        // Normalize response
+        const response = this.config.normalizer.normalize(
+          raw,
+          normalized,
           serverUrl,
-        });
-      }
+          false,
+          this.config.includeRaw
+        ) as DomainResponse;
 
-      // Build query URL
-      const queryUrl = `${serverUrl}/domain/${normalized}`;
+        // Cache the response
+        await this.config.cache.set(cacheKey, response);
+        this.config.logger?.logCache('set', cacheKey);
 
-      // Fetch with retry
-      const raw = await this.config.fetchWithRetry(queryUrl);
+        return response;
+      };
 
-      // Normalize response
-      const response = this.config.normalizer.normalize(
-        raw,
-        normalized,
-        serverUrl,
-        false,
-        this.config.includeRaw
-      ) as DomainResponse;
-
-      // Cache the response
-      await this.config.cache.set(cacheKey, response);
-      this.config.logger?.logCache('set', cacheKey);
+      const response = this.config.deduplicator
+        ? await this.config.deduplicator.deduplicate(cacheKey, fetchAndNormalize)
+        : await fetchAndNormalize();
 
       const duration = Date.now() - startTime;
 
@@ -160,15 +200,24 @@ export class QueryOrchestrator {
           queryType: 'domain',
           query: normalized,
           durationMs: duration,
-          serverUrl,
         });
       }
 
       // Redact PII
-      return this.config.piiRedactor.redact(response) as DomainResponse;
+      const result = this.config.piiRedactor.redact(response) as DomainResponse;
+
+      // afterQuery hook
+      await this.config.middleware?.runAfterQuery({
+        ...baseCtx,
+        duration,
+        result,
+        fromCache: false,
+      });
+
+      return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record failure metrics
       this.config.metricsCollector?.record({
         type: 'domain',
@@ -193,6 +242,14 @@ export class QueryOrchestrator {
         });
       }
 
+      // onError hook
+      await this.config.middleware?.runOnError({
+        ...baseCtx,
+        duration,
+        error: error instanceof Error ? error : new Error(String(error)),
+        fromCache: false,
+      });
+
       throw error;
     }
   }
@@ -202,7 +259,7 @@ export class QueryOrchestrator {
    */
   async queryIP(ip: string): Promise<IPResponse> {
     const startTime = Date.now();
-    
+
     // Log request
     this.config.logger?.logRequest('ip', ip);
 
@@ -211,15 +268,25 @@ export class QueryOrchestrator {
       await this.config.rateLimiter.checkLimit();
     }
 
-    try {
-      // Validate and normalize
-      const version = validateIP(ip);
-      const normalized = normalizeIP(ip);
+    // Validate and normalize early so we can build context / cache key
+    const version = validateIP(ip);
+    const normalized = normalizeIP(ip);
+    const cacheKey = generateCacheKey('ip', normalized);
 
+    const baseCtx = {
+      queryType: 'ip' as const,
+      query: ip,
+      normalized,
+      startTime,
+    };
+
+    // beforeQuery hook
+    await this.config.middleware?.runBeforeQuery(baseCtx);
+
+    try {
       // Check cache
-      const cacheKey = generateCacheKey('ip', normalized);
       const cached = await this.config.cache.get(cacheKey);
-      
+
       if (cached && cached.objectClass === 'ip network') {
         this.config.logger?.logCache('hit', cacheKey);
         if (this.config.debugEnabled && this.config.debugLogger) {
@@ -230,7 +297,7 @@ export class QueryOrchestrator {
           });
         }
         const duration = Date.now() - startTime;
-        
+
         // Record metrics
         this.config.metricsCollector?.record({
           type: 'ip',
@@ -240,9 +307,22 @@ export class QueryOrchestrator {
           cached: true,
           timestamp: Date.now(),
         });
-        
+
+        // Cache hit hook
+        await this.config.middleware?.runOnCacheHit({ ...baseCtx, cached: true });
+
         this.config.logger?.logResponse('ip', normalized, true, duration);
-        return this.config.piiRedactor.redact(cached) as IPResponse;
+        const result = this.config.piiRedactor.redact(cached) as IPResponse;
+
+        // afterQuery hook
+        await this.config.middleware?.runAfterQuery({
+          ...baseCtx,
+          duration,
+          result,
+          fromCache: true,
+        });
+
+        return result;
       }
 
       this.config.logger?.logCache('miss', cacheKey);
@@ -254,38 +334,50 @@ export class QueryOrchestrator {
         });
       }
 
-      // Discover RDAP server
-      const serverUrl =
-        version === 'v4'
-          ? await this.config.bootstrap.discoverIPv4(normalized)
-          : await this.config.bootstrap.discoverIPv6(normalized);
-      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
-      if (this.config.debugEnabled && this.config.debugLogger) {
-        this.config.debugLogger.debug('RDAP server discovered', {
-          queryType: 'ip',
-          query: normalized,
+      // Cache miss hook
+      await this.config.middleware?.runOnCacheMiss({ ...baseCtx, cached: false });
+
+      // Fetch + normalize (with optional deduplication)
+      const fetchAndNormalize = async (): Promise<IPResponse> => {
+        // Discover RDAP server
+        const serverUrl =
+          version === 'v4'
+            ? await this.config.bootstrap.discoverIPv4(normalized)
+            : await this.config.bootstrap.discoverIPv6(normalized);
+        this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('RDAP server discovered', {
+            queryType: 'ip',
+            query: normalized,
+            serverUrl,
+          });
+        }
+
+        // Build query URL
+        const queryUrl = `${serverUrl}/ip/${normalized}`;
+
+        // Fetch with retry
+        const raw = await this.config.fetchWithRetry(queryUrl);
+
+        // Normalize response
+        const response = this.config.normalizer.normalize(
+          raw,
+          normalized,
           serverUrl,
-        });
-      }
+          false,
+          this.config.includeRaw
+        ) as IPResponse;
 
-      // Build query URL
-      const queryUrl = `${serverUrl}/ip/${normalized}`;
+        // Cache the response
+        await this.config.cache.set(cacheKey, response);
+        this.config.logger?.logCache('set', cacheKey);
 
-      // Fetch with retry
-      const raw = await this.config.fetchWithRetry(queryUrl);
+        return response;
+      };
 
-      // Normalize response
-      const response = this.config.normalizer.normalize(
-        raw,
-        normalized,
-        serverUrl,
-        false,
-        this.config.includeRaw
-      ) as IPResponse;
-
-      // Cache the response
-      await this.config.cache.set(cacheKey, response);
-      this.config.logger?.logCache('set', cacheKey);
+      const response = this.config.deduplicator
+        ? await this.config.deduplicator.deduplicate(cacheKey, fetchAndNormalize)
+        : await fetchAndNormalize();
 
       const duration = Date.now() - startTime;
 
@@ -305,15 +397,24 @@ export class QueryOrchestrator {
           queryType: 'ip',
           query: normalized,
           durationMs: duration,
-          serverUrl,
         });
       }
 
       // Redact PII
-      return this.config.piiRedactor.redact(response) as IPResponse;
+      const result = this.config.piiRedactor.redact(response) as IPResponse;
+
+      // afterQuery hook
+      await this.config.middleware?.runAfterQuery({
+        ...baseCtx,
+        duration,
+        result,
+        fromCache: false,
+      });
+
+      return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record failure metrics
       this.config.metricsCollector?.record({
         type: 'ip',
@@ -338,6 +439,14 @@ export class QueryOrchestrator {
         });
       }
 
+      // onError hook
+      await this.config.middleware?.runOnError({
+        ...baseCtx,
+        duration,
+        error: error instanceof Error ? error : new Error(String(error)),
+        fromCache: false,
+      });
+
       throw error;
     }
   }
@@ -348,7 +457,7 @@ export class QueryOrchestrator {
   async queryASN(asn: string | number): Promise<ASNResponse> {
     const startTime = Date.now();
     const asnStr = typeof asn === 'number' ? `AS${asn}` : asn;
-    
+
     // Log request
     this.config.logger?.logRequest('asn', asnStr);
 
@@ -357,15 +466,25 @@ export class QueryOrchestrator {
       await this.config.rateLimiter.checkLimit();
     }
 
-    try {
-      // Validate and normalize
-      const asnNumber = validateASN(asn);
-      const normalized = normalizeASN(asnNumber);
+    // Validate and normalize early so we can build context / cache key
+    const asnNumber = validateASN(asn);
+    const normalized = normalizeASN(asnNumber);
+    const cacheKey = generateCacheKey('asn', normalized);
 
+    const baseCtx = {
+      queryType: 'asn' as const,
+      query: asnStr,
+      normalized,
+      startTime,
+    };
+
+    // beforeQuery hook
+    await this.config.middleware?.runBeforeQuery(baseCtx);
+
+    try {
       // Check cache
-      const cacheKey = generateCacheKey('asn', normalized);
       const cached = await this.config.cache.get(cacheKey);
-      
+
       if (cached && cached.objectClass === 'autnum') {
         this.config.logger?.logCache('hit', cacheKey);
         if (this.config.debugEnabled && this.config.debugLogger) {
@@ -376,7 +495,7 @@ export class QueryOrchestrator {
           });
         }
         const duration = Date.now() - startTime;
-        
+
         // Record metrics
         this.config.metricsCollector?.record({
           type: 'asn',
@@ -386,9 +505,22 @@ export class QueryOrchestrator {
           cached: true,
           timestamp: Date.now(),
         });
-        
+
+        // Cache hit hook
+        await this.config.middleware?.runOnCacheHit({ ...baseCtx, cached: true });
+
         this.config.logger?.logResponse('asn', normalized, true, duration);
-        return this.config.piiRedactor.redact(cached) as ASNResponse;
+        const result = this.config.piiRedactor.redact(cached) as ASNResponse;
+
+        // afterQuery hook
+        await this.config.middleware?.runAfterQuery({
+          ...baseCtx,
+          duration,
+          result,
+          fromCache: true,
+        });
+
+        return result;
       }
 
       this.config.logger?.logCache('miss', cacheKey);
@@ -400,35 +532,47 @@ export class QueryOrchestrator {
         });
       }
 
-      // Discover RDAP server
-      const serverUrl = await this.config.bootstrap.discoverASN(asnNumber);
-      this.config.logger?.debug(`Discovered server: ${serverUrl}`);
-      if (this.config.debugEnabled && this.config.debugLogger) {
-        this.config.debugLogger.debug('RDAP server discovered', {
-          queryType: 'asn',
-          query: normalized,
+      // Cache miss hook
+      await this.config.middleware?.runOnCacheMiss({ ...baseCtx, cached: false });
+
+      // Fetch + normalize (with optional deduplication)
+      const fetchAndNormalize = async (): Promise<ASNResponse> => {
+        // Discover RDAP server
+        const serverUrl = await this.config.bootstrap.discoverASN(asnNumber);
+        this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+        if (this.config.debugEnabled && this.config.debugLogger) {
+          this.config.debugLogger.debug('RDAP server discovered', {
+            queryType: 'asn',
+            query: normalized,
+            serverUrl,
+          });
+        }
+
+        // Build query URL
+        const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
+
+        // Fetch with retry
+        const raw = await this.config.fetchWithRetry(queryUrl);
+
+        // Normalize response
+        const response = this.config.normalizer.normalize(
+          raw,
+          normalized,
           serverUrl,
-        });
-      }
+          false,
+          this.config.includeRaw
+        ) as ASNResponse;
 
-      // Build query URL
-      const queryUrl = `${serverUrl}/autnum/${asnNumber}`;
+        // Cache the response
+        await this.config.cache.set(cacheKey, response);
+        this.config.logger?.logCache('set', cacheKey);
 
-      // Fetch with retry
-      const raw = await this.config.fetchWithRetry(queryUrl);
+        return response;
+      };
 
-      // Normalize response
-      const response = this.config.normalizer.normalize(
-        raw,
-        normalized,
-        serverUrl,
-        false,
-        this.config.includeRaw
-      ) as ASNResponse;
-
-      // Cache the response
-      await this.config.cache.set(cacheKey, response);
-      this.config.logger?.logCache('set', cacheKey);
+      const response = this.config.deduplicator
+        ? await this.config.deduplicator.deduplicate(cacheKey, fetchAndNormalize)
+        : await fetchAndNormalize();
 
       const duration = Date.now() - startTime;
 
@@ -448,15 +592,24 @@ export class QueryOrchestrator {
           queryType: 'asn',
           query: normalized,
           durationMs: duration,
-          serverUrl,
         });
       }
 
       // Redact PII
-      return this.config.piiRedactor.redact(response) as ASNResponse;
+      const result = this.config.piiRedactor.redact(response) as ASNResponse;
+
+      // afterQuery hook
+      await this.config.middleware?.runAfterQuery({
+        ...baseCtx,
+        duration,
+        result,
+        fromCache: false,
+      });
+
+      return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record failure metrics
       this.config.metricsCollector?.record({
         type: 'asn',
@@ -480,6 +633,14 @@ export class QueryOrchestrator {
           errorName: error instanceof Error ? error.name : 'Unknown',
         });
       }
+
+      // onError hook
+      await this.config.middleware?.runOnError({
+        ...baseCtx,
+        duration,
+        error: error instanceof Error ? error : new Error(String(error)),
+        fromCache: false,
+      });
 
       throw error;
     }

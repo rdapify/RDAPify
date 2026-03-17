@@ -8,6 +8,7 @@ import { CacheError } from '../../shared/errors';
 import type { CacheOptions } from '../../shared/types/options';
 
 import { InMemoryCache } from './InMemoryCache';
+import { RedisCache } from './RedisCache';
 
 /**
  * Cache interface that all cache implementations must follow
@@ -41,15 +42,21 @@ export class CacheManager implements ICache {
         break;
 
       case 'redis':
-        throw new CacheError(
-          'Redis cache is not yet implemented. Use "memory" cache type or provide a custom cache implementation via the "custom" strategy. Redis support is planned for v0.2.0.'
-        );
+        if (!options.redisClient) {
+          throw new CacheError(
+            'Redis strategy requires a "redisClient" option. Pass your Redis client instance (ioredis, redis, etc.).'
+          );
+        }
+        this.cache = new RedisCache(options.redisClient, {
+          keyPrefix: options.keyPrefix,
+        });
+        break;
 
       case 'custom':
         if (!options.customCache) {
           throw new CacheError('Custom cache implementation required');
         }
-        this.cache = options.customCache;
+        this.cache = options.customCache as ICache;
         break;
 
       case 'none':

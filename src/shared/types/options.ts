@@ -4,6 +4,7 @@
  */
 
 import type { CacheStrategy, LogLevel } from './index';
+import type { RedisClientLike } from '../../infrastructure/cache/RedisCache';
 
 /**
  * Retry backoff strategies
@@ -39,7 +40,17 @@ export interface CacheOptions {
   /** Redis connection string (for redis cache) */
   redisUrl?: string;
   /** Custom cache implementation */
-  customCache?: any;
+  customCache?: unknown;
+  /**
+   * Redis-compatible client instance (ioredis, node-redis, etc.).
+   * Required when `strategy` is `'redis'`.
+   */
+  redisClient?: RedisClientLike;
+  /**
+   * Key prefix used by the Redis adapter for multi-tenant isolation.
+   * @default 'rdapify:'
+   */
+  keyPrefix?: string;
 }
 
 /**
@@ -91,7 +102,7 @@ export interface LoggingOptions {
   /** Log level */
   level?: LogLevel;
   /** Custom logger function */
-  logger?: (level: LogLevel, message: string, meta?: any) => void;
+  logger?: (level: LogLevel, message: string, meta?: unknown) => void;
 }
 
 /**
@@ -102,10 +113,10 @@ export interface DebugOptions {
   enabled?: boolean;
   /** Custom logger for debug output */
   logger?: {
-    debug: (message: string, metadata?: Record<string, any>) => void;
-    info: (message: string, metadata?: Record<string, any>) => void;
-    warn: (message: string, metadata?: Record<string, any>) => void;
-    error: (message: string, metadata?: Record<string, any>) => void;
+    debug: (message: string, metadata?: Record<string, unknown>) => void;
+    info: (message: string, metadata?: Record<string, unknown>) => void;
+    warn: (message: string, metadata?: Record<string, unknown>) => void;
+    error: (message: string, metadata?: Record<string, unknown>) => void;
   };
 }
 
@@ -118,6 +129,25 @@ export interface RateLimitOptions {
   /** Maximum requests per window */
   maxRequests?: number;
   /** Time window in milliseconds */
+  windowMs?: number;
+}
+
+/**
+ * Middleware lifecycle hooks configuration.
+ * The concrete hook function types live in MiddlewareHooks.ts.
+ * A loose callable type is used here to avoid a circular dependency between
+ * the shared types layer and the application layer.
+ */
+export type MiddlewareHooksConfig = Record<
+  string,
+  ((ctx: unknown) => Promise<void> | void) | undefined
+>;
+
+/**
+ * Query deduplication configuration
+ */
+export interface DeduplicationConfig {
+  /** Deduplication window in milliseconds (default: 100) */
   windowMs?: number;
 }
 
@@ -166,6 +196,21 @@ export interface RDAPClientOptions {
 
   /** Bootstrap service URL (for testing) */
   bootstrapUrl?: string;
+
+  /**
+   * Lifecycle middleware hooks.
+   * Pass a MiddlewareOptions-compatible object — the type is widened here to
+   * avoid circular imports between shared/types and the application layer.
+   */
+  middleware?: MiddlewareHooksConfig;
+
+  /**
+   * Enable in-flight query deduplication.
+   * true  → enabled with default 100 ms window
+   * false → disabled
+   * object → enabled with custom window
+   */
+  deduplication?: boolean | DeduplicationConfig;
 }
 
 /**
@@ -219,4 +264,6 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   maxRedirects: 5,
   headers: {},
   bootstrapUrl: 'https://data.iana.org/rdap',
+  middleware: {},
+  deduplication: false,
 };

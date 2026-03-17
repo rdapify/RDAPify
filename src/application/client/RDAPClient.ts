@@ -23,6 +23,9 @@ import type {
 import { deepMerge, calculateBackoff, sleep } from '../../shared/utils/helpers';
 import { QueryOrchestrator } from '../services';
 import { BatchProcessor } from '../services/BatchProcessor';
+import { MiddlewareManager } from '../hooks/MiddlewareHooks';
+import type { MiddlewareOptions } from '../hooks/MiddlewareHooks';
+import { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
 
 /**
  * Main RDAP client for querying domain, IP, and ASN information
@@ -76,6 +79,8 @@ export class RDAPClient {
   private readonly connectionPool: ConnectionPool;
   private readonly metricsCollector: MetricsCollector;
   private readonly logger: Logger;
+  private readonly middlewareManager: MiddlewareManager;
+  private readonly queryDeduplicator: QueryDeduplicator;
   private readonly debugEnabled: boolean;
   private readonly debugLogger?: {
     debug: (message: string, metadata?: Record<string, any>) => void;
@@ -182,6 +187,18 @@ export class RDAPClient {
     this.debugEnabled = typeof debugOptions === 'boolean' ? debugOptions : debugOptions?.enabled ?? false;
     this.debugLogger = typeof debugOptions === 'object' && debugOptions?.logger ? debugOptions.logger : undefined;
 
+    // Initialize middleware manager
+    const middlewareOpts = this.options.middleware as MiddlewareOptions | undefined;
+    this.middlewareManager = new MiddlewareManager(middlewareOpts);
+
+    // Initialize query deduplicator
+    const dedupOpts = this.options.deduplication;
+    this.queryDeduplicator = new QueryDeduplicator(
+      typeof dedupOpts === 'boolean'
+        ? { enabled: dedupOpts }
+        : (dedupOpts as { windowMs?: number; enabled?: boolean } | undefined)
+    );
+
     // Initialize batch processor
     this.batchProcessor = new BatchProcessor(this);
 
@@ -199,6 +216,8 @@ export class RDAPClient {
       logger: this.logger,
       debugEnabled: this.debugEnabled,
       debugLogger: this.debugLogger,
+      middleware: this.middlewareManager,
+      deduplicator: this.queryDeduplicator,
     });
   }
 
@@ -362,6 +381,35 @@ export class RDAPClient {
    */
   getConnectionPoolStats() {
     return this.connectionPool.getStats();
+  }
+
+  /**
+   * Registers lifecycle middleware hooks (fluent API)
+   *
+   * @example
+   * ```typescript
+   * client
+   *   .use({ beforeQuery: (ctx) => console.log('querying', ctx.query) })
+   *   .use({ afterQuery: (ctx) => console.log('done in', ctx.duration, 'ms') });
+   * ```
+   */
+  use(hooks: Partial<MiddlewareOptions>): this {
+    this.middlewareManager.use(hooks);
+    return this;
+  }
+
+  /**
+   * Gets the middleware manager for advanced hook management
+   */
+  getMiddlewareManager(): MiddlewareManager {
+    return this.middlewareManager;
+  }
+
+  /**
+   * Gets query deduplicator stats
+   */
+  getDeduplicatorStats() {
+    return this.queryDeduplicator.getStats();
   }
 
   /**
