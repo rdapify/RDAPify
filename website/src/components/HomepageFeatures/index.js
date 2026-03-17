@@ -67,13 +67,15 @@ const FeatureList = [
 
 function Feature({Svg, title, description}) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
+    <div className={clsx('col col--4')} style={{marginBottom: '1.5rem'}}>
+      <div className={styles.featureCard}>
+        <div className={styles.featureIconWrap}>
+          <Svg className={styles.featureSvg} role="img" />
+        </div>
+        <div className="text--center">
+          <h3 className={styles.featureTitle}>{title}</h3>
+          <p className={styles.featureDesc}>{description}</p>
+        </div>
       </div>
     </div>
   );
@@ -83,6 +85,10 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
+        <h2 className={styles.featuresTitle}>Everything you need</h2>
+        <p className={styles.featuresSubtitle}>
+          Production-ready features designed for modern infrastructure teams.
+        </p>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

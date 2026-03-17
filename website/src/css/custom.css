@@ -12,6 +12,10 @@
   --ifm-color-primary-lightest: #4fddbf;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --rdap-hero-gradient: linear-gradient(135deg, #1e3a5f 0%, #2d1b69 50%, #1a3a4a 100%);
+  --rdap-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --rdap-card-shadow-hover: 0 8px 32px rgba(37, 194, 160, 0.18);
+  --rdap-border-radius: 12px;
 }
 
 [data-theme='dark'] {
@@ -23,18 +27,85 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --rdap-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --rdap-card-shadow-hover: 0 8px 32px rgba(37, 194, 160, 0.22);
 }
 
+/* ── Hero ── */
 .hero--primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--rdap-hero-gradient);
 }
 
 .hero__title {
-  font-size: 3rem;
+  font-size: 3.2rem;
   font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .hero__subtitle {
-  font-size: 1.5rem;
-  margin-top: 1rem;
+  font-size: 1.35rem;
+  margin-top: 0.75rem;
+  opacity: 0.88;
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+@media screen and (max-width: 768px) {
+  .hero__title {
+    font-size: 2.2rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* ── Feature Cards ── */
+.featureCard {
+  border-radius: var(--rdap-border-radius);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--rdap-card-shadow);
+}
+
+.featureCard:hover {
+  box-shadow: var(--rdap-card-shadow-hover);
+  transform: translateY(-3px);
+}
+
+/* ── Announcement Bar ── */
+div[class*='announcementBar'] {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ── Navbar ── */
+.navbar {
+  box-shadow: 0 1px 0 var(--ifm-color-emphasis-200);
+}
+
+/* ── Code Blocks ── */
+.prism-code {
+  font-size: 0.88rem !important;
+}
+
+/* ── Buttons ── */
+.button--lg {
+  font-size: 1rem;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* ── Docs Sidebar ── */
+.theme-doc-sidebar-item-link-level-1 > a {
+  font-weight: 500;
 }
