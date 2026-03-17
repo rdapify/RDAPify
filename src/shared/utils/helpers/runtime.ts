@@ -8,7 +8,8 @@
  */
 export function isNode(): boolean {
   return (
-    process?.versions?.node != null
+    typeof process !== 'undefined' &&
+    process.versions?.node != null
   );
 }
 
@@ -16,8 +17,8 @@ export function isNode(): boolean {
  * Checks if code is running in browser environment
  */
 export function isBrowser(): boolean {
-  return typeof globalThis !== 'undefined' && 
-         'window' in globalThis && 
+  return typeof globalThis !== 'undefined' &&
+         'window' in globalThis &&
          typeof (globalThis as any).window !== 'undefined';
 }
 
@@ -36,11 +37,24 @@ export function isBun(): boolean {
 }
 
 /**
+ * Checks if code is running in Cloudflare Workers environment
+ */
+export function isCloudflareWorkers(): boolean {
+  return (
+    typeof globalThis !== 'undefined' &&
+    'caches' in globalThis &&
+    typeof (globalThis as any).navigator !== 'undefined' &&
+    (globalThis as any).navigator?.userAgent === 'Cloudflare-Workers'
+  );
+}
+
+/**
  * Gets current runtime environment name
  */
 export function getRuntimeName(): string {
   if (isDeno()) return 'Deno';
   if (isBun()) return 'Bun';
+  if (isCloudflareWorkers()) return 'Cloudflare Workers';
   if (isNode()) return 'Node.js';
   if (isBrowser()) return 'Browser';
   return 'Unknown';

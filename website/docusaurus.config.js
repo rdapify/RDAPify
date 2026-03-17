@@ -187,11 +187,11 @@ const config = {
         searchParameters: {},
       },
       announcementBar: {
-        id: 'alpha_release',
+        id: 'v016_release',
         content:
-          '⭐️ RDAPify is in alpha! Star us on <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify">GitHub</a> ⭐️',
-        backgroundColor: '#fafbfc',
-        textColor: '#091E42',
+          '🚀 RDAPify v0.1.6 is out — CLI tool, Redis cache adapter & enterprise features. <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify/releases">See what\'s new</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify">⭐ Star on GitHub</a>',
+        backgroundColor: '#1a1a2e',
+        textColor: '#25c2a0',
         isCloseable: true,
       },
     }),

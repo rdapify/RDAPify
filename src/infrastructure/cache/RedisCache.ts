@@ -35,10 +35,11 @@ export interface RedisClientLike {
   exists(...keys: string[]): Promise<number>;
   /** Return all keys matching the given glob-style pattern */
   keys(pattern: string): Promise<string[]>;
-  /** Flush the currently selected database (optional — not available on all clients/configs) */
-  flushDb?(): Promise<unknown>;
-  /** Return the number of keys in the current database (optional) */
-  dbSize?(): Promise<number>;
+  /**
+   * Incrementally iterate over keys (preferred over `keys()` in production).
+   * Compatible with ioredis scan: `(cursor, 'MATCH', pattern, 'COUNT', count) => [nextCursor, keys]`
+   */
+  scan?(cursor: string, matchOption: 'MATCH', pattern: string, countOption: 'COUNT', count: number): Promise<[string, string[]]>;
 }
 
 /**
@@ -94,6 +95,31 @@ export class RedisCache implements ICache {
     return `${this.keyPrefix}*`;
   }
 
+  /**
+   * Collects all keys matching `pattern` by iterating via SCAN when available,
+   * falling back to the blocking `keys()` command otherwise.
+   *
+   * Using SCAN is preferred in production because it is non-blocking and O(1)
+   * per call, whereas `keys()` is O(N) and blocks the Redis event loop for the
+   * full duration of the scan.
+   */
+  private async scanAll(pattern: string): Promise<string[]> {
+    if (typeof this.client.scan === 'function') {
+      const collected: string[] = [];
+      let cursor = '0';
+
+      do {
+        const [nextCursor, keys] = await this.client.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+        cursor = nextCursor;
+        collected.push(...keys);
+      } while (cursor !== '0');
+
+      return collected;
+    }
+
+    return this.client.keys(pattern);
+  }
+
   // ---------------------------------------------------------------------------
   // ICache implementation
   // ---------------------------------------------------------------------------
@@ -145,16 +171,13 @@ export class RedisCache implements ICache {
   /**
    * Removes all entries whose key begins with the configured prefix.
    *
-   * Uses `flushDb()` if available on the client, otherwise falls back to
-   * scanning keys via the `keys()` command and deleting them individually.
+   * Uses SCAN to incrementally find matching keys when supported by the client,
+   * otherwise falls back to the `keys()` command. Only keys that match the
+   * configured prefix pattern are deleted — the rest of the database is
+   * left untouched.
    */
   async clear(): Promise<void> {
-    if (typeof this.client.flushDb === 'function') {
-      await this.client.flushDb();
-      return;
-    }
-
-    const matchingKeys = await this.client.keys(this.patternAll());
+    const matchingKeys = await this.scanAll(this.patternAll());
 
     if (matchingKeys.length > 0) {
       await this.client.del(...matchingKeys);
@@ -172,20 +195,13 @@ export class RedisCache implements ICache {
   /**
    * Returns the number of keys currently held under the configured prefix.
    *
-   * Uses `dbSize()` when available; otherwise counts matching keys via
-   * the `keys()` command.
-   *
-   * **Note:** `dbSize()` returns the size of the *entire* database, which
-   * may include keys from other applications. Prefer the `keys()`-based
-   * fallback for accurate per-prefix counts in shared Redis instances.
+   * Uses SCAN to incrementally count matching keys when supported by the
+   * client, otherwise falls back to the `keys()` command. Only keys that
+   * match the configured prefix are counted, giving an accurate per-prefix
+   * result even in shared Redis instances.
    */
   async size(): Promise<number> {
-    if (typeof this.client.dbSize === 'function') {
-      const total = await this.client.dbSize();
-      return total;
-    }
-
-    const matchingKeys = await this.client.keys(this.patternAll());
+    const matchingKeys = await this.scanAll(this.patternAll());
     return matchingKeys.length;
   }
 
