@@ -42,7 +42,7 @@ export class CacheManager implements ICache {
 
       case 'redis':
         throw new CacheError(
-          'Redis cache not yet implemented in v0.1.2. Use "memory" cache type or provide a custom cache implementation. Redis support is planned for v0.2.0.'
+          'Redis cache is not yet implemented. Use "memory" cache type or provide a custom cache implementation via the "custom" strategy. Redis support is planned for v0.2.0.'
         );
 
       case 'custom':

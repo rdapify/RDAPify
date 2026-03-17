@@ -4,7 +4,7 @@
  */
 
 import type { RawRDAPResponse } from '../../shared/types';
-import { NetworkError, TimeoutError, RDAPServerError } from '../../shared/errors';
+import { NetworkError, TimeoutError, RDAPServerError, RDAPifyError } from '../../shared/errors';
 import type { TimeoutOptions } from '../../shared/types/options';
 import { withTimeout } from '../../shared/utils/helpers';
 
@@ -64,7 +64,7 @@ export class Fetcher {
       const response = await this.makeRequest(url);
       return response;
     } catch (error) {
-      if (error instanceof TimeoutError || error instanceof NetworkError) {
+      if (error instanceof RDAPifyError) {
         throw error;
       }
 
@@ -149,7 +149,7 @@ export class Fetcher {
 
     // Handle error responses
     if (!response.ok) {
-      let errorBody: any;
+      let errorBody: unknown;
       try {
         errorBody = await response.json();
       } catch {
@@ -168,7 +168,7 @@ export class Fetcher {
     }
 
     // Parse JSON response
-    let data: any;
+    let data: unknown;
     try {
       data = await response.json();
     } catch (error) {
@@ -182,7 +182,6 @@ export class Fetcher {
     if (!data || typeof data !== 'object') {
       throw new NetworkError('Invalid RDAP response: not an object', response.status, {
         url,
-        data,
       });
     }
 

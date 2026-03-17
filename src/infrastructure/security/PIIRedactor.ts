@@ -137,7 +137,7 @@ export class PIIRedactor {
    * Gets redactor configuration
    */
   getConfig(): Required<PrivacyOptions> {
-    return { ...this.options };
+    return { ...this.options, redactFields: [...this.options.redactFields] };
   }
 
   /**

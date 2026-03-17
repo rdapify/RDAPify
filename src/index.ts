@@ -187,7 +187,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.3';
+export const VERSION = '0.1.4';
 
 // ============================================================================
 // Service Exports (Advanced Usage)

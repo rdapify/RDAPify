@@ -10,6 +10,7 @@ import { ConnectionPool } from '../../infrastructure/http/ConnectionPool';
 import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
 import { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
 import { Logger } from '../../infrastructure/logging/Logger';
+import type { LogLevel } from '../../infrastructure/logging/Logger';
 import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
 import { ValidationError } from '../../shared/errors';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
@@ -163,8 +164,14 @@ export class RDAPClient {
     });
 
     // Initialize logger
+    const validLogLevels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
+    const configuredLevel = this.options.logging?.level as string | undefined;
+    const logLevel: LogLevel =
+      configuredLevel && (validLogLevels as string[]).includes(configuredLevel)
+        ? (configuredLevel as LogLevel)
+        : 'info';
     this.logger = new Logger({
-      level: (this.options.logging?.level as any) || 'info',
+      level: logLevel,
       enabled: true,
       logRequests: true,
       logResponses: true,
