@@ -1132,14 +1132,14 @@ export class SLAIncidentManager {
     // Default notification channels
     this.notificationChannels.set('support-team', [
       { type: 'email', address: 'support@rdapify.com' },
-      { type: 'slack', webhook: 'https://hooks.slack.com/services/XXXXX' },
+      { type: 'slack', webhook: 'https://hooks.slack.com/services/T_YOUR_TEAM/B_YOUR_BOT/YOUR_TOKEN' },
       { type: 'pagerduty', serviceId: 'PDXXXXX' }
     ]);
     
     this.notificationChannels.set('engineering-lead', [
       { type: 'email', address: 'engineering-lead@rdapify.com' },
       { type: 'sms', phone: '+15551234567' },
-      { type: 'slack', webhook: 'https://hooks.slack.com/services/YYYYY' }
+      { type: 'slack', webhook: 'https://hooks.slack.com/services/T_YOUR_TEAM/B_YOUR_BOT/YOUR_TOKEN' }
     ]);
     
     // Apply custom channels

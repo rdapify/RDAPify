@@ -464,7 +464,7 @@ policy:
     - name: Security Team Slack
       type: slack
       configuration:
-        url: "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+        url: "https://hooks.slack.com/services/T_YOUR_TEAM/B_YOUR_BOT/YOUR_TOKEN"
         channel: "#security-alerts"
     - name: PagerDuty
       type: pagerduty
