@@ -39,12 +39,14 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Deploy to gh-pages branch
+      - name: Deploy to rdapify.github.io
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          external_repository: rdapify/rdapify.github.io
+          publish_branch: main
           publish_dir: ./website/build
           cname: rdapify.com
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'deploy: ${{ github.sha }}'
+          commit_message: 'deploy: rdapify/RDAPify@${{ github.sha }}'
