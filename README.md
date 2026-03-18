@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="website/static/img/logo-icon.svg" alt="RDAPify" width="80" />
+  <img src="website/static/img/logo-512.png" alt="RDAPify" width="80" />
 </p>
 <h1 align="center">RDAPify</h1>
 <p align="center"><strong>Unified, Secure, High-Performance RDAP Client for Enterprise Applications</strong></p>
