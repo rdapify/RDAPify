@@ -422,7 +422,7 @@ rdapify validate --file response.json --strict
 | [JSONPath Schema](jsonpath_schema.md) | JSONPath search capabilities specification | [jsonpath_schema.md](jsonpath_schema.md) |
 | [Response Format](response_format.md) | Complete response structure guide | [response_format.md](response_format.md) |
 | [RFC Formatter](../../playground/rfc-formatter.md) | Interactive RFC formatting tool | [../../playground/rfc-formatter.md](../../playground/rfc-formatter.md) |
-| [Test Vectors](../../../test_vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test_vectors/domain_vectors.json](../../../test_vectors/domain_vectors.json) |
+| [Test Vectors](../../../test-vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test-vectors/domain_vectors.json](../../../test-vectors/domain_vectors.json) |
 
 ## 🏷️ RFC Style Specifications
 

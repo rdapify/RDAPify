@@ -1,7 +1,7 @@
 # 🔌 AWS Lambda Integration Guide
 
 > **🎯 Purpose:** Complete guide to deploying and optimizing RDAPify in AWS Lambda serverless environments  
-> **📚 Related:** [Getting Started](../../getting_started/quick_start.md) | [CLI Guide](../../cli/commands.md) | [Kubernetes Deployment](kubernetes.md)  
+> **📚 Related:** [Getting Started](../../getting-started/quick_start.md) | [CLI Guide](../../cli/commands.md) | [Kubernetes Deployment](kubernetes.md)  
 > **⏱️ Reading Time:** 8 minutes  
 > **🔍 Pro Tip:** Use the [AWS Deployment Checklist](#production-deployment-template) to ensure security and performance best practices
 
@@ -1089,7 +1089,7 @@ artillery report report.json --output report.html
 
 | Document | Description | Path |
 |----------|-------------|------|
-| **Getting Started** | Quick start guide for RDAPify | [../../getting_started/quick_start.md](../../getting_started/quick_start.md) |
+| **Getting Started** | Quick start guide for RDAPify | [../../getting-started/quick_start.md](../../getting-started/quick_start.md) |
 | **Security Whitepaper** | Security architecture details | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Caching Strategies** | Advanced caching patterns | [../../guides/caching_strategies.md](../../guides/caching_strategies.md) |
 | **Kubernetes Deployment** | Container orchestration guide | [kubernetes.md](kubernetes.md) |

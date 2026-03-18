@@ -1,7 +1,7 @@
 # 🧩 Custom Adapters Guide
 
 > **🎯 Purpose:** Complete guide to building and integrating custom adapters for cache, fetcher, and normalizer extensions in RDAPify  
-> **📚 Related:** [Cache Strategies](caching-strategies.md) | [Architecture Overview](../core_concepts/architecture.md) | [Security Whitepaper](../security/whitepaper.md)  
+> **📚 Related:** [Cache Strategies](caching-strategies.md) | [Architecture Overview](../core-concepts/architecture.md) | [Security Whitepaper](../security/whitepaper.md)  
 > **⏱️ Reading Time:** 8 minutes  
 > **🔍 Pro Tip:** Use the [Adapter Playground](../../playground/adapter-playground.md) to test adapter implementations with real registry responses
 
@@ -1574,7 +1574,7 @@ rdapify adapters doc --output docs/guides/generated/adapter-reference.md
 |----------|-------------|------|
 | **Cache Strategies** | Advanced caching patterns | [caching-strategies.md](caching-strategies.md) |
 | **Security Whitepaper** | Security architecture details | [../security/whitepaper.md](../security/whitepaper.md) |
-| **Architecture Overview** | System design with adapter patterns | [../core_concepts/architecture.md](../core_concepts/architecture.md) |
+| **Architecture Overview** | System design with adapter patterns | [../core-concepts/architecture.md](../core-concepts/architecture.md) |
 | **Adapter Playground** | Interactive adapter testing tool | [../../playground/adapter-playground.md](../../playground/adapter-playground.md) |
 | **Test Vectors** | Standardized test cases for adapters | [../../test-vectors/adapter-vectors.json](../../test-vectors/adapter-vectors.json) |
 | **Performance Benchmarks** | Adapter performance characteristics | [../../benchmarks/results/adapter-performance.md](../../benchmarks/results/adapter-performance.md) |

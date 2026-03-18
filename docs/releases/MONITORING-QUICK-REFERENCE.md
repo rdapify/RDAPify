@@ -368,4 +368,4 @@ if (metrics.successRate < 90) {
 - [Examples](examples/advanced/monitoring_example.js)
 - [Performance Monitoring Example](examples/advanced/performance_monitoring.js)
 - [CHANGELOG](CHANGELOG.md)
-- [API Documentation](docs/api_reference/)
+- [API Documentation](docs/api-reference/)

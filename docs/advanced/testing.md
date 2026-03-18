@@ -1,7 +1,7 @@
  # Testing Framework and Methodology
 
 🎯 **Purpose**: Comprehensive guide for RDAPify's testing framework, covering unit tests, integration tests, security validations, and performance benchmarks to ensure protocol compliance and reliability  
-📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Quality Assurance](../../quality_assurance/overview.md)  
+📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Quality Assurance](../../quality-assurance/overview.md)  
 ⏱️ **Reading Time**: 7 minutes  
 🔍 **Pro Tip**: Use the [Test Vector Validator](../../playground/test-vector-validator.md) to automatically verify your implementation against RFC 7480 test vectors before submission
 
@@ -1052,7 +1052,7 @@ describe('Resilience Testing', () => {
 | Document | Description | Path |
 |----------|-------------|------|
 | [Plugin System](plugin_system.md) | Extending RDAPify with plugins | [plugin_system.md](plugin_system.md) |
-| [Quality Assurance Overview](../../quality_assurance/overview.md) | Complete QA framework | [../../quality_assurance/overview.md](../../quality_assurance/overview.md) |
+| [Quality Assurance Overview](../../quality-assurance/overview.md) | Complete QA framework | [../../quality-assurance/overview.md](../../quality-assurance/overview.md) |
 | [RFC 7480 Specification](../../specifications/rdap_rfc.md) | Complete RFC documentation | [../../specifications/rdap_rfc.md](../../specifications/rdap_rfc.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Deep dive into security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Benchmark Results](../../benchmarks/results/api-performance.md) | Performance benchmark data | [../../benchmarks/results/api-performance.md](../../benchmarks/results/api-performance.md) |

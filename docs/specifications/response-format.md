@@ -502,7 +502,7 @@ interface InvalidResponse {
 | [Status Codes](status_codes.md) | Comprehensive error code reference | [status_codes.md](status_codes.md) |
 | [JSONPath Schema](jsonpath_schema.md) | JSONPath query capabilities | [jsonpath_schema.md](jsonpath_schema.md) |
 | [Response Validator](../../playground/response-validator.md) | Interactive validation tool | [../../playground/response-validator.md](../../playground/response-validator.md) |
-| [Test Vectors](../../../test_vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test_vectors/domain_vectors.json](../../../test_vectors/domain_vectors.json) |
+| [Test Vectors](../../../test-vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test-vectors/domain_vectors.json](../../../test-vectors/domain_vectors.json) |
 
 ## 🏷️ Response Format Specifications
 

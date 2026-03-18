@@ -1,7 +1,7 @@
 # Continuous Testing Strategy
 
 🎯 **Purpose**: Comprehensive guide to implementing continuous testing for RDAPify across development, staging, and production environments with focus on security, performance, and compliance validation  
-📚 **Related**: [Test Vectors](test_vectors.md) | [Security Testing](security_testing.md) | [Performance Benchmarks](../../../benchmarks/README.md) | [Quality Assurance](../../../quality_assurance/README.md)  
+📚 **Related**: [Test Vectors](test_vectors.md) | [Security Testing](security_testing.md) | [Performance Benchmarks](../../../benchmarks/README.md) | [Quality Assurance](../../../quality-assurance/README.md)  
 ⏱️ **Reading Time**: 7 minutes  
 🔍 **Pro Tip**: Use the [Continuous Testing Dashboard](../../playground/continuous-testing-dashboard.md) to monitor your test pipeline health and receive real-time alerts for test failures
 
@@ -1253,7 +1253,7 @@ NODE_OPTIONS='--trace-sync-io --trace-event-categories=async_hooks' \
 | [Test Vectors](test_vectors.md) | Comprehensive test data sets | [test_vectors.md](test_vectors.md) |
 | [Security Testing](security_testing.md) | Security-focused testing patterns | [security_testing.md](security_testing.md) |
 | [Performance Benchmarks](../../../benchmarks/README.md) | Performance benchmark methodology | [../../../benchmarks/README.md](../../../benchmarks/README.md) |
-| [Quality Assurance](../../../quality_assurance/README.md) | QA processes and standards | [../../../quality_assurance/README.md](../../../quality_assurance/README.md) |
+| [Quality Assurance](../../../quality-assurance/README.md) | QA processes and standards | [../../../quality-assurance/README.md](../../../quality-assurance/README.md) |
 | [Continuous Testing Dashboard](../../playground/continuous-testing-dashboard.md) | Interactive pipeline monitoring tool | [../../playground/continuous-testing-dashboard.md](../../playground/continuous-testing-dashboard.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 | [Debugging Guide](../../../troubleshooting/debugging.md) | Advanced debugging techniques | [../../../troubleshooting/debugging.md](../../../troubleshooting/debugging.md) |

@@ -1,7 +1,7 @@
 # ⚠️ Error Handling Guide
 
 > **🎯 Purpose:** Comprehensive guide to error handling patterns and strategies for resilient RDAPify implementations  
-> **📚 Related:** [Error State Machine](../core_concepts/error_state_machine.md) | [Security Whitepaper](../security/whitepaper.md) | [Caching Strategies](caching-strategies.md)  
+> **📚 Related:** [Error State Machine](../core-concepts/error_state_machine.md) | [Security Whitepaper](../security/whitepaper.md) | [Caching Strategies](caching-strategies.md)  
 > **⏱️ Reading Time:** 8 minutes  
 > **🔍 Pro Tip:** Use the [Error Visualizer](../playground/error-visualizer.md) to interactively test error handling patterns with real network conditions
 
@@ -902,9 +902,9 @@ try {
 
 | Document | Description | Path |
 |----------|-------------|------|
-| **Error State Machine** | Complete error flow documentation | [../core_concepts/error_state_machine.md](../core_concepts/error_state_machine.md) |
+| **Error State Machine** | Complete error flow documentation | [../core-concepts/error_state_machine.md](../core-concepts/error_state_machine.md) |
 | **Security Whitepaper** | Security error handling details | [../security/whitepaper.md](../security/whitepaper.md) |
-| **Offline Mode** | Operating without connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| **Offline Mode** | Operating without connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 | **Production Checklist** | Error monitoring setup guide | [../getting-started/production-checklist.md](../getting-started/production-checklist.md) |
 | **Test Vectors** | Standardized error test cases | [../../test-vectors/error-vectors.json](../../test-vectors/error-vectors.json) |
 | **Error Visualizer** | Interactive error flow exploration | [../playground/error-visualizer.md](../playground/error-visualizer.md) |

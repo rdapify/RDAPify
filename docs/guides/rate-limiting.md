@@ -293,6 +293,6 @@ limiter.destroy();
 
 ## See Also
 
-- [Error Handling Guide](./error_handling.md)
+- [Error Handling Guide](./error-handling.md)
 - [Performance Guide](./performance.md)
-- [Batch Processing Guide](./batch_processing.md)
+- [Batch Processing Guide](./batch-processing.md)

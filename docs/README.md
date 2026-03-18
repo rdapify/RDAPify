@@ -5,26 +5,26 @@ Welcome to the RDAPify documentation! This comprehensive guide will help you get
 ## 📚 Documentation Structure
 
 ### Getting Started
-- **[Installation](getting_started/installation.md)** - Install RDAPify in your project
-- **[Quick Start](getting_started/quick_start.md)** - Get up and running in 5 minutes
-- **[First Query](getting_started/first_query.md)** - Make your first RDAP query
-- **[Five Minutes Tutorial](getting_started/five_minutes.md)** - Complete tutorial
-- **[Learning Path](getting_started/learning_path.md)** - Structured learning guide
+- **[Installation](getting-started/installation.md)** - Install RDAPify in your project
+- **[Quick Start](getting-started/quick_start.md)** - Get up and running in 5 minutes
+- **[First Query](getting-started/first_query.md)** - Make your first RDAP query
+- **[Five Minutes Tutorial](getting-started/five_minutes.md)** - Complete tutorial
+- **[Learning Path](getting-started/learning_path.md)** - Structured learning guide
 
 ### Core Concepts
-- **[What is RDAP?](core_concepts/what_is_rdap.md)** - Understanding RDAP protocol
-- **[RDAP vs WHOIS](core_concepts/rdap_vs_whois.md)** - Key differences
-- **[Architecture](core_concepts/architecture.md)** - How RDAPify works
-- **[Discovery](core_concepts/discovery.md)** - Bootstrap discovery mechanism
-- **[Normalization](core_concepts/normalization.md)** - Data normalization pipeline
-- **[Caching](core_concepts/caching.md)** - Caching strategies
+- **[What is RDAP?](core-concepts/what_is_rdap.md)** - Understanding RDAP protocol
+- **[RDAP vs WHOIS](core-concepts/rdap_vs_whois.md)** - Key differences
+- **[Architecture](core-concepts/architecture.md)** - How RDAPify works
+- **[Discovery](core-concepts/discovery.md)** - Bootstrap discovery mechanism
+- **[Normalization](core-concepts/normalization.md)** - Data normalization pipeline
+- **[Caching](core-concepts/caching.md)** - Caching strategies
 
 ### API Reference
-- **[Client](api_reference/client.md)** - RDAPClient API
-- **[Methods](api_reference/methods/)** - Domain, IP, ASN queries
-- **[Types](api_reference/types/)** - TypeScript type definitions
-- **[Interfaces](api_reference/interfaces.md)** - Core interfaces
-- **[Utilities](api_reference/utilities.md)** - Helper functions
+- **[Client](api-reference/client.md)** - RDAPClient API
+- **[Methods](api-reference/methods/)** - Domain, IP, ASN queries
+- **[Types](api-reference/types/)** - TypeScript type definitions
+- **[Interfaces](api-reference/interfaces.md)** - Core interfaces
+- **[Utilities](api-reference/utilities.md)** - Helper functions
 
 ### Guides
 - **[Error Handling](guides/error_handling.md)** - Handle errors gracefully
@@ -78,7 +78,7 @@ Welcome to the RDAPify documentation! This comprehensive guide will help you get
 
 - **[Examples](../examples/)** - Code examples
 - **[Benchmarks](../benchmarks/)** - Performance benchmarks
-- **[Test Vectors](../test_vectors/)** - Test data
+- **[Test Vectors](../test-vectors/)** - Test data
 - **[Specifications](../specifications/)** - Technical specifications
 
 ## 🤝 Need Help?

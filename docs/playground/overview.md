@@ -1,7 +1,7 @@
 # Playground Overview
 
 🎯 **Purpose**: Interactive environment to explore RDAPify capabilities without installation, featuring real-time query execution, visualization tools, and debugging utilities  
-📚 **Related**: [API Playground](api_playground.md) | [Examples Gallery](examples.md) | [Visual Debugger](visual_debugger.md) | [Getting Started](../getting_started/five_minutes.md)  
+📚 **Related**: [API Playground](api_playground.md) | [Examples Gallery](examples.md) | [Visual Debugger](visual_debugger.md) | [Getting Started](../getting-started/five_minutes.md)  
 ⏱️ **Reading Time**: 4 minutes  
 🔍 **Pro Tip**: Use keyboard shortcuts (`Ctrl+Enter` or `Cmd+Enter`) to instantly execute queries in any playground panel
 

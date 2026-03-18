@@ -1,0 +1,30 @@
+# ============================================
+# RDAPify — Docker Compose
+# ============================================
+
+services:
+  rdapify-dev:
+    build:
+      context: .
+      target: development
+    container_name: rdapify-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  rdapify-test:
+    build:
+      context: .
+      target: development
+    container_name: rdapify-test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+    command: npm test
+    profiles:
+      - test

@@ -540,7 +540,7 @@ echo "🔒 Report saved with AES-256 encryption"
 | [Interactive Mode](interactive_mode.md) | Terminal-based guided experience | [interactive_mode.md](interactive_mode.md) |
 | [Auto Suggestions](auto_suggestions.md) | Intelligent command recommendations | [auto_suggestions.md](auto_suggestions.md) |
 | [Security Guide](../guides/security_privacy.md) | Security configuration deep dive | [../guides/security_privacy.md](../guides/security_privacy.md) |
-| [Offline Mode](../core_concepts/offline_mode.md) | Working without network connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| [Offline Mode](../core-concepts/offline_mode.md) | Working without network connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 | [Batch Processing Guide](../guides/batch_processing.md) | Enterprise batch operations | [../guides/batch_processing.md](../guides/batch_processing.md) |
 | [Privacy Controls](../guides/privacy_controls.md) | Advanced privacy configuration | [../guides/privacy_controls.md](../guides/privacy_controls.md) |
 

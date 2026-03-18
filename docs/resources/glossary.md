@@ -25,7 +25,7 @@
 ### Registration Data Access Protocol (RDAP)
 **Definition**: An IETF-standardized protocol (RFC 7480 series) that provides a machine-readable replacement for the legacy WHOIS protocol, offering structured JSON responses with standardized fields and improved privacy controls.  
 **Context**: RDAPify is built exclusively around the RDAP protocol, with no WHOIS fallback, to ensure consistent, modern data access while maintaining privacy and security standards.  
-**Related**: [RFC 7480](../../specifications/rdap_rfc.md), [What is RDAP](../../core_concepts/what_is_rdap.md)
+**Related**: [RFC 7480](../../specifications/rdap_rfc.md), [What is RDAP](../../core-concepts/what_is_rdap.md)
 
 ### Server-Side Request Forgery (SSRF)
 **Definition**: A security vulnerability where an attacker can induce a server to make unauthorized requests to internal or external systems, potentially accessing sensitive data or services.  
@@ -103,7 +103,7 @@
 ### Regional Internet Registry (RIR)
 **Definition**: Organizations that manage the allocation and registration of Internet number resources (IP addresses and AS numbers) within specific geographic regions of the world. Examples include ARIN (North America), RIPE NCC (Europe), APNIC (Asia-Pacific), LACNIC (Latin America), and AFRINIC (Africa).  
 **Context**: RDAPify interacts with multiple RIRs to retrieve accurate registration data, implementing registry-specific normalization and compliance rules for each.  
-**Related**: [RDAP vs WHOIS](../../core_concepts/rdap_vs_whois.md), [Registry Adapters](../../advanced/custom_adapters.md)
+**Related**: [RDAP vs WHOIS](../../core-concepts/rdap_vs_whois.md), [Registry Adapters](../../advanced/custom_adapters.md)
 
 ### Registry Operators
 **Definition**: Organizations that manage top-level domains (TLDs) such as .com, .net, .org, and country-code TLDs (ccTLDs), maintaining the authoritative database of domain registrations within their delegated namespace.  
@@ -125,7 +125,7 @@
 ### Rate Limiting
 **Definition**: A technique to control the number of requests a client can make to a server within a specified time period, preventing abuse and ensuring fair resource allocation.  
 **Context**: RDAPify implements client-side rate limiting with registry-specific policies to prevent service blocking while maximizing throughput during normal operation.  
-**Related**: [Error State Machine](../../core_concepts/error_state_machine.md), [Anomaly Detection](../../guides/anomaly_detection.md)
+**Related**: [Error State Machine](../../core-concepts/error_state_machine.md), [Anomaly Detection](../../guides/anomaly_detection.md)
 
 ## 📚 Related Documentation
 

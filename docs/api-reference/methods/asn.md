@@ -407,8 +407,8 @@ graph TD
 | [`detectRoutingAnomalies()`](../client.md#detectroutinganomalies) | Identify BGP anomalies | Uses ASN data as input for routing analysis |
 
 ### Architectural Concepts
-- [**Bootstrap Discovery**](../../core_concepts/discovery.md): Finding the correct RIR for ASN ranges
-- [**Normalization Pipeline**](../../core_concepts/normalization.md): Converting RIR-specific ASN responses to standard format
+- [**Bootstrap Discovery**](../../core-concepts/discovery.md): Finding the correct RIR for ASN ranges
+- [**Normalization Pipeline**](../../core-concepts/normalization.md): Converting RIR-specific ASN responses to standard format
 - [**Relationship Mapping**](../../guides/relationship-mapping.md): Building ASN peering and ownership graphs
 - [**Anomaly Detection**](../../analytics/anomaly-detection.md): Identifying suspicious ASN registration patterns
 
@@ -689,7 +689,7 @@ rdapify asn 15169 --bgp-monitor --alerts email+slack
 
 | Resource | Description | Link |
 |----------|-------------|------|
-| **BGP and ASN Fundamentals** | Understanding ASN allocations and BGP routing | [../../core_concepts/bgp-asn.md](../../core_concepts/bgp-asn.md) |
+| **BGP and ASN Fundamentals** | Understanding ASN allocations and BGP routing | [../../core-concepts/bgp-asn.md](../../core-concepts/bgp-asn.md) |
 | **Security Whitepaper** | Full security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Test Vectors** | Standardized test cases for ASN queries | [../../../test-vectors/asn-vectors.json](../../../test-vectors/asn-vectors.json) |
 | **Network Mapping Guide** | Building ASN relationship graphs | [../../guides/network-mapping.md](../../guides/network-mapping.md) |

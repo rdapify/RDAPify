@@ -373,7 +373,7 @@ RUN npm ci --omit=dev
 # Stage 2: Build application
 FROM node:20 AS builder
 WORKDIR /app
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/node_modules ./node-modules
 COPY . .
 RUN npm run build
 
@@ -384,7 +384,7 @@ WORKDIR /app
 # Copy only necessary files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node-modules
 
 # Install only production dependencies
 RUN npm ci --production --omit=dev && \

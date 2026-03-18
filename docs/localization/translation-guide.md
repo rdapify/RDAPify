@@ -213,7 +213,7 @@ npm run security:check-translation -- --language=zh --file=docs/security/whitepa
 npm run compliance:check -- --language=ru --jurisdiction=russia
 
 # Preview Arabic translation with RTL support
-npm run preview:translation -- --language=ar --file=docs/getting_started/quick_start.md
+npm run preview:translation -- --language=ar --file=docs/getting-started/quick_start.md
 ```
 
 ## 🌍 Language-Specific Guidelines
@@ -334,7 +334,7 @@ Access the project terminology database:
 ### 2. Visual Translation Aid Tools
 - **Diagram Localization Tool**: `npm run localize:diagrams -- --language=zh`
 - **RTL Preview Mode**: `npm run preview:rtl -- --language=ar`
-- **Terminology Checker**: `npm run check:terms -- --language=ru --file=docs/api_reference/client.md`
+- **Terminology Checker**: `npm run check:terms -- --language=ru --file=docs/api-reference/client.md`
 
 ### 3. Community Support Channels
 - **Weekly Translator Office Hours**: Thursdays 14:00 UTC on [Zoom](https://rdapify.dev/community/office-hours)

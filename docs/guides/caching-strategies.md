@@ -1,7 +1,7 @@
 # 🗃️ Caching Strategies Guide
 
 > **🎯 Purpose:** Comprehensive guide to implementing optimal caching strategies for RDAPify in various environments and use cases  
-> **📚 Related:** [Caching Architecture](../core_concepts/caching.md) | [Security Whitepaper](../security/whitepaper.md) | [Performance Benchmarks](../../benchmarks/results/cache-hit-miss.md)  
+> **📚 Related:** [Caching Architecture](../core-concepts/caching.md) | [Security Whitepaper](../security/whitepaper.md) | [Performance Benchmarks](../../benchmarks/results/cache-hit-miss.md)  
 > **⏱️ Reading Time:** 8 minutes  
 > **🔍 Pro Tip:** Use the [Cache Simulator](../../playground/cache-simulator.md) to test different strategies with your workload patterns
 
@@ -733,9 +733,9 @@ async function handleGDPRDeletion(identifier: string) {
 
 | Document | Description | Path |
 |----------|-------------|------|
-| **Caching Architecture** | Detailed cache implementation | [../core_concepts/caching.md](../core_concepts/caching.md) |
+| **Caching Architecture** | Detailed cache implementation | [../core-concepts/caching.md](../core-concepts/caching.md) |
 | **Security Whitepaper** | Security aspects of caching | [../security/whitepaper.md](../security/whitepaper.md) |
-| **Offline Mode** | Operating without connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| **Offline Mode** | Operating without connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 | **Geo-Caching Guide** | Geographic distribution strategies | [geo-caching.md](geo-caching.md) |
 | **Performance Benchmarks** | Real-world cache performance data | [../../benchmarks/results/cache-hit-miss.md](../../benchmarks/results/cache-hit-miss.md) |
 | **Cache Simulator** | Interactive strategy testing tool | [../../playground/cache-simulator.md](../../playground/cache-simulator.md) |

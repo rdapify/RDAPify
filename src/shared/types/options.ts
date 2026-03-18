@@ -258,7 +258,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   debug: {
     enabled: false,
   },
-  userAgent: 'RDAPify/0.1.4 (https://rdapify.com)',
+  userAgent: 'RDAPify/0.1.6 (https://rdapify.com)',
   includeRaw: false,
   followRedirects: true,
   maxRedirects: 5,

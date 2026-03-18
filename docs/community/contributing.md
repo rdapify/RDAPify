@@ -104,9 +104,9 @@ src/
 **Documentation Structure**:
 ```markdown
 docs/
-├── getting_started/    # Quick start guides
-├── core_concepts/      # Fundamental concepts
-├── api_reference/      # API documentation
+├── getting-started/    # Quick start guides
+├── core-concepts/      # Fundamental concepts
+├── api-reference/      # API documentation
 ├── guides/             # How-to guides
 ├── integrations/       # Integration guides
 ├── performance/        # Performance guides

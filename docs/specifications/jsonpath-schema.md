@@ -423,7 +423,7 @@ curl https://rdap.example.com/policies/security | jq '.jsonpathRestrictions'
 | [RFC 9537](https://tools.ietf.org/html/rfc9537) | Official JSONPath search specification | [https://tools.ietf.org/html/rfc9537](https://tools.ietf.org/html/rfc9537) |
 | [JSONPath Tester](../../playground/jsonpath-tester.md) | Interactive query testing tool | [../../playground/jsonpath-tester.md](../../playground/jsonpath-tester.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security considerations for JSONPath queries | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Test Vectors](../../../test_vectors/jsonpath_vectors.json) | Valid and invalid JSONPath test cases | [../../../test_vectors/jsonpath_vectors.json](../../../test_vectors/jsonpath_vectors.json) |
+| [Test Vectors](../../../test-vectors/jsonpath_vectors.json) | Valid and invalid JSONPath test cases | [../../../test-vectors/jsonpath_vectors.json](../../../test-vectors/jsonpath_vectors.json) |
 
 ## 🏷️ JSONPath Schema Specifications
 

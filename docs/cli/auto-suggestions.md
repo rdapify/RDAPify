@@ -369,7 +369,7 @@ rdapify config set suggestions.background-prefetch true
 | [Command Reference](commands.md) | Complete command catalog | [commands.md](commands.md) |
 | [Security Guide](../guides/security_privacy.md) | Security configuration deep dive | [../guides/security_privacy.md](../guides/security_privacy.md) |
 | [Configuration Guide](../guides/environment_vars.md) | Advanced configuration options | [../guides/environment_vars.md](../guides/environment_vars.md) |
-| [Offline Mode](../core_concepts/offline_mode.md) | Working without network connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| [Offline Mode](../core-concepts/offline_mode.md) | Working without network connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 
 ## 🏷️ Auto Suggestions Specifications
 

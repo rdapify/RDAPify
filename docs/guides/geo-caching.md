@@ -1,7 +1,7 @@
 # 🌍 Geo-Caching Strategies Guide
 
 > **🎯 Purpose:** Comprehensive guide to implementing geographic caching strategies for RDAPify to optimize global request latency and reliability  
-> **📚 Related:** [Caching Strategies](caching-strategies.md) | [Architecture Overview](../core_concepts/architecture.md) | [Performance Benchmarks](../../benchmarks/results/geo-distribution.md)  
+> **📚 Related:** [Caching Strategies](caching-strategies.md) | [Architecture Overview](../core-concepts/architecture.md) | [Performance Benchmarks](../../benchmarks/results/geo-distribution.md)  
 > **⏱️ Reading Time:** 7 minutes  
 > **🔍 Pro Tip:** Use the [Geo-Cache Simulator](../../playground/geo-cache-simulator.md) to model performance impact for your global user distribution
 
@@ -872,7 +872,7 @@ class EnterpriseGeoCacheService {
 | Document | Description | Path |
 |----------|-------------|------|
 | **Caching Strategies** | Foundational caching patterns | [caching-strategies.md](caching-strategies.md) |
-| **Architecture Overview** | System design context | [../core_concepts/architecture.md](../core_concepts/architecture.md) |
+| **Architecture Overview** | System design context | [../core-concepts/architecture.md](../core-concepts/architecture.md) |
 | **Performance Benchmarks** | Geo-distribution performance data | [../../benchmarks/results/geo-distribution.md](../../benchmarks/results/geo-distribution.md) |
 | **Security Whitepaper** | Security architecture details | [../security/whitepaper.md](../security/whitepaper.md) |
 | **Enterprise Adoption** | Scaling for large deployments | [../enterprise/adoption-guide.md](../enterprise/adoption-guide.md) |

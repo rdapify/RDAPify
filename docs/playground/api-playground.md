@@ -1,7 +1,7 @@
 # API Playground
 
 🎯 **Purpose**: Interactive environment to explore RDAPify API endpoints with real-time execution, parameter customization, and security context visualization  
-📚 **Related**: [Overview](overview.md) | [Examples Gallery](examples.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting_started/five_minutes.md)  
+📚 **Related**: [Overview](overview.md) | [Examples Gallery](examples.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting-started/five_minutes.md)  
 ⏱️ **Reading Time**: 6 minutes  
 🔍 **Pro Tip**: Use the "Try it" button on any API endpoint to immediately execute it with your parameters in the playground environment
 

@@ -261,7 +261,7 @@ jobs:
         npm run update:compatibility-matrix
         git config user.name "github-actions"
         git config user.email "github-actions@users.noreply.github.com"
-        git add docs/quality_assurance/compatibility_matrix.md
+        git add docs/quality-assurance/compatibility_matrix.md
         git commit -m "chore(compat): update compatibility matrix for ${{ matrix.platform }}"
         git push
 ```
@@ -436,7 +436,7 @@ export class EnvironmentDetector {
 | [Overview](overview.md) | QA framework introduction | [overview.md](overview.md) |
 | [Test Vectors](test_vectors.md) | Complete RFC 7480 test suite | [test_vectors.md](test_vectors.md) |
 | [Benchmarks](benchmarks.md) | Performance validation methodology | [benchmarks.md](benchmarks.md) |
-| [Installation Guide](../getting_started/installation.md) | Environment setup instructions | [../getting_started/installation.md](../getting_started/installation.md) |
+| [Installation Guide](../getting-started/installation.md) | Environment setup instructions | [../getting-started/installation.md](../getting-started/installation.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [RFC 7480 Specification](../../specifications/rdap_rfc.md) | Complete RFC documentation | [../../specifications/rdap_rfc.md](../../specifications/rdap_rfc.md) |
 | [Environment Variables](../guides/environment_vars.md) | Configuration guide | [../guides/environment_vars.md](../guides/environment_vars.md) |

@@ -4,14 +4,14 @@
 <h1 align="center">RDAPify</h1>
 <p align="center"><strong>Unified, Secure, High-Performance RDAP Client for Enterprise Applications</strong></p>
 
-> **🎉 LATEST RELEASE**: v0.1.2 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.2](#-whats-new-in-v012) below.
+> **🎉 LATEST RELEASE**: v0.1.6 — Production-ready with CLI tool, Redis cache, compliance audit logging, middleware hooks, query deduplication, RFC 7483 response validation, Cloudflare Workers support, and comprehensive bug fixes. See [What's New in v0.1.6](#-whats-new-in-v016) below.
 
-> **⚠️ UPGRADE NOTICE**: If you're using v0.1.0 or v0.1.1, please upgrade to v0.1.2 for new features and bug fixes. **No breaking changes** - seamless upgrade! See [Migration Guide](./MIGRATION_TO_0.1.2.md) or simply run: `npm install rdapify@latest`
+> **⚠️ UPGRADE NOTICE**: If you're using any earlier version, please upgrade to v0.1.6 for new features and critical bug fixes. **No breaking changes** - seamless upgrade! Run: `npm install rdapify@latest`
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
-[![Tests](https://img.shields.io/badge/tests-145%20passing-brightgreen?style=flat-square)](#)
+[![Tests](https://img.shields.io/badge/tests-200%2B%20passing-brightgreen?style=flat-square)](#)
 [![Website](https://img.shields.io/badge/website-rdapify.com-blue?style=flat-square)](https://rdapify.com)
 [![GitHub](https://img.shields.io/github/stars/rdapify/RDAPify?style=flat-square)](https://github.com/rdapify/RDAPify)
 
@@ -36,7 +36,7 @@ RDAPify intelligently addresses these challenges:
 - ✅ **Data Normalization**: Consistent response regardless of source registry
 - ✅ **SSRF Protection**: Prevent attacks on internal infrastructure
 - ✅ **Exceptional Performance**: Smart caching, parallel processing, memory optimization
-- ✅ **Node.js Compatibility**: Verified working on Node.js (target: 16+; Bun, Deno, Cloudflare Workers: untested)
+- ✅ **Node.js Compatibility**: Verified working on Node.js 20+; Bun, Deno, and Cloudflare Workers also supported
 - ✅ **GDPR-ready**: Built-in tools for automatically redacting personal data
 
 ## 📦 Quick Installation
@@ -52,9 +52,8 @@ yarn add rdapify
 pnpm add rdapify
 ```
 
-**Experimental (untested):**
 ```bash
-# Using Bun (untested)
+# Using Bun
 bun add rdapify
 ```
 
@@ -269,10 +268,10 @@ const compression = new CompressionManager({
 ### 🧩 Seamless Integration
 
 - **Full TypeScript Support**: Strongly typed with embedded documentation
-- **Node.js Support**: Verified working (target: Node.js 20+)
+- **Node.js 20+ Support**: Verified working (Node.js, Bun, Deno, Cloudflare Workers)
 - **Enhanced Validation** (v0.1.2+): IDN domains, IPv6 zones, ASN ranges
-- **Interactive CLI**: For quick queries and testing (planned)
-- **Web Playground**: Try the library directly in your browser (planned)
+- **CLI Tool** (v0.1.6+): `rdapify domain/ip/asn` with `--json`, `--no-cache`, `--timeout` flags
+- **Web Playground**: Try RDAPify live at [rdapify.com/playground](https://rdapify.com/playground)
 - **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more (planned)
 
 ### 📊 Advanced Analytics (Planned)
@@ -331,7 +330,7 @@ RDAPify provides comprehensive documentation in the repository:
 
 ## 🌐 Interactive Playground
 
-> **Coming Soon**: Interactive playground is planned for a future release. For now, install the package and try the examples in the [docs/](docs/) directory.
+Try RDAPify directly in your browser — no installation required: **[rdapify.com/playground](https://rdapify.com/playground)**
 
 ## 📊 Performance Benchmarks
 
@@ -371,73 +370,71 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.2 (Production Ready)
+**Current Release**: v0.1.6 (Production Ready)
 
-### 🎉 What's New in v0.1.2
+### 🎉 What's New in v0.1.6
 
-**Interactive Playground & Developer Experience**
-- ✅ **Try Before Install**: Interactive playground at rdapify.com/playground
-- ✅ **Client ID Tracking**: Stable browser identification with localStorage
-- ✅ **Quota Management**: Real-time quota display (remainingToday, resetAt)
-- ✅ **Rate Limit Handling**: Graceful 429 responses with retry hints
-- ✅ **Multi-Package Manager**: npm, yarn, and pnpm install commands
-- ✅ **Website Integration**: Playground accessible from main navigation
-- ✅ **Code Quality**: ESLint errors resolved (6 issues fixed)
+**CLI Tool & Runtime Support**
+- ✅ **CLI Tool**: `rdapify domain <name>`, `rdapify ip <addr>`, `rdapify asn <num>` — zero external dependencies
+- ✅ **CLI Flags**: `--json`, `--no-cache`, `--timeout <ms>`, `--version/-v`, `--help/-h`
+- ✅ **Cloudflare Workers**: Full runtime detection and support (`isCloudflareWorkers()`)
+- ✅ **Critical Redis Fix**: `RedisCache.clear()` no longer wipes the entire database (was using `flushDb()`, now uses SCAN + selective delete)
+- ✅ **Redis SCAN**: Replaced blocking `KEYS` command with non-blocking `SCAN` for production safety
 
-**Previous Releases**
+**v0.1.5 — Compliance & Middleware**
+- ✅ **Redis Cache**: Production-ready Redis adapter with peer-dependency pattern
+- ✅ **Middleware Hooks**: `beforeQuery`, `afterQuery`, `onError`, `onCacheHit`, `onCacheMiss`, `onRetry` lifecycle hooks
+- ✅ **Query Deduplicator**: Collapses concurrent identical in-flight requests into a single Promise
+- ✅ **Audit Logger**: GDPR/SOC2/CCPA-compliant audit trail with in-memory and file (NDJSON) adapters
+- ✅ **Response Validator**: RFC 7483 schema validation with strict/lenient/off modes
 
-**Phase 3: Authentication & Network** (52 new tests - v0.1.1+)
-- ✅ **Authentication Support**: Basic, Bearer Token, API Key, OAuth2
-- ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5 with bypass lists
-- ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
+**v0.1.4 — TypeScript Strict Mode**
+- ✅ TypeScript strict mode throughout the entire codebase
 
-**Phase 2: Advanced Features** (55 new tests)
-- ✅ **Retry Strategies**: Circuit breaker with exponential backoff
-- ✅ **Query Prioritization**: High/normal/low priority queue
-- ✅ **Enhanced Validation**: IDN domains, IPv6 zones, ASN ranges
-- ✅ **Persistent Cache**: File-based storage that survives restarts
+**v0.1.3 — 15+ Defensive Bug Fixes**
+- ✅ Normalizer null checks, BootstrapDiscovery NaN guard, Fetcher redirect validation
+- ✅ ConnectionPool acquire timeout, PIIRedactor `structuredClone`, SSRFProtection IPv6 brackets
+- ✅ MetricsCollector division-by-zero protection
 
-**Phase 1: Core Improvements** (38 new tests)
-- ✅ **Connection Pooling**: 30-40% performance improvement
-- ✅ **Metrics & Monitoring**: Comprehensive query tracking
-- ✅ **Request/Response Logging**: Detailed debugging capabilities
+**Previous Releases (v0.1.0–v0.1.2)**
+- ✅ Authentication (Basic/Bearer/API Key/OAuth2), Proxy (HTTP/HTTPS/SOCKS4/SOCKS5), Compression (gzip/brotli/deflate)
+- ✅ Retry strategies with circuit breaker, query prioritization, enhanced validation (IDN, IPv6 zones, ASN ranges)
+- ✅ Connection pooling (30-40% faster), metrics & monitoring, request/response logging
+- ✅ Persistent cache (file-based), interactive playground
 
-**Total Improvements**: 11 major features, 145+ tests (all passing)
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-See [ALL_PHASES_COMPLETE.md](./docs/releases/ALL_PHASES_COMPLETE.md) for detailed documentation.
+### ✅ Full Feature Set (v0.1.6)
 
-### ✅ What's Ready in v0.1.2
-
-Core functionality is production-ready and fully tested:
-
-- ✅ **Interactive Playground**: Try RDAPify without installing (rdapify.com/playground)
-- ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic bootstrap discovery
-- ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, with proper CIDR matching (IPv4/IPv6)
+- ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic IANA bootstrap discovery
+- ✅ **CLI Tool**: Command-line interface with human-readable and JSON output
+- ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, CIDR matching (IPv4/IPv6)
 - ✅ **Data Normalization**: Consistent response format across all registries
-- ✅ **PII Redaction**: Automatic redaction of emails, phones, addresses
-- ✅ **In-Memory Caching**: LRU cache with TTL support
+- ✅ **PII Redaction**: Automatic redaction of emails, phones, addresses (GDPR/CCPA)
+- ✅ **Audit Logging**: Compliance-grade audit trail (GDPR/SOC2/CCPA) with NDJSON file adapter
+- ✅ **In-Memory Cache**: LRU cache with TTL support
 - ✅ **Persistent Cache**: File-based cache that survives restarts
+- ✅ **Redis Cache**: Production-ready Redis adapter
 - ✅ **Connection Pooling**: HTTP connection reuse (30-40% faster)
 - ✅ **Metrics & Monitoring**: Comprehensive query tracking and analysis
-- ✅ **Request/Response Logging**: Detailed logging with multiple levels
-- ✅ **Retry Strategies**: Circuit breaker with exponential backoff
+- ✅ **Request/Response Logging**: Structured logging with configurable levels
+- ✅ **Retry Strategies**: Circuit breaker (closed/open/half-open) with exponential backoff
 - ✅ **Query Prioritization**: High/normal/low priority queue
+- ✅ **Query Deduplication**: Collapse concurrent identical requests into one
+- ✅ **Middleware Hooks**: Lifecycle hooks for query pipeline customization
+- ✅ **Response Validation**: RFC 7483 schema validation
 - ✅ **Enhanced Validation**: IDN domains, IPv6 zones, ASN ranges
-- ✅ **Authentication Support**: Basic, Bearer, API Key, OAuth2
-- ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5
-- ✅ **Response Compression**: gzip, brotli, deflate
-- ✅ **Error Handling**: Structured errors with retry logic
-- ✅ **TypeScript Support**: Full type definitions and strict mode
-- ✅ **Test Coverage**: 145+ new tests passing (unit + integration)
-- ✅ **Node.js Support**: Verified working (Node.js 20+)
+- ✅ **Authentication**: Basic, Bearer, API Key, OAuth2
+- ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5 with bypass patterns
+- ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
+- ✅ **Multi-runtime**: Node.js 20+, Bun, Deno, Cloudflare Workers
+- ✅ **TypeScript Strict**: Full type definitions with strict mode
+- ✅ **Test Coverage**: 31 test files, 200+ tests (unit + integration)
 
 ### 🔄 Planned Features
 
 These features are planned for future releases:
 
-- ⏳ **Redis/External Cache**: External cache adapters coming in v0.2.0
-- ⏳ **CLI Tool**: Command-line interface planned
-- ⏳ **Bun/Deno/Cloudflare Workers**: Additional runtime support
 - ⏳ **Advanced Analytics**: Dashboard and reporting features
 - ⏳ **Geo-distributed Caching**: Multi-region cache support
 - ⏳ **Smart Caching**: Predictive caching with adaptive TTL
@@ -445,11 +442,10 @@ These features are planned for future releases:
 
 ### 📋 Roadmap to v0.2.0
 
-- Redis cache adapter
-- CLI tool with interactive mode
-- Rate limiting improvements
-- Batch processing optimization
-- Bun/Deno runtime compatibility testing
+- Advanced analytics dashboard
+- Geo-distributed caching
+- Live integration tests (opt-in via `LIVE_TESTS=1`)
+- Performance benchmarks with real-world data
 
 See [ROADMAP.md](ROADMAP.md) for the complete roadmap and [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
@@ -459,48 +455,58 @@ RDAPify follows a clean, modular architecture with clear separation of concerns:
 
 ### Source Structure (`/src`)
 
+RDAPify follows a hexagonal (ports & adapters) architecture:
+
 ```
 src/
-├── client/           # Client orchestration layer
-│   ├── RDAPClient.ts          # Main client (242 LOC)
-│   └── QueryOrchestrator.ts   # Query pattern extraction (169 LOC)
+├── application/           # Application layer
+│   ├── client/
+│   │   └── RDAPClient.ts          # Main client entry point
+│   ├── services/
+│   │   ├── QueryOrchestrator.ts   # Query pipeline orchestration
+│   │   ├── BatchProcessor.ts      # Concurrent batch processing
+│   │   └── QueryPriority.ts       # Priority queue (high/normal/low)
+│   ├── hooks/
+│   │   └── MiddlewareHooks.ts     # Lifecycle hooks
+│   └── deduplication/
+│       └── QueryDeduplicator.ts   # In-flight request deduplication
 │
-├── fetcher/          # HTTP and registry discovery
-│   ├── Fetcher.ts             # HTTP client (196 LOC)
-│   ├── BootstrapDiscovery.ts  # IANA bootstrap (224 LOC)
-│   └── SSRFProtection.ts      # Security validation (219 LOC)
+├── infrastructure/        # Infrastructure layer
+│   ├── http/
+│   │   ├── Fetcher.ts             # HTTP client with SSRF validation
+│   │   ├── BootstrapDiscovery.ts  # IANA bootstrap registry discovery
+│   │   ├── Normalizer.ts          # Raw → normalized response transform
+│   │   ├── RateLimiter.ts         # Token-bucket rate limiter
+│   │   ├── ConnectionPool.ts      # HTTP connection reuse
+│   │   ├── RetryStrategy.ts       # Retry + circuit breaker
+│   │   ├── AuthenticationManager.ts  # Basic/Bearer/APIKey/OAuth2
+│   │   ├── ProxyManager.ts        # HTTP/HTTPS/SOCKS proxy support
+│   │   └── CompressionManager.ts  # gzip/brotli/deflate
+│   ├── cache/
+│   │   ├── InMemoryCache.ts       # LRU in-memory cache with TTL
+│   │   ├── CacheManager.ts        # Cache backend dispatcher
+│   │   ├── PersistentCache.ts     # File-backed JSON cache
+│   │   └── RedisCache.ts          # Redis adapter (peer-dependency)
+│   ├── security/
+│   │   ├── SSRFProtection.ts      # RFC 1918 / link-local blocking
+│   │   └── PIIRedactor.ts         # GDPR/CCPA PII redaction
+│   ├── logging/
+│   │   ├── Logger.ts              # Structured request/response logging
+│   │   └── AuditLogger.ts         # Compliance audit trail (NDJSON)
+│   ├── monitoring/
+│   │   └── MetricsCollector.ts    # Query latency, success/error rates
+│   └── validation/
+│       └── ResponseValidator.ts   # RFC 7483 schema validation
 │
-├── normalizer/       # Data transformation
-│   ├── Normalizer.ts          # Response normalization (239 LOC)
-│   └── PIIRedactor.ts         # Privacy protection (140 LOC)
+├── shared/                # Shared kernel
+│   ├── types/             # TypeScript types and interfaces
+│   ├── errors/            # Typed error hierarchy (11 error classes)
+│   └── utils/             # Validators, helpers, constants
 │
-├── cache/            # Caching layer
-│   ├── CacheManager.ts        # Cache orchestration (188 LOC)
-│   └── InMemoryCache.ts       # LRU implementation (185 LOC)
+├── core/ports/            # Interface contracts (hexagonal ports)
 │
-├── types/            # TypeScript definitions
-│   ├── enums.ts               # Type aliases (87 LOC)
-│   ├── entities.ts            # Entity interfaces (74 LOC)
-│   ├── responses.ts           # Response types (100 LOC)
-│   ├── errors.ts              # Error classes (154 LOC)
-│   ├── options.ts             # Configuration types (201 LOC)
-│   └── index.ts               # Barrel export (36 LOC)
-│
-└── utils/            # Utilities
-    ├── validators/            # Input validation
-    │   ├── domain.ts          # Domain validation (55 LOC)
-    │   ├── ip.ts              # IP validation (86 LOC)
-    │   ├── asn.ts             # ASN validation (42 LOC)
-    │   └── network.ts         # Network utilities (76 LOC)
-    │
-    └── helpers/               # Helper functions
-        ├── async.ts           # Async utilities (77 LOC)
-        ├── string.ts          # String manipulation (38 LOC)
-        ├── object.ts          # Object utilities (33 LOC)
-        ├── cache.ts           # Cache helpers (11 LOC)
-        ├── http.ts            # HTTP utilities (25 LOC)
-        ├── format.ts          # Formatting (27 LOC)
-        └── runtime.ts         # Runtime detection (47 LOC)
+└── cli/
+    └── index.ts           # CLI binary (rdapify domain/ip/asn)
 ```
 
 ### Key Design Principles
@@ -508,20 +514,17 @@ src/
 1. **Modular Architecture**: Each file has a single, clear responsibility
 2. **Small Files**: All files <250 LOC for easy maintenance
 3. **Type Safety**: Strict TypeScript with explicit types throughout
-4. **Testability**: 146 tests with >90% coverage
+4. **Testability**: 200+ tests with >90% coverage (31 test files)
 5. **Security First**: SSRF protection and PII redaction built-in
 6. **Performance**: Smart caching and optimized parsing
 
-### Recent Improvements (Phase 2 Refactoring)
+### Key Design Principles
 
-- ✅ Extracted QueryOrchestrator from RDAPClient (-29% LOC)
-- ✅ Split validators into focused modules (-87% in main file)
-- ✅ Split helpers into focused modules (-80% in main file)
-- ✅ Split types into enums, entities, responses (-87% in main file)
-- ✅ 712 lines of duplication eliminated
-- ✅ 100% backward compatible (re-export shims)
-
-See [REFACTOR_STATUS.md](REFACTOR_STATUS.md) for detailed refactoring progress.
+1. **Hexagonal Architecture**: Clean separation between application, infrastructure, and shared layers
+2. **Ports & Adapters**: Interface-driven design for easy testing and swappable backends
+3. **Security First**: SSRF protection and PII redaction built into the query pipeline
+4. **Compliance Ready**: Audit logging for GDPR/SOC2/CCPA requirements
+5. **Multi-runtime**: Works on Node.js 20+, Bun, Deno, and Cloudflare Workers
 
 ### 📋 Roadmap to v0.2.0 (Continued)
 - Live integration tests (optional via LIVE_TESTS=1)
@@ -596,10 +599,9 @@ We're looking for early adopters and beta testers! If you're interested in:
 
 ### Known Issues & Limitations
 
-- Bun/Deno/Cloudflare Workers compatibility not yet tested
 - Live RDAP server tests disabled by default (use `LIVE_TESTS=1` to enable)
-- CLI tool not yet available (programmatic API only)
-- Redis cache adapter planned for v0.2.0
+- Advanced analytics dashboard planned for v0.2.0
+- Geo-distributed caching planned for v0.2.0
 
 ## 📜 License
 

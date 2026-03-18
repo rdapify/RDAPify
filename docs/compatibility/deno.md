@@ -404,7 +404,7 @@ deno run --import-map=import_map.json --check ./dist/app.ts
 ```json
 // deno.json
 {
-  "importMap": "./import_map.json",
+  "importMap": "./import-map.json",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true

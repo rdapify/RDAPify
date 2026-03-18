@@ -135,9 +135,9 @@ node test-improvements.js
 - [Batch Processing Examples](examples/advanced/batch_processing_example.js)
 
 ### API Reference
-- [RateLimiter API](docs/api_reference/rate_limiter.md)
-- [BatchProcessor API](docs/api_reference/batch_processor.md)
-- [Error Classes](docs/api_reference/errors.md)
+- [RateLimiter API](docs/api-reference/rate_limiter.md)
+- [BatchProcessor API](docs/api-reference/batch_processor.md)
+- [Error Classes](docs/api-reference/errors.md)
 
 ---
 

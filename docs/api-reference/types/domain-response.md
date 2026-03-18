@@ -552,7 +552,7 @@ rdapify validate domain example.com --schema latest
 |----------|-------------|------|
 | **Domain Method Reference** | Complete API documentation for domain queries | [../methods/domain.md](../methods/domain.md) |
 | **Entity Type Reference** | Detailed documentation for entity structure | [entity.md](entity.md) |
-| **Normalization Pipeline** | How raw RDAP responses become DomainResponse | [../../core_concepts/normalization.md](../../core_concepts/normalization.md) |
+| **Normalization Pipeline** | How raw RDAP responses become DomainResponse | [../../core-concepts/normalization.md](../../core-concepts/normalization.md) |
 | **Test Vectors** | Standardized test data for domain responses | [../../../test-vectors/domain-vectors.json](../../../test-vectors/domain-vectors.json) |
 | **Privacy Controls Guide** | Advanced PII redaction configuration | [../privacy-controls.md](../privacy-controls.md) |
 | **Security Whitepaper** | Complete security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |

@@ -324,6 +324,6 @@ async function processBatchWithRetry(queries: any[], maxRetries = 3) {
 
 ## See Also
 
-- [Rate Limiting Guide](./rate_limiting.md)
-- [Caching Strategies](./caching_strategies.md)
+- [Rate Limiting Guide](./rate-limiting.md)
+- [Caching Strategies](./caching-strategies.md)
 - [Performance Guide](./performance.md)

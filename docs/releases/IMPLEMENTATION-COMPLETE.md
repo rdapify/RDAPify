@@ -240,7 +240,7 @@ async function query<T extends 'domain' | 'ip' | 'asn'>(
 
 ### الوثائق:
 - [Main README](README.md)
-- [API Documentation](docs/api_reference/)
+- [API Documentation](docs/api-reference/)
 - [Guides](docs/guides/)
 
 ### المجتمع:

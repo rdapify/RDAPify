@@ -697,7 +697,7 @@ await client.asn(0x3B41); // Hex format (15169 in hex)
 
 | Resource | Description | Link |
 |----------|-------------|------|
-| **BGP and ASN Fundamentals** | Understanding ASN allocations and BGP routing | [../../core_concepts/bgp-asn.md](../../core_concepts/bgp-asn.md) |
+| **BGP and ASN Fundamentals** | Understanding ASN allocations and BGP routing | [../../core-concepts/bgp-asn.md](../../core-concepts/bgp-asn.md) |
 | **Security Whitepaper** | Full security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Test Vectors** | Standardized test cases for ASN queries | [../../../test-vectors/asn-vectors.json](../../../test-vectors/asn-vectors.json) |
 | **Network Mapping Guide** | Building ASN relationship graphs | [../../guides/network-mapping.md](../../guides/network-mapping.md) |

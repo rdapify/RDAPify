@@ -145,6 +145,11 @@ wrangler.toml.local
 .kiro/
 
 # ============================================
+# Claude Code (local AI assistant state)
+# ============================================
+.claude/
+
+# ============================================
 # Project-Specific Temporary Files
 # ============================================
 str.txt

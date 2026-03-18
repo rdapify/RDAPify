@@ -1,7 +1,7 @@
 # Custom Resolver Implementation Guide
 
 🎯 **Purpose**: Comprehensive guide for implementing custom resolvers in RDAPify to handle specialized registry discovery, bootstrap processes, and multi-registry routing while maintaining protocol compliance and security boundaries  
-📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Normalizer](custom_normalizer.md) | [Registry Discovery](../core_concepts/discovery.md)  
+📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Normalizer](custom_normalizer.md) | [Registry Discovery](../core-concepts/discovery.md)  
 ⏱️ **Reading Time**: 7 minutes  
 🔍 **Pro Tip**: Use the [Bootstrap Validator](../../playground/bootstrap-validator.md) to test your custom resolver against all IANA-assigned TLDs and registry configurations before deployment
 
@@ -1237,7 +1237,7 @@ node ./monitor/security-patterns.js
 | [Plugin System](plugin_system.md) | Creating extensible RDAPify plugins | [plugin_system.md](plugin_system.md) |
 | [Custom Fetcher](custom_fetcher.md) | Network request customization | [custom_fetcher.md](custom_fetcher.md) |
 | [Custom Normalizer](custom_normalizer.md) | Response normalization patterns | [custom_normalizer.md](custom_normalizer.md) |
-| [Registry Discovery](../core_concepts/discovery.md) | Core discovery mechanisms | [../core_concepts/discovery.md](../core_concepts/discovery.md) |
+| [Registry Discovery](../core-concepts/discovery.md) | Core discovery mechanisms | [../core-concepts/discovery.md](../core-concepts/discovery.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Bootstrap Validator](../../playground/bootstrap-validator.md) | Testing tool for resolvers | [../../playground/bootstrap-validator.md](../../playground/bootstrap-validator.md) |
 | [Connection Pooling](../guides/connection_pooling.md) | Performance optimization guide | [../guides/connection_pooling.md](../guides/connection_pooling.md) |

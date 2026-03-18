@@ -372,7 +372,7 @@ function processRegistryResponse(response: RegistryResponse) {
 | **Domain Method** | Domain query implementation details | [../methods/domain.md](../methods/domain.md) |
 | **Security Whitepaper** | Type security model details | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Privacy Controls** | PII redaction type implementation | [../privacy-controls.md](../privacy-controls.md) |
-| **Normalization Pipeline** | How types are constructed from raw responses | [../../core_concepts/normalization.md](../../core_concepts/normalization.md) |
+| **Normalization Pipeline** | How types are constructed from raw responses | [../../core-concepts/normalization.md](../../core-concepts/normalization.md) |
 | **Test Vectors** | Standardized test data for type validation | [../../../test-vectors/](../../../test-vectors/) |
 
 ---

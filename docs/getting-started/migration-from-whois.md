@@ -1,7 +1,7 @@
 # 🔄 Migration from WHOIS to RDAP
 
 > **🎯 Purpose:** Complete guide for migrating from legacy WHOIS implementations to RDAPify  
-> **📚 Related:** [RDAP vs WHOIS](../core_concepts/rdap_vs_whois.md) | [Quick Start](quick_start.md) | [Production Checklist](production_checklist.md)  
+> **📚 Related:** [RDAP vs WHOIS](../core-concepts/rdap_vs_whois.md) | [Quick Start](quick_start.md) | [Production Checklist](production_checklist.md)  
 > **⏱️ Reading Time:** 10 minutes  
 > **🔍 Migration Complexity:** Low to Medium
 
@@ -428,7 +428,7 @@ describe('WHOIS to RDAP Migration', () => {
 
 ### For Developers
 - [Quick Start Guide](quick_start.md)
-- [API Reference](../api_reference/client.md)
+- [API Reference](../api-reference/client.md)
 - [TypeScript Usage](../guides/typescript_usage.md)
 
 ### For Operations
@@ -476,7 +476,7 @@ describe('WHOIS to RDAP Migration', () => {
 
 ## 📚 Additional Resources
 
-- [RDAP vs WHOIS Comparison](../core_concepts/rdap_vs_whois.md)
+- [RDAP vs WHOIS Comparison](../core-concepts/rdap_vs_whois.md)
 - [RFC 7480 - RDAP Protocol](../resources/rfcs.md)
 - [Migration Case Studies](../community/credits.md)
 - [Best Practices](../guides/security_privacy.md)

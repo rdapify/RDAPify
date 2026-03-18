@@ -299,10 +299,10 @@ const result = await client.domain('example.com', {
 | [`detectAnomalies()`](../client.md#detectanomalies) | Identify suspicious patterns | Uses domain() results as input for analysis |
 
 ### Architectural Concepts
-- [**Bootstrap Discovery**](../../core_concepts/discovery.md): How registry servers are located
-- [**Normalization Pipeline**](../../core_concepts/normalization.md): How raw RDAP responses are transformed
-- [**Caching Strategies**](../../core_concepts/caching.md): Performance optimization patterns
-- [**Offline Mode**](../../core_concepts/offline_mode.md): Operating without connectivity
+- [**Bootstrap Discovery**](../../core-concepts/discovery.md): How registry servers are located
+- [**Normalization Pipeline**](../../core-concepts/normalization.md): How raw RDAP responses are transformed
+- [**Caching Strategies**](../../core-concepts/caching.md): Performance optimization patterns
+- [**Offline Mode**](../../core-concepts/offline_mode.md): Operating without connectivity
 
 ---
 

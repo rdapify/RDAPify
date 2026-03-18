@@ -1,7 +1,7 @@
 # Testing Overview
 
 🎯 **Purpose**: Comprehensive guide to RDAPify's testing strategy, covering unit tests, integration tests, security validation, performance benchmarks, and compliance verification with practical implementation examples  
-📚 **Related**: [Quality Assurance](../../quality_assurance/overview.md) | [Benchmarking](../../benchmarks/README.md) | [Security Whitepaper](../../security/whitepaper.md) | [Test Vectors](../../test_vectors/README.md)  
+📚 **Related**: [Quality Assurance](../../quality-assurance/overview.md) | [Benchmarking](../../benchmarks/README.md) | [Security Whitepaper](../../security/whitepaper.md) | [Test Vectors](../../test-vectors/README.md)  
 ⏱️ **Reading Time**: 6 minutes  
 🔍 **Pro Tip**: Use the [Test Runner](../../playground/test-runner.md) to interactively execute and debug tests with visual performance profiling
 
@@ -654,8 +654,8 @@ NODE_OPTIONS='--trace-sync-io --trace-event-categories=async_hooks' \
 
 | Document | Description | Path |
 |----------|-------------|------|
-| [Test Vectors](../../test_vectors/README.md) | Comprehensive test data sets | [../../test_vectors/README.md](../../test_vectors/README.md) |
-| [Quality Assurance](../../quality_assurance/overview.md) | QA processes and standards | [../../quality_assurance/overview.md](../../quality_assurance/overview.md) |
+| [Test Vectors](../../test-vectors/README.md) | Comprehensive test data sets | [../../test-vectors/README.md](../../test-vectors/README.md) |
+| [Quality Assurance](../../quality-assurance/overview.md) | QA processes and standards | [../../quality-assurance/overview.md](../../quality-assurance/overview.md) |
 | [Benchmarking](../../benchmarks/README.md) | Performance benchmark methodology | [../../benchmarks/README.md](../../benchmarks/README.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security architecture and testing | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Test Runner](../../playground/test-runner.md) | Interactive test execution tool | [../../playground/test-runner.md](../../playground/test-runner.md) |

@@ -398,7 +398,7 @@ docker system prune -f
 | [Auto Suggestions](auto_suggestions.md) | Intelligent command recommendations | [auto_suggestions.md](auto_suggestions.md) |
 | [Commands Reference](commands.md) | Complete command catalog with examples | [commands.md](commands.md) |
 | [Configuration Guide](../guides/environment_vars.md) | Environment variables and config files | [../guides/environment_vars.md](../guides/environment_vars.md) |
-| [Offline Mode](../core_concepts/offline_mode.md) | Working without network connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| [Offline Mode](../core-concepts/offline_mode.md) | Working without network connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 | [Bash/Zsh Completions](https://github.com/rdapify/cli/tree/main/completions) | Shell integration scripts | External |
 
 ## 🏷️ Installation Specifications

@@ -1103,7 +1103,7 @@ node ./scripts/recovery-analysis.js --service registry --metrics
 | [Error Flow Simulator](../../playground/error-flow-simulator.md) | Interactive error handling exploration tool | [../../playground/error-flow-simulator.md](../../playground/error-flow-simulator.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Resilience Patterns](../../../patterns/resilience.md) | Advanced fault tolerance strategies | [../../../patterns/resilience.md](../../../patterns/resilience.md) |
-| [Performance Tuning](../performance_tuning.md) | Optimization techniques for error handling | [../performance_tuning.md](../performance_tuning.md) |
+| [Performance Tuning](../performance-tuning.md) | Optimization techniques for error handling | [../performance-tuning.md](../performance-tuning.md) |
 
 ## 🏷️ Error Flow Specifications
 

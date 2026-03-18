@@ -369,7 +369,7 @@ async function handleDomainQuery(domain: string) {
 | [`SecurityError`](#securityerror) | Specialization | Errors requiring security response |
 | [`ComplianceError`](#complianceerror) | Specialization | Errors related to regulatory compliance |
 | [`NetworkError`](#networkerror) | Specialization | Network connectivity issues |
-| [`ErrorState`](../../core_concepts/error_state_machine.md) | System | Complete error state machine documentation |
+| [`ErrorState`](../../core-concepts/error_state_machine.md) | System | Complete error state machine documentation |
 | [`ThreatModel`](../../security/threat-model.md) | Context | Security threat context for errors |
 
 ### Monitoring and Alerting
@@ -659,7 +659,7 @@ Different registries implement error responses with variations:
 
 | Resource | Description | Link |
 |----------|-------------|------|
-| **Error State Machine** | Complete error flow documentation | [../../core_concepts/error_state_machine.md](../../core_concepts/error_state_machine.md) |
+| **Error State Machine** | Complete error flow documentation | [../../core-concepts/error_state_machine.md](../../core-concepts/error_state_machine.md) |
 | **Security Whitepaper** | Security error handling details | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Compliance Guide** | Regulatory error handling requirements | [../../security/compliance.md](../../security/compliance.md) |
 | **Production Checklist** | Error monitoring setup guide | [../getting-started/production-checklist.md](../getting-started/production-checklist.md) |

@@ -650,7 +650,7 @@ await client.ip('2001:4860:8::'); // Compressed IPv6
 
 | Resource | Description | Link |
 |----------|-------------|------|
-| **IP Registration Concepts** | Understanding RIR allocations and IP registration | [../../core_concepts/ip-registration.md](../../core_concepts/ip-registration.md) |
+| **IP Registration Concepts** | Understanding RIR allocations and IP registration | [../../core-concepts/ip-registration.md](../../core-concepts/ip-registration.md) |
 | **Security Whitepaper** | Full security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Test Vectors** | Standardized test cases for IP queries | [../../../test-vectors/ip-vectors.json](../../../test-vectors/ip-vectors.json) |
 | **Relationship Mapping Guide** | Building network ownership graphs | [../../guides/relationship-mapping.md](../../guides/relationship-mapping.md) |

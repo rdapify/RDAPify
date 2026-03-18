@@ -1,7 +1,7 @@
 # Playground Examples Gallery
 
 🎯 **Purpose**: Interactive collection of practical RDAPify examples demonstrating core concepts through hands-on experimentation in the playground environment  
-📚 **Related**: [API Playground](api_playground.md) | [Overview](overview.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting_started/five_minutes.md)  
+📚 **Related**: [API Playground](api_playground.md) | [Overview](overview.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting-started/five_minutes.md)  
 ⏱️ **Reading Time**: 5 minutes  
 🔍 **Pro Tip**: Click the "Run Example" button next to any code block to instantly execute it in the playground
 
@@ -1432,8 +1432,8 @@ playground.registerControls([
 |----------|-------------|------|
 | [API Playground](api_playground.md) | Interactive API documentation | [api_playground.md](api_playground.md) |
 | [Visual Debugger](visual_debugger.md) | Advanced troubleshooting tools | [visual_debugger.md](visual_debugger.md) |
-| [Five-Minute Tutorial](../getting_started/five_minutes.md) | Quick start guide | [../getting_started/five_minutes.md](../getting_started/five_minutes.md) |
-| [RDAP Overview](../core_concepts/what_is_rdap.md) | Background on RDAP protocol | [../core_concepts/what_is_rdap.md](../core_concepts/what_is_rdap.md) |
+| [Five-Minute Tutorial](../getting-started/five_minutes.md) | Quick start guide | [../getting-started/five_minutes.md](../getting-started/five_minutes.md) |
+| [RDAP Overview](../core-concepts/what_is_rdap.md) | Background on RDAP protocol | [../core-concepts/what_is_rdap.md](../core-concepts/what_is_rdap.md) |
 | [Security & Privacy](../guides/security_privacy.md) | Data protection best practices | [../guides/security_privacy.md](../guides/security_privacy.md) |
 
 ## 🏷️ Example Specifications

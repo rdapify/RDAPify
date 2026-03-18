@@ -506,7 +506,7 @@ rdapify config set display.color-scheme light
 | [Auto Suggestions](auto_suggestions.md) | Intelligent command recommendations | [auto_suggestions.md](auto_suggestions.md) |
 | [Commands Reference](commands.md) | Complete command catalog | [commands.md](commands.md) |
 | [Security Guide](../guides/security_privacy.md) | Security configuration deep dive | [../guides/security_privacy.md](../guides/security_privacy.md) |
-| [Offline Mode](../core_concepts/offline_mode.md) | Working without network connectivity | [../core_concepts/offline_mode.md](../core_concepts/offline_mode.md) |
+| [Offline Mode](../core-concepts/offline_mode.md) | Working without network connectivity | [../core-concepts/offline_mode.md](../core-concepts/offline_mode.md) |
 | [Configuration Guide](../guides/environment_vars.md) | Advanced configuration options | [../guides/environment_vars.md](../guides/environment_vars.md) |
 
 ## 🏷️ Interactive Mode Specifications

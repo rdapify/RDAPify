@@ -579,7 +579,7 @@ tcpdump -i eth0 'host rdap.example.com and port 443' -w rdap_traffic.pcap
 | [Response Format](response_format.md) | Complete JSON response structure specification | [response_format.md](response_format.md) |
 | [Status Codes](status_codes.md) | Comprehensive error code reference | [status_codes.md](status_codes.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Advanced security considerations and threat modeling | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Test Vectors](../../test_vectors/domain_vectors.json) | Valid and invalid test cases for domain queries | [../../test_vectors/domain_vectors.json](../../test_vectors/domain_vectors.json) |
+| [Test Vectors](../../test-vectors/domain_vectors.json) | Valid and invalid test cases for domain queries | [../../test-vectors/domain_vectors.json](../../test-vectors/domain_vectors.json) |
 | [JSONPath Schema](jsonpath_schema.md) | Complete specification of JSONPath search capabilities | [jsonpath_schema.md](jsonpath_schema.md) |
 | [RFC Validator](../../playground/rfc-validator.md) | Interactive RFC compliance testing tool | [../../playground/rfc-validator.md](../../playground/rfc-validator.md) |
 

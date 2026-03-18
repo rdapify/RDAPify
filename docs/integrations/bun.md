@@ -468,7 +468,7 @@ import { Database } from 'bun:sqlite';
 import { createHash } from 'crypto';
 
 // Initialize SQLite database for caching
-const cacheDB = new Database('./rdap_cache.db', { create: true });
+const cacheDB = new Database('./rdap-cache.db', { create: true });
 
 // Create cache table
 cacheDB.run(`
@@ -1413,7 +1413,7 @@ class SQLitePool {
     
     // Create new database if under limit
     if (this.databases.length < this.maxSize) {
-      const db = new Database('./rdap_cache.db');
+      const db = new Database('./rdap-cache.db');
       this.configureDatabase(db);
       this.databases.push(db);
       this.inUse.add(db);

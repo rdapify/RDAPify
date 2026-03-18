@@ -303,7 +303,7 @@ export class PluginSandbox {
         external: true,
         builtin: ['events', 'stream', 'util', 'url', 'crypto'],
         context: 'sandbox',
-        root: './node_modules',
+        root: './node-modules',
         mock: {
           'child_process': {},
           'fs': {},
@@ -1015,7 +1015,7 @@ leakage -n 50 -t 100 ./test/plugin-performance-test.js
 | [Layer Design](layer_design.md) | Deep dive into architectural layers | [layer_design.md](layer_design.md) |
 | [Error Flow](error_flow.md) | Error handling and recovery patterns | [error_flow.md](error_flow.md) |
 | [Plugin Builder](../../playground/plugin-builder.md) | Interactive plugin creation tool | [../../playground/plugin-builder.md](../../playground/plugin-builder.md) |
-| [Plugin API Reference](../api_reference/plugins.md) | Complete plugin API documentation | [../api_reference/plugins.md](../api_reference/plugins.md) |
+| [Plugin API Reference](../api-reference/plugins.md) | Complete plugin API documentation | [../api-reference/plugins.md](../api-reference/plugins.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Compliance Framework](../../security/compliance.md) | Regulatory compliance implementation | [../../security/compliance.md](../../security/compliance.md) |
 

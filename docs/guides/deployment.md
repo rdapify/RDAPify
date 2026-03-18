@@ -1,7 +1,7 @@
 # 🚀 Deployment Guide
 
 > **🎯 Purpose:** Comprehensive guide for deploying RDAPify in production environments  
-> **📚 Related:** [Production Checklist](../getting_started/production_checklist.md) | [Performance](performance.md) | [Observability](observability.md)  
+> **📚 Related:** [Production Checklist](../getting-started/production_checklist.md) | [Performance](performance.md) | [Observability](observability.md)  
 > **⏱️ Reading Time:** 15 minutes
 
 ---
@@ -142,7 +142,7 @@ WORKDIR /app
 
 # Copy built application
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node-modules
 COPY --from=builder /app/package.json ./
 
 # Create non-root user
@@ -585,7 +585,7 @@ kubectl rollout undo deployment/rdapify
 
 ## 📚 Additional Resources
 
-- [Production Checklist](../getting_started/production_checklist.md)
+- [Production Checklist](../getting-started/production_checklist.md)
 - [Observability Guide](observability.md)
 - [Performance Optimization](performance.md)
 - [Security Best Practices](security_privacy.md)

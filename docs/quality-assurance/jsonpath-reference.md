@@ -512,7 +512,7 @@ import { expect } from 'chai';
 import { jsonpathValidator } from '../../src/validator';
 
 describe('JSONPath Expression Validation', () => {
-  const testVectors = require('../../test_vectors/jsonpath.json');
+  const testVectors = require('../../test-vectors/jsonpath.json');
   
   testVectors.forEach((vector: any) => {
     describe(`Test Vector: ${vector.test_id}`, () => {
@@ -749,7 +749,7 @@ export class JSONPathOptimizer {
 |----------|-------------|------|
 | [Test Vectors](test_vectors.md) | Complete RFC 7480 test suite | [test_vectors.md](test_vectors.md) |
 | [Performance Benchmarks](../performance/benchmarks.md) | Performance validation methodology | [../performance/benchmarks.md](../performance/benchmarks.md) |
-| [Normalization Guide](../../core_concepts/normalization.md) | Data normalization principles | [../../core_concepts/normalization.md](../../core_concepts/normalization.md) |
+| [Normalization Guide](../../core-concepts/normalization.md) | Data normalization principles | [../../core-concepts/normalization.md](../../core-concepts/normalization.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [RFC 7480 Specification](../../specifications/rdap_rfc.md) | Complete RFC documentation | [../../specifications/rdap_rfc.md](../../specifications/rdap_rfc.md) |
 

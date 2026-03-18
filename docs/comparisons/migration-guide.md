@@ -1,7 +1,7 @@
 # Migration Guide from Legacy Systems to RDAPify
 
 🎯 **Purpose**: Comprehensive guide for migrating from legacy WHOIS and RDAP libraries to RDAPify with minimal disruption, maximum security, and optimal performance  
-📚 **Related**: [vs_whois.md](vs_whois.md) | [vs_other_libraries.md](vs_other_libraries.md) | [Security Privacy](../guides/security_privacy.md) | [API Reference](../../api_reference/client.md)  
+📚 **Related**: [vs_whois.md](vs_whois.md) | [vs_other_libraries.md](vs_other_libraries.md) | [Security Privacy](../guides/security_privacy.md) | [API Reference](../../api-reference/client.md)  
 ⏱️ **Reading Time**: 8 minutes  
 🔍 **Pro Tip**: Use the [Migration Assistant](../../playground/migration-assistant.md) to automatically analyze your existing codebase and generate RDAPify migration recommendations
 
@@ -480,7 +480,7 @@ curl -I http://localhost:3000/api/lookup?domain=example.com
 | [vs_whois.md](vs_whois.md) | RDAPify vs legacy WHOIS protocol | [vs_whois.md](vs_whois.md) |
 | [vs_other_libraries.md](vs_other_libraries.md) | Comparison with competing libraries | [vs_other_libraries.md](vs_other_libraries.md) |
 | [Security Privacy](../guides/security_privacy.md) | Core security principles and practices | [../guides/security_privacy.md](../guides/security_privacy.md) |
-| [API Reference](../../api_reference/client.md) | Complete API documentation | [../../api_reference/client.md](../../api_reference/client.md) |
+| [API Reference](../../api-reference/client.md) | Complete API documentation | [../../api-reference/client.md](../../api-reference/client.md) |
 | [Migration Assistant](../../playground/migration-assistant.md) | Interactive migration tool | [../../playground/migration-assistant.md](../../playground/migration-assistant.md) |
 | [Deployment Guide](../../enterprise/adoption_guide.md) | Enterprise deployment patterns | [../../enterprise/adoption_guide.md](../../enterprise/adoption_guide.md) |
 | [Troubleshooting](../../troubleshooting/common_errors.md) | Common migration issues and solutions | [../../troubleshooting/common_errors.md](../../troubleshooting/common_errors.md) |

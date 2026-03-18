@@ -1597,7 +1597,7 @@ az load test run show --resource-group loadtesting-rg --name rdapify-load-test -
 
 | Document | Description | Path |
 |----------|-------------|------|
-| **Getting Started** | Quick start guide for RDAPify | [../../getting_started/quick_start.md](../../getting_started/quick_start.md) |
+| **Getting Started** | Quick start guide for RDAPify | [../../getting-started/quick_start.md](../../getting-started/quick_start.md) |
 | **Security Whitepaper** | Security architecture details | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Caching Strategies** | Advanced caching patterns | [../../guides/caching_strategies.md](../../guides/caching_strategies.md) |
 | **AWS Lambda** | AWS deployment guide | [aws_lambda.md](aws_lambda.md) |

@@ -384,9 +384,9 @@ graph TD
 | [`detectAnomalies()`](../client.md#detectanomalies) | Identify suspicious patterns | Uses IP data as input for security analysis |
 
 ### Architectural Concepts
-- [**Bootstrap Discovery**](../../core_concepts/discovery.md): Finding the correct RIR for IP ranges
-- [**Normalization Pipeline**](../../core_concepts/normalization.md): Converting RIR-specific responses to standard format
-- [**Caching Strategies**](../../core_concepts/caching.md): Optimizing IP lookup performance
+- [**Bootstrap Discovery**](../../core-concepts/discovery.md): Finding the correct RIR for IP ranges
+- [**Normalization Pipeline**](../../core-concepts/normalization.md): Converting RIR-specific responses to standard format
+- [**Caching Strategies**](../../core-concepts/caching.md): Optimizing IP lookup performance
 - [**Relationship Mapping**](../../guides/relationship-mapping.md): Building network ownership graphs
 - [**Geo-Caching**](../../guides/geo-caching.md): Optimizing for geographic distribution of IP data
 
@@ -660,7 +660,7 @@ rdapify ip 8.8.8.8 --security --include-abuse
 
 | Resource | Description | Link |
 |----------|-------------|------|
-| **IP Registration Concepts** | Understanding RIR allocations and IP registration | [../../core_concepts/ip-registration.md](../../core_concepts/ip-registration.md) |
+| **IP Registration Concepts** | Understanding RIR allocations and IP registration | [../../core-concepts/ip-registration.md](../../core-concepts/ip-registration.md) |
 | **Security Whitepaper** | Full security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Test Vectors** | Standardized test cases for IP queries | [../../../test-vectors/ip-vectors.json](../../../test-vectors/ip-vectors.json) |
 | **Relationship Mapping Guide** | Building network ownership graphs | [../../guides/relationship-mapping.md](../../guides/relationship-mapping.md) |

@@ -963,7 +963,7 @@ rdapify interfaces test --implementation SecureFetcher --format json
 rdapify interfaces profile --implementation HighPerformanceNormalizer --iterations 1000
 
 # Generate interface documentation
-rdapify interfaces doc --output docs/api_reference/interfaces/generated.md
+rdapify interfaces doc --output docs/api-reference/interfaces/generated.md
 ```
 
 ---

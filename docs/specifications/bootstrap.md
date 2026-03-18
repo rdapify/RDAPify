@@ -741,7 +741,7 @@ mtr --report data.iana.org
 | [Security Whitepaper](../security/whitepaper.md) | Security considerations for bootstrap services | [../security/whitepaper.md](../security/whitepaper.md) |
 | [Bootstrap Validator](../../playground/bootstrap-validator.md) | Interactive bootstrap format validation tool | [../../playground/bootstrap-validator.md](../../playground/bootstrap-validator.md) |
 | [RFC 7484](https://tools.ietf.org/html/rfc7484) | Official bootstrap service RFC | [https://tools.ietf.org/html/rfc7484](https://tools.ietf.org/html/rfc7484) |
-| [Test Vectors](../../test_vectors/bootstrap_vectors.json) | Valid and invalid bootstrap test cases | [../../test_vectors/bootstrap_vectors.json](../../test_vectors/bootstrap_vectors.json) |
+| [Test Vectors](../../test-vectors/bootstrap_vectors.json) | Valid and invalid bootstrap test cases | [../../test-vectors/bootstrap_vectors.json](../../test-vectors/bootstrap_vectors.json) |
 | [Deployment Guide](../enterprise/adoption_guide.md) | Bootstrap service deployment in production | [../enterprise/adoption_guide.md](../enterprise/adoption_guide.md) |
 
 ## 🏷️ Bootstrap Service Specifications

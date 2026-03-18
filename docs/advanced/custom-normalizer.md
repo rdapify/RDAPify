@@ -1,7 +1,7 @@
 # Custom Normalizer Implementation Guide
 
 🎯 **Purpose**: Comprehensive guide for implementing custom normalizers in RDAPify to handle specialized data transformation, PII redaction, and registry-specific response normalization while maintaining protocol compliance  
-📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Data Normalization](../core_concepts/normalization.md)  
+📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Data Normalization](../core-concepts/normalization.md)  
 ⏱️ **Reading Time**: 7 minutes  
 🔍 **Pro Tip**: Use the [Normalization Validator](../../playground/normalization-validator.md) to automatically verify your custom normalizers against RFC 7480 test vectors before deployment
 
@@ -1095,10 +1095,10 @@ RDAP_PERF_LOG=transforms node app.js
 | [Plugin System](plugin_system.md) | Creating extensible RDAPify plugins | [plugin_system.md](plugin_system.md) |
 | [Custom Fetcher](custom_fetcher.md) | Network request customization | [custom_fetcher.md](custom_fetcher.md) |
 | [Custom Resolver](custom_resolver.md) | Registry discovery patterns | [custom_resolver.md](custom_resolver.md) |
-| [Data Normalization](../core_concepts/normalization.md) | Core normalization principles | [../core_concepts/normalization.md](../core_concepts/normalization.md) |
+| [Data Normalization](../core-concepts/normalization.md) | Core normalization principles | [../core-concepts/normalization.md](../core-concepts/normalization.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [PII Detection](../../security/pii_detection.md) | Personal data identification guide | [../../security/pii_detection.md](../../security/pii_detection.md) |
-| [JSONPath Reference](../../quality_assurance/jsonpath_reference.md) | Transformation expression catalog | [../../quality_assurance/jsonpath_reference.md](../../quality_assurance/jsonpath_reference.md) |
+| [JSONPath Reference](../../quality-assurance/jsonpath_reference.md) | Transformation expression catalog | [../../quality-assurance/jsonpath_reference.md](../../quality-assurance/jsonpath_reference.md) |
 
 ## 🏷️ Custom Normalizer Specifications
 

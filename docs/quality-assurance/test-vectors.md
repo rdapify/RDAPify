@@ -628,7 +628,7 @@ mkdir -p test-vectors/contributed
 touch test-vectors/contributed/my-new-vector.json
 
 # 3. Create test vector following template
-cp docs/quality_assurance/test_vector_template.json test-vectors/contributed/my-new-vector.json
+cp docs/quality-assurance/test_vector_template.json test-vectors/contributed/my-new-vector.json
 
 # 4. Fill in test vector details
 # (Follow template guidelines)

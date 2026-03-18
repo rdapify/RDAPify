@@ -1,7 +1,7 @@
 # WHOIS Replacement Recipe
 
 🎯 **Purpose**: Comprehensive guide for replacing legacy WHOIS protocol with modern, secure RDAP implementation while maintaining compatibility and enhancing functionality  
-📚 **Related**: [Migration Guide](../guides/migration_guide.md) | [RDAP vs WHOIS](../core_concepts/rdap_vs_whois.md) | [Security Privacy](../guides/security_privacy.md) | [Domain Portfolio](domain_portfolio.md)  
+📚 **Related**: [Migration Guide](../guides/migration_guide.md) | [RDAP vs WHOIS](../core-concepts/rdap_vs_whois.md) | [Security Privacy](../guides/security_privacy.md) | [Domain Portfolio](domain_portfolio.md)  
 ⏱️ **Reading Time**: 9 minutes  
 🔍 **Pro Tip**: Use the [WHOIS Migration Validator](../../playground/whois-migration-validator.md) to automatically analyze your existing WHOIS usage and generate RDAP migration recommendations
 
@@ -957,11 +957,11 @@ rdapify validate-legal-basis --jurisdiction EU --data-type registration
 | Document | Description | Path |
 |----------|-------------|------|
 | [Migration Guide](../guides/migration_guide.md) | Step-by-step WHOIS to RDAP transition | [../guides/migration_guide.md](../guides/migration_guide.md) |
-| [RDAP vs WHOIS](../core_concepts/rdap_vs_whois.md) | Technical comparison of protocols | [../core_concepts/rdap_vs_whois.md](../core_concepts/rdap_vs_whois.md) |
+| [RDAP vs WHOIS](../core-concepts/rdap_vs_whois.md) | Technical comparison of protocols | [../core-concepts/rdap_vs_whois.md](../core-concepts/rdap_vs_whois.md) |
 | [Security Privacy](../guides/security_privacy.md) | Core security principles and practices | [../guides/security_privacy.md](../guides/security_privacy.md) |
 | [Domain Portfolio](domain_portfolio.md) | Advanced domain management patterns | [domain_portfolio.md](domain_portfolio.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
-| [API Reference](../../api_reference/client.md) | Complete RDAP client API documentation | [../../api_reference/client.md](../../api_reference/client.md) |
+| [API Reference](../../api-reference/client.md) | Complete RDAP client API documentation | [../../api-reference/client.md](../../api-reference/client.md) |
 | [Performance Benchmarks](../../benchmarks/results/api-performance.md) | Performance comparison data | [../../benchmarks/results/api-performance.md](../../benchmarks/results/api-performance.md) |
 
 ## 🏷️ WHOIS Replacement Specifications

@@ -478,7 +478,7 @@ done
 | [Error Handling Guide](../../guides/error_handling.md) | Practical error handling patterns | [../../guides/error_handling.md](../../guides/error_handling.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security considerations for error handling | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Status Code Validator](../../playground/status-validator.md) | Interactive status code testing tool | [../../playground/status-validator.md](../../playground/status-validator.md) |
-| [Test Vectors](../../../test_vectors/status_codes.json) | Comprehensive status code test cases | [../../../test_vectors/status_codes.json](../../../test_vectors/status_codes.json) |
+| [Test Vectors](../../../test-vectors/status_codes.json) | Comprehensive status code test cases | [../../../test-vectors/status_codes.json](../../../test-vectors/status_codes.json) |
 
 ## 🏷️ Status Code Specifications
 
