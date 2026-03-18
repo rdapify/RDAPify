@@ -42,7 +42,7 @@ jobs:
       - name: Deploy to rdapify.github.io
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
           external_repository: rdapify/rdapify.github.io
           publish_branch: main
           publish_dir: ./website/build
