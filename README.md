@@ -2,18 +2,19 @@
   <img src="website/static/img/logo-512.png" alt="RDAPify" width="80" />
 </p>
 <h1 align="center">RDAPify</h1>
-<p align="center"><strong>Unified, Secure, High-Performance RDAP Client for Enterprise Applications</strong></p>
-
-> **🎉 LATEST RELEASE**: v0.1.6 — Production-ready with CLI tool, Redis cache, compliance audit logging, middleware hooks, query deduplication, RFC 7483 response validation, Cloudflare Workers support, and comprehensive bug fixes. See [What's New in v0.1.6](#-whats-new-in-v016) below.
-
-> **⚠️ UPGRADE NOTICE**: If you're using any earlier version, please upgrade to v0.1.6 for new features and critical bug fixes. **No breaking changes** - seamless upgrade! Run: `npm install rdapify@latest`
+<p align="center"><strong>Unified, Secure, High-Performance RDAP Client</strong></p>
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
+[![Project Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/rdapify/RDAPify/blob/main/CHANGELOG.md)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
 [![Tests](https://img.shields.io/badge/tests-200%2B%20passing-brightgreen?style=flat-square)](#)
 [![Website](https://img.shields.io/badge/website-rdapify.com-blue?style=flat-square)](https://rdapify.com)
 [![GitHub](https://img.shields.io/github/stars/rdapify/RDAPify?style=flat-square)](https://github.com/rdapify/RDAPify)
+
+> **Alpha software**
+>
+> RDAPify is under active development. Core functionality (RDAP queries, caching, SSRF protection) is stable and tested, but APIs and interfaces may change before v1.0. We welcome [issues](https://github.com/rdapify/RDAPify/issues) and [feedback](https://github.com/rdapify/RDAPify/discussions) from the community while the project evolves.
 
 **RDAPify** unifies RDAP queries across all global registries (Verisign, ARIN, RIPE, APNIC, LACNIC) with robust security protection, exceptional performance, and an integrated developer experience. This isn't just another RDAP client — it's a complete platform for processing registration data securely.
 
@@ -28,7 +29,7 @@ Direct RDAP queries are complex — each registry uses different formats, rate l
 - Manually handling registry differences
 - Constant worry about SSRF vulnerabilities
 - Unpredictable performance without caching
-+ One unified solution, rigorously tested, production-ready
++ One unified solution, rigorously tested, open source
 ```
 
 RDAPify intelligently addresses these challenges:
@@ -355,7 +356,6 @@ RDAPify is an open source project. Get help or contribute:
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 - **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
 
-> **Enterprise Support**: For SLA-backed support, consulting, or custom features, contact enterprise@rdapify.com
 
 ## 🤝 Contributing
 
@@ -370,7 +370,7 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.6 (Production Ready)
+**Current Release**: v0.1.6 (Alpha)
 
 ### 🎉 What's New in v0.1.6
 
@@ -511,27 +511,12 @@ src/
 
 ### Key Design Principles
 
-1. **Modular Architecture**: Each file has a single, clear responsibility
-2. **Small Files**: All files <250 LOC for easy maintenance
-3. **Type Safety**: Strict TypeScript with explicit types throughout
-4. **Testability**: 200+ tests with >90% coverage (31 test files)
-5. **Security First**: SSRF protection and PII redaction built-in
-6. **Performance**: Smart caching and optimized parsing
-
-### Key Design Principles
-
 1. **Hexagonal Architecture**: Clean separation between application, infrastructure, and shared layers
 2. **Ports & Adapters**: Interface-driven design for easy testing and swappable backends
 3. **Security First**: SSRF protection and PII redaction built into the query pipeline
-4. **Compliance Ready**: Audit logging for GDPR/SOC2/CCPA requirements
-5. **Multi-runtime**: Works on Node.js 20+, Bun, Deno, and Cloudflare Workers
-
-### 📋 Roadmap to v0.2.0 (Continued)
-- Live integration tests (optional via LIVE_TESTS=1)
-- Performance benchmarks with real data
-- Advanced analytics dashboard
-
-**Want to contribute?** Check out our [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md)!
+4. **Type Safety**: Strict TypeScript with explicit types throughout
+5. **Compliance Ready**: Audit logging for GDPR/SOC2/CCPA requirements
+6. **Multi-runtime**: Works on Node.js 20+, Bun, Deno, and Cloudflare Workers
 
 ## 📚 Additional Documentation
 
