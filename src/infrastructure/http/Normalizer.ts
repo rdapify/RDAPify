@@ -8,6 +8,8 @@ import type {
   DomainResponse,
   IPResponse,
   ASNResponse,
+  NameserverResponse,
+  EntityResponse,
   RDAPResponse,
   RDAPEvent,
   EventType,
@@ -43,6 +45,12 @@ export class Normalizer {
 
       case 'autnum':
         return this.normalizeASN(raw, query, source, cached, includeRaw);
+
+      case 'nameserver':
+        return this.normalizeNameserver(raw, query, source, cached, includeRaw);
+
+      case 'entity':
+        return this.normalizeEntity(raw, query, source, cached, includeRaw);
 
       default:
         throw new ParseError(`Unsupported object class: ${objectClass}`, { objectClass, raw });
@@ -144,6 +152,83 @@ export class Normalizer {
       name: raw['name'],
       type: raw['type'],
       country: raw['country'],
+      status: raw['status'] || [],
+      entities: raw['entities'] || [],
+      events: this.normalizeEvents(raw['events'] || []),
+      links: raw['links'] || [],
+      remarks: raw['remarks'] || [],
+      metadata: {
+        source,
+        timestamp: new Date().toISOString(),
+        cached,
+      },
+    };
+
+    if (includeRaw) {
+      response.raw = raw;
+    }
+
+    return response;
+  }
+
+  /**
+   * Normalizes a nameserver RDAP response
+   */
+  private normalizeNameserver(
+    raw: RawRDAPResponse,
+    query: string,
+    source: string,
+    cached: boolean,
+    includeRaw: boolean
+  ): NameserverResponse {
+    const ipAddresses = raw['ipAddresses'];
+    const response: NameserverResponse = {
+      query,
+      objectClass: 'nameserver',
+      handle: raw.handle,
+      ldhName: raw['ldhName'],
+      unicodeName: raw['unicodeName'],
+      status: raw['status'] || [],
+      ipAddresses: ipAddresses
+        ? {
+            v4: ipAddresses.v4 || [],
+            v6: ipAddresses.v6 || [],
+          }
+        : undefined,
+      entities: raw['entities'] || [],
+      events: this.normalizeEvents(raw['events'] || []),
+      links: raw['links'] || [],
+      remarks: raw['remarks'] || [],
+      metadata: {
+        source,
+        timestamp: new Date().toISOString(),
+        cached,
+      },
+    };
+
+    if (includeRaw) {
+      response.raw = raw;
+    }
+
+    return response;
+  }
+
+  /**
+   * Normalizes an entity RDAP response
+   */
+  private normalizeEntity(
+    raw: RawRDAPResponse,
+    query: string,
+    source: string,
+    cached: boolean,
+    includeRaw: boolean
+  ): EntityResponse {
+    const response: EntityResponse = {
+      query,
+      objectClass: 'entity',
+      handle: raw.handle,
+      vcardArray: raw['vcardArray'],
+      roles: raw['roles'] || [],
       status: raw['status'] || [],
       entities: raw['entities'] || [],
       events: this.normalizeEvents(raw['events'] || []),

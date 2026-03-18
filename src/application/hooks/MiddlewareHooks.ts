@@ -9,7 +9,7 @@ import type { RDAPResponse } from '../../shared/types/responses';
  * Context passed to lifecycle hooks before a query executes
  */
 export interface QueryContext {
-  queryType: 'domain' | 'ip' | 'asn';
+  queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
   query: string;
   normalized: string;
   startTime: number;

@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.1.6
+ * @version 0.1.7
  * 
  * @example Basic Usage
  * ```typescript
@@ -53,6 +53,8 @@ export type {
   DomainResponse,
   IPResponse,
   ASNResponse,
+  NameserverResponse,
+  EntityResponse,
   RDAPResponse,
   RDAPEvent,
   RDAPEntity,
@@ -152,12 +154,16 @@ export {
   validateIPv4,
   validateIPv6,
   validateASN,
+  validateNameserver,
+  validateEntityHandle,
   isPrivateIP,
   isLocalhost,
   isLinkLocal,
   normalizeDomain,
   normalizeIP,
   normalizeASN,
+  normalizeNameserver,
+  normalizeEntityHandle,
 } from './shared/utils/validators';
 
 // ============================================================================
@@ -187,7 +193,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.6';
+export const VERSION = '0.1.7';
 
 // ============================================================================
 // Service Exports (Advanced Usage)

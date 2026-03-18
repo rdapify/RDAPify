@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-03-19
+
+### Added
+
+- **Nameserver queries**: New `client.nameserver(hostname)` method for querying nameserver RDAP data
+  - Automatic server discovery via IANA DNS TLD bootstrap
+  - Returns `NameserverResponse` with `ldhName`, `ipAddresses`, `status`, `entities`, `events`
+  - Full support for caching, middleware hooks, metrics, deduplication, and PII redaction
+- **Entity queries**: New `client.entity(handle, serverUrl)` method for querying RDAP entity data
+  - Returns `EntityResponse` with `handle`, `vcardArray`, `roles`, `status`, `entities`, `events`
+  - Requires explicit `serverUrl` (no global IANA bootstrap exists for entities)
+  - Full support for caching, middleware hooks, metrics, and deduplication
+- **CLI commands extended**:
+  - `rdapify nameserver <hostname>` — query nameserver RDAP data
+  - `rdapify entity <handle> --server <url>` — query entity RDAP data
+  - New `--server <url>` flag for specifying RDAP server URL
+- **New response types**: `NameserverResponse` and `EntityResponse` exported from main entry point
+- **New validators exported**: `validateNameserver`, `normalizeNameserver`, `validateEntityHandle`, `normalizeEntityHandle`
+- **Normalizer extended**: Handles `nameserver` and `entity` objectClassName values from raw RDAP responses
+- **BootstrapDiscovery extended**: New `discoverNameserver()` method using DNS TLD bootstrap
+
 ## [0.1.6] - 2026-03-17
 
 ### Added

@@ -4,7 +4,7 @@
  */
 
 export interface QueryMetric {
-  type: 'domain' | 'ip' | 'asn';
+  type: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
   query: string;
   success: boolean;
   duration: number;
@@ -229,7 +229,7 @@ export class MetricsCollector {
     since?: number
   ): Array<{
     query: string;
-    type: 'domain' | 'ip' | 'asn';
+    type: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
     count: number;
     avgDuration: number;
     errorRate: number;
@@ -398,7 +398,7 @@ export class MetricsCollector {
   /**
    * Gets metrics by type
    */
-  getByType(type: 'domain' | 'ip' | 'asn'): QueryMetric[] {
+  getByType(type: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity'): QueryMetric[] {
     return this.metrics.filter((m) => m.type === type);
   }
 

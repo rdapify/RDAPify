@@ -107,6 +107,33 @@ export class BootstrapDiscovery {
   }
 
   /**
+   * Discovers RDAP server URL for a nameserver hostname.
+   * Uses DNS TLD bootstrap — the nameserver's TLD determines the registry.
+   * e.g., "ns1.example.com" → TLD "com" → Verisign RDAP server
+   */
+  async discoverNameserver(nameserver: string): Promise<string> {
+    const tld = extractTLD(nameserver);
+    const entries = await this.getBootstrapData('dns');
+
+    for (const entry of entries) {
+      if (entry.patterns.includes(tld.toLowerCase())) {
+        if (entry.servers.length === 0 || !entry.servers[0]) {
+          throw new NoServerFoundError(`No RDAP server found for nameserver TLD: ${tld}`, {
+            nameserver,
+            tld,
+          });
+        }
+        return entry.servers[0];
+      }
+    }
+
+    throw new NoServerFoundError(`No RDAP server found for nameserver: ${nameserver}`, {
+      nameserver,
+      tld,
+    });
+  }
+
+  /**
    * Discovers RDAP server URL for an ASN
    */
   async discoverASN(asn: number): Promise<string> {

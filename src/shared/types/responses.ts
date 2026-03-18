@@ -3,7 +3,7 @@
  * @module types/responses
  */
 
-import type { RDAPStatus } from './enums';
+import type { RDAPStatus, RoleType } from './enums';
 import type { RDAPEntity, RDAPEvent, RDAPLink, RDAPRemark } from './entities';
 
 /**
@@ -86,9 +86,57 @@ export interface ASNResponse {
 }
 
 /**
+ * Normalized RDAP response for nameserver queries
+ */
+export interface NameserverResponse {
+  query: string;
+  objectClass: 'nameserver';
+  handle?: string;
+  ldhName?: string;
+  unicodeName?: string;
+  status?: RDAPStatus[];
+  ipAddresses?: {
+    v4?: string[];
+    v6?: string[];
+  };
+  entities?: RDAPEntity[];
+  events?: RDAPEvent[];
+  links?: RDAPLink[];
+  remarks?: RDAPRemark[];
+  raw?: any;
+  metadata: {
+    source: string;
+    timestamp: string;
+    cached: boolean;
+  };
+}
+
+/**
+ * Normalized RDAP response for entity queries
+ */
+export interface EntityResponse {
+  query: string;
+  objectClass: 'entity';
+  handle?: string;
+  vcardArray?: any[];
+  roles?: RoleType[];
+  status?: RDAPStatus[];
+  entities?: RDAPEntity[];
+  events?: RDAPEvent[];
+  links?: RDAPLink[];
+  remarks?: RDAPRemark[];
+  raw?: any;
+  metadata: {
+    source: string;
+    timestamp: string;
+    cached: boolean;
+  };
+}
+
+/**
  * Union type for all RDAP responses
  */
-export type RDAPResponse = DomainResponse | IPResponse | ASNResponse;
+export type RDAPResponse = DomainResponse | IPResponse | ASNResponse | NameserverResponse | EntityResponse;
 
 /**
  * Raw RDAP server response (before normalization)

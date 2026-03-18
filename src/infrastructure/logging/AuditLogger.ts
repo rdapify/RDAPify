@@ -21,7 +21,7 @@ export interface AuditEvent {
   /** ISO 8601 timestamp */
   timestamp: string;
   eventType: AuditEventType;
-  queryType: 'domain' | 'ip' | 'asn';
+  queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
   query: string;
   normalizedQuery?: string;
   success: boolean;
@@ -186,7 +186,7 @@ export class AuditLogger {
   }
 
   logQueryStart(params: {
-    queryType: 'domain' | 'ip' | 'asn';
+    queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
     query: string;
     sessionId?: string;
     clientId?: string;
@@ -204,7 +204,7 @@ export class AuditLogger {
   }
 
   logQuerySuccess(params: {
-    queryType: 'domain' | 'ip' | 'asn';
+    queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
     query: string;
     normalizedQuery: string;
     durationMs: number;
@@ -228,7 +228,7 @@ export class AuditLogger {
   }
 
   logQueryFailure(params: {
-    queryType: 'domain' | 'ip' | 'asn';
+    queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
     query: string;
     durationMs: number;
     errorCode: string;
@@ -248,7 +248,7 @@ export class AuditLogger {
     });
   }
 
-  logCacheHit(params: { queryType: 'domain' | 'ip' | 'asn'; query: string }): void {
+  logCacheHit(params: { queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity'; query: string }): void {
     this.log({
       eventType: 'CACHE_HIT',
       queryType: params.queryType,
@@ -261,7 +261,7 @@ export class AuditLogger {
     });
   }
 
-  logRateLimitExceeded(params: { queryType: 'domain' | 'ip' | 'asn'; query: string }): void {
+  logRateLimitExceeded(params: { queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity'; query: string }): void {
     this.log({
       eventType: 'RATE_LIMIT_EXCEEDED',
       queryType: params.queryType,
@@ -288,7 +288,7 @@ export class AuditLogger {
   }
 
   logPIIRedacted(params: {
-    queryType: 'domain' | 'ip' | 'asn';
+    queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
     query: string;
     fieldsRedacted: number;
   }): void {

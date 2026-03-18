@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -11,7 +11,7 @@ import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
 import { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
 import { Logger } from '../../infrastructure/logging/Logger';
 import type { LogLevel } from '../../infrastructure/logging/Logger';
-import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
+import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse } from '../../shared/types';
 import { ValidationError } from '../../shared/errors';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
 import type {
@@ -269,6 +269,41 @@ export class RDAPClient {
    */
   async asn(asn: string | number): Promise<ASNResponse> {
     return this.orchestrator.queryASN(asn);
+  }
+
+  /**
+   * Queries RDAP information for a nameserver
+   *
+   * @param nameserver - Nameserver hostname to query (e.g., "ns1.example.com")
+   * @returns Normalized nameserver RDAP response
+   *
+   * @example
+   * ```typescript
+   * const result = await client.nameserver('ns1.example.com');
+   * console.log(result.ipAddresses?.v4);
+   * ```
+   */
+  async nameserver(nameserver: string): Promise<NameserverResponse> {
+    return this.orchestrator.queryNameserver(nameserver);
+  }
+
+  /**
+   * Queries RDAP information for an entity (contact/registrant/registrar) by handle.
+   * Requires an explicit RDAP server URL since there is no global bootstrap for entities.
+   *
+   * @param handle - Entity handle to query (e.g., "VRSN-96", "ARIN-HN-1")
+   * @param serverUrl - RDAP server base URL (e.g., "https://rdap.arin.net/registry")
+   * @returns Normalized entity RDAP response
+   *
+   * @example
+   * ```typescript
+   * const result = await client.entity('ARIN-HN-1', 'https://rdap.arin.net/registry');
+   * console.log(result.handle);
+   * console.log(result.vcardArray);
+   * ```
+   */
+  async entity(handle: string, serverUrl: string): Promise<EntityResponse> {
+    return this.orchestrator.queryEntity(handle, serverUrl);
   }
 
   /**

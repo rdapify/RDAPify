@@ -10,15 +10,19 @@ import type { RateLimiter } from '../../infrastructure/http/RateLimiter';
 import type { PIIRedactor } from '../../infrastructure/security';
 import type { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
 import type { Logger } from '../../infrastructure/logging/Logger';
-import type { DomainResponse, IPResponse, ASNResponse } from '../../shared/types';
+import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse } from '../../shared/types';
 import { generateCacheKey } from '../../shared/utils/helpers';
 import {
   validateDomain,
   validateIP,
   validateASN,
+  validateNameserver,
+  validateEntityHandle,
   normalizeDomain,
   normalizeIP,
   normalizeASN,
+  normalizeNameserver,
+  normalizeEntityHandle,
 } from '../../shared/utils/validators';
 import type { MiddlewareManager } from '../hooks/MiddlewareHooks';
 import type { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
@@ -635,6 +639,270 @@ export class QueryOrchestrator {
       }
 
       // onError hook
+      await this.config.middleware?.runOnError({
+        ...baseCtx,
+        duration,
+        error: error instanceof Error ? error : new Error(String(error)),
+        fromCache: false,
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Executes a nameserver query
+   */
+  async queryNameserver(nameserver: string): Promise<NameserverResponse> {
+    const startTime = Date.now();
+
+    this.config.logger?.logRequest('nameserver', nameserver);
+
+    if (this.config.rateLimiter) {
+      await this.config.rateLimiter.checkLimit();
+    }
+
+    validateNameserver(nameserver);
+    const normalized = normalizeNameserver(nameserver);
+    const cacheKey = generateCacheKey('nameserver', normalized);
+
+    const baseCtx = {
+      queryType: 'nameserver' as const,
+      query: nameserver,
+      normalized,
+      startTime,
+    };
+
+    await this.config.middleware?.runBeforeQuery(baseCtx);
+
+    try {
+      const cached = await this.config.cache.get(cacheKey);
+
+      if (cached && cached.objectClass === 'nameserver') {
+        this.config.logger?.logCache('hit', cacheKey);
+        const duration = Date.now() - startTime;
+
+        this.config.metricsCollector?.record({
+          type: 'nameserver',
+          query: normalized,
+          success: true,
+          duration,
+          cached: true,
+          timestamp: Date.now(),
+        });
+
+        await this.config.middleware?.runOnCacheHit({ ...baseCtx, cached: true });
+        this.config.logger?.logResponse('nameserver', normalized, true, duration);
+        const result = this.config.piiRedactor.redact(cached) as NameserverResponse;
+
+        await this.config.middleware?.runAfterQuery({
+          ...baseCtx,
+          duration,
+          result,
+          fromCache: true,
+        });
+
+        return result;
+      }
+
+      this.config.logger?.logCache('miss', cacheKey);
+      await this.config.middleware?.runOnCacheMiss({ ...baseCtx, cached: false });
+
+      const fetchAndNormalize = async (): Promise<NameserverResponse> => {
+        const serverUrl = await this.config.bootstrap.discoverNameserver(normalized);
+        this.config.logger?.debug(`Discovered server: ${serverUrl}`);
+
+        const queryUrl = `${serverUrl}/nameserver/${normalized}`;
+        const raw = await this.config.fetchWithRetry(queryUrl);
+
+        const response = this.config.normalizer.normalize(
+          raw,
+          normalized,
+          serverUrl,
+          false,
+          this.config.includeRaw
+        ) as NameserverResponse;
+
+        await this.config.cache.set(cacheKey, response);
+        this.config.logger?.logCache('set', cacheKey);
+
+        return response;
+      };
+
+      const response = this.config.deduplicator
+        ? await this.config.deduplicator.deduplicate(cacheKey, fetchAndNormalize)
+        : await fetchAndNormalize();
+
+      const duration = Date.now() - startTime;
+
+      this.config.metricsCollector?.record({
+        type: 'nameserver',
+        query: normalized,
+        success: true,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+      });
+
+      this.config.logger?.logResponse('nameserver', normalized, true, duration);
+      const result = this.config.piiRedactor.redact(response) as NameserverResponse;
+
+      await this.config.middleware?.runAfterQuery({
+        ...baseCtx,
+        duration,
+        result,
+        fromCache: false,
+      });
+
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      this.config.metricsCollector?.record({
+        type: 'nameserver',
+        query: nameserver,
+        success: false,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+        error: error instanceof Error ? error.name : 'Unknown',
+      });
+
+      this.config.logger?.logResponse('nameserver', nameserver, false, duration, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      await this.config.middleware?.runOnError({
+        ...baseCtx,
+        duration,
+        error: error instanceof Error ? error : new Error(String(error)),
+        fromCache: false,
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Executes an entity query.
+   * Requires an explicit serverUrl since there is no global IANA bootstrap for entities.
+   */
+  async queryEntity(handle: string, serverUrl: string): Promise<EntityResponse> {
+    const startTime = Date.now();
+
+    this.config.logger?.logRequest('entity', handle);
+
+    if (this.config.rateLimiter) {
+      await this.config.rateLimiter.checkLimit();
+    }
+
+    validateEntityHandle(handle);
+    const normalized = normalizeEntityHandle(handle);
+    const cacheKey = generateCacheKey('entity', `${serverUrl}:${normalized}`);
+
+    const baseCtx = {
+      queryType: 'entity' as const,
+      query: handle,
+      normalized,
+      startTime,
+    };
+
+    await this.config.middleware?.runBeforeQuery(baseCtx);
+
+    try {
+      const cached = await this.config.cache.get(cacheKey);
+
+      if (cached && cached.objectClass === 'entity') {
+        this.config.logger?.logCache('hit', cacheKey);
+        const duration = Date.now() - startTime;
+
+        this.config.metricsCollector?.record({
+          type: 'entity',
+          query: normalized,
+          success: true,
+          duration,
+          cached: true,
+          timestamp: Date.now(),
+        });
+
+        await this.config.middleware?.runOnCacheHit({ ...baseCtx, cached: true });
+        this.config.logger?.logResponse('entity', normalized, true, duration);
+        const result = this.config.piiRedactor.redact(cached) as EntityResponse;
+
+        await this.config.middleware?.runAfterQuery({
+          ...baseCtx,
+          duration,
+          result,
+          fromCache: true,
+        });
+
+        return result;
+      }
+
+      this.config.logger?.logCache('miss', cacheKey);
+      await this.config.middleware?.runOnCacheMiss({ ...baseCtx, cached: false });
+
+      const fetchAndNormalize = async (): Promise<EntityResponse> => {
+        const queryUrl = `${serverUrl}/entity/${normalized}`;
+        const raw = await this.config.fetchWithRetry(queryUrl);
+
+        const response = this.config.normalizer.normalize(
+          raw,
+          normalized,
+          serverUrl,
+          false,
+          this.config.includeRaw
+        ) as EntityResponse;
+
+        await this.config.cache.set(cacheKey, response);
+        this.config.logger?.logCache('set', cacheKey);
+
+        return response;
+      };
+
+      const response = this.config.deduplicator
+        ? await this.config.deduplicator.deduplicate(cacheKey, fetchAndNormalize)
+        : await fetchAndNormalize();
+
+      const duration = Date.now() - startTime;
+
+      this.config.metricsCollector?.record({
+        type: 'entity',
+        query: normalized,
+        success: true,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+      });
+
+      this.config.logger?.logResponse('entity', normalized, true, duration);
+      const result = this.config.piiRedactor.redact(response) as EntityResponse;
+
+      await this.config.middleware?.runAfterQuery({
+        ...baseCtx,
+        duration,
+        result,
+        fromCache: false,
+      });
+
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      this.config.metricsCollector?.record({
+        type: 'entity',
+        query: handle,
+        success: false,
+        duration,
+        cached: false,
+        timestamp: Date.now(),
+        error: error instanceof Error ? error.name : 'Unknown',
+      });
+
+      this.config.logger?.logResponse('entity', handle, false, duration, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+
       await this.config.middleware?.runOnError({
         ...baseCtx,
         duration,

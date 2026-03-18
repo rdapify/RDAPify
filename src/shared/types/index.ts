@@ -31,6 +31,8 @@ export type {
   DomainResponse,
   IPResponse,
   ASNResponse,
+  NameserverResponse,
+  EntityResponse,
   RDAPResponse,
   RawRDAPResponse,
 } from './responses';

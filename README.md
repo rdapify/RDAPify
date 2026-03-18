@@ -5,10 +5,13 @@
 <p align="center"><strong>Unified, Secure, High-Performance RDAP Client</strong></p>
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
+[![npm downloads](https://img.shields.io/npm/dm/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![License](https://img.shields.io/npm/l/rdapify?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/rdapify/RDAPify/ci.yml?style=flat-square&label=CI)](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/rdapify/RDAPify?style=flat-square)](https://codecov.io/gh/rdapify/RDAPify)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Project Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/rdapify/RDAPify/blob/main/CHANGELOG.md)
 [![Security](https://img.shields.io/badge/security-SSRF%20Protected-brightgreen?style=flat-square)](SECURITY.md)
-[![Tests](https://img.shields.io/badge/tests-200%2B%20passing-brightgreen?style=flat-square)](#)
 [![Website](https://img.shields.io/badge/website-rdapify.com-blue?style=flat-square)](https://rdapify.com)
 [![GitHub](https://img.shields.io/github/stars/rdapify/RDAPify?style=flat-square)](https://github.com/rdapify/RDAPify)
 
@@ -97,10 +100,12 @@ const client = new RDAPClient({
   },
 });
 
-// Query domain, IP, or ASN
+// Query domain, IP, ASN, nameserver, or entity
 const domain = await client.domain('example.com');
 const ip = await client.ip('8.8.8.8');
 const asn = await client.asn('AS15169');
+const ns = await client.nameserver('ns1.example.com');
+const entity = await client.entity('ARIN-HN-1', 'https://rdap.arin.net/registry');
 ```
 
 **Example Output:**
@@ -271,7 +276,7 @@ const compression = new CompressionManager({
 - **Full TypeScript Support**: Strongly typed with embedded documentation
 - **Node.js 20+ Support**: Verified working (Node.js, Bun, Deno, Cloudflare Workers)
 - **Enhanced Validation** (v0.1.2+): IDN domains, IPv6 zones, ASN ranges
-- **CLI Tool** (v0.1.6+): `rdapify domain/ip/asn` with `--json`, `--no-cache`, `--timeout` flags
+- **CLI Tool** (v0.1.7+): `rdapify domain/ip/asn/nameserver/entity` with `--json`, `--no-cache`, `--timeout`, `--server` flags
 - **Web Playground**: Try RDAPify live at [rdapify.com/playground](https://rdapify.com/playground)
 - **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more (planned)
 
@@ -370,16 +375,23 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.6 (Alpha)
+**Current Release**: v0.1.7 (Alpha)
 
-### 🎉 What's New in v0.1.6
+### 🎉 What's New in v0.1.7
 
-**CLI Tool & Runtime Support**
+**Nameserver & Entity Query Support**
+- ✅ **Nameserver Queries**: `client.nameserver('ns1.example.com')` — auto-discovery via IANA DNS bootstrap
+- ✅ **Entity Queries**: `client.entity('ARIN-HN-1', serverUrl)` — contact/registrant/registrar lookup
+- ✅ **CLI Extended**: `rdapify nameserver <hostname>`, `rdapify entity <handle> --server <url>`
+- ✅ **New Types**: `NameserverResponse` and `EntityResponse` exported from main entry point
+- ✅ **New Validators**: `validateNameserver`, `validateEntityHandle`, `normalizeNameserver`, `normalizeEntityHandle`
+- ✅ **All query types** now support full pipeline: caching, middleware hooks, metrics, deduplication, PII redaction
+
+### v0.1.6 — CLI Tool & Runtime Support
 - ✅ **CLI Tool**: `rdapify domain <name>`, `rdapify ip <addr>`, `rdapify asn <num>` — zero external dependencies
 - ✅ **CLI Flags**: `--json`, `--no-cache`, `--timeout <ms>`, `--version/-v`, `--help/-h`
 - ✅ **Cloudflare Workers**: Full runtime detection and support (`isCloudflareWorkers()`)
-- ✅ **Critical Redis Fix**: `RedisCache.clear()` no longer wipes the entire database (was using `flushDb()`, now uses SCAN + selective delete)
-- ✅ **Redis SCAN**: Replaced blocking `KEYS` command with non-blocking `SCAN` for production safety
+- ✅ **Critical Redis Fix**: `RedisCache.clear()` no longer wipes the entire database
 
 **v0.1.5 — Compliance & Middleware**
 - ✅ **Redis Cache**: Production-ready Redis adapter with peer-dependency pattern
@@ -404,10 +416,10 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### ✅ Full Feature Set (v0.1.6)
+### ✅ Full Feature Set (v0.1.7)
 
-- ✅ **RDAP Client**: Domain, IP, and ASN queries with automatic IANA bootstrap discovery
-- ✅ **CLI Tool**: Command-line interface with human-readable and JSON output
+- ✅ **RDAP Client**: Domain, IP, ASN, Nameserver, and Entity queries with automatic IANA bootstrap discovery
+- ✅ **CLI Tool**: Command-line interface with human-readable and JSON output (`domain`, `ip`, `asn`, `nameserver`, `entity`)
 - ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, CIDR matching (IPv4/IPv6)
 - ✅ **Data Normalization**: Consistent response format across all registries
 - ✅ **PII Redaction**: Automatic redaction of emails, phones, addresses (GDPR/CCPA)
@@ -429,7 +441,7 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 - ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
 - ✅ **Multi-runtime**: Node.js 20+, Bun, Deno, Cloudflare Workers
 - ✅ **TypeScript Strict**: Full type definitions with strict mode
-- ✅ **Test Coverage**: 31 test files, 200+ tests (unit + integration)
+- ✅ **Test Coverage**: 34 test files, 620+ tests (unit + integration)
 
 ### 🔄 Planned Features
 
