@@ -443,21 +443,20 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 - ✅ **TypeScript Strict**: Full type definitions with strict mode
 - ✅ **Test Coverage**: 34 test files, 620+ tests (unit + integration)
 
-### 🔄 Planned Features
+### 🔜 Coming in v0.1.8
 
-These features are planned for future releases:
-
-- ⏳ **Advanced Analytics**: Dashboard and reporting features
-- ⏳ **Geo-distributed Caching**: Multi-region cache support
-- ⏳ **Smart Caching**: Predictive caching with adaptive TTL
-- ⏳ **Real-time Updates**: WebSocket/SSE support
+- ⏳ **Domain Availability**: `client.checkAvailability('example.com')` — instant availability check via RDAP
+- ⏳ **Bulk Availability**: `client.checkAvailabilityBatch(['a.com', 'b.com'])` — check multiple domains at once
+- ⏳ **Live Integration Tests**: opt-in via `LIVE_TESTS=1` against real RDAP servers
+- ⏳ **Advanced Bootstrap Config**: custom bootstrap servers, TTL overrides, redundancy fallback
 
 ### 📋 Roadmap to v0.2.0
 
-- Advanced analytics dashboard
-- Geo-distributed caching
-- Live integration tests (opt-in via `LIVE_TESTS=1`)
-- Performance benchmarks with real-world data
+- RDAP Testing CLI (`rdapify test server`, `rdapify test benchmark`)
+- RDAP Extensions Registry (REGEXT support)
+- Bootstrap Store Adapters (File, Redis, Database)
+- Advanced Reporting (`client.generateReport()`)
+- RFC 9083 / RFC 9535 support
 
 See [ROADMAP.md](ROADMAP.md) for the complete roadmap and [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
