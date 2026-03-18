@@ -561,12 +561,17 @@ async function performQuery(query, type, options = {}) {
         });
 
         if (!response.ok) {
-            if (response.status === 404) throw new Error(`No RDAP record found for: ${query}`);
+            // 404 on domain/nameserver = not registered = available
+            if (response.status === 404 && (type === 'domain' || type === 'nameserver')) {
+                return { success: true, available: true, query, type, queryTime: Date.now() - startTime };
+            }
+            if (response.status === 404) throw new Error(`No record found for: ${query}`);
+            if (response.status === 429) throw new Error('Rate limit exceeded — please wait a moment and try again');
             throw new Error(`RDAP server returned HTTP ${response.status}`);
         }
 
         const data = await response.json();
-        return { success: true, data, queryTime: Date.now() - startTime };
+        return { success: true, available: false, data, queryTime: Date.now() - startTime };
     } catch (error) {
         const msg = error.message || 'Network error';
         // Detect CORS failures
@@ -575,6 +580,36 @@ async function performQuery(query, type, options = {}) {
         }
         return { success: false, error: msg };
     }
+}
+
+// ============================================
+// Availability Display
+// ============================================
+
+function displayAvailable(query, type, queryTime) {
+    const label = type === 'nameserver' ? 'Nameserver' : 'Domain';
+    const hint = type === 'nameserver'
+        ? 'No nameserver registration record was found in the RDAP registry.'
+        : 'This domain does not appear to be registered. It may be available to register.';
+
+    elements.resultsContainer.innerHTML = `
+        <div class="placeholder fade-in" style="border: 2px solid var(--success, #10b981); border-radius: 12px; padding: 2rem;">
+            <div class="placeholder-icon" style="font-size: 3rem;">✅</div>
+            <p style="font-size: 1.2rem; font-weight: 700; color: var(--success, #10b981); margin: 0.5rem 0;">
+                ${label} Available
+            </p>
+            <p style="font-size: 1rem; color: var(--gray-700, #374151); margin: 0.25rem 0;">
+                <strong>${escapeHtml(query)}</strong>
+            </p>
+            <p style="font-size: 0.875rem; color: var(--gray-500, #6b7280); margin-top: 0.75rem;">
+                ${hint}
+            </p>
+        </div>
+    `;
+    elements.statusBar.style.display = 'flex';
+    elements.statusText.textContent = `✅ ${label} available`;
+    elements.statusText.style.color = 'var(--success, #10b981)';
+    elements.statusTime.textContent = `${queryTime}ms`;
 }
 
 // ============================================
@@ -596,7 +631,11 @@ async function handleQuery() {
     const result = await performQuery(validation.query, type, options);
     hideLoading();
     if (result.success) {
-        displayResults(result.data, result.queryTime, type);
+        if (result.available) {
+            displayAvailable(result.query, result.type, result.queryTime);
+        } else {
+            displayResults(result.data, result.queryTime, type);
+        }
         addToHistory(validation.query, type, true);
     } else {
         displayError(result.error, result.quotaExceeded, result.retryAfter);
