@@ -1,0 +1,29 @@
+{
+  "objectClassName": "nameserver",
+  "handle": "NS1_EXAMPLE_COM-VRSN",
+  "ldhName": "ns1.example.com",
+  "status": ["active"],
+  "ipAddresses": {
+    "v4": ["192.0.2.1", "192.0.2.2"],
+    "v6": ["2001:db8::1"]
+  },
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "1995-08-14T04:00:00Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2023-01-01T00:00:00Z"
+    }
+  ],
+  "links": [
+    {
+      "value": "https://rdap.verisign.com/com/v1/nameserver/ns1.example.com",
+      "rel": "self",
+      "href": "https://rdap.verisign.com/com/v1/nameserver/ns1.example.com",
+      "type": "application/rdap+json"
+    }
+  ],
+  "remarks": []
+}

@@ -10,6 +10,8 @@ import * as bootstrapAsn from '../fixtures/bootstrap-asn.json';
 import * as rdapDomain from '../fixtures/rdap-domain-example.json';
 import * as rdapIp from '../fixtures/rdap-ip-8888.json';
 import * as rdapAsn from '../fixtures/rdap-asn-15169.json';
+import * as rdapNameserver from '../fixtures/rdap-nameserver-ns1.json';
+import * as rdapEntity from '../fixtures/rdap-entity-vrsn.json';
 
 describe('RDAPClient Integration Tests (Mocked)', () => {
   let client: RDAPClient;
@@ -303,15 +305,108 @@ describe('RDAPClient Integration Tests (Mocked)', () => {
 
   describe('retry behavior', () => {
     it('should not retry on validation errors', async () => {
-      const retryClient = new RDAPClient({ 
+      const retryClient = new RDAPClient({
         cache: false,
         retry: { maxAttempts: 3, initialDelay: 10, backoff: 'fixed' }
       });
 
       // Should fail immediately without retry
       await expect(retryClient.domain('')).rejects.toThrow('Domain must be a non-empty string');
-      
+
       // Fetch should not be called at all
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('nameserver queries', () => {
+    it('should successfully query a nameserver with bootstrap discovery', async () => {
+      // Mock bootstrap DNS response (nameserver uses DNS TLD bootstrap)
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => bootstrapDns,
+      } as Response);
+
+      // Mock RDAP nameserver response
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/rdap+json' }),
+        json: async () => rdapNameserver,
+      } as Response);
+
+      const result = await client.nameserver('ns1.example.com');
+
+      expect(result.objectClass).toBe('nameserver');
+      expect(result.ldhName).toBe('ns1.example.com');
+      expect(result.handle).toBe('NS1_EXAMPLE_COM-VRSN');
+      expect(result.status).toContain('active');
+      expect(result.ipAddresses?.v4).toContain('192.0.2.1');
+      expect(result.ipAddresses?.v6).toContain('2001:db8::1');
+      expect(result.metadata.cached).toBe(false);
+
+      // Bootstrap DNS + nameserver RDAP = 2 calls
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(mockFetch).toHaveBeenNthCalledWith(
+        2,
+        'https://rdap.verisign.com/com/v1/nameserver/ns1.example.com',
+        expect.any(Object)
+      );
+    });
+
+    it('should reject invalid nameserver hostname', async () => {
+      await expect(client.nameserver('notahostname')).rejects.toThrow(
+        'Nameserver must be a fully-qualified hostname'
+      );
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('should reject empty nameserver', async () => {
+      await expect(client.nameserver('')).rejects.toThrow('Nameserver must be a non-empty string');
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entity queries', () => {
+    const SERVER_URL = 'https://rdap.verisign.com/com/v1';
+
+    it('should successfully query an entity with explicit server URL', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/rdap+json' }),
+        json: async () => rdapEntity,
+      } as Response);
+
+      const result = await client.entity('VRSN-96', SERVER_URL);
+
+      expect(result.objectClass).toBe('entity');
+      expect(result.handle).toBe('VRSN-96');
+      expect(result.roles).toContain('registrar');
+      expect(result.status).toContain('validated');
+      expect(result.vcardArray).toBeDefined();
+      expect(result.metadata.source).toBe(SERVER_URL);
+
+      // Entity queries are direct — no bootstrap needed (1 fetch call)
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${SERVER_URL}/entity/VRSN-96`,
+        expect.any(Object)
+      );
+    });
+
+    it('should reject invalid entity handle', async () => {
+      await expect(client.entity('-INVALID', SERVER_URL)).rejects.toThrow(
+        'Entity handle contains invalid characters'
+      );
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('should reject empty entity handle', async () => {
+      await expect(client.entity('', SERVER_URL)).rejects.toThrow(
+        'Entity handle must be a non-empty string'
+      );
       expect(mockFetch).not.toHaveBeenCalled();
     });
   });

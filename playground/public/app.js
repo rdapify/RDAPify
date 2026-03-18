@@ -89,6 +89,12 @@ function validateQuery(query, type) {
             const asnRegex = /^(AS)?(\d+)$/i;
             if (!asnRegex.test(query)) return { valid: false, error: 'Invalid ASN format (use AS12345 or 12345)' };
             break;
+        case 'nameserver':
+            if (!query.includes('.')) return { valid: false, error: 'Invalid nameserver hostname (e.g. ns1.example.com)' };
+            break;
+        case 'entity':
+            if (!/^[a-zA-Z0-9][\w\-.]*$/.test(query)) return { valid: false, error: 'Invalid entity handle format (e.g. ARIN-HN-1)' };
+            break;
         default:
             return { valid: false, error: 'Unknown query type' };
     }
@@ -267,6 +273,29 @@ function renderVisualView(data, type) {
         rows.push(['Country', data.country || '—']);
         rows.push(['Organization', org ? (extractEntityName(org) || org.handle || '—') : '—']);
         rows.push(['Type', data.type || '—']);
+        rows.push(['Registered', formatDate(events['registration'])]);
+        rows.push(['Last Changed', formatDate(events['last changed'])]);
+
+    } else if (type === 'nameserver') {
+        const v4 = data.ipAddresses && data.ipAddresses.v4 ? data.ipAddresses.v4 : [];
+        const v6 = data.ipAddresses && data.ipAddresses.v6 ? data.ipAddresses.v6 : [];
+        const statuses = Array.isArray(data.status) ? data.status : [];
+        rows.push(['Nameserver', data.ldhName || data.unicodeName || data.handle || '—']);
+        rows.push(['Handle', data.handle || '—']);
+        rows.push(['Status', statuses.length ? statuses.map(statusBadge).join(' ') : '—']);
+        rows.push(['IPv4 Addresses', v4.length ? v4.map(a => `<span class="vis-ns">${escapeHtml(a)}</span>`).join('') : '—']);
+        rows.push(['IPv6 Addresses', v6.length ? v6.map(a => `<span class="vis-ns">${escapeHtml(a)}</span>`).join('') : '—']);
+        rows.push(['Registered', formatDate(events['registration'])]);
+        rows.push(['Last Changed', formatDate(events['last changed'])]);
+
+    } else if (type === 'entity') {
+        const name = extractEntityName(data) || '—';
+        const roles = Array.isArray(data.roles) ? data.roles : [];
+        const statuses = Array.isArray(data.status) ? data.status : [];
+        rows.push(['Handle', data.handle || '—']);
+        rows.push(['Name', name]);
+        rows.push(['Roles', roles.length ? roles.map(statusBadge).join(' ') : '—']);
+        rows.push(['Status', statuses.length ? statuses.map(statusBadge).join(' ') : '—']);
         rows.push(['Registered', formatDate(events['registration'])]);
         rows.push(['Last Changed', formatDate(events['last changed'])]);
     }
@@ -509,6 +538,20 @@ async function performQuery(query, type, options = {}) {
         } else if (type === 'asn') {
             const asnNum = query.replace(/^AS/i, '');
             rdapUrl = `https://rdap.arin.net/registry/autnum/${asnNum}`;
+        } else if (type === 'nameserver') {
+            const parts = query.toLowerCase().split('.');
+            const tld = parts[parts.length - 1];
+            const bootstrap = await fetchBootstrap('dns');
+            let server = findBootstrapServer(bootstrap, tld);
+            if (!server && parts.length >= 3) {
+                const sld = parts.slice(-2).join('.');
+                server = findBootstrapServer(bootstrap, sld);
+            }
+            if (!server) throw new Error(`.${tld} is not supported by RDAP`);
+            rdapUrl = `${server.replace(/\/$/, '')}/nameserver/${encodeURIComponent(query.toLowerCase())}`;
+        } else if (type === 'entity') {
+            // Entity queries go to ARIN as a public CORS-friendly registry
+            rdapUrl = `https://rdap.arin.net/registry/entity/${encodeURIComponent(query)}`;
         } else {
             throw new Error('Unknown query type');
         }

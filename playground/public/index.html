@@ -42,7 +42,7 @@
             <!-- Introduction -->
             <section class="intro">
                 <h2>Interactive RDAP Query Tool</h2>
-                <p>Test RDAP queries for domains, IP addresses, and ASNs in real-time. No installation required!</p>
+                <p>Test RDAP queries for domains, IP addresses, ASNs, nameservers, and entities in real-time. No installation required!</p>
             </section>
 
             <!-- Query Section -->
@@ -66,16 +66,24 @@
                                 <input type="radio" name="queryType" value="asn">
                                 <span>ASN</span>
                             </label>
+                            <label class="radio-label">
+                                <input type="radio" name="queryType" value="nameserver">
+                                <span>Nameserver</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="queryType" value="entity">
+                                <span>Entity</span>
+                            </label>
                         </div>
                     </div>
 
                     <!-- Query Input -->
                     <div class="input-group">
                         <input 
-                            type="text" 
-                            id="queryInput" 
-                            class="query-input" 
-                            placeholder="Enter domain, IP, or ASN..."
+                            type="text"
+                            id="queryInput"
+                            class="query-input"
+                            placeholder="Enter domain, IP, ASN, nameserver, or entity handle..."
                             autocomplete="off"
                         >
                         <button id="queryButton" class="btn btn-primary">
@@ -94,6 +102,7 @@
                         <button class="example-btn" data-type="ip" data-query="8.8.8.8">8.8.8.8</button>
                         <button class="example-btn" data-type="ip" data-query="2001:4860:4860::8888">2001:4860:4860::8888</button>
                         <button class="example-btn" data-type="asn" data-query="AS15169">AS15169</button>
+                        <button class="example-btn" data-type="nameserver" data-query="ns1.example.com">ns1.example.com</button>
                     </div>
 
                     <!-- Options (Expandable) -->

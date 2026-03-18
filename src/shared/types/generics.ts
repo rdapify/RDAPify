@@ -3,12 +3,12 @@
  * @module types/generics
  */
 
-import type { DomainResponse, IPResponse, ASNResponse } from './responses';
+import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse } from './responses';
 
 /**
  * Query type literals
  */
-export type QueryTypeLiteral = 'domain' | 'ip' | 'asn';
+export type QueryTypeLiteral = 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
 
 /**
  * Maps query type to response type
@@ -17,6 +17,8 @@ export type QueryResultMap = {
   domain: DomainResponse;
   ip: IPResponse;
   asn: ASNResponse;
+  nameserver: NameserverResponse;
+  entity: EntityResponse;
 };
 
 /**
@@ -27,7 +29,7 @@ export type QueryResult<T extends QueryTypeLiteral> = QueryResultMap[T];
 /**
  * Extracts metadata type from response
  */
-export type ResponseMetadata<T extends DomainResponse | IPResponse | ASNResponse> = T['metadata'];
+export type ResponseMetadata<T extends DomainResponse | IPResponse | ASNResponse | NameserverResponse | EntityResponse> = T['metadata'];
 
 /**
  * Makes specific fields optional
@@ -66,6 +68,8 @@ export interface TypedQueryOptions<T extends QueryTypeLiteral> {
   query: string;
   cache?: boolean;
   includeRaw?: boolean;
+  /** Required when type is 'entity' — RDAP server base URL */
+  serverUrl?: string;
 }
 
 /**

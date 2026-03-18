@@ -1,0 +1,38 @@
+{
+  "objectClassName": "entity",
+  "handle": "VRSN-96",
+  "roles": ["registrar"],
+  "status": ["validated"],
+  "vcardArray": [
+    "vcard",
+    [
+      ["version", {}, "text", "4.0"],
+      ["fn", {}, "text", "VeriSign Global Registry Services"],
+      ["org", {}, "text", "VeriSign, Inc."],
+      ["adr", {
+        "type": "work"
+      }, "text", ["", "12061 Bluemont Way", "Reston", "VA", "20190", "US"]],
+      ["tel", { "type": "work" }, "uri", "tel:+1-800-922-2342"],
+      ["email", {}, "text", "info@verisign-grs.com"]
+    ]
+  ],
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "1995-08-01T00:00:00Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2023-06-01T00:00:00Z"
+    }
+  ],
+  "links": [
+    {
+      "value": "https://rdap.verisign.com/com/v1/entity/VRSN-96",
+      "rel": "self",
+      "href": "https://rdap.verisign.com/com/v1/entity/VRSN-96",
+      "type": "application/rdap+json"
+    }
+  ],
+  "remarks": []
+}

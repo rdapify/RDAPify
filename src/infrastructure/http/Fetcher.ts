@@ -43,7 +43,7 @@ export class Fetcher {
       dns: options.timeout?.dns || 3000,
     };
 
-    this.userAgent = options.userAgent || 'RDAPify/0.1.4 (https://rdapify.com)';
+    this.userAgent = options.userAgent || 'RDAPify/0.1.7 (https://rdapify.com)';
     this.headers = options.headers || {};
     this.followRedirects = options.followRedirects ?? true;
     this.maxRedirects = options.maxRedirects || 5;

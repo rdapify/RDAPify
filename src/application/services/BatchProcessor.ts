@@ -13,6 +13,8 @@ export interface BatchQueryRequest<T extends QueryTypeLiteral = QueryTypeLiteral
   type: T;
   query: string;
   id?: string;
+  /** Required when type is 'entity' — RDAP server base URL */
+  serverUrl?: string;
 }
 
 /**
@@ -68,6 +70,15 @@ export class BatchProcessor {
             break;
           case 'asn':
             result = await this.client.asn(request.query) as QueryResult<T>;
+            break;
+          case 'nameserver':
+            result = await this.client.nameserver(request.query) as QueryResult<T>;
+            break;
+          case 'entity':
+            if (!request.serverUrl) {
+              throw new Error(`Entity queries require a serverUrl. Set { type: 'entity', query: '${request.query}', serverUrl: 'https://...' }`);
+            }
+            result = await this.client.entity(request.query, request.serverUrl) as QueryResult<T>;
             break;
           default:
             throw new Error(`Unknown query type: ${request.type}`);
