@@ -214,6 +214,9 @@ function BottomCta() {
             <Link className="button button--outline button--primary button--lg" to="https://github.com/rdapify/rdapify">
               View on GitHub
             </Link>
+            <Link className="button button--outline button--primary button--lg" to="https://www.npmjs.com/package/rdapify">
+              View on npm
+            </Link>
           </div>
         </div>
       </div>
