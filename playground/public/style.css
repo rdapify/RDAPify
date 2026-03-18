@@ -736,6 +736,187 @@ body {
 }
 
 /* ============================================
+   Result Tabs (Visual / Raw JSON)
+   ============================================ */
+.result-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid var(--gray-200);
+    padding-bottom: 0;
+}
+
+.rtab {
+    padding: 0.4rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--gray-500);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.rtab:hover { color: var(--primary); }
+.rtab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.rtab-content { animation: fadeIn 0.2s ease; }
+.rtab-content.hidden { display: none; }
+
+/* ============================================
+   Visual View Table
+   ============================================ */
+.vis-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.vis-table tr {
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.vis-table tr:last-child { border-bottom: none; }
+
+.vis-label {
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    font-weight: 700;
+    color: var(--gray-600);
+    white-space: nowrap;
+    width: 130px;
+    vertical-align: top;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vis-value {
+    padding: 0.6rem 0;
+    color: var(--gray-800);
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.vis-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 4px;
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    margin: 0.1rem 0.2rem 0.1rem 0;
+    white-space: nowrap;
+}
+
+.vis-ns {
+    display: inline-block;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.8rem;
+    background: var(--gray-100);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    margin: 0.1rem 0.2rem 0.1rem 0;
+    color: var(--gray-700);
+}
+
+/* ============================================
+   JSON Tree (collapsible)
+   ============================================ */
+.jt-root {
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+}
+
+.jt-block { padding-left: 0; }
+
+.jt-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 0.1rem 0;
+    position: relative;
+}
+
+.jt-row-header {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+.jt-row-header:hover .jt-key,
+.jt-row-header:hover .jt-index { color: var(--primary); }
+
+.jt-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.65rem;
+    color: var(--gray-400);
+    padding: 0 0.2rem;
+    width: 16px;
+    flex-shrink: 0;
+    transition: color 0.15s;
+    line-height: 1.7;
+}
+
+.jt-toggle:hover { color: var(--primary); }
+.jt-toggle-ph { width: 16px; flex-shrink: 0; display: inline-block; }
+
+.jt-children {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--gray-200);
+    margin-left: 0.1rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
+}
+
+.jt-key   { color: #0055bb; font-weight: 600; }
+.jt-index { color: #888; }
+.jt-colon { color: var(--gray-500); margin-right: 0.2rem; }
+.jt-str   { color: #008800; }
+.jt-num   { color: #e06c00; }
+.jt-bool  { color: #cc0055; }
+.jt-null  { color: #999; }
+.jt-bracket { color: var(--gray-500); }
+.jt-summary {
+    color: var(--gray-400);
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+.jt-copy-btn {
+    background: none;
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    padding: 0.05rem 0.3rem;
+    color: var(--gray-400);
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s;
+    flex-shrink: 0;
+}
+
+.jt-row:hover .jt-copy-btn,
+.jt-row.jt-complex:hover > .jt-row-header .jt-copy-btn { opacity: 1; }
+
+.jt-copy-btn:hover {
+    background: var(--gray-100);
+    color: var(--primary);
+}
+
+/* ============================================
    Animations
    ============================================ */
 @keyframes fadeIn {
