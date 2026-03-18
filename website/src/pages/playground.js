@@ -13,7 +13,7 @@ export default function Playground() {
         overflow: 'hidden'
       }}>
         <iframe
-          src="/playground/index.html"
+          src="/playground-app/index.html"
           style={{
             width: '100%',
             height: '100%',
