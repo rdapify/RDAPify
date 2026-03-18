@@ -453,29 +453,84 @@ function loadHistoryFromLocalStorage() {
 }
 
 // ============================================
-// API
+// RDAP Bootstrap Discovery
+// ============================================
+
+const bootstrapCache = {};
+
+async function fetchBootstrap(type) {
+    if (bootstrapCache[type]) return bootstrapCache[type];
+    const urls = {
+        dns: 'https://data.iana.org/rdap/dns.json',
+        ipv4: 'https://data.iana.org/rdap/ipv4.json',
+        ipv6: 'https://data.iana.org/rdap/ipv6.json',
+        asn: 'https://data.iana.org/rdap/asn.json'
+    };
+    const response = await fetch(urls[type]);
+    if (!response.ok) throw new Error('Failed to load RDAP bootstrap registry');
+    bootstrapCache[type] = await response.json();
+    return bootstrapCache[type];
+}
+
+function findBootstrapServer(bootstrap, key) {
+    const lowerKey = key.toLowerCase();
+    for (const [keys, servers] of bootstrap.services) {
+        if (servers.length > 0 && keys.map(k => k.toLowerCase()).includes(lowerKey)) {
+            return servers[0];
+        }
+    }
+    return null;
+}
+
+// ============================================
+// API (direct RDAP calls — no backend needed)
 // ============================================
 
 async function performQuery(query, type, options = {}) {
+    const startTime = Date.now();
     try {
-        const response = await fetch('/api/query', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Client-Id': clientId },
-            body: JSON.stringify({ type, query, options })
+        let rdapUrl;
+
+        if (type === 'domain') {
+            const parts = query.toLowerCase().split('.');
+            const tld = parts[parts.length - 1];
+            const bootstrap = await fetchBootstrap('dns');
+            let server = findBootstrapServer(bootstrap, tld);
+            // Try two-label TLD (e.g., co.uk)
+            if (!server && parts.length >= 3) {
+                const sld = parts.slice(-2).join('.');
+                server = findBootstrapServer(bootstrap, sld);
+            }
+            if (!server) throw new Error(`.${tld} is not supported by RDAP — try a different TLD`);
+            rdapUrl = `${server.replace(/\/$/, '')}/domain/${encodeURIComponent(query.toLowerCase())}`;
+        } else if (type === 'ip') {
+            // ARIN gateway supports CORS and redirects to the correct RIR
+            rdapUrl = `https://rdap.arin.net/registry/ip/${encodeURIComponent(query)}`;
+        } else if (type === 'asn') {
+            const asnNum = query.replace(/^AS/i, '');
+            rdapUrl = `https://rdap.arin.net/registry/autnum/${asnNum}`;
+        } else {
+            throw new Error('Unknown query type');
+        }
+
+        const response = await fetch(rdapUrl, {
+            headers: { 'Accept': 'application/rdap+json, application/json' }
         });
-        const result = await response.json();
-        if (result.remainingToday !== undefined) {
-            state.quotaInfo.remainingToday = result.remainingToday;
-            state.quotaInfo.resetAt = result.resetAt;
-            updateQuotaDisplay();
+
+        if (!response.ok) {
+            if (response.status === 404) throw new Error(`No RDAP record found for: ${query}`);
+            throw new Error(`RDAP server returned HTTP ${response.status}`);
         }
-        if (response.status === 429) {
-            return { success: false, error: result.error || 'Daily quota exceeded', quotaExceeded: true, retryAfter: response.headers.get('Retry-After') };
-        }
-        if (!response.ok || !result.success) throw new Error(result.error || 'Query failed');
-        return { success: true, data: result.data, queryTime: result.queryTime };
+
+        const data = await response.json();
+        return { success: true, data, queryTime: Date.now() - startTime };
     } catch (error) {
-        return { success: false, error: error.message || 'Network error - please check your connection' };
+        const msg = error.message || 'Network error';
+        // Detect CORS failures
+        if (error instanceof TypeError && msg.toLowerCase().includes('fetch')) {
+            return { success: false, error: 'Network error — the RDAP server may not allow browser requests (CORS). Try a different query.' };
+        }
+        return { success: false, error: msg };
     }
 }
 
