@@ -9,6 +9,7 @@ export default function Playground() {
       <div style={{
         width: '100%',
         height: 'calc(100vh - 60px)',
+        minHeight: '900px',
         border: 'none',
         overflow: 'hidden'
       }}>
