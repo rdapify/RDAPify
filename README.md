@@ -1,4 +1,8 @@
-# RDAPify - Unified, Secure, High-Performance RDAP Client for Enterprise Applications
+<p align="center">
+  <img src="website/static/img/logo-icon.svg" alt="RDAPify" width="80" />
+</p>
+<h1 align="center">RDAPify</h1>
+<p align="center"><strong>Unified, Secure, High-Performance RDAP Client for Enterprise Applications</strong></p>
 
 > **🎉 LATEST RELEASE**: v0.1.2 — Production-ready with interactive playground, advanced features including authentication, proxy support, compression, retry strategies, and comprehensive monitoring. See [What's New in v0.1.2](#-whats-new-in-v012) below.
 

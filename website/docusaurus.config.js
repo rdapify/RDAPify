@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 const config = {
   title: 'RDAPify',
   tagline: 'Unified, secure, high-performance RDAP client for enterprise applications',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   url: 'https://rdapify.com',
   baseUrl: '/',
@@ -85,10 +85,11 @@ const config = {
     ({
       image: 'img/rdapify-social-card.png',
       navbar: {
-        title: 'RDAPify',
+        title: '',
         logo: {
           alt: 'RDAPify Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo-light.svg',
+          srcDark: 'img/logo.svg',
         },
         items: [
           {
