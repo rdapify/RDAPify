@@ -160,11 +160,7 @@ str.txt
 backup-*/
 
 # ============================================
-# Private Planning Files (local only)
-# ============================================
-DEVELOPMENT_ROADMAP.md
-
-# ============================================
 # Internal Project Files (not for public repo)
 # ============================================
 .project/
+RDAPify-Internal/
