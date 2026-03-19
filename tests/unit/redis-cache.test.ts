@@ -248,14 +248,23 @@ describe('RedisCache', () => {
   // clear — with flushDb
   // -------------------------------------------------------------------------
 
-  describe('clear (with flushDb available)', () => {
-    it('should call flushDb when available', async () => {
-      mockClient.flushDb.mockResolvedValue('OK');
+  describe('clear', () => {
+    it('should delete matching keys via keys() when no keys exist', async () => {
+      mockClient.keys.mockResolvedValue([]);
 
       await cache.clear();
 
-      expect(mockClient.flushDb).toHaveBeenCalledTimes(1);
-      expect(mockClient.keys).not.toHaveBeenCalled();
+      expect(mockClient.keys).toHaveBeenCalledWith('test:*');
+      expect(mockClient.del).not.toHaveBeenCalled();
+    });
+
+    it('should delete all matching prefix keys', async () => {
+      mockClient.keys.mockResolvedValue(['test:a.com', 'test:b.com']);
+      mockClient.del.mockResolvedValue(2);
+
+      await cache.clear();
+
+      expect(mockClient.del).toHaveBeenCalledWith('test:a.com', 'test:b.com');
     });
   });
 
@@ -295,14 +304,15 @@ describe('RedisCache', () => {
   // size — with dbSize
   // -------------------------------------------------------------------------
 
-  describe('size (with dbSize available)', () => {
-    it('should return the value from dbSize when available', async () => {
-      mockClient.dbSize.mockResolvedValue(42);
+  describe('size', () => {
+    it('should count matching keys via keys() when scan is unavailable', async () => {
+      const fakeKeys = Array.from({ length: 42 }, (_, i) => `test:key${i}`);
+      mockClient.keys.mockResolvedValue(fakeKeys);
 
       const result = await cache.size();
 
       expect(result).toBe(42);
-      expect(mockClient.dbSize).toHaveBeenCalledTimes(1);
+      expect(mockClient.keys).toHaveBeenCalledWith('test:*');
     });
   });
 
@@ -343,7 +353,8 @@ describe('RedisCache', () => {
 
   describe('getStats', () => {
     it('should return keyPrefix and size', async () => {
-      mockClient.dbSize.mockResolvedValue(5);
+      const fakeKeys = Array.from({ length: 5 }, (_, i) => `test:key${i}`);
+      mockClient.keys.mockResolvedValue(fakeKeys);
 
       const stats = await cache.getStats();
 
