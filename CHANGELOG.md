@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.7] - 2026-03-19
 
+### Fixed
+
+- **Playground deployment**: `website/static/playground-app/app.js` was out of sync with `playground/public/app.js`; domains returning HTTP 404 now correctly show "Domain Available" instead of an error
+- **Jest forceExit**: Added `forceExit: true` to `jest.config.js` to prevent CI hangs caused by open Redis async handles
+- **redis-cache tests**: Updated tests to match `scanAll()`/`keys()` implementation instead of the removed `dbSize()`/`flushDb()` approach
+
 ### Added
 
 - **Nameserver queries**: New `client.nameserver(hostname)` method for querying nameserver RDAP data
@@ -157,82 +163,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Multiple package manager support (npm, yarn, pnpm)
   - Integrated into website navigation
   - Production-ready documentation and testing guides
-
-### Changed
-- Updated website navigation to include Playground link
-- Enhanced documentation for production deployment
-
-### Fixed
-- ESLint errors in Logger.ts and enhanced-validators.ts (6 issues resolved)
-
-## [0.1.1] - 2026-01-25
-
-### Added - Phase 3 Improvements
-- **Authentication Support**: Multiple authentication methods for RDAP servers
-  - Basic Authentication (username/password)
-  - Bearer Token authentication
-  - API Key authentication (custom header support)
-  - OAuth2 authentication with token expiration checking
-  - Secure header generation without exposing credentials
-- **Proxy Support**: HTTP/HTTPS/SOCKS proxy configuration
-  - Support for HTTP, HTTPS, SOCKS4, and SOCKS5 protocols
-  - Proxy authentication (username/password)
-  - Bypass list with wildcard pattern matching
-  - Proxy URL generation with credential encoding
-- **Response Compression**: Automatic compression/decompression
-  - Support for gzip, brotli, and deflate compression
-  - Automatic Accept-Encoding header generation
-  - Automatic response decompression
-  - Compression statistics and ratio calculation
-  - Configurable compression threshold
-
-### Added - Phase 2 Improvements
-- **Retry Strategies**: Advanced retry logic with circuit breaker pattern
-  - Exponential, linear, and fixed backoff strategies
-  - Exponential backoff with jitter to prevent thundering herd
-  - Circuit breaker pattern for failing services
-  - Configurable retry based on error type and status code
-  - Half-open state for gradual recovery
-- **Query Prioritization**: Priority queue system for managing query execution
-  - High, normal, and low priority levels
-  - Configurable concurrency control
-  - Automatic queue processing
-  - Queue statistics and monitoring
-- **Enhanced Validation**: Improved input validation with international support
-  - IDN (Internationalized Domain Names) support with punycode conversion
-  - IPv6 with zone ID support (e.g., fe80::1%eth0)
-  - ASN range validation (e.g., AS15169-AS15200)
-  - Email and phone number validation
-  - URL validation
-- **Persistent Cache**: Cache that survives application restarts
-  - File-based and memory-based storage
-  - Automatic save intervals
-  - TTL and max size enforcement
-  - LRU eviction policy
-  - Cache statistics and cleanup
-
-### Changed
-- **Exports**: Added new exports for Phase 2 features in index.ts
-
-### Tests
-- Added comprehensive test suites for Phase 3 features:
-  - `authentication-manager.test.ts`: 17 tests covering all auth methods
-  - `proxy-manager.test.ts`: 16 tests covering proxy configuration
-  - `compression-manager.test.ts`: 19 tests covering compression/decompression
-- Added comprehensive test suites for Phase 2 features:
-  - `retry-strategy.test.ts`: 13 tests covering retry logic and circuit breaker
-  - `query-priority.test.ts`: 8 tests covering priority queue functionality
-  - `enhanced-validators.test.ts`: 21 tests covering validation enhancements
-  - `persistent-cache.test.ts`: 13 tests covering persistent storage
-
-### Performance
-- **Retry Strategies**: Intelligent retry reduces failed requests
-- **Query Prioritization**: Critical queries execute first
-- **Persistent Cache**: Faster startup with pre-loaded cache
-
-## [0.1.2] - 2026-01-26
-
-### Added - Phase 1 Improvements
 - **Connection Pooling**: HTTP connection reuse for 30-40% performance improvement
   - Configurable max connections per host
   - Automatic idle connection cleanup
@@ -259,8 +189,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `destroy()`: Clean up resources
 
 ### Changed
+- Updated website navigation to include Playground link
+- Enhanced documentation for production deployment
 - **QueryOrchestrator**: Integrated logging and metrics collection into all query methods
 - **RDAPClient**: Added connection pool, metrics collector, and logger initialization
+
+### Fixed
+- ESLint errors in Logger.ts and enhanced-validators.ts (6 issues resolved)
 
 ### Tests
 - Added comprehensive test suites for new features:
@@ -271,24 +206,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2026-01-25
 
 ### Added
+- **Authentication Support**: Multiple authentication methods for RDAP servers
+  - Basic Authentication (username/password)
+  - Bearer Token authentication
+  - API Key authentication (custom header support)
+  - OAuth2 authentication with token expiration checking
+  - Secure header generation without exposing credentials
+- **Proxy Support**: HTTP/HTTPS/SOCKS proxy configuration
+  - Support for HTTP, HTTPS, SOCKS4, and SOCKS5 protocols
+  - Proxy authentication (username/password)
+  - Bypass list with wildcard pattern matching
+  - Proxy URL generation with credential encoding
+- **Response Compression**: Automatic compression/decompression
+  - Support for gzip, brotli, and deflate compression
+  - Automatic Accept-Encoding header generation
+  - Automatic response decompression
+  - Compression statistics and ratio calculation
+  - Configurable compression threshold
+- **Retry Strategies**: Advanced retry logic with circuit breaker pattern
+  - Exponential, linear, and fixed backoff strategies
+  - Exponential backoff with jitter to prevent thundering herd
+  - Circuit breaker pattern for failing services
+  - Configurable retry based on error type and status code
+  - Half-open state for gradual recovery
+- **Query Prioritization**: Priority queue system for managing query execution
+  - High, normal, and low priority levels
+  - Configurable concurrency control
+  - Automatic queue processing
+  - Queue statistics and monitoring
+- **Enhanced Validation**: Improved input validation with international support
+  - IDN (Internationalized Domain Names) support with punycode conversion
+  - IPv6 with zone ID support (e.g., fe80::1%eth0)
+  - ASN range validation (e.g., AS15169-AS15200)
+  - Email and phone number validation
+  - URL validation
+- **Persistent Cache**: Cache that survives application restarts
+  - File-based and memory-based storage
+  - Automatic save intervals
+  - TTL and max size enforcement
+  - LRU eviction policy
+  - Cache statistics and cleanup
 - **Rate Limiting**: Token bucket rate limiter with multi-key support and auto-cleanup
 - **Batch Processing**: Efficient concurrent processing of multiple RDAP queries
 - **Enhanced Error Handling**: Errors now include suggestions, timestamps, and user-friendly messages
 - **Generic Types**: Type-safe query functions with automatic result type inference
 - **Tree Shaking Support**: Modular exports for smaller bundle sizes
-- **Comprehensive Tests**: Added 37+ new tests for PIIRedactor, CacheManager, and RateLimiter
 
 ### Changed
+- **Exports**: Added new exports for all Phase 1–3 features in index.ts
 - **Error Classes**: All errors now include `suggestion`, `timestamp`, and `getUserMessage()` method
 - **RateLimitError**: Added `retryAfter` field to indicate when to retry
 - **Package Exports**: Added modular exports for errors, types, and validators
 - **TypeScript Config**: Optimized for better tree shaking and smaller output
-
-### Improved
-- **Test Coverage**: Increased from 76.74% to ~85-90% (estimated)
-- **Type Safety**: Better generic types for query operations
-- **Developer Experience**: More helpful error messages and suggestions
-- **Performance**: Batch processing with configurable concurrency
+- Standardized Node.js version to v20 across all GitHub Actions workflows
+- Updated all workflows to use `node-version-file: .nvmrc` for consistency
+- Improved npm caching in CI/CD workflows for faster builds
+- Added `NODE_ENV: production` to website build workflow
 
 ### Fixed
 - Fixed prism-react-renderer theme import in Docusaurus configuration
@@ -299,19 +272,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed missing sidebars.js configuration
 - Removed empty pages causing build failures
 
-### Changed
-- Standardized Node.js version to v20 across all GitHub Actions workflows
-- Updated all workflows to use `node-version-file: .nvmrc` for consistency
-- Improved npm caching in CI/CD workflows for faster builds
-- Added `NODE_ENV: production` to website build workflow
-- Added `onBrokenMarkdownImages: 'warn'` to Docusaurus config
-- Enhanced release workflow with better error handling
+### Tests
+- Added comprehensive test suites:
+  - `authentication-manager.test.ts`: 17 tests covering all auth methods
+  - `proxy-manager.test.ts`: 16 tests covering proxy configuration
+  - `compression-manager.test.ts`: 19 tests covering compression/decompression
+  - `retry-strategy.test.ts`: 13 tests covering retry logic and circuit breaker
+  - `query-priority.test.ts`: 8 tests covering priority queue functionality
+  - `enhanced-validators.test.ts`: 21 tests covering validation enhancements
+  - `persistent-cache.test.ts`: 13 tests covering persistent storage
+  - PIIRedactor, CacheManager, and RateLimiter: 37+ new tests
 
-### Added
-- Created SVG placeholder icons for homepage features (typescript, performance, security, multi-env, unified, privacy)
-- Added examples validation workflow
-- Added fork check for Snyk security scans to prevent token exposure
-- Added comprehensive CI/CD fixes documentation
+### Performance
+- **Retry Strategies**: Intelligent retry reduces failed requests
+- **Query Prioritization**: Critical queries execute first
+- **Persistent Cache**: Faster startup with pre-loaded cache
 
 ## [0.1.0] - 2025-01-25
 
@@ -440,16 +415,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Jest for testing
 - ESLint for code quality
 - Prettier for code formatting
-
-## [Unreleased]
-
-### Planned for v0.2.0
-- Redis cache implementation
-- CLI tool for quick queries
-- Live integration tests
-- Improved error messages
-- Performance benchmarks
-- Additional runtime support (Bun, Deno)
 
 ---
 

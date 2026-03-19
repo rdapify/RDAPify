@@ -121,6 +121,25 @@ const entity = await client.entity('ARIN-HN-1', 'https://rdap.arin.net/registry'
 }
 ```
 
+### With Nameserver & Entity Queries (v0.1.7+)
+
+```typescript
+import { RDAPClient } from 'rdapify';
+
+const client = new RDAPClient();
+
+// Query a nameserver — auto-discovers server via IANA DNS bootstrap
+const ns = await client.nameserver('ns1.example.com');
+console.log(ns.ldhName);        // "ns1.example.com"
+console.log(ns.ipAddresses);    // { v4: ['93.184.216.34'], v6: [...] }
+console.log(ns.status);         // ['active']
+
+// Query an entity — requires explicit server URL (no global IANA bootstrap)
+const entity = await client.entity('ARIN-HN-1', 'https://rdap.arin.net/registry');
+console.log(entity.handle);     // "ARIN-HN-1"
+console.log(entity.roles);      // ['registrar', 'technical']
+```
+
 ### With Monitoring & Metrics (v0.1.2+)
 
 ```typescript
@@ -246,19 +265,19 @@ const compression = new CompressionManager({
 - **Certificate Validation**: Reject insecure connections to RDAP servers
 - **Rate Limiting**: Prevent service blocking due to excessive requests
 - **Secure Data Handling**: PII redaction according to GDPR/CCPA requirements
-- **Authentication Support** (v0.1.2+): Basic, Bearer Token, API Key, OAuth2
-- **Proxy Support** (v0.1.2+): HTTP/HTTPS/SOCKS4/SOCKS5 with authentication
+- **Authentication Support** (v0.1.1+): Basic, Bearer Token, API Key, OAuth2
+- **Proxy Support** (v0.1.1+): HTTP/HTTPS/SOCKS4/SOCKS5 with authentication
 - **Full Audit Trail**: Track all critical operations for compliance purposes
 
 ### ⚡ Exceptional Performance
 
 - **Smart Caching**: In-memory LRU cache with configurable TTL
-- **Persistent Cache** (v0.1.2+): File-based cache that survives restarts
+- **Persistent Cache** (v0.1.1+): File-based cache that survives restarts
 - **Connection Pooling** (v0.1.2+): HTTP connection reuse for 30-40% performance improvement
 - **Batch Processing**: Process multiple queries efficiently (5-10x faster)
-- **Response Compression** (v0.1.2+): gzip/brotli support for 60-80% bandwidth reduction
-- **Retry Strategies** (v0.1.2+): Circuit breaker with exponential backoff
-- **Query Prioritization** (v0.1.2+): High/normal/low priority queue
+- **Response Compression** (v0.1.1+): gzip/brotli support for 60-80% bandwidth reduction
+- **Retry Strategies** (v0.1.1+): Circuit breaker with exponential backoff
+- **Query Prioritization** (v0.1.1+): High/normal/low priority queue
 - **Registry Discovery**: Automatic IANA Bootstrap for finding the correct registry
 - **Optimized Parsing**: Fast JSONPath-based normalization
 
@@ -275,7 +294,8 @@ const compression = new CompressionManager({
 
 - **Full TypeScript Support**: Strongly typed with embedded documentation
 - **Node.js 20+ Support**: Verified working (Node.js, Bun, Deno, Cloudflare Workers)
-- **Enhanced Validation** (v0.1.2+): IDN domains, IPv6 zones, ASN ranges
+- **Enhanced Validation** (v0.1.1+): IDN domains, IPv6 zones, ASN ranges
+- **Nameserver & Entity Queries** (v0.1.7+): `client.nameserver()` and `client.entity()` with full RDAP support
 - **CLI Tool** (v0.1.7+): `rdapify domain/ip/asn/nameserver/entity` with `--json`, `--no-cache`, `--timeout`, `--server` flags
 - **Web Playground**: Try RDAPify live at [rdapify.com/playground](https://rdapify.com/playground)
 - **Pre-built Templates**: For AWS Lambda, Azure Functions, Kubernetes, and more (planned)

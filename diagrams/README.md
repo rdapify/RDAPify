@@ -129,5 +129,5 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on:
 
 ---
 
-**Last Updated**: January 24, 2026  
-**Version**: 0.1.2
+**Last Updated**: March 19, 2026
+**Version**: 0.1.7

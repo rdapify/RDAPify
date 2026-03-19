@@ -4,7 +4,7 @@ Performance benchmarking suite for RDAPify library.
 
 ## Status
 
-🚧 **Under Development** - Benchmarks will be added in future releases.
+🚧 **Under Development** - Benchmarks will be added in a future release (planned for v0.1.8).
 
 ## Planned Benchmarks
 
@@ -56,4 +56,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on adding new benchmark
 
 ---
 
-**Note**: This is a placeholder for future benchmark implementation. The library is currently in alpha stage (v0.1.0-alpha.4).
+**Note**: This is a placeholder for future benchmark implementation. The library is currently at v0.1.7 (alpha). Benchmarks are planned for v0.1.8.
