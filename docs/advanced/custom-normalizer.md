@@ -537,7 +537,7 @@ export class CachedNormalizer implements DataNormalizer {
     
     // Include security context in cache key
     const securityHash = this.hashFunction({
-      redactPII: context.redactPII,
+      privacy: context.redactPII,
       jurisdiction: context.jurisdiction,
       legalBasis: context.legalBasis
     });
@@ -891,7 +891,7 @@ describe('Custom Normalizers', () => {
     
     it('should redact PII fields according to policy', async () => {
       const context = {
-        redactPII: true,
+        privacy: true,
         jurisdiction: 'EU',
         legalBasis: 'legitimate-interest',
         registry: { id: 'verisign' }
@@ -913,7 +913,7 @@ describe('Custom Normalizers', () => {
     
     it('should throw error on incomplete redaction', async () => {
       const context = {
-        redactPII: true,
+        privacy: true,
         jurisdiction: 'EU',
         registry: { id: 'verisign' }
       };
@@ -931,13 +931,13 @@ describe('Custom Normalizers', () => {
     
     it('should apply different policies based on jurisdiction', async () => {
       const euResult = await normalizer.normalize(mockResponse, {
-        redactPII: true,
+        privacy: true,
         jurisdiction: 'EU',
         registry: { id: 'verisign' }
       });
       
       const usResult = await normalizer.normalize(mockResponse, {
-        redactPII: true,
+        privacy: true,
         jurisdiction: 'US-CA',
         registry: { id: 'verisign' }
       });
@@ -1010,7 +1010,7 @@ describe('Custom Normalizers', () => {
       for (const response of responses) {
         const start = Date.now();
         await normalizer.normalize(response, {
-          redactPII: true,
+          privacy: true,
           registry: { id: 'verisign' }
         });
         results.push(Date.now() - start);

@@ -77,7 +77,7 @@ const { RDAPClient } = require('rdapify');
 const client = new RDAPClient({
   // Standard RDAP configuration
   timeout: 5000,
-  retries: 2,
+  retry: { maxAttempts: 2 },
   
   // Datadog-specific configuration
   monitoring: {

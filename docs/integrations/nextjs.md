@@ -59,7 +59,7 @@ import { RDAPClient } from 'rdapify';
 // Initialize RDAP client with security defaults
 const client = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 5000,
@@ -114,7 +114,7 @@ import { RDAPClient } from 'rdapify';
 // Initialize RDAP client for server-side use
 const rdap = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   // Note: In server components, we can use longer timeouts
   timeout: 10000
 });
@@ -209,7 +209,7 @@ import type { NextRequest } from 'next/server';
 // Edge-compatible RDAP client configuration
 const client = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   allowPrivateIPs: false,
   validateCertificates: true,
   // Edge-specific limitations
@@ -407,7 +407,7 @@ import { RDAPClient } from 'rdapify';
 
 const rdap = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   // Longer timeout for ISR builds
   timeout: 15000
 });
@@ -470,7 +470,7 @@ import DomainCard from './components/DomainCard';
 export default async function DashboardPage() {
   const rdap = new RDAPClient({
     cache: true,
-    redactPII: true,
+    privacy: true,
     // Parallel processing optimization
     maxConcurrent: 5,
     timeout: 8000
@@ -575,7 +575,7 @@ import { cache } from 'react';
 export const lookupDomain = cache(async (domain: string) => {
   const rdap = new RDAPClient({
     cache: true,
-    redactPII: true,
+    privacy: true,
     timeout: 5000
   });
   
@@ -800,7 +800,7 @@ import { revalidatePath } from 'next/cache';
 
 const rdap = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   maxConcurrent: 10,
   timeout: 15000
 });
@@ -1340,7 +1340,7 @@ export default function DomainDisplay({ initialData }: DomainDisplayProps) {
 | Test Coverage | 92% unit tests, 85% integration tests |
 | Last Updated | December 5, 2025 |
 
-> 🔐 **Critical Reminder**: Never expose raw RDAP responses directly to clients. Always redact PII using `redactPII: true` setting. For edge functions, ensure timeout settings are under 3 seconds. Regularly audit your Vercel deployments for environment variable leakage and implement proper access controls for sensitive domains.
+> 🔐 **Critical Reminder**: Never expose raw RDAP responses directly to clients. Always redact PII using `privacy: true` setting. For edge functions, ensure timeout settings are under 3 seconds. Regularly audit your Vercel deployments for environment variable leakage and implement proper access controls for sensitive domains.
 
 [← Back to Integrations](../README.md) | [Next: NestJS →](nestjs.md)
 

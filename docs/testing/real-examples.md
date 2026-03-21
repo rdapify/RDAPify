@@ -46,7 +46,7 @@ import { sanitizeResponse, loadFixture } from '../helpers';
 describe('Verisign RDAP Responses', () => {
   const client = new RDAPClient({
     cache: false,
-    redactPII: true,
+    privacy: true,
     timeout: 5000
   });
   
@@ -132,7 +132,7 @@ describe('Verisign RDAP Responses', () => {
 describe('ARIN IP Network Responses', () => {
   const client = new RDAPClient({
     cache: false,
-    redactPII: true,
+    privacy: true,
     timeout: 5000
   });
   
@@ -313,14 +313,14 @@ describe('SSRF Protection with Real Registry Responses', () => {
 describe('GDPR Compliance with Real Responses', () => {
   const euClient = new RDAPClient({
     cache: false,
-    redactPII: true,
+    privacy: true,
     jurisdiction: 'EU',
     legalBasis: 'legitimate-interest'
   });
   
   const usClient = new RDAPClient({
     cache: false,
-    redactPII: true,
+    privacy: true,
     jurisdiction: 'US',
     legalBasis: 'legitimate-interest'
   });

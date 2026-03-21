@@ -49,10 +49,10 @@ import { RDAPClient } from 'rdapify';
 // Create client with privacy-protecting defaults
 const client = new RDAPClient({
   // PII redaction is ENABLED by default (GDPR/CCPA compliant)
-  redactPII: true,
+  privacy: true,
   
   // Safe caching with automatic expiration
-  cacheOptions: {
+  cache: {
     ttl: 3600 // 1 hour in seconds
   }
 });
@@ -120,7 +120,7 @@ Update your `app.js` to try these powerful features:
 
 // 1. Get raw data (ONLY if you have legal basis!)
 const rawResult = await client.domain('example.com', {
-  redactPII: false,
+  privacy: false,
   includeRaw: true
 });
 console.log('Raw RDAP response (use responsibly):');
@@ -161,9 +161,9 @@ You've completed the 5-minute quick start! 🎉 Here's where to go next:
 ```javascript
 // Production-grade client setup example
 const productionClient = new RDAPClient({
-  redactPII: true,
+  privacy: true,
   timeout: 10000,
-  retries: 3,
+  retry: { maxAttempts: 3 },
   cacheAdapter: new RedisAdapter({ 
     url: process.env.REDIS_URL,
     redactBeforeStore: true,
@@ -197,7 +197,7 @@ const productionClient = new RDAPClient({
 
 ---
 
-> **🔐 Privacy Reminder:** RDAPify is designed with privacy-by-default, but you remain responsible for compliance with applicable regulations. Always assess your legal basis for processing registration data. When in doubt, keep `redactPII: true` enabled!
+> **🔐 Privacy Reminder:** RDAPify is designed with privacy-by-default, but you remain responsible for compliance with applicable regulations. Always assess your legal basis for processing registration data. When in doubt, keep `privacy: true` enabled!
 
 [← Back to Getting Started](./README.md) | [Next: Learning Path →](./learning-path.md)
 

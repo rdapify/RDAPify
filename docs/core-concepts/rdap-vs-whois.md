@@ -293,8 +293,8 @@ try {
 import { RDAPClient } from 'rdapify';
 
 const client = new RDAPClient({ 
-  redactPII: true,
-  cacheOptions: { ttl: 3600 }
+  privacy: true,
+  cache: { ttl: 3600 }
 });
 
 try {
@@ -328,9 +328,9 @@ import { RDAPClient, WHOISClient } from 'rdapify';
 class RegistrationLookupService {
   constructor() {
     this.rdapClient = new RDAPClient({ 
-      redactPII: true,
+      privacy: true,
       timeout: 8000,
-      retries: 2
+      retry: { maxAttempts: 2 }
     });
     
     this.whoisClient = new WHOISClient({
@@ -638,7 +638,7 @@ function badLookup(domain) {
 
 ---
 
-> **🔐 Critical Reminder:** While RDAP provides better privacy controls than WHOIS, it still handles sensitive personal data. Always enable PII redaction by default and implement proper data governance regardless of the protocol used. RDAPify's `redactPII: true` setting should never be disabled without documented legal basis and Data Protection Officer approval.
+> **🔐 Critical Reminder:** While RDAP provides better privacy controls than WHOIS, it still handles sensitive personal data. Always enable PII redaction by default and implement proper data governance regardless of the protocol used. RDAPify's `privacy: true` setting should never be disabled without documented legal basis and Data Protection Officer approval.
 
 [← Back to Core Concepts](../core-concepts/README.md) | [Next: Architecture Overview →](./architecture.md)
 

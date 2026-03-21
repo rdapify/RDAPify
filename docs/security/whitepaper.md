@@ -15,7 +15,7 @@ RDAPify provides a secure, privacy-preserving platform for processing registrati
 - ✅ **Compliance Automation**: Built-in controls for GDPR, CCPA, SOC 2, and ISO 27001 compliance
 - ✅ **Zero-Trust Architecture**: Strict isolation boundaries between processing contexts
 
-RDAPify has undergone comprehensive security validation including penetration testing by third-party firms, formal threat modeling, and continuous vulnerability scanning. No critical vulnerabilities have been identified in the core architecture since v2.0 public release.
+RDAPify has undergone comprehensive security validation including penetration testing by third-party firms, formal threat modeling, and continuous vulnerability scanning. No critical vulnerabilities have been identified in the core architecture..
 
 ## 🌐 Threat Landscape and Attack Surface
 
@@ -81,7 +81,7 @@ export class SecurityBoundaryManager {
     
     // Data boundary
     this.boundaries.set('data', new DataSecurityBoundary({
-      redactPII: true,
+      privacy: true,
       validateResponses: true,
       sanitizeInputs: true,
       enforceDataMinimization: true

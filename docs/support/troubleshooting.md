@@ -205,7 +205,7 @@ class DistributedCacheManager extends CacheManager {
 ✅ **Versioned Cache Keys**:
 ```javascript
 function generateCacheKey(query, context) {
-  const schemaVersion = 'v2.3'; // Increment on breaking changes
+  const schemaVersion = 'v0.1.8'; // Increment on breaking changes
   const jurisdiction = context.jurisdiction || 'global';
   const legalBasis = context.legalBasis || 'legitimate-interest';
   

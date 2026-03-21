@@ -211,7 +211,7 @@ RDAPify abstracts away RDAP complexity while maintaining privacy and compliance:
 // With RDAPify: consistent interface regardless of registry
 import { RDAPClient } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 const domainData = await client.domain('example.com');
 const ipData = await client.ip('8.8.8.8');
 const asnData = await client.asn(15169);
@@ -227,8 +227,8 @@ RDAPify transforms registry-specific responses into a consistent data model:
 ### 3. Privacy-by-Default Design
 ```javascript
 const client = new RDAPClient({
-  redactPII: true, // Enabled by default
-  cacheOptions: {
+  privacy: true, // Enabled by default
+  cache: {
     redactBeforeStore: true // Redact before caching
   }
 });
@@ -277,8 +277,8 @@ import { RDAPClient } from 'rdapify';
 
 async function checkDomainSecurity(domain) {
   const client = new RDAPClient({ 
-    redactPII: true,
-    cacheOptions: { ttl: 3600 } // 1 hour cache
+    privacy: true,
+    cache: { ttl: 3600 } // 1 hour cache
   });
   
   try {

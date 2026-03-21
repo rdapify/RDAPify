@@ -102,7 +102,7 @@ To configure the redaction fields or replacement text:
 ```typescript
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     redactFields: ['email', 'phone', 'fax'],
     redactionText: '[REDACTED]',
   },

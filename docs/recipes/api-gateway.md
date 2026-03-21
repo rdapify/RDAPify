@@ -74,7 +74,7 @@ export class RDAPGateway {
   constructor(options: GatewayOptions) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
     });
@@ -154,7 +154,7 @@ export class RDAPGateway {
       const result = await this.rdapClient.domain(domain, {
         tenantId,
         clientId,
-        redactPII: req.tenant?.redactPII ?? true,
+        privacy: req.tenant?.redactPII ?? true,
         legalBasis: req.tenant?.legalBasis
       });
       
@@ -607,7 +607,7 @@ export class SecurityEnforcer {
     const defaultPolicy: TenantPolicy = {
       id: 'default',
       jurisdiction: 'global',
-      redactPII: true,
+      privacy: true,
       allowRawPII: false,
       doNotSell: false,
       dataResidency: [],

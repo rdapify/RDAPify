@@ -260,7 +260,7 @@ class DistributedCacheManager extends CacheManager {
 ```javascript
 // Include schema version in cache keys
 function generateCacheKey(query, context) {
-  const schemaVersion = 'v2.3'; // Increment on breaking changes
+  const schemaVersion = 'v0.1.8'; // Increment on breaking changes
   const jurisdiction = context.jurisdiction || 'global';
   const legalBasis = context.legalBasis || 'legitimate-interest';
   
@@ -384,8 +384,8 @@ app.get('/domain/:domain', async (req, res) => {
 
 **Symptoms**:
 ```log
-Deprecated: The 'bootstrapUrl' option is deprecated in v2.3 and will be removed in v3.0.
-Use 'registryUrl' instead. See migration guide at https://rdapify.dev/docs/migrations/v2.3-to-v3.0
+Deprecated: The 'bootstrapUrl' option is deprecated — see CHANGELOG for current status.
+Use 'registryUrl' instead. See migration guide at https://github.com/rdapify/RDAPify/blob/main/CHANGELOG.md
 ```
 
 **Root Causes**:
@@ -406,7 +406,7 @@ npx rdapify deprecation-report --output deprecations.md
 ✅ **Automated Migration**:
 ```bash
 # Run automated migration tool
-npx rdapify migrate --from v2.2 --to v2.3 --backup
+
 
 # Review changes
 git diff

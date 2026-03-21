@@ -103,7 +103,7 @@ export class FixtureLoader {
     this.config = {
       basePath: join(__dirname, '../../test/fixtures'),
       cacheEnabled: true,
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'global',
       cacheTTL: 300000, // 5 minutes
       ...config
@@ -344,7 +344,7 @@ export class ComplianceFixtureGenerator {
   async generateGDPRFixture(originalFixture: any): Promise<any> {
     // Generate GDPR-compliant fixture with appropriate redaction
     return this.fixtureLoader.loadFixture('domains/example-com.json', {
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU',
       transform: (data) => ({
         ...data,
@@ -373,7 +373,7 @@ export class ComplianceFixtureGenerator {
   async generateCCPAFixture(originalFixture: any): Promise<any> {
     // Generate CCPA-compliant fixture
     return this.fixtureLoader.loadFixture('domains/example-com.json', {
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'US-CA',
       transform: (data) => ({
         ...data,

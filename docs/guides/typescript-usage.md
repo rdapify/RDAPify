@@ -375,7 +375,7 @@ describe('Domain Query Service', () => {
   let client: RDAPClient;
   
   beforeEach(() => {
-    client = new RDAPClient({ redactPII: true });
+    client = new RDAPClient({ privacy: true });
   });
   
   test('returns valid DomainResponse structure', async () => {
@@ -589,7 +589,7 @@ async function processDomainBatch(domains: string[]) {
   const processor = new DomainBatchProcessor(domains, {
     concurrency: 10,
     batchSize: 50,
-    redactPII: true
+    privacy: true
   });
   
   for await (const result of processor) {
@@ -718,7 +718,7 @@ class AdvancedRDAPService {
 import { Request, Response, NextFunction } from 'express';
 import { RDAPClient, DomainResponse } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 // Custom error type
 class RDAPAPIError extends Error {
@@ -1001,7 +1001,7 @@ export class DomainService {
   private client: any;
   
   constructor() {
-    this.client = new RDAPClient({ redactPII: true });
+    this.client = new RDAPClient({ privacy: true });
   }
   
   // Gradually add types as you verify correctness
@@ -1015,7 +1015,7 @@ export class DomainService {
   private client: RDAPClient;
   
   constructor() {
-    this.client = new RDAPClient({ redactPII: true });
+    this.client = new RDAPClient({ privacy: true });
   }
   
   async lookupDomain(
@@ -1023,7 +1023,7 @@ export class DomainService {
     options: { redactPII?: boolean; timeout?: number } = {}
   ): Promise<DomainResponse> {
     return this.client.domain(domain, {
-      redactPII: options.redactPII ?? true,
+      privacy: options.redactPII ?? true,
       timeout: options.timeout ?? 8000
     });
   }
@@ -1083,7 +1083,7 @@ function getDomainData(
   }
   
   return rdapClient.domain(domain, {
-    redactPII: context.userRole !== 'admin',
+    privacy: context.userRole !== 'admin',
     includeRaw: context.isComplianceAudit
   });
 }

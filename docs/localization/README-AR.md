@@ -86,7 +86,7 @@ import { RDAPClient } from 'rdapify';
 // إنشاء عميل آمن مع إعدادات محسّنة
 const client = new RDAPClient({
   cache: true, // تخزين مؤقت تلقائي (TTL ساعة واحدة)
-  redactPII: true, // إخفاء المعلومات الشخصية تلقائياً
+  privacy: true, // إخفاء المعلومات الشخصية تلقائياً
   retry: {
     // إعادة محاولة ذكية للفشل المؤقت
     maxAttempts: 3,

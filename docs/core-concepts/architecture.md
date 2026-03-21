@@ -198,10 +198,6 @@ Enhanced HTTP client with security protections:
 const fetcher = new SecureFetcher({
   blockPrivateIPs: true,
   blockCloudMetadata: true,
-  tlsOptions: {
-    minVersion: 'TLSv1.3',
-    ciphers: 'HIGH:!aNULL:!kRSA:!PSK:!SRP:!MD5:!RC4'
-  }
 });
 
 // This request would be blocked
@@ -267,14 +263,9 @@ graph LR
 // Security-focused default configuration
 const client = new RDAPClient({
   // Privacy protections enabled by default
-  redactPII: true,
+  privacy: true,
   
   // Security settings
-  httpsOptions: {
-    minVersion: 'TLSv1.3',
-    rejectUnauthorized: true,
-    secureProtocol: 'TLSv1_3_method'
-  },
   
   // Network protections
   fetcher: new SecureFetcher({
@@ -283,7 +274,7 @@ const client = new RDAPClient({
   }),
   
   // Caching with protection
-  cacheOptions: {
+  cache: {
     redactBeforeStore: true,
     maxAge: 3600 // 1 hour
   }
@@ -356,22 +347,16 @@ flowchart TD
 - Backpressure mechanisms to prevent overload
 
 ### Offline Mode Architecture
-RDAPify supports graceful offline operation:
-- Local bootstrap data cache with versioning
-- Stale-while-revalidate strategy for cached responses
-- Offline-first design for critical operations
-- Background synchronization when connectivity resumes
+
+> **Planned feature** — Dedicated offline mode is not yet available in v0.1.8.
+
+For resilience, RDAPify's built-in cache serves responses during transient registry outages. Configure a longer TTL to extend coverage:
 
 ```typescript
 const client = new RDAPClient({
-  offlineMode: {
-    enabled: true,
-    maxStaleAge: 86400, // 24 hours
-    bootstrapCachePath: './bootstrap-data'
-  }
+  cache: { strategy: 'memory', ttl: 86400 }, // keep responses for 24 hours
 });
 
-// This will use cached bootstrap data if offline
 const result = await client.domain('example.com');
 ```
 

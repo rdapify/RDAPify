@@ -41,7 +41,7 @@ import { RDAPClient } from 'rdapify';
 // إنشاء عميل آمن مع إعدادات مثلى
 const client = new RDAPClient({
   cache: true,          // التخزين المؤقت التلقائي (1 ساعة TTL)
-  redactPII: true,      // إخفاء تلقائي للمعلومات الشخصية
+  privacy: true,      // إخفاء تلقائي للمعلومات الشخصية
   retry: {              // إعادة المحاولة الذكية للأعطال المؤقتة
     maxAttempts: 3,
     backoff: 'exponential'
@@ -106,7 +106,7 @@ const client = new RDAPClient({
   whitelistRDAPServers: true,  // استخدام خوادم RDAP IANA فقط
   
   // الامتثال للخصوصية
-  redactPII: true,             // معالجة البيانات المتوافقة مع الأنظمة العربية
+  privacy: true,             // معالجة البيانات المتوافقة مع الأنظمة العربية
   includeRaw: false,           // عدم تخزين الاستجابات الخام
   
   // حماية الموارد

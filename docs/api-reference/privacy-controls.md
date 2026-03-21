@@ -21,7 +21,7 @@ const client = new RDAPClient({ privacy: false });
 ```typescript
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     redactFields: ['email', 'phone', 'fax'],  // fields to redact (default)
     redactionText: '[REDACTED]',               // replacement value (default)
   },
@@ -33,7 +33,7 @@ To redact additional fields:
 ```typescript
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     redactFields: ['email', 'phone', 'fax', 'adr', 'url'],
   },
 });

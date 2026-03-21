@@ -75,7 +75,7 @@ export class EntityRelationshipEngine {
   } = {}) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
     });
@@ -94,7 +94,7 @@ export class EntityRelationshipEngine {
     
     // Start with domain resolution
     const domainData = await this.rdapClient.domain(domain, {
-      redactPII: context.redactPII,
+      privacy: context.redactPII,
       legalBasis: context.legalBasis
     });
     
@@ -145,7 +145,7 @@ export class EntityRelationshipEngine {
     for (const ns of domainData.nameservers || []) {
       try {
         const nsData = await this.rdapClient.domain(ns, {
-          redactPII: context.redactPII,
+          privacy: context.redactPII,
           cache: true
         });
         
@@ -173,7 +173,7 @@ export class EntityRelationshipEngine {
     for (const ip of domainData.ipAddresses || []) {
       try {
         const ipData = await this.rdapClient.ip(ip, {
-          redactPII: context.redactPII,
+          privacy: context.redactPII,
           cache: true
         });
         
@@ -197,7 +197,7 @@ export class EntityRelationshipEngine {
         // Process ASN if available
         if (ipData.asn && !processedHandles.has(ipData.asn)) {
           const asnData = await this.rdapClient.asn(ipData.asn, {
-            redactPII: context.redactPII,
+            privacy: context.redactPII,
             cache: true
           });
           

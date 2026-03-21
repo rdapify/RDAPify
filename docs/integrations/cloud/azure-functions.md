@@ -147,7 +147,7 @@ module.exports = async function (context, req) {
 // rdap-config.js
 module.exports = {
   // Memory-optimized configuration
-  cacheOptions: {
+  cache: {
     // Azure Functions has limited memory - use LRU cache with strict limits
     l1: {
       type: 'memory',
@@ -168,10 +168,10 @@ module.exports = {
   
   // Azure-specific timeouts
   timeout: 25000,    // 25 seconds (under Azure 5-minute limit)
-  retries: 2,        // Limited retries to avoid timeout
+  retry: { maxAttempts: 2 },        // Limited retries to avoid timeout
   
   // Security hardening
-  redactPII: true,
+  privacy: true,
   blockPrivateIPs: true,
   blockCloudMeta true,
   
@@ -859,7 +859,7 @@ module.exports = async function (context, req) {
     
     // Process with tenant-specific settings
     const result = await client.domain(req.query.domain, {
-      redactPII: tenantConfig.privacySettings.redactPII,
+      privacy: tenantConfig.privacySettings.redactPII,
       maxRetentionDays: tenantConfig.retentionPolicy.days,
       tenantId
     });
@@ -884,7 +884,7 @@ async function getTenantConfiguration(tenantId, context) {
     context.log.error(`Failed to get tenant config for ${tenantId}:`, error);
     // Return default tenant configuration
     return {
-      privacySettings: { redactPII: true },
+      privacySettings: { privacy: true },
       retentionPolicy: { days: 30 },
       rateLimits: { maxRequests: 100, windowMinutes: 1 }
     };

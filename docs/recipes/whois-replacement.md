@@ -90,7 +90,7 @@ export class WHOISBridge {
   } = { whoisCompatibility: {} }) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
     });
@@ -306,7 +306,7 @@ export class GDPRCompliantWHOIS {
     try {
       // Get domain data with privacy context
       const result = await this.rdapClient.domain(domain, {
-        redactPII: true,
+        privacy: true,
         legalBasis: requestContext.legalBasis || 'legitimate-interest',
         consent: requestContext.consent,
         jurisdiction: requestContext.jurisdiction
@@ -606,7 +606,7 @@ export class BatchWHOISProcessor {
                 domain,
                 result: await this.rdapClient.domain(domain, {
                   cache: true,
-                  redactPII: true,
+                  privacy: true,
                   timeout: job.options.timeout || 5000
                 }),
                 status: 'success'
@@ -834,7 +834,7 @@ export class EnterpriseMigrationFramework {
         const batchResults = await Promise.all(
           batch.map(domain => this.rdapClient.domain(domain, {
             cache: true,
-            redactPII: true,
+            privacy: true,
             securityContext: {
               migrationId: step.migrationId,
               stepId: step.id,

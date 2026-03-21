@@ -117,7 +117,7 @@ const client = new RDAPClient({
     failoverStrategy: 'nearest-region',
     consistencyLevel: 'eventual' // or 'session', 'strong'
   }),
-  cacheOptions: {
+  cache: {
     ttl: {
       // Regional TTL policies
       eu: { default: 7200 },    // 2 hours for EU data

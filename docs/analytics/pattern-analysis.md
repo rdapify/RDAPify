@@ -69,7 +69,7 @@ export class TemporalPatternEngine {
   } = {}) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
     });

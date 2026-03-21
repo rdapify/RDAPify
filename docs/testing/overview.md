@@ -279,7 +279,7 @@ describe('Performance Benchmarks', () => {
   
   bench('PII redaction - GDPR mode', async () => {
     const client = createTestClient({ 
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU'
     });
     
@@ -386,7 +386,7 @@ describe('GDPR Compliance', () => {
 
   test('redacts PII in domain responses for EU jurisdiction', async () => {
     const client = createTestClient({
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU',
       legalBasis: 'legitimate-interest'
     });
@@ -418,7 +418,7 @@ describe('GDPR Compliance', () => {
   
   test('blocks queries without legal basis in strict mode', async () => {
     const client = createTestClient({
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU',
       legalBasis: null,
       strictCompliance: true
@@ -431,7 +431,7 @@ describe('GDPR Compliance', () => {
   
   test('includes data retention period in responses', async () => {
     const client = createTestClient({
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU',
       legalBasis: 'consent',
       dataRetentionDays: 30

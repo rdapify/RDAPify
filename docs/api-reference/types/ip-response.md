@@ -115,7 +115,7 @@ entities: {
 }
 ```
 
-> **🔐 Privacy Note:** When `redactPII: true` (default), personal entity data is automatically redacted:
+> **🔐 Privacy Note:** When `privacy: true` (default), personal entity data is automatically redacted:
 > ```json
 > {
 >   "entities": {
@@ -243,7 +243,7 @@ const result = await client.ip('169.254.169.254');
 // Throws RDAP_SSRF_ATTEMPT error - blocked by default
 ```
 
-> **🔐 Critical Security Note:** IP registration data can reveal organizational attack surface. Always maintain `redactPII: true` and limit geographic specificity to what's required for your use case. Never expose unredacted IP registration data in client-facing applications without explicit legal basis and Data Protection Officer approval.
+> **🔐 Critical Security Note:** IP registration data can reveal organizational attack surface. Always maintain `privacy: true` and limit geographic specificity to what's required for your use case. Never expose unredacted IP registration data in client-facing applications without explicit legal basis and Data Protection Officer approval.
 
 ---
 
@@ -253,7 +253,7 @@ const result = await client.ip('169.254.169.254');
 ```typescript
 import { RDAPClient, IPResponse } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 async function getIPInfo(ip: string): Promise<void> {
   try {
@@ -334,7 +334,7 @@ boundaries.forEach(b => {
 async function getIPReputation(ip: string): Promise<IPReputation> {
   try {
     const ipData = await client.ip(ip, {
-      redactPII: true,
+      privacy: true,
       priority: 'high' // Higher priority for security monitoring
     });
     
@@ -441,7 +441,7 @@ const blockResult = await client.ip('8.8.8.0/24');
 ```typescript
 // ✅ GOOD: Adaptive caching based on network stability
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     ttl: {
       default: 86400,           // 24 hours for most allocations (infrequent changes)
       infrastructure: 3600,     // 1 hour for critical infrastructure
@@ -518,7 +518,7 @@ describe('IP SSRF Protection', () => {
   let client: RDAPClient;
   
   beforeAll(() => {
-    client = new RDAPClient({ redactPII: true });
+    client = new RDAPClient({ privacy: true });
   });
   
   test('blocks private IP lookups', async () => {
@@ -671,8 +671,8 @@ await client.ip('2001:4860:8::'); // Compressed IPv6
 | **Geolocation Support** | ✅ Country-level (registry data), city-level (external sources) |
 | **Caching Support** | ✅ (In-memory, Redis, custom adapters) |
 | **Offline Support** | ✅ (With staleness controls) |
-| **GDPR Compliant** | ✅ (With redactPII: true) |
-| **CCPA Compliant** | ✅ (With redactPII: true) |
+| **GDPR Compliant** | ✅ (With privacy: true) |
+| **CCPA Compliant** | ✅ (With privacy: true) |
 | **Last Updated** | December 5, 2025 |
 | **Benchmark Environment** | Node.js 18.17.0, AWS c5.large, Redis 7.0 |
 

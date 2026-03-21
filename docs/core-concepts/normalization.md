@@ -619,7 +619,7 @@ const client = new RDAPClient({
 ### 2. Custom Redaction Rules
 ```typescript
 const client = new RDAPClient({
-  redactPII: true,
+  privacy: true,
   customRedactionRules: {
     email: (value, context) => {
       if (context.domain.endsWith('.edu')) {

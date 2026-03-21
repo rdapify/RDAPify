@@ -12,17 +12,13 @@
 ### Core Security Settings
 - [ ] **PII Redaction Enabled**  
   ```javascript
-  const client = new RDAPClient({ redactPII: true }); // Default is true, verify not disabled
+  const client = new RDAPClient({ privacy: true }); // Default is true, verify not disabled
   ```
 - [ ] **TLS Enforcement**  
   Verified TLS 1.3+ with certificate pinning for critical deployments:
   ```javascript
   const client = new RDAPClient({
-    httpsOptions: {
-      minVersion: 'TLSv1.3',
-      ca: trustedCertificateAuthorities,
-      rejectUnauthorized: true
-    }
+    // TLS 1.3 is used automatically — configure via system-level TLS settings
   });
   ```
 - [ ] **SSRF Protection**  
@@ -54,7 +50,7 @@
 - [ ] **Data Retention Policy**  
   Automatic cache expiration aligned with legal requirements:
   ```javascript
-  cacheOptions: {
+  cache: {
     ttl: 86400, // 24 hours maximum for PII-containing data
     autoPurge: true
   }
@@ -79,7 +75,7 @@
   Configured with exponential backoff and circuit breaker:
   ```javascript
   const client = new RDAPClient({
-    retries: 3,
+    retry: { maxAttempts: 3 },
     backoff: 'exponential',
     circuitBreaker: {
       threshold: 5, // Open after 5 failures

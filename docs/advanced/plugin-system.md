@@ -360,7 +360,7 @@ const client = new RDAPClient({
   ],
   // Other RDAP client configuration
   cache: true,
-  redactPII: true,
+  privacy: true,
   timeout: 5000
 });
 

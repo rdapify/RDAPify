@@ -136,7 +136,7 @@ describe('SSRF Protection Tests', () => {
     allowPrivateIPs: false,
     whitelistRDAPServers: true,
     validateCertificates: true,
-    redactPII: true,
+    privacy: true,
     timeout: 5000,
     cache: false
   });
@@ -195,7 +195,7 @@ import { detectPII } from '../../src/security/pii-detection';
 
 describe('PII Redaction Tests', () => {
   const client = new RDAPClient({
-    redactPII: true,
+    privacy: true,
     includeRaw: false,
     cache: false,
     timeout: 5000
@@ -228,7 +228,7 @@ describe('PII Redaction Tests', () => {
 
   test('redacts PII fields in normalized response', async () => {
     const result = await client.processRawResponse(piiTestVector, {
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU'
     });
 
@@ -245,7 +245,7 @@ describe('PII Redaction Tests', () => {
 
   test('maintains GDPR compliance metadata', async () => {
     const result = await client.processRawResponse(piiTestVector, {
-      redactPII: true,
+      privacy: true,
       jurisdiction: 'EU',
       legalBasis: 'legitimate-interest'
     });
@@ -278,7 +278,7 @@ describe('Performance Benchmarks', () => {
   beforeAll(() => {
     client = new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       maxConcurrent: 10,
       timeout: 5000,
       retry: { maxAttempts: 2, backoff: 'exponential' }
@@ -459,7 +459,7 @@ describe('Registry Integration Tests', () => {
     // Initialize client with test configuration
     client = new RDAPClient({
       cache: false, // Disable cache for integration tests
-      redactPII: false, // Preserve data for validation
+      privacy: false, // Preserve data for validation
       timeout: 10000, // Longer timeout for registry tests
       retry: { maxAttempts: 1, backoff: 'none' }, // Fail fast on errors
       rateLimit: { max: 10, window: 60000 } // Respect registry rate limits
@@ -582,7 +582,7 @@ export class TestVectorLoader {
     
     const client = new (await import('../../src/client')).RDAPClient({
       cache: false,
-      redactPII: false,
+      privacy: false,
       timeout: 30000
     });
     
@@ -843,7 +843,7 @@ import { isValidDomain, isValidIP } from '../../src/validation';
 
 const client = new RDAPClient({
   cache: false,
-  redactPII: true,
+  privacy: true,
   timeout: 10000
 });
 
@@ -971,7 +971,7 @@ describe('Resilience Testing', () => {
   beforeAll(() => {
     client = new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       retry: { maxAttempts: 3, backoff: 'exponential' },
       timeout: 5000,
       circuitBreaker: {

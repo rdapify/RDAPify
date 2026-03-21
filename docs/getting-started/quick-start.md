@@ -81,7 +81,7 @@ const client = new RDAPClient({
   privacy: true,               // shorthand: enable with defaults
   // or fine-grained:
   privacy: {
-    redactPII: true,
+    privacy: true,
     redactFields: ['email', 'phone', 'fax'],
     redactionText: '[REDACTED]',
   },

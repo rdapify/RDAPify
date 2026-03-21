@@ -45,32 +45,25 @@ RDAPify implements **opt-in security** with privacy-preserving defaults:
 // ✅ GOOD: Secure default configuration
 const client = new RDAPClient({
   // PII redaction enabled by default
-  redactPII: true,
+  privacy: true,
   
   // Network security defaults
   blockPrivateIPs: true,
   blockCloudMeta true,
   
   // Cache security
-  cacheOptions: {
+  cache: {
     redactBeforeStore: true,
     maxAge: 2592000 // 30 days maximum
   },
   
   // Transport security
-  tlsOptions: {
-    minVersion: 'TLSv1.3',
-    rejectUnauthorized: true
-  }
 });
 
 // ❌ AVOID: Disabling security defaults without justification
 const insecureClient = new RDAPClient({
-  redactPII: false, // Never disable without documented legal basis
-  blockPrivateIPs: false, // SSRF vulnerability
-  tlsOptions: {
-    rejectUnauthorized: false // MITM vulnerability
-  }
+  privacy: false,                               // Never disable without documented legal basis
+  ssrfProtection: { blockPrivateIPs: false },   // SSRF vulnerability
 });
 ```
 
@@ -328,7 +321,7 @@ describe('Security Tests', () => {
   
   beforeEach(() => {
     client = new RDAPClient({
-      redactPII: true,
+      privacy: true,
       ssrfProtection: {
         blockPrivateIPs: true,
         blockCloudMetadata: true,

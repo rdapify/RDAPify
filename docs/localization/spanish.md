@@ -41,7 +41,7 @@ import { RDAPClient } from 'rdapify';
 // Crear cliente seguro con configuración optimizada
 const client = new RDAPClient({
   cache: true,          // Caché automático (1 hora TTL)
-  redactPII: true,      // Redactar automáticamente información personal
+  privacy: true,      // Redactar automáticamente información personal
   retry: {              // Reintentos inteligentes para fallos transitorios
     maxAttempts: 3,
     backoff: 'exponential'
@@ -107,7 +107,7 @@ const client = new RDAPClient({
   whitelistRDAPServers: true,  // Usar solo servidores RDAP de IANA
   
   // Cumplimiento de privacidad
-  redactPII: true,             // Manejo de datos compatible con GDPR/LFPDPPP
+  privacy: true,             // Manejo de datos compatible con GDPR/LFPDPPP
   includeRaw: false,           // No almacenar respuestas crudas
   
   // Protección de recursos

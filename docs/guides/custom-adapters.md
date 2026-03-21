@@ -1250,7 +1250,7 @@ class EnterpriseRedisClusterAdapter implements CacheAdapter {
     };
   }) {
     this.options = {
-      redactPII: true,
+      privacy: true,
       ...options
     };
     

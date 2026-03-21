@@ -421,7 +421,7 @@ describe('Normalization Property Tests', () => {
           rawResponse: fc.anything(),
           registryType: fc.constantFrom('verisign', 'arin', 'ripe', 'apnic', 'lacnic'),
           options: fc.record({
-            redactPII: fc.boolean(),
+            privacy: fc.boolean(),
             includeRaw: fc.boolean()
           })
         }),

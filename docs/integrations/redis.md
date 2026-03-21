@@ -199,7 +199,7 @@ export class RedisRDAPClient extends RDAPClient {
         }
       },
       // Default security settings
-      redactPII: true,
+      privacy: true,
       allowPrivateIPs: false,
       validateCertificates: true,
       timeout: 5000,
@@ -1137,7 +1137,7 @@ export interface TenantConfig {
   cachePrefix: string;
   rateLimit: { max: number; window: number };
   retentionPeriod: number; // seconds
-  redactPII: boolean;
+  privacy: boolean;
   allowedIPs: string[];
   features: string[];
 }
@@ -1176,7 +1176,7 @@ export class TenantManager {
               window: parseInt(tenantData.rateLimitWindow || '60000')
             },
             retentionPeriod: parseInt(tenantData.retentionPeriod || '86400'),
-            redactPII: tenantData.redactPII !== 'false',
+            privacy: tenantData.redactPII !== 'false',
             allowedIPs: tenantData.allowedIPs ? tenantData.allowedIPs.split(',') : [],
             features: tenantData.features ? tenantData.features.split(',') : ['basic']
           };
@@ -1218,7 +1218,7 @@ export class TenantManager {
       rateLimitMax: tenant.rateLimit.max.toString(),
       rateLimitWindow: tenant.rateLimit.window.toString(),
       retentionPeriod: tenant.retentionPeriod.toString(),
-      redactPII: tenant.redactPII.toString(),
+      privacy: tenant.redactPII.toString(),
       allowedIPs: tenant.allowedIPs.join(','),
       features: tenant.features.join(',')
     });
@@ -1644,7 +1644,7 @@ describe('Redis Integration Tests', () => {
     // Initialize Redis client
     client = new RedisRDAPClient({
       cacheTTL: 10, // Short TTL for testing
-      redactPII: true
+      privacy: true
     });
   });
   
@@ -1809,7 +1809,7 @@ async function runBenchmarks() {
   // Initialize client
   const client = new RedisRDAPClient({
     cacheTTL: 3600,
-    redactPII: true,
+    privacy: true,
     maxConcurrent: 10
   });
   

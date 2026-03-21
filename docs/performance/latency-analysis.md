@@ -715,7 +715,7 @@ async function edgeOptimizedDomainQuery(domain: string): Promise<any> {
   const client = new RDAPClient({
     timeout: 3000, // 3 seconds max (edge constraint)
     cache: false,  // Edge cache handled separately
-    redactPII: true,
+    privacy: true,
     maxConcurrent: 3, // Lower concurrency for edge constraints
     registryPriorities: getRegionalRegistryPriorities()
   });

@@ -71,7 +71,7 @@ graph TD
 | **ioredis** | 5.0.0 | 5.3.2 | ✅ | Critical | None (LTS compatible) |
 | **undici** | 5.20.0 | 5.28.3 | ✅ | Critical | None (LTS compatible) |
 | **redis** | 4.0.0 | 4.6.12 | ✅ | Critical | None (LTS compatible) |
-| **lru-cache** | 7.0.0 | 9.1.2 | ✅ | High | Version 6.x deprecated in v2.3 |
+| **lru-cache** | 7.0.0 | 9.1.2 | ✅ | High | Version 6.x deprecated |
 | **jsonpath-plus** | 7.0.0 | 7.2.0+fork | ✅ | High | Custom fork required |
 | **fast-json-stringify** | 3.0.0 | 3.1.0 | ⚠️ | Medium | Optional for performance |
 | **@types/node** | 18.0.0 | 20.8.0 | ✅ | High | None (LTS compatible) |

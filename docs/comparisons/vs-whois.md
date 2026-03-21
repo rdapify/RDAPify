@@ -101,7 +101,7 @@ function redactWhoisData(data: string): string {
 // RDAPify with automatic PII redaction
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     redactionPolicy: {
       fields: ['email', 'phone', 'address', 'fn', 'org'],
       patterns: [/contact/i, /personal/i],
@@ -148,7 +148,7 @@ async function reliableWhoisLookup(domain: string) {
       else bail(error); // Don't retry permanent errors
     }
   }, {
-    retries: 3,
+    retry: { maxAttempts: 3 },
     minTimeout: 1000,
     factor: 2
   });
@@ -296,12 +296,12 @@ class HybridRDAPService {
   private rdapClient = new RDAPClient({
     fallbackToWhois: true, // Enable fallback mode
     cache: true,
-    redactPII: true
+    privacy: true
   });
   
   private whoisClient = new WhoisClient({
     timeout: 8000,
-    retries: 2
+    retry: { maxAttempts: 2 }
   });
   
   async lookup(domain: string): Promise<any> {
@@ -330,7 +330,7 @@ migrationService.on('fallbackUsed', (domain, error) => {
 // Phase 3: Pure RDAPify after validation
 const productionClient = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   timeout: 5000,
   retry: {
     maxAttempts: 3,

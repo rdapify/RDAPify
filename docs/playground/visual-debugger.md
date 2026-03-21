@@ -234,7 +234,7 @@ const errorStateMachine = {
 const debuggingSession = {
   query: 'example.com',
   securityContext: {
-    redactPII: true,
+    privacy: true,
     allowPrivateIPs: false,
     validateCertificates: true,
     rateLimit: { max: 100, window: 60000 },

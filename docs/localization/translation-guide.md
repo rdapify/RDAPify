@@ -75,7 +75,7 @@ Legal terms must be translated using jurisdiction-approved terminology:
 ✅ CORRECT:
 ```javascript
 const client = new RDAPClient({
-  redactPII: true,
+  privacy: true,
   validateCertificates: true
 });
 ```
@@ -163,7 +163,7 @@ Branching strategy:
 git checkout -b localize/v3.0/es
 
 # For minor updates
-git checkout -b localize/v2.2/ru
+git checkout -b localize/v0.1.8/ru
 
 # For urgent security fixes
 git checkout -b localize/security-fix/ar
@@ -225,7 +225,7 @@ Special considerations for RTL languages:
 <div dir="rtl" lang="ar">
   <p>يتضمن هذا المستند إرشادات تقنية حول بروتوكول RDAP</p>
   <div class="code-sample" dir="ltr">
-    <code>const client = new RDAPClient({ redactPII: true });</code>
+    <code>const client = new RDAPClient({ privacy: true });</code>
   </div>
 </div>
 ```
@@ -251,7 +251,7 @@ Special considerations for CJK languages:
 // 创建RDAP客户端 with security defaults
 // 创建 = create, with = 使用, security defaults = 安全默认设置
 const client = new RDAPClient({
-  redactPII: true, // 自动隐藏个人身份信息
+  privacy: true, // 自动隐藏个人身份信息
   timeout: 5000    // 5秒超时
 });
 ```

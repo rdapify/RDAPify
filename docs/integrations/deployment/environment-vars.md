@@ -833,7 +833,7 @@ const config = {
   cacheTTL: parseInt(process.env.RDAP_CACHE_TTL || '1800', 10),
   timeout: parseInt(process.env.RDAP_TIMEOUT || '5000', 10),
   maxConcurrent: parseInt(process.env.RDAP_MAX_CONCURRENT || '10', 10),
-  redactPII: (process.env.RDAP_REDACT_PII || 'true').toLowerCase() === 'true',
+  privacy: (process.env.RDAP_REDACT_PII || 'true').toLowerCase() === 'true',
   gdprEnabled: (process.env.GDPR_ENABLED || 'false').toLowerCase() === 'true',
   gdprRetentionDays: parseInt(process.env.GDPR_RETENTION_DAYS || '30', 10)
 };

@@ -150,7 +150,7 @@ app.listen(port, () => {
 // rdap-config.js
 module.exports = {
   // Memory and CPU optimized for Cloud Run
-  cacheOptions: {
+  cache: {
     // Cloud Run has limited local storage - use LRU cache with strict limits
     l1: {
       type: 'memory',
@@ -171,11 +171,11 @@ module.exports = {
   
   // Cloud Run timeouts and concurrency
   timeout: 295000,    // 4m55s (under Cloud Run 5m limit)
-  retries: 2,         // Limited retries to avoid timeout
+  retry: { maxAttempts: 2 },         // Limited retries to avoid timeout
   maxConcurrency: 80, // Optimized for Cloud Run container
   
   // Security hardening for GCP
-  redactPII: true,
+  privacy: true,
   blockPrivateIPs: true,
   blockCloudMeta true,
   
@@ -313,7 +313,7 @@ async function initializeApplication() {
     
     // Configure RDAP client with secrets
     const client = new RDAPClient({
-      cacheOptions: {
+      cache: {
         l2: {
           type: 'redis',
           connectionString: secrets.REDIS_CONNECTION_STRING,

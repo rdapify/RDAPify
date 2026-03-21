@@ -1,5 +1,8 @@
 # 🛠️ `Utilities` Reference
 
+> **Planned feature** — The `rdapify/utilities` sub-path described here is not yet published. In v0.1.8 all exports are available from the main `rdapify` entry point.
+
+
 > **🎯 Purpose:** Complete reference for utility functions and helper methods that enhance RDAPify functionality and developer experience  
 > **📚 Related:** [Client API](client.md) | [Types Reference](types/index.md) | [Security Utilities](../../security/utilities.md)  
 > **⏱️ Reading Time:** 5 minutes  
@@ -47,10 +50,10 @@ flowchart TD
 All utilities are **tree-shakeable** and can be imported individually:
 ```typescript
 // Import only what you need
-import { normalizeResponse, redactPII } from 'rdapify/utilities';
+import { normalizeResponse, redactPII } from 'rdapify';
 
 // Or import everything as a namespace
-import * as rdapUtils from 'rdapify/utilities';
+import * as rdapUtils from 'rdapify';
 ```
 
 ---
@@ -96,7 +99,7 @@ const rawVerisignResponse = {
 
 const normalized = utility.normalizeResponse(rawVerisignResponse, {
   registry: 'verisign',
-  redactPII: true
+  privacy: true
 });
 
 console.log(normalized.domain); // 'example.com'
@@ -490,7 +493,7 @@ function batchProcessWithConcurrency<T, R>(
 const utility = require('rdapify/utilities');
 
 async function analyzeDomainBatch(domains: string[]) {
-  const client = new RDAPClient({ redactPII: true });
+  const client = new RDAPClient({ privacy: true });
   
   const result = await utility.batchProcessWithConcurrency(
     domains,
@@ -618,7 +621,7 @@ const testVector = utility.createTestVector(rawResponse, {
     queryType: 'domain',
     timestamp: new Date().toISOString()
   },
-  redactPII: true,
+  privacy: true,
   normalize: true
 });
 
@@ -727,7 +730,7 @@ function createProcessingPipeline() {
       const rawResponse = await fetchRDAP(input.domain);
       return utility.normalizeResponse(rawResponse, {
         registry: input.registry,
-        redactPII: true
+        privacy: true
       });
     },
     
@@ -797,7 +800,7 @@ const cachedRedactPII = withCaching(utility.redactPII, redisCache);
 // Usage
 const normalized = await cachedNormalizeResponse(rawResponse, {
   registry: 'verisign',
-  redactPII: true
+  privacy: true
 });
 ```
 
@@ -818,12 +821,12 @@ const normalized = await cachedNormalizeResponse(rawResponse, {
 ### Optimization Strategies
 ```typescript
 // ✅ GOOD: Optimize utility usage patterns
-import { normalizeResponse, redactPII } from 'rdapify/utilities';
+import { normalizeResponse, redactPII } from 'rdapify';
 
 // Cache configuration objects
 const normalizationConfig = {
   registry: 'verisign',
-  redactPII: true,
+  privacy: true,
   preserveRaw: false
 };
 

@@ -185,7 +185,7 @@ services:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health')"]
       interval: 30s
       timeout: 3s
-      retries: 3
+      retry: { maxAttempts: 3 }
 
   redis:
     image: redis:7-alpine

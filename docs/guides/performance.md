@@ -64,7 +64,7 @@ graph LR
 ```typescript
 // ✅ GOOD: Adaptive caching configuration
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     l1: {
       type: 'memory',
       max: 10000,      // 10K entries in memory
@@ -187,8 +187,8 @@ async function optimizedBatchLookup(domains: string[]) {
 ```typescript
 // ✅ GOOD: Privacy-preserving cache configuration
 const client = new RDAPClient({
-  redactPII: true,
-  cacheOptions: {
+  privacy: true,
+  cache: {
     redactBeforeStore: true,
     retentionPolicy: {
       gdprCompliant: true,
@@ -322,7 +322,7 @@ const client = new RDAPClient({
       bandwidthLimit: '100Mbps'
     }
   }),
-  cacheOptions: {
+  cache: {
     regionalTTL: {
       us: { default: 3600 },
       eu: { default: 7200 },
@@ -431,7 +431,7 @@ const client = new RDAPClient({
     },
     sampleRate: 0.1 // 10% sampling for high-volume environments
   },
-  cacheOptions: {
+  cache: {
     metrics: {
       enabled: true,
       provider: 'prometheus',
@@ -504,7 +504,7 @@ app.get('/metrics', (req, res) => {
 // ✅ GOOD: Comprehensive performance testing
 describe('Performance Tests', () => {
   const client = new RDAPClient({
-    cacheOptions: { enabled: true, max: 1000, ttl: 3600 },
+    cache: { enabled: true, max: 1000, ttl: 3600 },
     timeout: 5000
   });
   
@@ -610,10 +610,10 @@ class SecurityOptimizedClient {
   constructor() {
     // Initialize with security-aware defaults
     this.client = new RDAPClient({
-      redactPII: true,
+      privacy: true,
       blockPrivateIPs: true,
       blockCloudMetadata: true,
-      cacheOptions: {
+      cache: {
         redactBeforeStore: true,
         maxStaleAge: 300, // 5 minutes maximum staleness
         criticalMaxStaleAge: 60 // 1 minute for critical domains

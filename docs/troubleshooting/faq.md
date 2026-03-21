@@ -255,7 +255,7 @@ GDPR compliance requires multiple layers of protection:
 const client = new RDAPClient({
   privacy: {
     // PII redaction enabled by default
-    redactPII: true,
+    privacy: true,
     // Jurisdiction detection
     jurisdiction: 'EU',
     // Legal basis for processing
@@ -898,7 +898,7 @@ async function initRDAPClient() {
     },
     security: {
       ssrfProtection: true,
-      redactPII: true
+      privacy: true
     },
     performance: {
       maxConcurrent: 10

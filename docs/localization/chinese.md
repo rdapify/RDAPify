@@ -41,7 +41,7 @@ import { RDAPClient } from 'rdapify';
 // 创建安全客户端，使用优化的默认配置
 const client = new RDAPClient({
   cache: true,          // 自动缓存 (1 小时 TTL)
-  redactPII: true,      // 自动屏蔽个人信息
+  privacy: true,      // 自动屏蔽个人信息
   retry: {              // 智能重试处理临时故障
     maxAttempts: 3,
     backoff: 'exponential'
@@ -106,7 +106,7 @@ const client = new RDAPClient({
   whitelistRDAPServers: true,  // 仅使用 IANA 引导服务器
   
   // 隐私合规
-  redactPII: true,             // GDPR/PIPL 合规的数据处理
+  privacy: true,             // GDPR/PIPL 合规的数据处理
   includeRaw: false,           // 不存储原始响应
   
   // 中国特定合规

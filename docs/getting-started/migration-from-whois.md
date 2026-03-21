@@ -239,7 +239,7 @@ const phone = extractVCardField(registrant, 'tel');
 ```javascript
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     handleRedacted: (field) => {
       console.log(`Field ${field} was redacted for privacy`);
       return '[REDACTED]';

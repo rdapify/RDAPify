@@ -28,7 +28,7 @@ const client = new RDAPClient({
   logging: {
     level: 'debug', // Set default logging level
     format: 'json', // 'json', 'human', or 'syslog'
-    redactPII: true, // Always redact PII in logs
+    privacy: true, // Always redact PII in logs
     sampling: {
       error: 1.0,    // Log all errors
       warn: 1.0,     // Log all warnings

@@ -47,29 +47,25 @@ import { RDAPClient } from 'rdapify';
 // Initialize client with privacy-protecting defaults
 const client = new RDAPClient({
   // Privacy protection (enabled by default)
-  redactPII: true,
+  privacy: true,
   
   // Security settings
-  httpsOptions: {
-    minVersion: 'TLSv1.3',
-    rejectUnauthorized: true
-  },
   
   // Reliability settings
   timeout: 8000, // 8 seconds
-  retries: 2,
+  retry: { maxAttempts: 2 },
   
   // Caching to reduce registry load
-  cacheOptions: {
+  cache: {
     ttl: 3600, // 1 hour
-    max: 100 // Maximum cache entries
+    maxSize: 100
   }
 });
 
 console.log('✅ RDAP client initialized with security defaults');
 ```
 
-> **🔐 Security Note:** These defaults are carefully chosen to meet enterprise security requirements. Never disable `redactPII` without documented legal basis and DPO approval.
+> **🔐 Security Note:** These defaults are carefully chosen to meet enterprise security requirements. Never disable `privacy` without documented legal basis and DPO approval.
 
 ---
 
@@ -306,7 +302,7 @@ testMultipleDomains();
 ```javascript
 // ONLY for development or with legal basis
 const rawResult = await client.domain('example.com', {
-  redactPII: false, // ⚠️ SECURITY RISK
+  privacy: false, // ⚠️ SECURITY RISK
   includeRaw: true
 });
 console.log('Raw RDAP response:', JSON.stringify(rawResult.rawResponse, null, 2));
@@ -383,7 +379,7 @@ Choose your next learning path:
 |-------|-----------|----------|
 | `ECONNREFUSED` | Network connectivity or firewall blocking | Check network access to registry servers |
 | `CERT_HAS_EXPIRED` | TLS certificate validation failure | Update system certificates or check clock sync |
-| Empty registrant data | PII redaction working as expected | This is normal with `redactPII: true` |
+| Empty registrant data | PII redaction working as expected | This is normal with `privacy: true` |
 | Slow queries | Network latency or registry performance | Enable caching, increase timeout |
 | `RDAP_NOT_FOUND` for valid domains | Registry doesn't support RDAP | Implement WHOIS fallback |
 
@@ -394,7 +390,7 @@ For additional help:
 
 ---
 
-> **🔐 Final Reminder:** RDAP data often contains personal information protected by regulations worldwide. RDAPify provides tools for compliance, but you remain responsible for proper usage in your application context. When in doubt, keep `redactPII: true` enabled and consult with legal counsel.
+> **🔐 Final Reminder:** RDAP data often contains personal information protected by regulations worldwide. RDAPify provides tools for compliance, but you remain responsible for proper usage in your application context. When in doubt, keep `privacy: true` enabled and consult with legal counsel.
 
 [← Back to Getting Started](./README.md) | [Next: Playground Guide →](./playground-guide.md)
 

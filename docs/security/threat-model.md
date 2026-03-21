@@ -249,7 +249,7 @@ export class SecurityBoundaryManager {
     
     // Data boundary - PII protection
     this.boundaries.set('data', new DataBoundary({
-      redactPII: true,
+      privacy: true,
       validateResponses: true,
       sanitizeInputs: true,
       enforceDataMinimization: true
@@ -693,7 +693,7 @@ export class RuntimeThreatDetector {
 
 ### 1. Red Team Exercise Results
 **Test Period**: Q4 2025  
-**Scope**: RDAPify v2.3 production endpoints  
+**Scope**: RDAPify v0.1.8 production endpoints  
 **Methodology**: OWASP Testing Guide v4.2 with RDAP-specific extensions  
 
 | Threat Vector | Test Approach | Success Rate | Mitigation Effectiveness |

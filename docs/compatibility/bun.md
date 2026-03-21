@@ -149,7 +149,7 @@ export const bunSecurityConfig = {
     }
   },
   dataProtection: {
-    redactPII: true,
+    privacy: true,
     encryption: {
       // Bun-specific crypto optimizations
       algorithm: 'chacha20-poly1305',

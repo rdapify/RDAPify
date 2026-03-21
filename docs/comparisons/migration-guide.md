@@ -55,7 +55,7 @@ import { RDAPClient } from 'rdapify';
 const rdapClient = new RDAPClient({
   fallbackToWhois: true,  // Enable fallback to legacy WHOIS
   cache: true,
-  redactPII: true
+  privacy: true
 });
 
 async function getDomainInfoHybrid(domain: string): Promise<any> {
@@ -93,7 +93,7 @@ rdapClient.on('dataDiscrepancy', (domain, rdapData, whoisData) => {
 // Phase 3: Pure RDAPify after validation
 const productionClient = new RDAPClient({
   cache: true,
-  redactPII: true,
+  privacy: true,
   timeout: 5000,
   retry: {
     maxAttempts: 3,
@@ -192,7 +192,7 @@ const client = new RDAPify({
 const result = await client.domain('example.com');
 // Access advanced features
 const redactedResult = await client.domain('example.com', {
-  redactPII: true,
+  privacy: true,
   jurisdiction: 'EU'
 });
 ```
@@ -271,7 +271,7 @@ function hybridRedaction(data: any, context: RedactionContext): any {
 // Phase 3: Automated compliance-aware redaction
 const client = new RDAPClient({
   privacy: {
-    redactPII: true,
+    privacy: true,
     legalBasis: 'legitimate-interest',  // GDPR Article 6
     jurisdiction: 'auto-detect',        // Automatic jurisdiction detection
     retentionPeriod: 30,                // GDPR Article 5(1)(e)

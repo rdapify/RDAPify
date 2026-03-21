@@ -73,7 +73,7 @@ const fastify = Fastify({
 // Initialize RDAP client with security defaults
 const rdap = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 5000,
@@ -431,7 +431,7 @@ import { ConnectionPool } from '../lib/connection-pool';
 interface RDAPPluginOptions {
   cache?: boolean;
   cacheTTL?: number;
-  redactPII?: boolean;
+  privacy?: boolean;
   allowPrivateIPs?: boolean;
   timeout?: number;
   connectionPoolSize?: number;
@@ -480,7 +480,7 @@ export default fp(async (fastify: FastifyInstance, options: RDAPPluginOptions) =
       set: (key: string, value: any, ttl?: number) => cache.set(key, value, { ttl }),
       delete: (key: string) => cache.delete(key)
     } : undefined,
-    redactPII: options.redactPII !== false,
+    privacy: options.redactPII !== false,
     allowPrivateIPs: options.allowPrivateIPs === true,
     timeout: options.timeout || 5000,
     validateCertificates: true,
@@ -791,7 +791,7 @@ export default fp(async (fastify: FastifyInstance) => {
     return new RDAPClient({
       cache: true,
       cacheTTL: tenant.cacheTTL,
-      redactPII: tenant.customRedaction !== false,
+      privacy: tenant.customRedaction !== false,
       allowPrivateIPs: false,
       whitelistRDAPServers: tenant.whitelistRDAPServers !== false,
       timeout: 5000,
@@ -1455,7 +1455,7 @@ export function registerDynamicSchemas(fastify: FastifyInstance) {
 | Test Coverage | 96% unit tests, 90% integration tests |
 | Last Updated | December 5, 2025 |
 
-> 🔐 **Critical Reminder**: Always run Fastify with the `--no-warnings` flag in production to prevent information leakage. Never disable `redactPII` in production environments without documented legal basis and Data Protection Officer approval. For multi-tenant deployments, implement strict tenant isolation at the database level and validate all tenant-specific configurations.
+> 🔐 **Critical Reminder**: Always run Fastify with the `--no-warnings` flag in production to prevent information leakage. Never disable `privacy` in production environments without documented legal basis and Data Protection Officer approval. For multi-tenant deployments, implement strict tenant isolation at the database level and validate all tenant-specific configurations.
 
 [← Back to Integrations](../README.md) | [Next: Bun →](bun.md)
 

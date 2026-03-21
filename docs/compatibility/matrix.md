@@ -199,10 +199,6 @@ export const createCloudflareClient = (env: Env) => {
         timeout: 2000 // Shorter timeout for edge network
       }
     },
-    offlineMode: {
-      // Cloudflare Workers have limited offline capabilities
-      enabled: false
-    }
   });
 };
 
@@ -249,7 +245,7 @@ export const securityConfig = {
     }
   },
   dataProtection: {
-    redactPII: true,
+    privacy: true,
     encryption: {
       algorithm: 'aes-256-gcm',
       keyRotation: '90d'

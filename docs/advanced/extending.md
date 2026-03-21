@@ -949,7 +949,7 @@ describe('Extension Testing', () => {
       const context = testFramework.createTestContext({
         jurisdiction: 'EU',
         legalBasis: 'legitimate-interest',
-        redactPII: true
+        privacy: true
       });
       
       const result = await plugin.onResponse(mockResponse, context);

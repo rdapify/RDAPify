@@ -278,7 +278,7 @@ export const cloudflareSecurityConfig = {
     ]
   },
   dataProtection: {
-    redactPII: true,
+    privacy: true,
     // Cloudflare automatically encrypts data in transit
     encryption: {
       inTransit: 'cloudflare-tls',

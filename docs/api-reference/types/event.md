@@ -142,7 +142,7 @@ Events provide critical data for:
 ```typescript
 import { RDAPClient, Event } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 async function getDomainEvents(domain: string): Promise<void> {
   try {
@@ -484,7 +484,7 @@ rdapify events example.com --export csv --output events.csv
 | **Test Coverage** | 96% unit tests, 88% integration tests |
 | **Last Updated** | December 5, 2025 |
 
-> **🔐 Critical Reminder:** Event data can reveal sensitive patterns of infrastructure changes and ownership transfers. Always maintain `redactPII: true` and implement proper access controls for event data. Never expose unredacted actor information in client-facing applications without documented legal basis and Data Protection Officer approval.
+> **🔐 Critical Reminder:** Event data can reveal sensitive patterns of infrastructure changes and ownership transfers. Always maintain `privacy: true` and implement proper access controls for event data. Never expose unredacted actor information in client-facing applications without documented legal basis and Data Protection Officer approval.
 
 [← Back to Types Reference](index.md) | [Next: Error Types →](errors.md)
 

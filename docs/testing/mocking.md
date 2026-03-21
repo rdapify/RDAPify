@@ -56,7 +56,7 @@ export class MockRegistry {
       delay: 100, // Default 100ms delay to simulate network
       errorRate: 0.0, // Default no errors
       validateRequests: true, // Validate SSRF and format
-      redactPII: true, // Apply PII redaction
+      privacy: true, // Apply PII redaction
       ...options
     };
   }
@@ -197,7 +197,7 @@ export class SecurityMockRegistry extends MockRegistry {
     super({
       ...options,
       validateRequests: true,
-      redactPII: true,
+      privacy: true,
       // Slower responses to simulate security checks
       delay: { base: 200, variance: 0.3 }
     });

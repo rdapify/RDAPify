@@ -63,7 +63,7 @@ export class UnifiedDataCollector {
   } = {}) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' },
       maxConcurrent: 50
@@ -431,7 +431,7 @@ class DomainStreamProcessor implements StreamProcessor {
     // Apply compliance transformations
     return this.complianceEngine.transformData(chunk, {
       jurisdiction: config.compliance.jurisdiction,
-      redactPII: config.compliance.redactPII,
+      privacy: config.compliance.redactPII,
       legalBasis: config.compliance.legalBasis
     });
   }
@@ -609,7 +609,7 @@ export class ComplianceEngine {
     
     return {
       jurisdiction,
-      redactPII: context.redactPII ?? true,
+      privacy: context.redactPII ?? true,
       legalBasis: context.legalBasis || 'legitimate-interest',
       dataRetentionDays: rules?.maxRetentionDays || 365,
       consent: context.consent,
@@ -1148,12 +1148,12 @@ export class AdaptiveCacheStrategy {
       try {
         const result = await this.aggregationService.aggregate(query, {
           jurisdiction: 'global',
-          redactPII: true
+          privacy: true
         });
         
         await this.setAggregatedData(query, result, {
           jurisdiction: 'global',
-          redactPII: true
+          privacy: true
         });
       } catch (error) {
         console.warn(`Failed to warm index for query:`, query, error.message);

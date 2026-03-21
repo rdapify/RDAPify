@@ -140,8 +140,8 @@ The `Contact` type implements a granular redaction system:
 ```mermaid
 flowchart TD
     A[Raw Contact Data] --> B{Privacy Settings}
-    B -->|redactPII: true| C[Apply Redaction Rules]
-    B -->|redactPII: false| D[Preserve Raw Data]
+    B -->|privacy: true| C[Apply Redaction Rules]
+    B -->|privacy: false| D[Preserve Raw Data]
     C --> E{Contact Type}
     E -->|Individual| F[Full PII Redaction]
     E -->|Organization| G[Partial Redaction]
@@ -184,7 +184,7 @@ Certain contact properties require special handling:
 ```typescript
 import { RDAPClient, Contact } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 async function getDomainContacts(domain: string): Promise<void> {
   try {
@@ -227,7 +227,7 @@ async function getEnterpriseContact(domain: string, context: {
   businessNeed: boolean;
 }): Promise<Contact> {
   const client = new RDAPClient({
-    redactPII: true,
+    privacy: true,
     customRedaction: {
       // Override redaction based on context
       preserveBusinessEmails: context.userRole === 'security' && context.businessNeed,
@@ -270,7 +270,7 @@ console.log(`Security contact email: ${securityContact.email}`);
 // Implement data subject rights (GDPR/CCPA)
 class ContactComplianceManager {
   async handleSubjectRequest(identifier: string, requestType: 'access' | 'erasure' | 'rectification'): Promise<any> {
-    const client = new RDAPClient({ redactPII: true });
+    const client = new RDAPClient({ privacy: true });
     
     switch (requestType) {
       case 'access':
@@ -374,7 +374,7 @@ const noContacts = await client.domain('example.com', {
 
 // ✅ GOOD: Use contact caching with appropriate TTL
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     contactTTL: {
       redacted: 86400,    // 24 hours for redacted contacts
       business: 3600,     // 1 hour for business contacts
@@ -469,7 +469,7 @@ describe('Contact Security', () => {
   let client: RDAPClient;
   
   beforeAll(() => {
-    client = new RDAPClient({ redactPII: true });
+    client = new RDAPClient({ privacy: true });
   });
   
   test('prevents SSRF via contact data', async () => {
@@ -601,7 +601,7 @@ rdapify contact example.com --compliance ccpa --detailed
 | **Last Updated** | December 5, 2025 |
 | **Test Coverage** | 95% unit tests, 85% integration tests |
 
-> **🔐 Critical Reminder:** Contact data contains some of the most sensitive personal information in RDAP responses. Always maintain `redactPII: true` in production environments. Never store unredacted contact data without documented legal basis and Data Protection Officer approval. Implement additional access controls and audit logging for any system that processes unredacted contact information.
+> **🔐 Critical Reminder:** Contact data contains some of the most sensitive personal information in RDAP responses. Always maintain `privacy: true` in production environments. Never store unredacted contact data without documented legal basis and Data Protection Officer approval. Implement additional access controls and audit logging for any system that processes unredacted contact information.
 
 [← Back to Types Reference](index.md) | [Next: Entity Type →](entity.md)
 

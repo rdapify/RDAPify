@@ -407,7 +407,7 @@ export class ComplianceReportGenerator {
     // Collect domain data with GDPR-specific context
     const data = await this.collectDomainData(domains, {
       ...context,
-      redactPII: true,
+      privacy: true,
       legalBasis: context.legalBasis || 'legitimate-interest',
       maxRetentionDays: retentionPolicy.maxRetentionDays
     });

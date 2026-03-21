@@ -52,7 +52,7 @@ graph LR
 {
   domain: "example.com",
   options: {
-    redactPII: true,
+    privacy: true,
     includeRaw: false,
     timeout: 5000,
     cache: true

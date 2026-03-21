@@ -41,7 +41,7 @@ import { RDAPClient } from 'rdapify';
 // Create a secure client with optimized defaults
 const client = new RDAPClient({
   cache: true,          // Automatic caching (1 hour TTL)
-  redactPII: true,      // Automatically redact personal information
+  privacy: true,      // Automatically redact personal information
   retry: {              // Smart retries for transient failures
     maxAttempts: 3,
     backoff: 'exponential'
@@ -106,7 +106,7 @@ const client = new RDAPClient({
   whitelistRDAPServers: true,  // Use only IANA bootstrap servers
   
   // Privacy compliance
-  redactPII: true,             // GDPR/FZ-152 compliant data handling
+  privacy: true,             // GDPR/FZ-152 compliant data handling
   includeRaw: false,           // Don't store raw responses
   
   // Russian-specific compliance

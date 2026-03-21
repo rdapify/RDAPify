@@ -62,7 +62,7 @@ import { serve } from 'bun';
 // Initialize RDAP client with security defaults
 const client = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 5000,
@@ -209,7 +209,7 @@ export const createSecureRDAPClient = (options: any = {}) => {
     whitelistRDAPServers: true,
     validateCertificates: true,
     timeout: 5000,
-    redactPII: true,
+    privacy: true,
     
     // Bun-specific optimizations
     connectionPool: {
@@ -399,7 +399,7 @@ export const createOptimizedClient = () => {
     
     // Security settings
     allowPrivateIPs: false,
-    redactPII: true,
+    privacy: true,
     validateCertificates: true
   });
 };
@@ -657,7 +657,7 @@ export interface TenantConfig {
   name: string;
   config: {
     cacheTTL?: number;
-    redactPII?: boolean;
+    privacy?: boolean;
     rateLimit?: { max: number; window: number };
     allowedIPs?: string[];
     dataRetentionDays?: number;
@@ -716,7 +716,7 @@ export class TenantService {
     // Create tenant-specific RDAP client
     const client = new RDAPClient({
       cache: true,
-      redactPII: tenant.config.redactPII ?? true,
+      privacy: tenant.config.redactPII ?? true,
       allowPrivateIPs: false,
       validateCertificates: true,
       timeout: 5000,
@@ -815,7 +815,7 @@ import { createSecureRDAPClient } from './security';
 // Create RDAP client for monitoring
 const rdapClient = createSecureRDAPClient({
   cache: true,
-  redactPII: true
+  privacy: true
 });
 
 // WebSocket server for real-time monitoring
@@ -992,7 +992,7 @@ describe('RDAPify Bun Integration', () => {
   beforeEach(() => {
     client = createSecureRDAPClient({
       cache: true,
-      redactPII: true
+      privacy: true
     });
   });
   
@@ -1529,7 +1529,7 @@ class HybridCache {
 | Test Coverage | 98% unit tests, 90% integration tests |
 | Last Updated | December 7, 2025 |
 
-> 🔐 **Critical Reminder**: Always run Bun applications with the `--production` flag in production environments to disable development features. Never disable `redactPII` or `allowPrivateIPs` settings in production without documented legal basis and DPO approval. For multi-tenant deployments, implement strict data isolation at the SQLite database level and regularly audit tenant access patterns.
+> 🔐 **Critical Reminder**: Always run Bun applications with the `--production` flag in production environments to disable development features. Never disable `privacy` or `allowPrivateIPs` settings in production without documented legal basis and DPO approval. For multi-tenant deployments, implement strict data isolation at the SQLite database level and regularly audit tenant access patterns.
 
 [← Back to Integrations](../README.md) | [Next: Deno →](deno.md)
 

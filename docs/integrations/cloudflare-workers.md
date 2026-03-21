@@ -63,7 +63,7 @@ import { RDAPClient } from 'rdapify';
 // Initialize RDAP client with Workers-optimized configuration
 const client = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 4500,             // Must be under 5s for Workers
@@ -352,7 +352,7 @@ export const createSecureRDAPClient = (env: any, ctx: ExecutionContext, geo: Sec
     },
     
     // Privacy settings
-    redactPII: complianceSettings.redactPII,
+    privacy: complianceSettings.redactPII,
     customRedaction: complianceSettings.customRedaction,
     
     // Rate limiting
@@ -380,7 +380,7 @@ export const createSecureRDAPClient = (env: any, ctx: ExecutionContext, geo: Sec
 function getComplianceSettings(countryCode?: string) {
   // Default global settings
   const settings = {
-    redactPII: true,
+    privacy: true,
     rateLimit: { max: 100, window: 60000 },
     legalBasis: 'legitimate-interest',
     dataRetention: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
@@ -832,7 +832,7 @@ export class TenantManager extends DurableObject {
   async getRDAPClientForTenant(tenant: TenantConfig): Promise<RDAPClient> {
     return new RDAPClient({
       cache: true,
-      redactPII: tenant.complianceLevel !== 'basic',
+      privacy: tenant.complianceLevel !== 'basic',
       allowPrivateIPs: false,
       validateCertificates: true,
       timeout: 4500,

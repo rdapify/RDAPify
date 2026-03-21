@@ -82,7 +82,7 @@ export class DomainRelationshipVisualizer {
   } = {}) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
     });
@@ -99,7 +99,7 @@ export class DomainRelationshipVisualizer {
   ): Promise<ForceGraphProps> {
     // Get domain data with security context
     const domainData = await this.rdapClient.domain(domain, {
-      redactPII: context.redactPII,
+      privacy: context.redactPII,
       legalBasis: context.legalBasis
     });
     
@@ -160,7 +160,7 @@ export class DomainRelationshipVisualizer {
     for (const ns of domainData.nameservers || []) {
       try {
         const nsData = await this.rdapClient.domain(ns, {
-          redactPII: context.redactPII,
+          privacy: context.redactPII,
           cache: true
         });
         
@@ -181,7 +181,7 @@ export class DomainRelationshipVisualizer {
       for (const ip of domainData.ipAddresses) {
         try {
           const ipData = await this.rdapClient.ip(ip, {
-            redactPII: context.redactPII,
+            privacy: context.redactPII,
             cache: true
           });
           

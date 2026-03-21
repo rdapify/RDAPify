@@ -28,7 +28,7 @@
 // https://rdapify.dev/docs/getting-started/five-minutes
 import { RDAPClient } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 const result = await client.domain('example.com');
 console.log(result);
 ```
@@ -63,7 +63,7 @@ const client = new RDAPClient({
     encryptionKey: process.env.CACHE_KEY,
     redactBeforeStore: true
   }),
-  retries: 3,
+  retry: { maxAttempts: 3 },
   backoff: 'exponential'
 });
 
@@ -105,7 +105,7 @@ async function monitorDomains(domains) {
 import { RDAPClient, RelationshipMapper } from 'rdapify';
 
 const client = new RDAPClient({
-  redactPII: true,
+  privacy: true,
   customNormalizer: myOrganizationNormalizer
 });
 
@@ -283,7 +283,7 @@ After completing this learning path, you'll be ready to:
 
 ---
 
-> **🔐 Privacy & Security Reminder:** As you progress through these learning modules, remember that RDAP data often contains personal information. Always maintain privacy-by-default principles, even in development environments. When in doubt, keep `redactPII: true` enabled.
+> **🔐 Privacy & Security Reminder:** As you progress through these learning modules, remember that RDAP data often contains personal information. Always maintain privacy-by-default principles, even in development environments. When in doubt, keep `privacy: true` enabled.
 
 [← Back to Getting Started](./README.md) | [Next: Production Checklist →](./production-checklist.md)
 

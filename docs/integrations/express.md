@@ -71,7 +71,7 @@ app.use(morgan('combined'));
 // Initialize RDAP client with security defaults
 const rdap = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 5000,
@@ -441,7 +441,7 @@ function initTenants(config) {
   config.forEach(tenant => {
     const client = new RDAPClient({
       cache: tenant.cacheConfig || { ttl: 3600 },
-      redactPII: tenant.privacyLevel !== 'none',
+      privacy: tenant.privacyLevel !== 'none',
       customRedaction: tenant.customRedactionRules,
       allowPrivateIPs: false,
       whitelistRDAPServers: true,
@@ -870,7 +870,7 @@ services:
       test: ["CMD", "node", "health-check.js"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retry: { maxAttempts: 3 }
       start_period: 40s
     # Restart daily at 3 AM
     command: sh -c "node server.js & while true; do sleep 86400; kill -HUP $$; done"
@@ -900,7 +900,7 @@ services:
 | Test Coverage | 95% unit tests, 88% integration tests |
 | Last Updated | December 5, 2025 |
 
-> 🔐 **Critical Reminder**: Always validate domain inputs before querying RDAP servers. Never disable `redactPII` or `allowPrivateIPs` settings in production environments without documented legal basis and DPO approval. Regularly rotate API keys and audit access logs for anomalous patterns.
+> 🔐 **Critical Reminder**: Always validate domain inputs before querying RDAP servers. Never disable `privacy` or `allowPrivateIPs` settings in production environments without documented legal basis and DPO approval. Regularly rotate API keys and audit access logs for anomalous patterns.
 
 [← Back to Integrations](../README.md) | [Next: Next.js →](nextjs.md)
 

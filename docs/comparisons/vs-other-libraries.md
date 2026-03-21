@@ -301,7 +301,7 @@ const client = new RDAPify();
 const result = await client.domain('example.com');
 // Access advanced features
 const redactedResult = await client.domain('example.com', {
-  redactPII: true,
+  privacy: true,
   jurisdiction: 'EU'
 });
 ```

@@ -93,7 +93,7 @@ const results = await Promise.allSettled(
       return {
         domain,
         result: await client.domain(domain, {
-          redactPII: true, // GDPR compliance
+          privacy: true, // GDPR compliance
           timeout: 3000   // 3 second timeout
         })
       };
@@ -176,7 +176,7 @@ console.log('📊 Visualization data ready for network graph');
 ```typescript
 // Demonstrate privacy-preserving data handling
 const rawResult = await client.domain('example.com', {
-  redactPII: false, // Get raw data first
+  privacy: false, // Get raw data first
   includeRaw: true
 });
 
@@ -185,7 +185,7 @@ console.log('Raw entities count:', rawResult.entities?.length || 0);
 
 // Apply redaction policies
 const redactedResult = await client.domain('example.com', {
-  redactPII: true, // Apply automatic redaction
+  privacy: true, // Apply automatic redaction
   customRedaction: {
     fields: ['email', 'tel', 'adr'],
     patterns: [/contact@/, /phone number/i]
@@ -445,7 +445,7 @@ class ComplianceMonitor {
         batch.map(async (domain) => {
           try {
             const result = await this.client.domain(domain, {
-              redactPII: true,
+              privacy: true,
               cache: true,
               timeout: 5000,
               auditTrail: {
@@ -597,7 +597,7 @@ class ThreatIntelligenceIntegrator {
       try {
         // Get domain registration data with enhanced security settings
         const registration = await this.client.domain(domain, {
-          redactPII: true,
+          privacy: true,
           securityMode: 'high', // Enable enhanced security checks
           timeout: 8000,
           threatIntelligence: true // Enable threat data enrichment
@@ -1290,7 +1290,7 @@ export default DomainLookup;
 const queryConfig = {
   domain: 'example.com',
   options: {
-    redactPII: true,
+    privacy: true,
     cache: true,
     timeout: 5000,
     includeRaw: false,
@@ -1400,7 +1400,7 @@ playground.registerControls([
     id: 'redact-pii',
     defaultValue: true,
     onChange: (value) => {
-      queryConfig.options.redactPII = value;
+      queryConfig.options.privacy = value;
       console.log('PII redaction:', value ? 'enabled' : 'disabled');
     }
   },

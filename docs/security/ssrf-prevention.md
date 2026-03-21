@@ -577,7 +577,7 @@ export const createProductionClient = () => {
     maxConcurrent: 10,
     
     // Data protection
-    redactPII: true,
+    privacy: true,
     includeRaw: false
   });
 };

@@ -143,16 +143,16 @@ async function initialize() {
     secrets = await secretsManager.getSecret(process.env.SECRET_NAME);
     
     client = new RDAPClient({
-      cacheOptions: {
+      cache: {
         l2: {
           type: 'redis',
           endpoint: secrets.REDIS_ENDPOINT,
           password: secrets.REDIS_PASSWORD
         }
       },
-      redactPII: true,
+      privacy: true,
       timeout: 25000, // 25 seconds (under Lambda 30s limit)
-      retries: 2
+      retry: { maxAttempts: 2 }
     });
   }
 }
@@ -261,15 +261,15 @@ async function initializeClient() {
     const secrets = await getSecrets();
     
     client = new RDAPClient({
-      cacheOptions: {
+      cache: {
         l2: {
           type: 'redis',
           connectionString: secrets['redis-connection-string']
         }
       },
-      redactPII: true,
+      privacy: true,
       timeout: 295000, // 4m55s (under Azure 5m limit)
-      retries: 2
+      retry: { maxAttempts: 2 }
     });
   }
   return client;
@@ -378,15 +378,15 @@ async function initialize() {
     const secretData = JSON.parse(secrets.payload.data.toString('utf8'));
     
     client = new RDAPClient({
-      cacheOptions: {
+      cache: {
         l2: {
           type: 'redis',
           connectionString: secretData.REDIS_CONNECTION_STRING
         }
       },
-      redactPII: true,
+      privacy: true,
       timeout: 295000, // 4m55s (under Cloud Run 5m limit)
-      retries: 2
+      retry: { maxAttempts: 2 }
     });
   }
 }
@@ -680,7 +680,7 @@ async function initialize() {
   console.log('Initializing RDAP Client...');
   
   client = new RDAPClient({
-    cacheOptions: {
+    cache: {
       // Smaller cache for serverless environment
       l1: {
         type: 'memory',
@@ -695,8 +695,8 @@ async function initialize() {
       } : null
     },
     timeout: 25000,    // 25 seconds (under Lambda 30s limit)
-    retries: 2,
-    redactPII: true
+    retry: { maxAttempts: 2 },
+    privacy: true
   });
   
   // Pre-warm cache with critical domains
@@ -867,8 +867,8 @@ async function initialize() {
   if (!client) {
     client = new RDAPClient({
       timeout: 25000,
-      retries: 2,
-      redactPII: true,
+      retry: { maxAttempts: 2 },
+      privacy: true,
       // Queue processing can use more aggressive timeouts
       rateLimiting: {
         adaptive: true,
@@ -1165,7 +1165,7 @@ let client;
 async function initialize() {
   if (!client) {
     client = new RDAPClient({
-      cacheOptions: {
+      cache: {
         l1: {
           type: 'memory',
           max: 1000,
@@ -1173,8 +1173,8 @@ async function initialize() {
         }
       },
       timeout: 25000,
-      retries: 2,
-      redactPII: true
+      retry: { maxAttempts: 2 },
+      privacy: true
     });
   }
 }

@@ -68,7 +68,7 @@ import { RDAPConfigService } from './rdap-config.service';
       useFactory: (config: RDAPConfigService) => {
         const client = new RDAPClient({
           cache: config.getCacheConfig(),
-          redactPII: config.getRedactionPolicy(),
+          privacy: config.getRedactionPolicy(),
           allowPrivateIPs: false, // SSRF protection by default
           validateCertificates: true,
           timeout: config.getTimeout(),
@@ -1954,7 +1954,7 @@ export class PerformanceOptimizedService {
   constructor() {
     this.rdapClient = new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       maxConcurrent: 50,
       timeout: 3000,
     });

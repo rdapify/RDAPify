@@ -42,7 +42,7 @@ graph LR
 
 **Parameters**:
 - `domain`: Domain name to query (required)
-- `redactPII`: Boolean to enable PII redaction (default: true)
+- `privacy`: Boolean (true/false or PrivacyOptions object) to enable PII redaction (default: true)
 - `cacheTTL`: Cache time-to-live in seconds (default: 3600)
 - `timeout`: Maximum query time in milliseconds (default: 5000)
 
@@ -51,7 +51,7 @@ graph LR
 {
   "domain": "example.com",
   "options": {
-    "redactPII": true,
+    "privacy": true,
     "cache": true,
     "timeout": 5000
   }
@@ -104,14 +104,14 @@ interface DomainResponse {
   "options": {
     "maxDepth": 2,
     "includeAbuseContact": false,
-    "redactPII": true
+    "privacy": true
   }
 }
 ```
 
 **Security Considerations**:
 > ⚠️ **Critical Security Note**: IP lookups can reveal network infrastructure details. Always:
-> - Enable `redactPII: true` in production
+> - Enable `privacy: true` in production
 > - Limit `maxDepth` to prevent network mapping
 > - Implement strict rate limiting per IP address
 > - Never expose raw WHOIS data directly to end users
@@ -164,7 +164,7 @@ interface DomainResponse {
   "options": {
     "includePeers": false,
     "geolocation": true,
-    "redactPII": true
+    "privacy": true
   }
 }
 ```
@@ -201,7 +201,7 @@ const asnCacheConfig = {
 {
   "domain": "example.com",
   "options": {
-    "redactPII": true,
+    "privacy": true,
     "customRedaction": {
       "fields": ["email", "tel", "adr"],
       "patterns": ["/contact@/", "/phone/i"]
@@ -334,7 +334,7 @@ const poolConfig = {
     "delayBetweenBatches": 100,
     "maxConcurrent": 5,
     "errorHandling": "continue",
-    "redactPII": true
+    "privacy": true
   }
 }
 ```

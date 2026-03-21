@@ -118,7 +118,7 @@ exports.handler = async (event, context) => {
 // rdap-config.js
 module.exports = {
   // Memory-optimized configuration
-  cacheOptions: {
+  cache: {
     // Lambda has limited memory - use LRU cache with strict limits
     l1: {
       type: 'memory',
@@ -139,10 +139,10 @@ module.exports = {
   
   // Lambda-specific timeouts
   timeout: 25000,    // 25 seconds (under Lambda 30s limit)
-  retries: 2,        // Limited retries to avoid timeout
+  retry: { maxAttempts: 2 },        // Limited retries to avoid timeout
   
   // Security hardening
-  redactPII: true,
+  privacy: true,
   blockPrivateIPs: true,
   blockCloudMeta true,
   
@@ -247,7 +247,7 @@ exports.handler = async (event, context) => {
   const secrets = await getSecret('rdapify-production');
   
   const client = new RDAPClient({
-    cacheOptions: {
+    cache: {
       l2: {
         type: 'redis',
         endpoint: secrets.REDIS_ENDPOINT,

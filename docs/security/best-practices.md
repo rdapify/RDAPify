@@ -38,7 +38,7 @@ export const getProductionConfig = (environment: string) => ({
   protocolRestrictions: ['https'], // Only allow HTTPS protocol
   
   // Privacy & Compliance
-  redactPII: true,                // GDPR/CCPA compliant PII redaction
+  privacy: true,                // GDPR/CCPA compliant PII redaction
   includeRaw: false,              // Never store raw registry responses
   dataRetentionDays: environment === 'production' ? 30 : 7, // 30 days production
   legalBasis: 'legitimate-interest', // GDPR Article 6 legal basis
@@ -375,7 +375,7 @@ export class DataMinimizer {
       value: domain,
       options: {
         minimize: true,
-        redactPII: true,
+        privacy: true,
         legalBasis: context.legalBasis || 'legitimate-interest',
         jurisdiction: context.jurisdiction || 'global'
       }
@@ -903,7 +903,7 @@ describe('Security Test Suite', () => {
       validateCertificates: true,
       allowPrivateIPs: false,
       whitelistRDAPServers: true,
-      redactPII: true,
+      privacy: true,
       includeRaw: false,
       auditLogging: true
     });

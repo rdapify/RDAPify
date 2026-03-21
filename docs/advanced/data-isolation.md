@@ -908,7 +908,7 @@ async function migrateToTenantIsolation() {
     name: 'Default Tenant',
     dataResidency: ['global'],
     complianceProfile: { gdpr: false, ccpa: false },
-    securityProfile: { redactPII: false, allowPrivateIPs: true, maxConcurrentRequests: 100 },
+    securityProfile: { privacy: false, allowPrivateIPs: true, maxConcurrentRequests: 100 },
     isolationLevel: 'standard'
   });
   

@@ -98,8 +98,8 @@ const { RDAPClient } = require('rdapify');
 // Initialize RDAP client
 const client = new RDAPClient({
   timeout: 5000,
-  retries: 2,
-  cacheOptions: {
+  retry: { maxAttempts: 2 },
+  cache: {
     l1: { type: 'memory', max: 1000, ttl: 3600 }
   }
 });

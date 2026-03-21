@@ -244,7 +244,7 @@ Offline mode maintains strict PII protections even without connectivity:
 ```typescript
 // Offline PII redaction still applies
 const client = new RDAPClient({
-  redactPII: true, // Still enforced offline
+  privacy: true, // Still enforced offline
   offlineMode: {
     enablePII: false, // Never allow raw PII in offline mode
     maxStaleness: '30d' // GDPR compliance limit

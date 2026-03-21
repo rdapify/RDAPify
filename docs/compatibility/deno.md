@@ -182,7 +182,7 @@ export const denoSecurityConfig = {
     }
   },
   dataProtection: {
-    redactPII: true,
+    privacy: true,
     encryption: {
       // Deno's Web Crypto API
       algorithm: 'AES-GCM',

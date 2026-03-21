@@ -49,7 +49,7 @@ flowchart TD
 ```typescript
 // Default configuration
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     l1: {
       type: 'memory',
       max: 1000,           // Max items
@@ -75,7 +75,7 @@ const cacheSize = Math.floor(
 );
 
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     l1: { max: cacheSize }
   }
 });
@@ -233,7 +233,7 @@ GDPR/CCPA compliance requires automatic data deletion:
 
 ```typescript
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     retentionPolicy: {
       // Default retention periods by data sensitivity
       highSensitivity: '7 days',   // Full PII-containing responses
@@ -448,7 +448,7 @@ For enterprise environments with mixed criticality:
 
 ```typescript
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     priorityLevels: {
       critical: {
         ttl: 86400,    // 24 hours for critical domains
@@ -482,26 +482,16 @@ const client = new RDAPClient({
 });
 ```
 
-### Offline Mode Caching
-For environments with intermittent connectivity:
+### Resilience Caching
+
+> **Planned feature** — Dedicated offline mode is not yet available in v0.1.8.
+
+For environments with intermittent connectivity, use a long TTL to serve cached responses during outages:
 
 ```typescript
 const client = new RDAPClient({
-  offlineMode: {
-    enabled: true,
-    maxStaleAge: 2592000, // 30 days for offline access
-    bootstrapDataCache: './bootstrap-data',
-    autoSyncInterval: 3600 // 1 hour background sync
-  }
+  cache: { strategy: 'memory', ttl: 2592000 }, // 30 days
 });
-
-// Check if offline mode is active
-if (client.isOffline()) {
-  console.log('Operating in offline mode with stale data');
-}
-
-// Force offline mode for testing
-client.setOfflineMode(true);
 ```
 
 ---
@@ -628,7 +618,7 @@ class SecureCacheValidator {
 ```javascript
 // Simple in-memory cache for development
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     l1: {
       type: 'memory',
       ttl: 300, // 5 minutes
@@ -676,7 +666,7 @@ const client = new RDAPClient({
       backoffFactor: 2
     }
   }),
-  cacheOptions: {
+  cache: {
     ttl: {
       default: 3600, // 1 hour
       criticalDomains: 86400, // 24 hours
@@ -787,7 +777,7 @@ describe('Cache System', () => {
   
   test('Cache respects TTL settings', async () => {
     const client = new RDAPClient({ 
-      cacheOptions: { ttl: 1 } // 1 second TTL
+      cache: { ttl: 1 } // 1 second TTL
     });
     
     await client.domain('example.com');

@@ -60,7 +60,7 @@ import { RDAPClient } from 'https://deno.land/x/rdapify@v2/mod.ts';
 // Initialize RDAP client with security defaults
 const client = new RDAPClient({
   cache: true,
-  redactPII: true,           // GDPR compliance
+  privacy: true,           // GDPR compliance
   allowPrivateIPs: false,    // SSRF protection
   validateCertificates: true,
   timeout: 5000,
@@ -201,7 +201,7 @@ export const createSecureRDAPClient = () => {
     whitelistRDAPServers: true,
     validateCertificates: true,
     timeout: safeEnv.RDAP_TIMEOUT,
-    redactPII: safeEnv.RDAP_REDACT_PII,
+    privacy: safeEnv.RDAP_REDACT_PII,
     
     // Permission-aware features
     networkPermissions: {
@@ -622,7 +622,7 @@ async function batchProcessDomains(domains: string[]) {
   
   const client = new RDAPClient({
     cache: true,
-    redactPII: true,
+    privacy: true,
     maxConcurrent: 10,
     timeout: 8000
   });
@@ -718,7 +718,7 @@ async function warmCache(domains: string[]) {
   
   const client = new RDAPClient({
     cache: true,
-    redactPII: true
+    privacy: true
   });
   
   console.log(`Warming cache for ${domains.length} domains...`);
@@ -749,7 +749,7 @@ export interface TenantConfig {
   name: string;
   config: {
     cacheTTL?: number;
-    redactPII?: boolean;
+    privacy?: boolean;
     rateLimit?: { max: number; window: number };
     allowedIPs?: string[];
     dataRetentionDays?: number;
@@ -776,7 +776,7 @@ export class TenantService {
       name: 'Default Tenant',
       config: {
         cacheTTL: 3600,
-        redactPII: true,
+        privacy: true,
         rateLimit: { max: 100, window: 60000 }
       },
       permissions: {
@@ -812,7 +812,7 @@ export class TenantService {
     // Create tenant-specific RDAP client
     const client = new RDAPClient({
       cache: true,
-      redactPII: tenant.config.redactPII ?? true,
+      privacy: tenant.config.redactPII ?? true,
       allowPrivateIPs: false,
       validateCertificates: true,
       timeout: 5000,
@@ -1191,7 +1191,7 @@ Deno.test({
   async fn() {
     const testClient = new RDAPClient({
       rateLimit: { max: 2, window: 1000 }, // 2 requests per second
-      redactPII: true
+      privacy: true
     });
     
     // First two requests should succeed
@@ -1253,7 +1253,7 @@ async function runLoadTest() {
   // Initialize client
   const client = new RDAPClient({
     cache: true,
-    redactPII: true,
+    privacy: true,
     maxConcurrent: CONCURRENCY * 2,
     timeout: 10000
   });

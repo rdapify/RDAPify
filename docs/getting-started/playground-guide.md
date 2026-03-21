@@ -63,7 +63,7 @@ Simply visit [https://rdapify.dev/playground](https://rdapify.dev/playground) in
 1. In the Query Editor, paste this code:
 ```javascript
 const client = new RDAPClient({ 
-  redactPII: true,
+  privacy: true,
   cache: false // Disable cache for testing
 });
 
@@ -78,7 +78,7 @@ return result;
 
 ### Example 2: IP Address Lookup
 ```javascript
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 const ipResult = await client.ip('8.8.8.8');
 return {
@@ -93,7 +93,7 @@ return {
 ```javascript
 const client = new RDAPClient({ 
   timeout: 2000,
-  retries: 1
+  retry: { maxAttempts: 1 }
 });
 
 try {
@@ -144,7 +144,7 @@ For complex queries involving multiple entities, enable relationship mapping:
 
 ```javascript
 const client = new RDAPClient({ 
-  redactPII: true,
+  privacy: true,
   relationshipDepth: 2 // Follow relationships 2 levels deep
 });
 
@@ -164,7 +164,7 @@ Enterprise users can preview anomaly detection features:
 
 ```javascript
 const client = new RDAPClient({ 
-  redactPII: true,
+  privacy: true,
   enableAnomalyDetection: true
 });
 
@@ -257,8 +257,8 @@ import { RDAPClient } from 'rdapify';
 
 async function lookupDomain(domain) {
   const client = new RDAPClient({
-    redactPII: true,
-    cacheOptions: {
+    privacy: true,
+    cache: {
       ttl: 3600
     },
     timeout: 8000
@@ -392,7 +392,7 @@ Each template includes:
 
 ---
 
-> **🔐 Critical Reminder:** While the playground provides a safe environment for learning and exploration, **never** query domains containing sensitive business information or personal data without proper authorization and redaction. When in doubt, keep `redactPII: true` enabled.
+> **🔐 Critical Reminder:** While the playground provides a safe environment for learning and exploration, **never** query domains containing sensitive business information or personal data without proper authorization and redaction. When in doubt, keep `privacy: true` enabled.
 
 [← Back to Getting Started](./README.md) | [Next: First Query →](./first-query.md)
 

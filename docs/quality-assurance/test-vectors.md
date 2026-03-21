@@ -320,7 +320,7 @@ export const testConfig: TestRunnerConfig = {
   // Test execution parameters
   execution: {
     timeout: 5000, // 5 second timeout per test
-    retries: 2,    // 2 retries for flaky tests
+    retry: { maxAttempts: 2 },    // 2 retries for flaky tests
     concurrency: 10, // Max concurrent tests
     slowTestThreshold: 1000, // Mark tests >1s as slow
     skipLiveTests: process.env.SKIP_LIVE_TESTS === 'true'

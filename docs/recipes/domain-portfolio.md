@@ -96,7 +96,7 @@ export class PortfolioManager {
   }) {
     this.rdapClient = options.rdapClient || new RDAPClient({
       cache: true,
-      redactPII: true,
+      privacy: true,
       maxConcurrent: 10,
       timeout: 5000,
       retry: { maxAttempts: 3, backoff: 'exponential' }
@@ -233,7 +233,7 @@ export class PortfolioMonitoringSystem {
   private async checkDomain(domainEntry: DomainEntry, portfolio: DomainPortfolio): Promise<DomainCheckResult> {
     // Get domain registration data
     const domainData = await this.rdapClient.domain(domainEntry.domain, {
-      redactPII: portfolio.compliance.piiRedactionLevel !== 'none',
+      privacy: portfolio.compliance.piiRedactionLevel !== 'none',
       cache: true,
       cacheTTL: portfolio.monitoring.frequency * 60 // Cache based on monitoring frequency
     });

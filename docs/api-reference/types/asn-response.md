@@ -96,7 +96,7 @@ entities: {
 }
 ```
 
-> **🔐 Privacy Note:** When `redactPII: true` (default), personal entity data is automatically redacted:
+> **🔐 Privacy Note:** When `privacy: true` (default), personal entity data is automatically redacted:
 > ```json
 > {
 >   "entities": {
@@ -235,7 +235,7 @@ ASN data can be used by both defenders and attackers:
 | **Supply chain mapping** | Identify critical infrastructure dependencies | Redact sensitive peering relationships |
 | **DDoS target identification** | Find critical network infrastructure | Implement access controls for ASN data |
 
-> **🔐 Critical Security Note:** ASN registration data reveals critical internet infrastructure details. Always maintain `redactPII: true` and limit access to authorized security and network operations personnel only. Never expose unredacted ASN registration data in client-facing applications without explicit legal basis and Data Protection Officer approval.
+> **🔐 Critical Security Note:** ASN registration data reveals critical internet infrastructure details. Always maintain `privacy: true` and limit access to authorized security and network operations personnel only. Never expose unredacted ASN registration data in client-facing applications without explicit legal basis and Data Protection Officer approval.
 
 ---
 
@@ -245,7 +245,7 @@ ASN data can be used by both defenders and attackers:
 ```typescript
 import { RDAPClient, ASNResponse } from 'rdapify';
 
-const client = new RDAPClient({ redactPII: true });
+const client = new RDAPClient({ privacy: true });
 
 async function getASNInfo(asn: number): Promise<void> {
   try {
@@ -290,7 +290,7 @@ getASNInfo(15169); // Google
 async function monitorASNForSecurity(asn: number): Promise<ASNSecurityReport> {
   try {
     const result = await client.asn(asn, {
-      redactPII: true,
+      privacy: true,
       includePeers: true,
       relationshipDepth: 2,
       priority: 'critical' // Higher priority for security monitoring
@@ -363,7 +363,7 @@ async function buildNetworkMap(asns: number[]): Promise<NetworkMap> {
     asns.map(asn => client.asn(asn, {
       includePeers: true,
       includeNetworks: true,
-      redactPII: true
+      privacy: true
     }))
   );
   
@@ -477,7 +477,7 @@ const results = await Promise.all(asns.map(asn =>
 ```typescript
 // ✅ GOOD: Adaptive caching based on ASN stability
 const client = new RDAPClient({
-  cacheOptions: {
+  cache: {
     ttl: {
       default: 86400 * 7,        // 7 days for most ASNs (infrequent changes)
       criticalInfrastructure: 3600, // 1 hour for critical infrastructure
@@ -571,7 +571,7 @@ describe('ASN Rate Limiting', () => {
   let client: RDAPClient;
   
   beforeAll(() => {
-    client = new RDAPClient({ redactPII: true });
+    client = new RDAPClient({ privacy: true });
   });
   
   test('prevents ASN enumeration attacks', async () => {
@@ -717,8 +717,8 @@ await client.asn(0x3B41); // Hex format (15169 in hex)
 | **Peering Data Support** | ✅ (Registry-dependent) |
 | **Caching Support** | ✅ (In-memory, Redis, custom adapters) |
 | **Offline Support** | ✅ (With staleness controls) |
-| **GDPR Compliant** | ✅ (With redactPII: true) |
-| **CCPA Compliant** | ✅ (With redactPII: true) |
+| **GDPR Compliant** | ✅ (With privacy: true) |
+| **CCPA Compliant** | ✅ (With privacy: true) |
 | **Last Updated** | December 5, 2025 |
 | **Benchmark Environment** | Node.js 18.17.0, AWS c5.large, Redis 7.0 |
 

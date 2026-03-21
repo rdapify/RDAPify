@@ -101,7 +101,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retry: { maxAttempts: 3 }
       
   redis:
     image: redis:7-alpine
@@ -114,7 +114,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retry: { maxAttempts: 3 }
 
 volumes:
   redis-data:
@@ -225,7 +225,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retry: { maxAttempts: 3 }
     restart: unless-stopped
 
   cache:
@@ -239,7 +239,7 @@ services:
       test: ["CMD", "redis-cli", "-a", "$$REDIS_PASSWORD", "ping"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retry: { maxAttempts: 3 }
 
 volumes:
   rdapify_cache:
@@ -430,7 +430,7 @@ services:
       test: ["CMD", "node", "./dist/health-check.js"]
       interval: 10s
       timeout: 3s
-      retries: 3
+      retry: { maxAttempts: 3 }
     logging:
       driver: "json-file"
       options:

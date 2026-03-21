@@ -133,7 +133,7 @@ const result = await domainPipeline.process({
   registry: 'verisign',
   context: {
     jurisdiction: 'EU',
-    redactPII: true,
+    privacy: true,
     legalBasis: 'legitimate-interest'
   }
 });

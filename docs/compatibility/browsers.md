@@ -56,7 +56,7 @@ export const createBrowserClient = () => {
     },
     security: {
       ssrfProtection: false, // Cannot be fully implemented in browsers
-      redactPII: true, // Still enforce PII redaction
+      privacy: true, // Still enforce PII redaction
       // CORS proxy for registry access
       corsProxy: {
         enabled: true,
@@ -71,10 +71,6 @@ export const createBrowserClient = () => {
         keepAlive: 15000 // 15 seconds
       }
     },
-    offlineMode: {
-      enabled: true,
-      indexedDB: true
-    }
   });
 };
 ```
@@ -179,7 +175,7 @@ export const browserSecurityConfig = {
     alternative: 'Use CORS proxy with registry allowlist'
   },
   dataProtection: {
-    redactPII: true,
+    privacy: true,
     encryption: {
       // Browser Web Crypto API
       algorithm: 'AES-GCM',

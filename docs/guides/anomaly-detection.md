@@ -1086,7 +1086,7 @@ class SecurityFocusedDetector {
         ensembleMethod: 'stacking'
       }),
       privacy: {
-        redactPII: true,
+        privacy: true,
         anonymizeNetworks: true,
         consentRequired: true
       }
