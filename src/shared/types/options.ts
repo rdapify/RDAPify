@@ -211,6 +211,26 @@ export interface RDAPClientOptions {
    * object → enabled with custom window
    */
   deduplication?: boolean | DeduplicationConfig;
+
+  /**
+   * Query execution backend.
+   *
+   * - `'auto'` (default) — uses the Rust native backend if `@rdapify/core`
+   *   is installed; falls back to the TypeScript backend silently.
+   * - `'native'` — always uses the Rust native backend; throws at
+   *   construction time if `@rdapify/core` is not installed.
+   * - `'typescript'` — always uses the TypeScript backend, even if
+   *   `@rdapify/core` is installed.
+   *
+   * The native backend processes the five core query methods (domain, ip,
+   * asn, nameserver, entity) in compiled Rust, offering lower latency for
+   * high-throughput scenarios. Middleware hooks, rate limiting, audit
+   * logging, and other TypeScript-layer features are bypassed when the
+   * native backend is active.
+   *
+   * @default 'auto'
+   */
+  backend?: 'auto' | 'native' | 'typescript';
 }
 
 /**
@@ -258,7 +278,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   debug: {
     enabled: false,
   },
-  userAgent: 'RDAPify/0.1.7 (https://rdapify.com)',
+  userAgent: 'RDAPify/0.1.8 (https://rdapify.com)',
   includeRaw: false,
   followRedirects: true,
   maxRedirects: 5,
@@ -266,4 +286,5 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   bootstrapUrl: 'https://data.iana.org/rdap',
   middleware: {},
   deduplication: false,
+  backend: 'auto',
 };

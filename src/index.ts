@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.1.7
+ * @version 0.1.8
  * 
  * @example Basic Usage
  * ```typescript
@@ -193,7 +193,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.7';
+export const VERSION = '0.1.8';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -372,6 +372,26 @@ export {
   isCloudflareWorkers,
   getRuntimeName,
 } from './shared/utils/helpers/runtime';
+
+// ============================================================================
+// v0.1.8 — Native Rust Backend
+// ============================================================================
+
+/**
+ * Returns `true` if `@rdapify/core` (the Rust native binding) is installed
+ * and can be loaded.  Use this to check availability before opting in to
+ * `backend: 'native'`.
+ *
+ * @example
+ * ```typescript
+ * import { isNativeAvailable } from 'rdapify';
+ *
+ * if (isNativeAvailable()) {
+ *   console.log('Rust native backend available — using it for max performance');
+ * }
+ * ```
+ */
+export { isNativeAvailable } from './infrastructure/native/NativeBackend';
 
 // ============================================================================
 // Default Export

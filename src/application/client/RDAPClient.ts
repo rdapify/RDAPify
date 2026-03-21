@@ -26,6 +26,7 @@ import { BatchProcessor } from '../services/BatchProcessor';
 import { MiddlewareManager } from '../hooks/MiddlewareHooks';
 import type { MiddlewareOptions } from '../hooks/MiddlewareHooks';
 import { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
+import { NativeBackend } from '../../infrastructure/native/NativeBackend';
 
 /**
  * Main RDAP client for querying domain, IP, and ASN information
@@ -88,6 +89,8 @@ export class RDAPClient {
     warn: (message: string, metadata?: Record<string, any>) => void;
     error: (message: string, metadata?: Record<string, any>) => void;
   };
+  private readonly nativeBackend: NativeBackend | null;
+
   constructor(options: RDAPClientOptions = {}) {
     // Merge with defaults
     this.options = this.normalizeOptions(options);
@@ -219,6 +222,13 @@ export class RDAPClient {
       middleware: this.middlewareManager,
       deduplicator: this.queryDeduplicator,
     });
+
+    // Initialize optional native backend
+    const backendMode = this.options.backend;
+    this.nativeBackend =
+      backendMode === 'typescript'
+        ? null
+        : NativeBackend.create(backendMode === 'native' ? 'native' : 'auto');
   }
 
   /**
@@ -235,6 +245,7 @@ export class RDAPClient {
    * ```
    */
   async domain(domain: string): Promise<DomainResponse> {
+    if (this.nativeBackend) return this.nativeBackend.domain(domain);
     return this.orchestrator.queryDomain(domain);
   }
 
@@ -252,6 +263,7 @@ export class RDAPClient {
    * ```
    */
   async ip(ip: string): Promise<IPResponse> {
+    if (this.nativeBackend) return this.nativeBackend.ip(ip);
     return this.orchestrator.queryIP(ip);
   }
 
@@ -268,6 +280,7 @@ export class RDAPClient {
    * ```
    */
   async asn(asn: string | number): Promise<ASNResponse> {
+    if (this.nativeBackend) return this.nativeBackend.asn(asn);
     return this.orchestrator.queryASN(asn);
   }
 
@@ -284,6 +297,7 @@ export class RDAPClient {
    * ```
    */
   async nameserver(nameserver: string): Promise<NameserverResponse> {
+    if (this.nativeBackend) return this.nativeBackend.nameserver(nameserver);
     return this.orchestrator.queryNameserver(nameserver);
   }
 
@@ -303,6 +317,7 @@ export class RDAPClient {
    * ```
    */
   async entity(handle: string, serverUrl: string): Promise<EntityResponse> {
+    if (this.nativeBackend) return this.nativeBackend.entity(handle, serverUrl);
     return this.orchestrator.queryEntity(handle, serverUrl);
   }
 

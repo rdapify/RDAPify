@@ -40,6 +40,7 @@
   "isIdnDomain",
   "isLinkLocal",
   "isLocalhost",
+  "isNativeAvailable",
   "isNetworkError",
   "isNode",
   "isPrivateIP",

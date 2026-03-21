@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -122,5 +122,13 @@
   "dependencies": {
     "ipaddr.js": "^2.3.0",
     "tslib": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@rdapify/core": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@rdapify/core": {
+      "optional": true
+    }
   }
 }

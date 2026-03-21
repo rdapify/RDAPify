@@ -5,13 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — v0.1.8 Planned
+## [Unreleased]
 
 ### Planned
 - **Domain Availability**: `client.checkAvailability(domain)` — check if a domain is available via RDAP (404 = available, active = registered)
 - **Bulk Availability**: `client.checkAvailabilityBatch(domains[])` — check multiple domains in parallel
 - **Live Integration Tests**: opt-in via `LIVE_TESTS=1` environment variable
 - **Advanced Bootstrap Config**: custom bootstrap servers, TTL overrides, redundancy/fallback support
+
+## [0.1.8] - 2026-03-21
+
+### Added
+
+- **Rust native backend** — when `@rdapify/core` (optional peer dependency) is installed, the five core query methods (`domain`, `ip`, `asn`, `nameserver`, `entity`) are executed by a compiled Rust binary, reducing latency significantly for high-throughput scenarios
+- **`backend` option** on `RDAPClientOptions`: `'auto'` (default — uses native if available, falls back to TypeScript silently), `'native'` (requires `@rdapify/core`, throws at construction if missing), `'typescript'` (always uses TypeScript pipeline regardless of installation)
+- **`isNativeAvailable()`** utility — detect at runtime whether `@rdapify/core` is installed and loadable
+
+### Notes
+
+- The native backend bypasses TypeScript-layer features (middleware hooks, rate limiting, audit logging, deduplication); best suited for simple high-throughput scenarios
+- Response shapes are fully compatible: the adapter normalises `meta` → `metadata`, `queried_at` → `timestamp`, and injects `objectClass` to match TypeScript interfaces exactly
 
 ## [0.1.7] - 2026-03-19
 
