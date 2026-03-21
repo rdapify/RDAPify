@@ -152,6 +152,29 @@ export interface DeduplicationConfig {
 }
 
 /**
+ * Advanced bootstrap configuration
+ */
+export interface BootstrapOptions {
+  /**
+   * Custom RDAP servers per TLD.
+   * These are consulted before the IANA bootstrap lookup.
+   * @example [{ tld: 'com', url: 'https://my-rdap.example.com' }]
+   */
+  customServers?: { tld: string; url: string }[];
+  /**
+   * Override the bootstrap cache TTL in seconds.
+   * @default 86400 (24 hours)
+   */
+  ttl?: number;
+  /**
+   * Fall back to IANA bootstrap when a custom server is not defined for a TLD.
+   * Set to `false` to disable IANA lookup entirely (useful for private registries).
+   * @default true
+   */
+  fallback?: boolean;
+}
+
+/**
  * Main client configuration options
  */
 export interface RDAPClientOptions {
@@ -231,6 +254,21 @@ export interface RDAPClientOptions {
    * @default 'auto'
    */
   backend?: 'auto' | 'native' | 'typescript';
+
+  /**
+   * Advanced bootstrap configuration.
+   * Allows overriding the IANA server discovery with custom RDAP endpoints,
+   * adjusting the bootstrap cache TTL, and controlling fallback behaviour.
+   */
+  bootstrap?: BootstrapOptions;
+
+  /**
+   * Enable HTTP/2 for RDAP requests (opt-in).
+   * When `true` the fetcher sets the `Accept` header and requests multiplexed
+   * connections where the underlying runtime supports it.
+   * @default false
+   */
+  http2?: boolean;
 }
 
 /**
@@ -287,4 +325,10 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   middleware: {},
   deduplication: false,
   backend: 'auto',
+  bootstrap: {
+    customServers: [],
+    ttl: 86400,
+    fallback: true,
+  },
+  http2: false,
 };

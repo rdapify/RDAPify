@@ -35,4 +35,5 @@ export type {
   EntityResponse,
   RDAPResponse,
   RawRDAPResponse,
+  AvailabilityResult,
 } from './responses';

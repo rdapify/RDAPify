@@ -52,6 +52,13 @@ export interface RedisCacheOptions {
    * @default 'rdapify:'
    */
   keyPrefix?: string;
+
+  /**
+   * Keys longer than this threshold are compressed to a fixed-length SHA-256 hex digest.
+   * Set to `0` to disable compression.
+   * @default 200
+   */
+  keyMaxLength?: number;
 }
 
 /**
@@ -71,10 +78,12 @@ export interface RedisCacheOptions {
 export class RedisCache implements ICache {
   private readonly client: RedisClientLike;
   private readonly keyPrefix: string;
+  private readonly keyMaxLength: number;
 
   constructor(client: RedisClientLike, options: RedisCacheOptions = {}) {
     this.client = client;
     this.keyPrefix = options.keyPrefix ?? 'rdapify:';
+    this.keyMaxLength = options.keyMaxLength ?? 200;
   }
 
   // ---------------------------------------------------------------------------
@@ -83,9 +92,25 @@ export class RedisCache implements ICache {
 
   /**
    * Returns the prefixed Redis key for a given logical cache key.
+   * Long keys (> keyMaxLength) are compressed to a SHA-256 hex digest so they
+   * never exceed Redis key size limits.
    */
   private prefixed(key: string): string {
-    return `${this.keyPrefix}${key}`;
+    const compressed =
+      this.keyMaxLength > 0 && key.length > this.keyMaxLength
+        ? RedisCache.sha256Hex(key)
+        : key;
+    return `${this.keyPrefix}${compressed}`;
+  }
+
+  /**
+   * Returns a deterministic SHA-256 hex digest of the input string.
+   * Used for key compression when keys exceed `keyMaxLength`.
+   */
+  private static sha256Hex(input: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const crypto = require('crypto') as typeof import('crypto');
+    return crypto.createHash('sha256').update(input, 'utf8').digest('hex');
   }
 
   /**
@@ -206,6 +231,57 @@ export class RedisCache implements ICache {
   }
 
   // ---------------------------------------------------------------------------
+  // Pipeline helpers
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Batch-retrieve multiple RDAP responses in a single round-trip.
+   *
+   * Uses `mget` when available on the client (ioredis / node-redis v4+),
+   * otherwise falls back to individual `get` calls.
+   *
+   * @returns Array of `RDAPResponse | null` in the same order as `keys`.
+   */
+  async getMany(keys: string[]): Promise<(RDAPResponse | null)[]> {
+    if (keys.length === 0) return [];
+
+    const prefixedKeys = keys.map((k) => this.prefixed(k));
+
+    let raws: (string | null)[];
+
+    const clientAsAny = this.client as unknown as Record<string, unknown>;
+    if (typeof clientAsAny['mget'] === 'function') {
+      const mget = clientAsAny['mget'] as (
+        ...keys: string[]
+      ) => Promise<(string | null)[]>;
+      raws = await mget(...prefixedKeys);
+    } else {
+      raws = await Promise.all(prefixedKeys.map((k) => this.client.get(k)));
+    }
+
+    return raws.map((raw) => {
+      if (raw === null) return null;
+      try {
+        return JSON.parse(raw) as RDAPResponse;
+      } catch {
+        return null;
+      }
+    });
+  }
+
+  /**
+   * Batch-store multiple RDAP responses.
+   *
+   * Each entry is stored with its own optional TTL.  Operations are executed
+   * as individual `set` calls (no pipeline abstraction needed for correctness).
+   */
+  async setMany(
+    entries: Array<{ key: string; value: RDAPResponse; ttl?: number }>
+  ): Promise<void> {
+    await Promise.all(entries.map((e) => this.set(e.key, e.value, e.ttl)));
+  }
+
+  // ---------------------------------------------------------------------------
   // Additional helpers
   // ---------------------------------------------------------------------------
 
@@ -215,10 +291,12 @@ export class RedisCache implements ICache {
   async getStats(): Promise<{
     keyPrefix: string;
     size: number;
+    keyMaxLength: number;
   }> {
     return {
       keyPrefix: this.keyPrefix,
       size: await this.size(),
+      keyMaxLength: this.keyMaxLength,
     };
   }
 }

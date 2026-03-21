@@ -62,6 +62,7 @@ export type {
   RDAPRemark,
   RDAPNameserver,
   RawRDAPResponse,
+  AvailabilityResult,
   
   // Enum types
   QueryType,
@@ -93,6 +94,7 @@ export type {
   TimeoutOptions,
   LoggingOptions,
   RateLimitOptions,
+  BootstrapOptions,
 } from './shared/types/options';
 
 // ============================================================================
@@ -392,6 +394,52 @@ export {
  * ```
  */
 export { isNativeAvailable } from './infrastructure/native/NativeBackend';
+
+// ============================================================================
+// v0.2.0 — Circuit Breaker, Middleware Abort, Redis Pipeline, HTTP/2
+// ============================================================================
+
+/**
+ * Circuit Breaker — protects downstream RDAP registries from cascading failures.
+ * States: closed → open → half-open → closed/open
+ */
+export { CircuitBreaker, CircuitOpenError } from './infrastructure/http/CircuitBreaker';
+export type { CircuitState, CircuitBreakerOptions } from './infrastructure/http/CircuitBreaker';
+
+/**
+ * Thrown when a `beforeQuery` middleware hook calls `ctx.abort()`.
+ */
+export { QueryAbortedError } from './shared/errors';
+
+// ============================================================================
+// v0.2.1 — Bun Runtime Support
+// ============================================================================
+
+/**
+ * Bun-native HTTP fetcher — auto-selected when running under Bun.
+ * Can also be instantiated directly for custom setups.
+ */
+export { BunFetcher } from './infrastructure/http/BunFetcher';
+export type { BunFetcherOptions } from './infrastructure/http/BunFetcher';
+
+// ============================================================================
+// v0.2.2 — Deno + Cloudflare Workers Support
+// ============================================================================
+
+/**
+ * Deno-compatible HTTP fetcher — auto-selected when running under Deno.
+ * Uses Web-standard `fetch`; no Node.js APIs required.
+ */
+export { DenoFetcher } from './infrastructure/http/DenoFetcher';
+export type { DenoFetcherOptions } from './infrastructure/http/DenoFetcher';
+
+/**
+ * Cloudflare Workers–compatible HTTP fetcher — auto-selected when running
+ * in the Workers edge runtime.  Uses only Web-standard APIs (no `require`,
+ * `process`, `fs`, or `Buffer`).
+ */
+export { CloudflareWorkersFetcher } from './infrastructure/http/CloudflareWorkersFetcher';
+export type { CloudflareWorkersFetcherOptions } from './infrastructure/http/CloudflareWorkersFetcher';
 
 // ============================================================================
 // Default Export

@@ -1,0 +1,43 @@
+name: Live Integration Tests
+
+on:
+  schedule:
+    # Every Sunday at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    # Allow manual trigger for debugging
+
+# This workflow never blocks a merge — it runs independently on a schedule.
+# Failures here indicate RDAP server issues, not regressions in our code.
+
+jobs:
+  live-tests:
+    name: Live RDAP Servers
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run live integration tests
+        run: LIVE_TESTS=1 npx jest --config jest.live.config.js --runInBand --no-coverage
+        env:
+          LIVE_TESTS: '1'
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::warning::Live RDAP tests failed — this may indicate upstream server issues, not a code regression."
+          echo "Check the test output above for which servers are unreachable."

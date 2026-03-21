@@ -22,6 +22,8 @@ export interface FetcherOptions {
   maxRedirects?: number;
   ssrfProtection?: SSRFProtection;
   logRedirect?: (fromUrl: string, toUrl: string) => void;
+  /** Enable HTTP/2 multiplexing hints (opt-in). @default false */
+  http2?: boolean;
 }
 
 /**
@@ -35,6 +37,7 @@ export class Fetcher {
   private readonly maxRedirects: number;
   private readonly ssrfProtection?: SSRFProtection;
   private readonly logRedirect?: (fromUrl: string, toUrl: string) => void;
+  readonly http2: boolean;
 
   constructor(options: FetcherOptions = {}) {
     this.timeout = {
@@ -49,6 +52,7 @@ export class Fetcher {
     this.maxRedirects = options.maxRedirects || 5;
     this.ssrfProtection = options.ssrfProtection;
     this.logRedirect = options.logRedirect;
+    this.http2 = options.http2 ?? false;
   }
 
   /**
@@ -91,6 +95,12 @@ export class Fetcher {
       Accept: 'application/rdap+json, application/json',
       ...this.headers,
     };
+
+    // HTTP/2 opt-in: signal preference for HTTP/2 via upgrade header
+    if (this.http2) {
+      requestHeaders['Upgrade'] = 'h2c';
+      requestHeaders['HTTP2-Settings'] = '';
+    }
 
     // Make request with timeout
     let response: Response;

@@ -134,6 +134,15 @@ export interface EntityResponse {
 }
 
 /**
+ * Domain availability check result
+ */
+export interface AvailabilityResult {
+  domain: string;
+  available: boolean;
+  expiresAt?: Date;
+}
+
+/**
  * Union type for all RDAP responses
  */
 export type RDAPResponse = DomainResponse | IPResponse | ASNResponse | NameserverResponse | EntityResponse;

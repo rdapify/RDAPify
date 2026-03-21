@@ -5,14 +5,19 @@
 
 import { CacheManager } from '../../infrastructure/cache';
 import { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
+import { BunFetcher } from '../../infrastructure/http/BunFetcher';
+import { DenoFetcher } from '../../infrastructure/http/DenoFetcher';
+import { CloudflareWorkersFetcher } from '../../infrastructure/http/CloudflareWorkersFetcher';
+import type { IFetcherPort } from '../../core/ports';
 import { RateLimiter } from '../../infrastructure/http/RateLimiter';
 import { ConnectionPool } from '../../infrastructure/http/ConnectionPool';
+import { isBun, isDeno, isCloudflareWorkers } from '../../shared/utils/helpers/runtime';
 import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
 import { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
 import { Logger } from '../../infrastructure/logging/Logger';
 import type { LogLevel } from '../../infrastructure/logging/Logger';
-import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse } from '../../shared/types';
-import { ValidationError } from '../../shared/errors';
+import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse, AvailabilityResult } from '../../shared/types';
+import { ValidationError, RDAPServerError } from '../../shared/errors';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
 import type {
   RDAPClientOptions,
@@ -69,7 +74,7 @@ import { NativeBackend } from '../../infrastructure/native/NativeBackend';
 export class RDAPClient {
   private readonly options: Required<RDAPClientOptions>;
   private readonly cache: CacheManager;
-  private readonly fetcher: Fetcher;
+  private readonly fetcher: IFetcherPort;
   private readonly ssrfProtection: SSRFProtection;
   private readonly bootstrap: BootstrapDiscovery;
   private readonly normalizer: Normalizer;
@@ -102,34 +107,66 @@ export class RDAPClient {
         : this.options.ssrfProtection;
     this.ssrfProtection = new SSRFProtection(ssrfOptions);
 
-    // Initialize fetcher
-    this.fetcher = new Fetcher({
-      timeout:
-        typeof this.options.timeout === 'number'
-          ? {
-              request: this.options.timeout,
-              connect: this.options.timeout,
-              dns: this.options.timeout,
-            }
-          : this.options.timeout,
-      userAgent: this.options.userAgent,
-      headers: this.options.headers,
-      followRedirects: this.options.followRedirects,
-      maxRedirects: this.options.maxRedirects,
-      ssrfProtection: this.ssrfProtection,
-      logRedirect: (fromUrl, toUrl) => {
-        this.logger?.warn(`Redirect: ${fromUrl} → ${toUrl}`);
-        if (this.debugEnabled && this.debugLogger) {
-          this.debugLogger.debug('Redirect occurred', {
-            fromUrl,
-            toUrl,
-          });
-        }
-      },
-    });
+    // Initialize fetcher — auto-select based on detected runtime
+    const timeoutMs =
+      typeof this.options.timeout === 'number'
+        ? this.options.timeout
+        : (this.options.timeout as { request?: number } | undefined)?.request ?? 10_000;
+
+    if (isCloudflareWorkers()) {
+      this.fetcher = new CloudflareWorkersFetcher({
+        timeout: timeoutMs,
+        userAgent: this.options.userAgent,
+        headers: this.options.headers,
+        ssrfProtection: this.ssrfProtection,
+      });
+    } else if (isDeno()) {
+      this.fetcher = new DenoFetcher({
+        timeout: timeoutMs,
+        userAgent: this.options.userAgent,
+        headers: this.options.headers,
+        ssrfProtection: this.ssrfProtection,
+      });
+    } else if (isBun()) {
+      this.fetcher = new BunFetcher({
+        timeout: timeoutMs,
+        userAgent: this.options.userAgent,
+        headers: this.options.headers,
+        ssrfProtection: this.ssrfProtection,
+      });
+    } else {
+      this.fetcher = new Fetcher({
+        timeout:
+          typeof this.options.timeout === 'number'
+            ? {
+                request: this.options.timeout,
+                connect: this.options.timeout,
+                dns: this.options.timeout,
+              }
+            : this.options.timeout,
+        userAgent: this.options.userAgent,
+        headers: this.options.headers,
+        followRedirects: this.options.followRedirects,
+        maxRedirects: this.options.maxRedirects,
+        ssrfProtection: this.ssrfProtection,
+        http2: this.options.http2,
+        logRedirect: (fromUrl, toUrl) => {
+          this.logger?.warn(`Redirect: ${fromUrl} → ${toUrl}`);
+          if (this.debugEnabled && this.debugLogger) {
+            this.debugLogger.debug('Redirect occurred', {
+              fromUrl,
+              toUrl,
+            });
+          }
+        },
+      });
+    }
 
     // Initialize bootstrap discovery
-    this.bootstrap = new BootstrapDiscovery(this.options.bootstrapUrl, this.fetcher);
+    const bootstrapOpts = this.options.bootstrap && typeof this.options.bootstrap === 'object'
+      ? this.options.bootstrap
+      : undefined;
+    this.bootstrap = new BootstrapDiscovery(this.options.bootstrapUrl, this.fetcher, bootstrapOpts);
 
     // Initialize cache
     const cacheOptions =
@@ -319,6 +356,62 @@ export class RDAPClient {
   async entity(handle: string, serverUrl: string): Promise<EntityResponse> {
     if (this.nativeBackend) return this.nativeBackend.entity(handle, serverUrl);
     return this.orchestrator.queryEntity(handle, serverUrl);
+  }
+
+  /**
+   * Checks whether a domain name is available for registration.
+   * Analyzes the RDAP response — does not rely on WHOIS.
+   * Returns `available: true` when the registry returns 404 (domain not found).
+   *
+   * @param domain - Domain name to check (e.g., "example.com")
+   * @returns Availability result with optional expiration date
+   *
+   * @example
+   * ```typescript
+   * const result = await client.checkAvailability('example.com');
+   * if (result.available) {
+   *   console.log('Domain is available!');
+   * } else {
+   *   console.log('Expires:', result.expiresAt);
+   * }
+   * ```
+   */
+  async checkAvailability(domain: string): Promise<AvailabilityResult> {
+    try {
+      const response = await this.domain(domain);
+      const expirationEvent = response.events?.find(e => e.type === 'expiration');
+      const expiresAt = expirationEvent ? new Date(expirationEvent.date) : undefined;
+      return { domain: response.query, available: false, expiresAt };
+    } catch (error) {
+      if (error instanceof RDAPServerError && error.statusCode === 404) {
+        return { domain, available: true };
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Checks availability for multiple domains in parallel.
+   *
+   * @param domains - Array of domain names to check
+   * @returns Map from domain name to its availability result
+   *
+   * @example
+   * ```typescript
+   * const results = await client.checkAvailabilityBatch(['example.com', 'taken.com']);
+   * for (const [domain, result] of results) {
+   *   console.log(domain, result.available);
+   * }
+   * ```
+   */
+  async checkAvailabilityBatch(domains: string[]): Promise<Map<string, AvailabilityResult>> {
+    const entries = await Promise.all(
+      domains.map(async domain => {
+        const result = await this.checkAvailability(domain);
+        return [domain, result] as [string, AvailabilityResult];
+      })
+    );
+    return new Map(entries);
   }
 
   /**

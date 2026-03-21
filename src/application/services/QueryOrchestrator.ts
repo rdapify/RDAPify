@@ -5,7 +5,8 @@
  */
 
 import type { CacheManager } from '../../infrastructure/cache';
-import type { BootstrapDiscovery, Fetcher, Normalizer } from '../../infrastructure/http';
+import type { BootstrapDiscovery, Normalizer } from '../../infrastructure/http';
+import type { IFetcherPort } from '../../core/ports';
 import type { RateLimiter } from '../../infrastructure/http/RateLimiter';
 import type { PIIRedactor } from '../../infrastructure/security';
 import type { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
@@ -26,6 +27,7 @@ import {
 } from '../../shared/utils/validators';
 import type { MiddlewareManager } from '../hooks/MiddlewareHooks';
 import type { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
+import { QueryAbortedError } from '../../shared/errors';
 
 /**
  * Query orchestrator configuration
@@ -33,7 +35,7 @@ import type { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
 export interface QueryOrchestratorConfig {
   cache: CacheManager;
   bootstrap: BootstrapDiscovery;
-  fetcher: Fetcher;
+  fetcher: IFetcherPort;
   normalizer: Normalizer;
   piiRedactor: PIIRedactor;
   includeRaw: boolean;
@@ -91,7 +93,9 @@ export class QueryOrchestrator {
     };
 
     // beforeQuery hook
-    await this.config.middleware?.runBeforeQuery(baseCtx);
+    if (await this.config.middleware?.runBeforeQuery(baseCtx)) {
+      throw new QueryAbortedError(baseCtx.query);
+    }
 
     try {
       // Check cache
@@ -285,7 +289,9 @@ export class QueryOrchestrator {
     };
 
     // beforeQuery hook
-    await this.config.middleware?.runBeforeQuery(baseCtx);
+    if (await this.config.middleware?.runBeforeQuery(baseCtx)) {
+      throw new QueryAbortedError(baseCtx.query);
+    }
 
     try {
       // Check cache
@@ -483,7 +489,9 @@ export class QueryOrchestrator {
     };
 
     // beforeQuery hook
-    await this.config.middleware?.runBeforeQuery(baseCtx);
+    if (await this.config.middleware?.runBeforeQuery(baseCtx)) {
+      throw new QueryAbortedError(baseCtx.query);
+    }
 
     try {
       // Check cache
@@ -673,7 +681,9 @@ export class QueryOrchestrator {
       startTime,
     };
 
-    await this.config.middleware?.runBeforeQuery(baseCtx);
+    if (await this.config.middleware?.runBeforeQuery(baseCtx)) {
+      throw new QueryAbortedError(baseCtx.query);
+    }
 
     try {
       const cached = await this.config.cache.get(cacheKey);
@@ -807,7 +817,9 @@ export class QueryOrchestrator {
       startTime,
     };
 
-    await this.config.middleware?.runBeforeQuery(baseCtx);
+    if (await this.config.middleware?.runBeforeQuery(baseCtx)) {
+      throw new QueryAbortedError(baseCtx.query);
+    }
 
     try {
       const cached = await this.config.cache.get(cacheKey);

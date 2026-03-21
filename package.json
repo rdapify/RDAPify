@@ -10,6 +10,19 @@
       "require": "./dist/index.js",
       "import": "./dist/index.js"
     },
+    "./node": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./deno": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./worker": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./errors": {
       "types": "./dist/shared/errors/base.error.d.ts",
       "require": "./dist/shared/errors/base.error.js",
@@ -44,6 +57,7 @@
     "test:unit": "jest --testPathPattern=unit",
     "test:integration": "jest --testPathPattern=integration",
     "test:security": "jest --testPathPattern=unit/ssrf-protection",
+    "test:live": "LIVE_TESTS=1 jest --config jest.live.config.js --runInBand --no-coverage",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint src --ext .ts,.tsx",

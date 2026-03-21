@@ -45,7 +45,7 @@ describe('MiddlewareManager', () => {
 
   it('does not throw when no hooks are registered', async () => {
     const ctx = makeQueryCtx();
-    await expect(manager.runBeforeQuery(ctx)).resolves.toBeUndefined();
+    await expect(manager.runBeforeQuery(ctx)).resolves.toBe(false);
     await expect(manager.runAfterQuery(makeResultCtx())).resolves.toBeUndefined();
     await expect(manager.runOnError(makeResultCtx())).resolves.toBeUndefined();
     await expect(manager.runOnCacheHit(ctx)).resolves.toBeUndefined();
@@ -198,7 +198,7 @@ describe('MiddlewareManager', () => {
       beforeQuery: () => { throw new Error('hook exploded'); },
     });
 
-    await expect(manager.runBeforeQuery(makeQueryCtx())).resolves.toBeUndefined();
+    await expect(manager.runBeforeQuery(makeQueryCtx())).resolves.toBe(false);
   });
 
   it('does not propagate rejections from async hooks', async () => {

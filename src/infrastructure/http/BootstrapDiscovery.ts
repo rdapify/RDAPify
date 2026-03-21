@@ -7,8 +7,10 @@ import * as ipaddr from 'ipaddr.js';
 
 import { NoServerFoundError, NetworkError } from '../../shared/errors';
 import { extractTLD } from '../../shared/utils/helpers';
+import type { BootstrapOptions } from '../../shared/types/options';
 
 import { Fetcher } from './Fetcher';
+import type { IFetcherPort } from '../../core/ports';
 
 /**
  * Bootstrap service entry
@@ -33,31 +35,51 @@ interface BootstrapResponse {
  */
 export class BootstrapDiscovery {
   private readonly baseUrl: string;
-  private readonly fetcher: Fetcher;
+  private readonly fetcher: IFetcherPort;
   private cache: Map<string, BootstrapEntry[]>;
   private cacheExpiry: Map<string, number>;
-  private readonly cacheTTL: number = 86400000; // 24 hours
+  private readonly cacheTTL: number;
+  private readonly customServersMap: Map<string, string>;
+  private readonly fallback: boolean;
 
-  constructor(baseUrl: string = 'https://data.iana.org/rdap', fetcher?: Fetcher) {
+  constructor(baseUrl: string = 'https://data.iana.org/rdap', fetcher?: IFetcherPort, options?: BootstrapOptions) {
     this.baseUrl = baseUrl;
     this.fetcher = fetcher || new Fetcher();
     this.cache = new Map();
     this.cacheExpiry = new Map();
+    // TTL in seconds → ms; default 24h
+    this.cacheTTL = ((options?.ttl ?? 86400) * 1000);
+    this.fallback = options?.fallback ?? true;
+    this.customServersMap = new Map(
+      (options?.customServers ?? []).map(({ tld, url }) => [tld.toLowerCase(), url])
+    );
   }
 
   /**
-   * Discovers RDAP server URL for a domain
+   * Discovers RDAP server URL for a domain.
+   * Custom servers (if configured) take priority over IANA bootstrap.
    */
   async discoverDomain(domain: string): Promise<string> {
     const tld = extractTLD(domain);
+    const tldKey = tld.toLowerCase();
+
+    // Check custom servers first
+    const custom = this.customServersMap.get(tldKey);
+    if (custom) return custom;
+
+    // No custom server — fall back to IANA (unless disabled)
+    if (!this.fallback) {
+      throw new NoServerFoundError(`No RDAP server found for TLD: ${tld}`, { domain, tld });
+    }
+
     const entries = await this.getBootstrapData('dns');
 
     for (const entry of entries) {
-      if (entry.patterns.includes(tld.toLowerCase())) {
+      if (entry.patterns.includes(tldKey)) {
         if (entry.servers.length === 0 || !entry.servers[0]) {
           throw new NoServerFoundError(`No RDAP server found for TLD: ${tld}`, { domain, tld });
         }
-        return entry.servers[0]; // Return first server
+        return entry.servers[0];
       }
     }
 
@@ -110,13 +132,27 @@ export class BootstrapDiscovery {
    * Discovers RDAP server URL for a nameserver hostname.
    * Uses DNS TLD bootstrap — the nameserver's TLD determines the registry.
    * e.g., "ns1.example.com" → TLD "com" → Verisign RDAP server
+   * Custom servers (if configured) take priority over IANA bootstrap.
    */
   async discoverNameserver(nameserver: string): Promise<string> {
     const tld = extractTLD(nameserver);
+    const tldKey = tld.toLowerCase();
+
+    // Check custom servers first
+    const custom = this.customServersMap.get(tldKey);
+    if (custom) return custom;
+
+    if (!this.fallback) {
+      throw new NoServerFoundError(`No RDAP server found for nameserver TLD: ${tld}`, {
+        nameserver,
+        tld,
+      });
+    }
+
     const entries = await this.getBootstrapData('dns');
 
     for (const entry of entries) {
-      if (entry.patterns.includes(tld.toLowerCase())) {
+      if (entry.patterns.includes(tldKey)) {
         if (entry.servers.length === 0 || !entry.servers[0]) {
           throw new NoServerFoundError(`No RDAP server found for nameserver TLD: ${tld}`, {
             nameserver,

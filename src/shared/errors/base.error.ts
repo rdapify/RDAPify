@@ -221,6 +221,19 @@ export class SSRFProtectionError extends RDAPifyError {
 }
 
 /**
+ * Query was aborted by a `beforeQuery` middleware hook calling `ctx.abort()`.
+ */
+export class QueryAbortedError extends RDAPifyError {
+  constructor(query?: string) {
+    super(
+      query ? `Query aborted by middleware: ${query}` : 'Query aborted by middleware',
+      'QUERY_ABORTED',
+      0,
+    );
+  }
+}
+
+/**
  * Type guard to check if error is RDAPifyError
  */
 export function isRDAPifyError(error: unknown): error is RDAPifyError {

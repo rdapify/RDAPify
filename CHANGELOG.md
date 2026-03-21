@@ -7,11 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- **Domain Availability**: `client.checkAvailability(domain)` — check if a domain is available via RDAP (404 = available, active = registered)
-- **Bulk Availability**: `client.checkAvailabilityBatch(domains[])` — check multiple domains in parallel
-- **Live Integration Tests**: opt-in via `LIVE_TESTS=1` environment variable
-- **Advanced Bootstrap Config**: custom bootstrap servers, TTL overrides, redundancy/fallback support
+## [0.2.2] - unreleased
+
+### Added
+
+- **Deno Support** — `DenoFetcher` implements `IFetcherPort` using the Web-standard `fetch` built into Deno; `RDAPClient` auto-selects `DenoFetcher` when `isDeno()` is true; uses no Node.js-specific APIs
+- **Cloudflare Workers Support** — `CloudflareWorkersFetcher` implements `IFetcherPort` for the Edge runtime; zero Node.js-specific code (`require`, `process`, `Buffer`, `fs` are absent from the implementation); `RDAPClient` auto-selects it when `isCloudflareWorkers()` is true
+- **Subpath exports** — `package.json` now exports `./node`, `./deno`, and `./worker` subpath conditions; all currently point to the main bundle (auto-detection handles runtime selection internally)
+- **Priority order** — fetcher auto-selection order: Cloudflare Workers → Deno → Bun → Node.js (standard `Fetcher`)
+- **22 new unit tests**: DenoFetcher (9 tests), CloudflareWorkersFetcher (13 tests)
+
+## [0.2.1] - unreleased
+
+### Added
+
+- **Bun Runtime Support** — `BunFetcher` implements `IFetcherPort` using `Bun.fetch` when running under the Bun runtime; `RDAPClient` auto-detects Bun via `isBun()` and selects `BunFetcher` automatically — no configuration needed
+- **`BunFetcher` exported** — available for direct instantiation when custom Bun-specific setups are required; accepts `timeout`, `userAgent`, `headers`, and `ssrfProtection` options
+- **CI Bun job** — `.github/workflows/ci.yml` now includes a `test-bun` job that installs dependencies with `bun install` and runs the unit test suite under Bun
+- **14 unit tests** for `BunFetcher`: `resolveFetch()` detection (Bun present / absent / non-function), successful fetch, header forwarding, custom headers, 4xx/5xx → `RDAPServerError`, timeout → `TimeoutError`, generic error → `NetworkError`, SSRF protection integration, Bun.fetch preference over global fetch
+
+## [0.2.0] - unreleased
+
+### Added
+
+- **Circuit Breaker** — `CircuitBreaker` class with full state machine: `closed → open → half-open → closed/open`; configurable `failureThreshold`, `successThreshold`, `halfOpenTimeout`, `window`; exported as `CircuitBreaker`, `CircuitOpenError`, `CircuitState`, `CircuitBreakerOptions`
+- **Middleware abort** — `ctx.abort()` in any `beforeQuery` hook now stops the query pipeline; `MiddlewareManager.runBeforeQuery()` returns `Promise<boolean>` (true = aborted); aborted queries throw `QueryAbortedError`
+- **Middleware priority ordering** — `manager.use(hooks, priority)` registers hooks at a specific priority level (lower number = runs first); multiple hooks for the same lifecycle event run in priority order; hooks registered without a priority use the existing merge/override behaviour
+- **Redis key compression** — `RedisCacheOptions.keyMaxLength` (default 200); keys longer than the threshold are hashed to a SHA-256 hex digest before being stored in Redis; prevents oversized key errors
+- **Redis pipeline** — `RedisCache.getMany(keys)` batch-retrieves multiple responses using `mget` when available, falling back to individual `get` calls; `RedisCache.setMany(entries)` batch-stores multiple responses
+- **HTTP/2 opt-in** — `RDAPClientOptions.http2: boolean` (default `false`); when `true`, the fetcher sets `Upgrade: h2c` and `HTTP2-Settings` headers to signal HTTP/2 preference to supporting registries
+- **`QueryAbortedError`** exported from public API
+- **63 new unit tests**: circuit breaker state transitions (14), middleware abort + priority (14), Redis key compression + pipeline (17), HTTP/2 (5), middleware hooks compatibility fix (2)
+
+## [0.1.9] - unreleased
+
+### Added
+
+- **Domain Availability Check** — `client.checkAvailability(domain): Promise<AvailabilityResult>` parses the RDAP response to determine if a domain is registered; returns `available: true` when the registry responds with HTTP 404, and extracts `expiresAt` from the RDAP expiration event when available
+- **Batch Availability Check** — `client.checkAvailabilityBatch(domains[]): Promise<Map<string, AvailabilityResult>>` checks multiple domains in parallel and returns a Map keyed by domain name
+- **`AvailabilityResult` type** exported from the public API: `{ domain: string; available: boolean; expiresAt?: Date }`
+- **Live Integration Tests** — `npm run test:live` (requires `LIVE_TESTS=1`); tests Verisign (.com/.net), ARIN (IPv4), RIPE (European IPv4), and ASN 15169; excluded from regular `npm test`; `.github/workflows/live-tests.yml` runs weekly on Sunday
+- **Advanced Bootstrap Configuration** — new `bootstrap` option on `RDAPClientOptions`:
+  - `bootstrap.customServers: { tld: string; url: string }[]` — custom RDAP endpoints per TLD; take priority over IANA, no network call needed
+  - `bootstrap.ttl: number` — override the default 24-hour bootstrap cache TTL (in seconds)
+  - `bootstrap.fallback: boolean` — set to `false` to disable IANA lookup entirely (useful for private registries); default `true`
+- **`BootstrapOptions` type** exported from the public API
+- 17 unit tests for the new features (8 availability + 9 bootstrap advanced)
 
 ## [0.1.8] - 2026-03-21
 
