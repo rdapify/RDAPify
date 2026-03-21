@@ -124,10 +124,10 @@
     "tslib": "^2.8.1"
   },
   "peerDependencies": {
-    "@rdapify/core": ">=0.1.0"
+    "rdapify-nd": ">=0.1.0"
   },
   "peerDependenciesMeta": {
-    "@rdapify/core": {
+    "rdapify-nd": {
       "optional": true
     }
   }

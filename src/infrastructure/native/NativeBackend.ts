@@ -1,7 +1,7 @@
 /**
- * Optional Rust native backend adapter for @rdapify/core.
+ * Optional Rust native backend adapter for rdapify-nd.
  *
- * When `@rdapify/core` is installed, the five core query methods are
+ * When `rdapify-nd` is installed, the five core query methods are
  * handled by the compiled Rust binary instead of the TypeScript pipeline,
  * yielding significantly lower latency for high-throughput use cases.
  *
@@ -25,7 +25,7 @@ import type {
 
 // ── Lazy module loader ────────────────────────────────────────────────────────
 
-/** Loose shape of @rdapify/core exports (runtime only). */
+/** Loose shape of rdapify-nd exports (runtime only). */
 interface CoreModule {
   domain(domainName: string): Promise<unknown>;
   ip(ipAddress: string): Promise<unknown>;
@@ -40,14 +40,14 @@ function tryLoadCore(): CoreModule | null {
   if (_module !== undefined) return _module;
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    _module = require('@rdapify/core') as CoreModule;
+    _module = require('rdapify-nd') as CoreModule;
   } catch {
     _module = null;
   }
   return _module;
 }
 
-/** Returns `true` if `@rdapify/core` is installed and loadable. */
+/** Returns `true` if `rdapify-nd` is installed and loadable. */
 export function isNativeAvailable(): boolean {
   return tryLoadCore() !== null;
 }
@@ -77,7 +77,7 @@ function strippedFields(raw: Record<string, unknown>): Record<string, unknown> {
 // ── NativeBackend class ───────────────────────────────────────────────────────
 
 /**
- * Wraps the five `@rdapify/core` functions and adapts their responses to
+ * Wraps the five `rdapify-nd` functions and adapts their responses to
  * the TypeScript response interfaces.
  */
 export class NativeBackend {
@@ -88,7 +88,7 @@ export class NativeBackend {
   }
 
   /**
-   * Creates a `NativeBackend` instance if `@rdapify/core` is available.
+   * Creates a `NativeBackend` instance if `rdapify-nd` is available.
    *
    * @param mode - `'auto'` → return null if not installed;
    *               `'native'` → throw if not installed.
@@ -98,7 +98,7 @@ export class NativeBackend {
     if (!core) {
       if (mode === 'native') {
         throw new Error(
-          '@rdapify/core is not installed. Run: npm install @rdapify/core\n' +
+          'rdapify-nd is not installed. Run: npm install rdapify-nd\n' +
             'Or use backend: "auto" to fall back to the TypeScript backend.'
         );
       }

@@ -378,7 +378,7 @@ export {
 // ============================================================================
 
 /**
- * Returns `true` if `@rdapify/core` (the Rust native binding) is installed
+ * Returns `true` if `rdapify-nd` (the Rust native binding) is installed
  * and can be loaded.  Use this to check availability before opting in to
  * `backend: 'native'`.
  *

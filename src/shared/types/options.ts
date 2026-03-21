@@ -215,12 +215,12 @@ export interface RDAPClientOptions {
   /**
    * Query execution backend.
    *
-   * - `'auto'` (default) — uses the Rust native backend if `@rdapify/core`
+   * - `'auto'` (default) — uses the Rust native backend if `rdapify-nd`
    *   is installed; falls back to the TypeScript backend silently.
    * - `'native'` — always uses the Rust native backend; throws at
-   *   construction time if `@rdapify/core` is not installed.
+   *   construction time if `rdapify-nd` is not installed.
    * - `'typescript'` — always uses the TypeScript backend, even if
-   *   `@rdapify/core` is installed.
+   *   `rdapify-nd` is installed.
    *
    * The native backend processes the five core query methods (domain, ip,
    * asn, nameserver, entity) in compiled Rust, offering lower latency for
