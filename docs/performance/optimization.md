@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for optimizing RDAPify performance at scale while maintaining security, compliance, and reliability standards  
 📚 **Related**: [Benchmarks](benchmarks.md) | [Latency Analysis](latency_analysis.md) | [Load Testing](load_testing.md) | [Caching Impact](caching_impact.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [Optimization Profiler](../../playground/optimization-profiler.md) to automatically identify your specific bottleneck patterns before implementing changes
 
 ## 📊 Optimization Framework
 

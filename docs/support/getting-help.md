@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to accessing support resources for RDAPify, including community channels, enterprise support options, and effective troubleshooting techniques to maximize your success with registration data processing  
 📚 **Related**: [Troubleshooting](troubleshooting.md) | [Verbose Logging](verbose_logging.md) | [Network Debugging](network_debugging.md) | [Common Errors](../../troubleshooting/common_errors.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Support Request Builder](../../playground/support-request-builder.md) to automatically generate well-structured support tickets with all necessary diagnostic information
 
 ## 🌐 Support Channels and Resources
 
@@ -204,7 +203,6 @@ npx rdapify performance-profile --duration 60
 | [Troubleshooting](troubleshooting.md) | Systematic diagnostic approach | [troubleshooting.md](troubleshooting.md) |
 | [Verbose Logging](verbose_logging.md) | Advanced logging configuration | [verbose_logging.md](verbose_logging.md) |
 | [Network Debugging](network_debugging.md) | Network-level issue diagnosis | [network_debugging.md](network_debugging.md) |
-| [Support Request Builder](../../playground/support-request-builder.md) | Interactive support ticket generator | [../../playground/support-request-builder.md](../../playground/support-request-builder.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Enterprise Support Portal](https://enterprise.rdapify.dev) | SLA-backed support resources | [https://enterprise.rdapify.dev](https://enterprise.rdapify.dev) |
 | [Community Guidelines](../../community/code_of_conduct.md) | Community participation standards | [../../community/code_of_conduct.md](../../community/code_of_conduct.md) |

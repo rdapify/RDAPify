@@ -3,7 +3,6 @@
 🎯 **Purpose**: Guide for establishing and participating in regional RDAPify community hubs that foster collaboration, knowledge sharing, and localized support while maintaining global standards  
 📚 **Related**: [Translation Guide](translation_guide.md) | [Chinese Community](chinese.md) | [Spanish Community](spanish.md) | [Russian Community](russian.md) | [Arabic Community](arabic.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Community Hub Starter Kit](../../playground/community-hub-starter.md) to quickly establish a regional hub with templates for governance, events, and communication
 
 ## 🌐 Why Regional Community Hubs Matter
 

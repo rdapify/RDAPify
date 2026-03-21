@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing custom normalizers in RDAPify to handle specialized data transformation, PII redaction, and registry-specific response normalization while maintaining protocol compliance  
 📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Data Normalization](../core-concepts/normalization.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Normalization Validator](../../playground/normalization-validator.md) to automatically verify your custom normalizers against RFC 7480 test vectors before deployment
 
 ## 🌐 Why Custom Normalizers Matter
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility guide for RDAPify on Deno runtime, detailing performance characteristics, security considerations, and optimization strategies for production deployments  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Node.js Versions](nodejs_versions.md) | [Bun Support](bun.md) | [Cloudflare Workers](cloudflare_workers.md) | [Browsers](browsers.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Deno Compatibility Checker](../../playground/deno-compatibility-checker.md) to automatically validate your RDAPify application on Deno runtime
 
 ## 📊 Deno Runtime Support Matrix
 
@@ -81,10 +80,6 @@ export const createDenoClient = () => {
         env: ['RDAP_CACHE_SIZE', 'RDAP_OFFLINE_MODE', 'TLS_CIPHERS']
       }
     },
-    offlineMode: {
-      enabled: Deno.env.get('RDAP_OFFLINE_MODE') === 'true',
-      sqlitePath: './data/rdapify-offline.sqlite'
-    }
   });
 };
 ```
@@ -215,12 +210,15 @@ export const denoSecurityConfig = {
 
 ## 🚀 Deno-Specific Features
 
+> **Planned feature** — Offline mode is not yet implemented in v0.1.8.
+
 ### Native SQLite Offline Mode
 ```typescript
 // features/deno-offline.ts
 import { createDenoClient } from '../config/deno.ts';
 import { Database } from "https://deno.land/x/sqlite@v3.8/mod.ts";
-import { OfflineMode } from 'rdapify/offline';
+// NOTE: rdapify/offline is not yet available — planned for a future release
+// import { OfflineMode } from 'rdapify/offline';
 
 const client = createDenoClient();
 
@@ -506,10 +504,8 @@ const connectionPool = {
 | [Compatibility Matrix](matrix.md) | Complete compatibility reference | [matrix.md](matrix.md) |
 | [Node.js Versions](nodejs_versions.md) | Node.js version compatibility | [nodejs_versions.md](nodejs_versions.md) |
 | [Bun Support](bun.md) | Bun runtime-specific configuration | [bun.md](bun.md) |
-| [Deno Compatibility Checker](../../playground/deno-compatibility-checker.md) | Interactive validation tool | [../../playground/deno-compatibility-checker.md](../../playground/deno-compatibility-checker.md) |
 | [Performance Benchmarks](../../../benchmarks/results/deno-performance.md) | Detailed Deno performance data | [../../../benchmarks/results/deno-performance.md](../../../benchmarks/results/deno-performance.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [SQLite Offline Mode](../guides/offline_mode.md) | Offline cache configuration guide | [../guides/offline_mode.md](../guides/offline_mode.md) |
 
 ## 🏷️ Deno Specifications
 

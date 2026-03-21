@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Master advanced TypeScript patterns and best practices for RDAPify development and integration  
 > **📚 Related:** [API Reference](../api-reference/client.md) | [Architecture Overview](../core-concepts/architecture.md) | [Type System Documentation](../api-reference/types/index.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [TypeScript Playground](../../playground/typescript-playground.md) to interactively test type definitions with autocomplete
 
 ---
 
@@ -1041,7 +1040,6 @@ export class DomainService {
 | **Type System Guide** | Deep dive into RDAPify types | [../api-reference/types/index.md](../api-reference/types/index.md) |
 | **Architecture Overview** | System design with TypeScript implementation | [../core-concepts/architecture.md](../core-concepts/architecture.md) |
 | **Error Handling** | Type-safe error patterns | [error_handling.md](error_handling.md) |
-| **TypeScript Playground** | Interactive type exploration | [../../playground/typescript-playground.md](../../playground/typescript-playground.md) |
 | **Performance Guide** | Type-driven optimizations | [../performance/optimization.md](../performance/optimization.md) |
 
 ---

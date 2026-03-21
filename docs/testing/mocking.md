@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to mocking RDAP registry responses and network interactions for reliable, security-aware testing with deterministic outcomes and minimal maintenance overhead  
 📚 **Related**: [Test Vectors](test_vectors.md) | [Fixtures](fixtures.md) | [Real Examples](real_examples.md) | [Security Testing](security_testing.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Mock Registry Builder](../../playground/mock-registry-builder.md) to automatically generate realistic RDAP mock servers from production responses
 
 ## 🌐 Mocking Architecture Overview
 
@@ -1091,7 +1090,6 @@ node --cpu-prof --heap-prof test/performance/fixture-loading.test.ts
 | [Fixtures](fixtures.md) | Test data management strategies | [fixtures.md](fixtures.md) |
 | [Security Testing](security_testing.md) | Security-focused testing patterns | [security_testing.md](security_testing.md) |
 | [Real Examples](real_examples.md) | Testing with real registry responses | [real_examples.md](real_examples.md) |
-| [Mock Registry Builder](../../playground/mock-registry-builder.md) | Interactive mock creation tool | [../../playground/mock-registry-builder.md](../../playground/mock-registry-builder.md) |
 | [Performance Benchmarks](../../../benchmarks/results/mocking-performance.md) | Mock performance metrics | [../../../benchmarks/results/mocking-performance.md](../../../benchmarks/results/mocking-performance.md) |
 | [SSRF Prevention Guide](../../../security/ssrf_prevention.md) | Security implementation guide | [../../../security/ssrf_prevention.md](../../../security/ssrf_prevention.md) |
 | [PII Detection](../../../security/pii_detection.md) | Personal data identification techniques | [../../../security/pii_detection.md](../../../security/pii_detection.md) |

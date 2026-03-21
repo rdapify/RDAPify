@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Fastify applications for secure domain, IP, and ASN lookups with enterprise-grade performance, schema validation, and SSRF protection  
 📚 **Related**: [Express.js](express.md) | [Next.js](nextjs.md) | [NestJS](nestjs.md) | [Redis](redis.md) | [Docker](docker.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Fastify Playground](../../playground/fastify-playground.md) to prototype your RDAP routes before implementation
 
 ## 🌐 Why Fastify for RDAP Applications?
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to diagnosing and resolving network connectivity issues in RDAP clients with practical troubleshooting techniques and tools for security-aware debugging  
 📚 **Related**: [Troubleshooting](troubleshooting.md) | [Verbose Logging](verbose_logging.md) | [Connection Timeout Resolution](../../troubleshooting/connection_timeout.md) | [Lambda Workers Issues](../../troubleshooting/lambda_workers_issues.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Network Diagnostic Tool](../../playground/network-diagnostic-tool.md) to automatically analyze your network configuration and pinpoint connectivity issues
 
 ## 📋 Common Network Issues in RDAP Clients
 
@@ -835,7 +834,6 @@ const response = await fetch(url, {
 |----------|-------------|------|
 | [Troubleshooting](troubleshooting.md) | General troubleshooting guide | [troubleshooting.md](troubleshooting.md) |
 | [Connection Timeout Resolution](../../troubleshooting/connection_timeout.md) | Handling network timeout issues | [../../troubleshooting/connection_timeout.md](../../troubleshooting/connection_timeout.md) |
-| [Network Diagnostic Tool](../../playground/network-diagnostic-tool.md) | Interactive network analysis tool | [../../playground/network-diagnostic-tool.md](../../playground/network-diagnostic-tool.md) |
 | [Docker Networking Guide](../deployments/docker.md) | Container network configuration | [../deployments/docker.md](../deployments/docker.md) |
 | [Kubernetes Networking](../deployments/kubernetes.md) | Cluster networking for RDAPify | [../deployments/kubernetes.md](../deployments/kubernetes.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |

@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete reference for standardized error types and handling patterns in RDAPify to ensure robust, secure, and compliant applications  
 > **📚 Related:** [Client API](../client.md) | [Security Whitepaper](../../security/whitepaper.md) | [Compliance Guide](../../security/compliance.md)  
 > **⏱️ Reading Time:** 6 minutes  
-> **🔍 Pro Tip:** Use the [Error Visualizer](../../../playground/error-visualizer.md) to interactively explore error flows with real-world scenarios
 
 ---
 
@@ -664,7 +663,6 @@ Different registries implement error responses with variations:
 | **Compliance Guide** | Regulatory error handling requirements | [../../security/compliance.md](../../security/compliance.md) |
 | **Production Checklist** | Error monitoring setup guide | [../getting-started/production-checklist.md](../getting-started/production-checklist.md) |
 | **Test Vectors** | Standardized error test cases | [../../../../test-vectors/error-vectors.json](../../../../test-vectors/error-vectors.json) |
-| **Error Visualizer** | Interactive error flow exploration | [../../../playground/error-visualizer.md](../../../playground/error-visualizer.md) |
 
 ---
 

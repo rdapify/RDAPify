@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility guide for RDAPify on Cloudflare Workers platform, detailing performance characteristics, security considerations, and optimization strategies for serverless deployments  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Node.js Versions](nodejs_versions.md) | [Bun Support](bun.md) | [Deno Support](deno.md) | [Browsers](browsers.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Cloudflare Compatibility Checker](../../playground/cloudflare-compatibility-checker.md) to automatically validate your RDAPify application on Cloudflare Workers
 
 ## 📊 Cloudflare Workers Support Matrix
 
@@ -125,11 +124,6 @@ function createCloudflareClient(env: Env): RDAPClient {
       // Offload heavy processing to Durable Objects
       offloadHeavyOperations: true
     },
-    offlineMode: {
-      enabled: true,
-      // Use D1 database for offline storage
-      d1: env.RDAP_OFFLINE
-    }
   });
 }
 
@@ -322,10 +316,13 @@ export const cloudflareSecurityConfig = {
 
 ## 🚀 Cloudflare-Specific Features
 
+> **Planned feature** — Offline mode is not yet implemented in v0.1.8.
+
 ### D1 Database Offline Mode
 ```typescript
 // features/cloudflare-offline.ts
-import { OfflineMode } from 'rdapify/offline';
+// NOTE: rdapify/offline is not yet available — planned for a future release
+// import { OfflineMode } from 'rdapify/offline';
 
 export class CloudflareOfflineMode extends OfflineMode {
   constructor(private d1: D1Database) {
@@ -616,7 +613,6 @@ wrangler dev --local --var SLOW_REGISTRY: true
 |----------|-------------|------|
 | [Compatibility Matrix](matrix.md) | Complete compatibility reference | [matrix.md](matrix.md) |
 | [D1 Database Guide](../../../guides/d1_database.md) | D1 database integration guide | [../../../guides/d1_database.md](../../../guides/d1_database.md) |
-| [Cloudflare Compatibility Checker](../../playground/cloudflare-compatibility-checker.md) | Interactive validation tool | [../../playground/cloudflare-compatibility-checker.md](../../playground/cloudflare-compatibility-checker.md) |
 | [Performance Benchmarks](../../../benchmarks/results/cloudflare-performance.md) | Detailed Cloudflare performance data | [../../../benchmarks/results/cloudflare-performance.md](../../../benchmarks/results/cloudflare-performance.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Edge Caching Strategies](../../../guides/edge_caching.md) | Advanced caching techniques | [../../../guides/edge_caching.md](../../../guides/edge_caching.md) |

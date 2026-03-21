@@ -1,9 +1,11 @@
 # Enterprise Consulting Options
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Comprehensive guide to RDAPify's enterprise consulting services for architecture review, implementation support, compliance validation, and optimization of registration data processing systems  
 📚 **Related**: [Adoption Guide](adoption_guide.md) | [SLA Support](sla_support.md) | [Data Residency](../../security/data_residency.md) | [Compliance Framework](../../security/compliance_framework.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Consulting Needs Assessment](../../playground/consulting-assessment.md) to evaluate your organization's specific consulting requirements before engaging with our team
 
 ## 🏢 Consulting Service Overview
 

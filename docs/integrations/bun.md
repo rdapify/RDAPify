@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Bun.js runtime for secure domain, IP, and ASN lookups with exceptional startup performance, built-in TypeScript support, and memory efficiency  
 📚 **Related**: [Docker](docker.md) | [Express.js](express.md) | [Fastify](fastify.md) | [Deno](deno.md) | [Cloudflare Workers](cloudflare_workers.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Bun Playground](../../playground/bun-playground.md) to test RDAP queries with Bun's lightning-fast execution before deployment
 
 ## 🌐 Why Bun.js for RDAP Applications?
 

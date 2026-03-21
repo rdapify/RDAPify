@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with NestJS applications for secure domain, IP, and ASN lookups with modular architecture, dependency injection, and enterprise-grade security  
 📚 **Related**: [Express.js](express.md) | [Next.js](nextjs.md) | [Fastify](fastify.md) | [Microservices](microservices.md) | [API Documentation](../guides/api_documentation.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [NestJS Playground](../../playground/nestjs-playground.md) to prototype your RDAP modules before implementation
 
 ## 🌐 Why NestJS for RDAP Applications?
 

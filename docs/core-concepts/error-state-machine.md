@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Understand RDAPify's comprehensive error handling system and how it manages failures at each stage of the RDAP query lifecycle  
 > **📚 Prerequisite:** [Architecture Overview](./architecture.md) and [Bootstrap Discovery](./discovery.md)  
 > **⏱️ Reading Time:** 10 minutes  
-> **🔍 Pro Tip:** Use the [Visual Debugger](../playground/visual-debugger.md) to trace error flows with real-world examples
 
 ---
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing cache poisoning protection in RDAPify to prevent data manipulation, SSRF attacks, and registry impersonation in distributed caching systems  
 📚 **Related**: [Data Isolation](data_isolation.md) | [Custom Fetcher](custom_fetcher.md) | [Plugin System](plugin_system.md) | [Security Whitepaper](../../security/whitepaper.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Cache Poisoning Simulator](../../playground/cache-poisoning-simulator.md) to test your cache configuration against simulated poisoning attacks before deployment
 
 ## 🌐 Why Cache Poisoning Protection Matters for RDAP
 
@@ -850,7 +849,6 @@ node ./scripts/monitor-crypto-operations.js --duration 60
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection requirements | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Certificate Pinning](../../security/certificate_pinning.md) | Advanced TLS security patterns | [../../security/certificate_pinning.md](../../security/certificate_pinning.md) |
-| [Cache Poisoning Simulator](../../playground/cache-poisoning-simulator.md) | Interactive attack simulation tool | [../../playground/cache-poisoning-simulator.md](../../playground/cache-poisoning-simulator.md) |
 | [Performance Tuning](../guides/performance.md) | Optimization techniques | [../guides/performance.md](../guides/performance.md) |
 
 ## 🏷️ Cache Poisoning Protection Specifications

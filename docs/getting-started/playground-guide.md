@@ -1,5 +1,8 @@
 # 🎮 RDAPify Playground Guide
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 > **🎯 Goal:** Explore RDAPify capabilities interactively without local setup  
 > **⏱️ Time Required:** 5-10 minutes  
 > **🌐 Access:** [https://rdapify.dev/playground](https://rdapify.dev/playground)  
@@ -384,10 +387,8 @@ Each template includes:
 | Resource | Description | Link |
 |----------|-------------|------|
 | **Interactive API Reference** | Explore methods with live examples | [../api-reference/client.md] |
-| **Visual Debugger Deep Dive** | Advanced debugging techniques | [../playground/visual-debugger.md] |
 | **Production Checklist** | Transitioning from playground to production | [./production-checklist.md] |
 | **Security Whitepaper** | Architecture details of our proxy system | [../security/whitepaper.md] |
-| **Template Gallery** | Community-contributed playground templates | [../playground/templates.md] |
 
 ---
 

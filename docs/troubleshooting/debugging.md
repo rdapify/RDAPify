@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to debugging RDAPify applications with advanced techniques, tools, and strategies for identifying and resolving issues in development and production environments  
 📚 **Related**: [Common Errors](common_errors.md) | [Connection Timeout Resolution](connection_timeout.md) | [Memory Leak Detection](memory_leaks.md) | [Log Analysis](log_analysis.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Visual Debugger](../../playground/visual-debugger.md) to interactively trace data flow and inspect variable states in real-time
 
 ## 📋 Debugging Methodology
 
@@ -905,7 +904,6 @@ node -e "console.log(require('./config').getProductionConfig())"
 |----------|-------------|------|
 | [Common Errors](common_errors.md) | Frequently encountered issues and solutions | [common_errors.md](common_errors.md) |
 | [Connection Timeout Resolution](connection_timeout.md) | Handling network timeout issues | [connection_timeout.md](connection_timeout.md) |
-| [Visual Debugger](../../playground/visual-debugger.md) | Interactive debugging tool | [../../playground/visual-debugger.md](../../playground/visual-debugger.md) |
 | [Log Analysis](log_analysis.md) | Techniques for analyzing debug logs | [log_analysis.md](log_analysis.md) |
 | [Memory Leak Detection](memory_leaks.md) | Advanced memory debugging tools | [memory_leaks.md](memory_leaks.md) |
 | [Performance Troubleshooting](../performance/troubleshooting.md) | Performance issue diagnosis guide | [../performance/troubleshooting.md](../performance/troubleshooting.md) |

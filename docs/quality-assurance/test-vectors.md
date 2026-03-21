@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive catalog of test vectors for validating RDAPify's protocol compliance, security controls, and functional correctness against RFC 7480 series specifications  
 📚 **Related**: [Overview](overview.md) | [JSONPath Reference](jsonpath_reference.md) | [Benchmarks](benchmarks.md) | [Compatibility Matrix](compatibility_matrix.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Test Vector Validator](../../playground/test-vector-validator.md) to automatically verify your implementation against all required test cases before submission
 
 ## 🌐 Test Vector Philosophy
 

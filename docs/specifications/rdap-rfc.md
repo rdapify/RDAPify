@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification of the Registration Data Access Protocol (RDAP) based on IETF RFC standards, providing implementation guidance for developers with emphasis on security, compliance, and performance  
 📚 **Related**: [RFC Style Guide](rfc_style_spec.md) | [Bootstrap Specification](bootstrap.md) | [Response Format](response_format.md) | [Security Services](../security/whitepaper.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [RFC Validator](../../playground/rfc-validator.md) to automatically validate your RDAP implementation against RFC requirements before deployment
 
 ## 🌐 RDAP Protocol Overview
 
@@ -581,7 +580,6 @@ tcpdump -i eth0 'host rdap.example.com and port 443' -w rdap_traffic.pcap
 | [Security Whitepaper](../../security/whitepaper.md) | Advanced security considerations and threat modeling | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Test Vectors](../../test-vectors/domain_vectors.json) | Valid and invalid test cases for domain queries | [../../test-vectors/domain_vectors.json](../../test-vectors/domain_vectors.json) |
 | [JSONPath Schema](jsonpath_schema.md) | Complete specification of JSONPath search capabilities | [jsonpath_schema.md](jsonpath_schema.md) |
-| [RFC Validator](../../playground/rfc-validator.md) | Interactive RFC compliance testing tool | [../../playground/rfc-validator.md](../../playground/rfc-validator.md) |
 
 ## 🏷️ Implementation Specifications
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Redis for high-performance caching, distributed rate limiting, and real-time data processing with enterprise-grade security  
 📚 **Related**: [Docker](docker.md) | [Express.js](express.md) | [Fastify](fastify.md) | [Cloudflare Workers](cloudflare_workers.md) | [Kubernetes](kubernetes.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Redis Config Validator](../../playground/redis-config-validator.md) to automatically check your Redis configurations for security and performance best practices
 
 ## 🌐 Why Redis for RDAP Applications?
 

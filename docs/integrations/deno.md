@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Deno runtime for secure domain, IP, and ASN lookups with exceptional startup performance, built-in TypeScript support, and Web Standard APIs  
 📚 **Related**: [Bun](bun.md) | [Cloudflare Workers](cloudflare_workers.md) | [Docker](docker.md) | [Redis](redis.md) | [Next.js](nextjs.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Deno Playground](../../playground/deno-playground.md) to prototype your RDAP code directly in the browser before deployment
 
 ## 🌐 Why Deno for RDAP Applications?
 

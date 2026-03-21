@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility guide for RDAPify across Node.js versions, detailing performance characteristics, security considerations, and migration strategies for different runtime environments  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Bun Support](bun.md) | [Deno Support](deno.md) | [Cloudflare Workers](cloudflare_workers.md) | [Browsers](browsers.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Node.js Version Checker](../../playground/node-version-checker.md) to automatically detect your Node.js version and identify compatibility issues
 
 ## 📊 Node.js Version Support Matrix
 
@@ -288,7 +287,6 @@ npm ls | grep -E 'vulnerability|security|CVE'
 | [Bun Support](bun.md) | Bun runtime-specific configuration | [bun.md](bun.md) |
 | [Deno Support](deno.md) | Deno runtime-specific configuration | [deno.md](deno.md) |
 | [Cloudflare Workers](cloudflare_workers.md) | Cloudflare Workers integration | [cloudflare_workers.md](cloudflare_workers.md) |
-| [Node.js Version Checker](../../playground/node-version-checker.md) | Interactive version validation tool | [../../playground/node-version-checker.md](../../playground/node-version-checker.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Performance Benchmarks](../../../benchmarks/results/nodejs-performance.md) | Detailed performance benchmark data | [../../../benchmarks/results/nodejs-performance.md](../../../benchmarks/results/nodejs-performance.md) |
 

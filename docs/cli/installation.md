@@ -78,7 +78,7 @@ sudo apt update && sudo apt install rdapify-cli
 ### 2. Versioned Installation
 ```bash
 # Install specific version
-npm install -g rdapify-cli@2.3.1
+npm install -g rdapify-cli@0.1.8
 
 # Install latest beta version
 npm install -g rdapify-cli@beta
@@ -116,7 +116,7 @@ shasum -a 512 node_modules/rdapify-cli-*.tgz
 Standalone binaries are signed with PGP keys:
 ```bash
 # Download signature file
-curl -O https://releases.rdapify.dev/cli/v2.3.1/rdapify-cli-linux-amd64.sig
+curl -O https://releases.rdapify.dev/cli/v0.1.8/rdapify-cli-linux-amd64.sig
 
 # Verify with PGP key
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 0xA1B2C3D4E5F67890
@@ -133,7 +133,7 @@ All builds follow SLSA Level 3 security practices:
     "host": "GitHub Actions"
   },
   "provenance": {
-    "url": "https://github.com/rdapify/cli/attestations/v2.3.1.provenance.json"
+    "url": "https://github.com/rdapify/cli/attestations/v0.1.8.provenance.json"
   },
   "dependencies": {
     "critical": [
@@ -189,7 +189,7 @@ docker_installation:
 ```bash
 # Check version and build information
 rdapify --version
-# Expected output: rdapify-cli v2.3.1 (build: 20251207.1423, commit: a1b2c3d)
+# Expected output: rdapify-cli v0.1.8 (build: 20251207.1423, commit: a1b2c3d)
 
 # Check health status
 rdapify health
@@ -367,12 +367,12 @@ rdapify version check
 # Install multiple versions (using n)
 npm install -g n
 n 18.18.2 # Switch to Node.js 18
-npm install -g rdapify-cli@2.2.0
+npm install -g rdapify-cli@0.1.8
 n 20.10.0 # Switch to Node.js 20
-npm install -g rdapify-cli@2.3.1
+npm install -g rdapify-cli@0.1.8
 
 # Use version alias
-echo 'alias rdapify22="NODE_OPTIONS=--max-old-space-size=512 npx rdapify-cli@2.2.0"' >> ~/.bashrc
+echo 'alias rdapify22="NODE_OPTIONS=--max-old-space-size=512 npx rdapify-cli@0.1.8"' >> ~/.bashrc
 ```
 
 ### 3. Uninstallation

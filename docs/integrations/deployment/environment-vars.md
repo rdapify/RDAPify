@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to configuring RDAPify through environment variables for all deployment environments  
 > **📚 Related:** [Docker](docker.md) | [Serverless](serverless.md) | [Kubernetes](kubernetes.md) | [Security Best Practices](../../guides/security_privacy.md)  
 > **⏱️ Reading Time:** 6 minutes  
-> **🔍 Pro Tip:** Use the [Env Validator](../../playground/env-validator.md) to automatically check your environment variable configurations for security and compatibility issues
 
 ---
 
@@ -895,7 +894,6 @@ kubectl create secret generic rdap-secrets \
 | **Kubernetes Secrets** | Managing secrets in Kubernetes | [kubernetes.md](kubernetes.md) |
 | **Security Best Practices** | Comprehensive security guide | [../../guides/security_privacy.md](../../guides/security_privacy.md) |
 | **GDPR Compliance Guide** | Environment variables for GDPR | [../../../security/gdpr-compliance.md](../../../security/gdpr-compliance.md) |
-| **Env Validator Tool** | Interactive configuration tester | [../../playground/env-validator.md](../../playground/env-validator.md) |
 
 ---
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Cloudflare Workers for secure domain, IP, and ASN lookups with edge computing performance, DDoS protection, and global distribution  
 📚 **Related**: [Deno](deno.md) | [Bun](bun.md) | [Docker](docker.md) | [KV Storage](kv_storage.md) | [Durable Objects](durable_objects.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Workers Playground](../../playground/workers-playground.md) to prototype your RDAP workers before deployment with zero-config preview URLs
 
 ## 🌐 Why Cloudflare Workers for RDAP Applications?
 

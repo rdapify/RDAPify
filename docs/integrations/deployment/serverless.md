@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete guide to deploying RDAPify in serverless environments for scalable, cost-effective RDAP operations  
 > **📚 Related:** [Docker](docker.md) | [Kubernetes](kubernetes.md) | [Cloud Functions](../cloud/)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Serverless Validator](../../playground/serverless-validator.md) to automatically check your serverless configurations for security and performance best practices
 
 ---
 

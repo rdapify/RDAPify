@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to diagnosing and resolving connection timeout issues in RDAP clients with practical troubleshooting steps, network analysis techniques, and production-ready mitigation strategies  
 📚 **Related**: [Common Errors](common_errors.md) | [Debugging](debugging.md) | [Lambda Workers Issues](lambda_workers_issues.md) | [Proxy Rotation](proxy_rotation.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Connection Diagnostic Tool](../../playground/connection-diagnostic-tool.md) to automatically analyze your network configuration and identify timeout causes
 
 ## ⚡ Understanding Connection Timeouts in RDAP Context
 
@@ -683,7 +682,6 @@ interface RegistryTimeoutConfig {
 | [Debugging](debugging.md) | Advanced debugging techniques and tools | [debugging.md](debugging.md) |
 | [Lambda Workers Issues](lambda_workers_issues.md) | Serverless deployment troubleshooting | [lambda_workers_issues.md](lambda_workers_issues.md) |
 | [Proxy Rotation](proxy_rotation.md) | Handling IP rate limiting with proxy rotation | [proxy_rotation.md](proxy_rotation.md) |
-| [Connection Diagnostic Tool](../../playground/connection-diagnostic-tool.md) | Interactive network analysis tool | [../../playground/connection-diagnostic-tool.md](../../playground/connection-diagnostic-tool.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Performance Benchmarks](../../../benchmarks/results/connection-timeouts.md) | Connection timeout benchmark data | [../../../benchmarks/results/connection-timeouts.md](../../../benchmarks/results/connection-timeouts.md) |
 | [Network Troubleshooting Guide](../network/debugging.md) | Advanced network debugging techniques | [../network/debugging.md](../network/debugging.md) |

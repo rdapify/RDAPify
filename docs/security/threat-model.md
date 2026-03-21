@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive threat modeling analysis for RDAPify's registration data processing platform, identifying attack vectors, risk prioritization, and defense strategies for security teams and compliance officers  
 📚 **Related**: [Security Whitepaper](whitepaper.md) | [PII Detection](pii_detection.md) | [SSRF Prevention](ssrf_prevention.md) | [GDPR Compliance](../../guides/gdpr_compliance.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [Threat Model Analyzer](../../playground/threat-model-analyzer.md) to automatically generate threat models for your specific RDAPify deployment scenario
 
 ## 📋 Executive Summary
 
@@ -709,8 +708,8 @@ export class RuntimeThreatDetector {
 
 **Key Findings**:
 - SSRF protection successfully blocked 100% of attack variants
-- PII redaction missed 2 edge cases in rare registry formats (patched in v2.3.1)
-- Rate limiting needed adjustment for burst patterns (improved in v2.3.2)
+- PII redaction missed 2 edge cases in rare registry formats (patched in v0.1.8)
+- Rate limiting needed adjustment for burst patterns (improved in v0.1.8)
 - Redis cache required additional ACL configuration to prevent cross-tenant access
 - Certificate pinning prevented all registry impersonation attempts
 
@@ -891,7 +890,6 @@ export class ThreatModelValidator {
 | [PII Detection](pii_detection.md) | Personal data identification techniques | [pii_detection.md](pii_detection.md) |
 | [SSRF Prevention](ssrf_prevention.md) | Server-side request forgery prevention | [ssrf_prevention.md](ssrf_prevention.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
-| [Threat Model Analyzer](../../playground/threat-model-analyzer.md) | Interactive threat modeling tool | [../../playground/threat-model-analyzer.md](../../playground/threat-model-analyzer.md) |
 | [Security Testing](../../testing/security_testing.md) | Security testing methodology and tools | [../../testing/security_testing.md](../../testing/security_testing.md) |
 | [Vulnerability Disclosure](../../security/vulnerability_disclosure.md) | Responsible disclosure process | [../../security/vulnerability_disclosure.md](../../security/vulnerability_disclosure.md) |
 | [Incident Response Plan](../../enterprise/incident_response.md) | Security incident handling procedures | [../../enterprise/incident_response.md](../../enterprise/incident_response.md) |

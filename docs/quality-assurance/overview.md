@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive framework for RDAPify's quality assurance processes ensuring protocol compliance, security, performance, and developer experience across all environments  
 📚 **Related**: [Test Vectors](test_vectors.md) | [JSONPath Reference](jsonpath_reference.md) | [Benchmarks](benchmarks.md) | [Compatibility Matrix](compatibility_matrix.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [QA Dashboard](../../playground/qa-dashboard.md) to view real-time quality metrics and test coverage across all modules
 
 ## 🌐 Quality Philosophy
 

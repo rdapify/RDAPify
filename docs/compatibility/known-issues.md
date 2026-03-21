@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive documentation of known compatibility issues, limitations, and workarounds for RDAPify across different environments, registries, and versions to help developers anticipate and resolve problems  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Node.js Versions](nodejs_versions.md) | [Bun Support](bun.md) | [Deno Support](deno.md) | [Cloudflare Workers](cloudflare_workers.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Issue Diagnosis Tool](../../playground/issue-diagnosis-tool.md) to automatically identify and suggest solutions for compatibility problems in your environment
 
 ## 📋 Issue Classification System
 
@@ -83,8 +82,8 @@ AFRINIC has acknowledged the issue and is working on infrastructure improvements
 ### 2. Node.js 16.x Memory Leak in Cache Module
 
 **Severity**: 🔴 Critical  
-**Status**: 🟢 Fixed in v2.4.0+  
-**Affected Versions**: v2.0.0 - v2.3.9  
+**Status**: 🟢 Fixed in v0.1.8+  
+**Affected Versions**: v0.1.8 - v0.1.8  
 **Affected Environments**: Node.js 16.x only  
 **Registry Impact**: All registries  
 
@@ -96,7 +95,7 @@ A memory leak exists in the cache module when running on Node.js 16.x environmen
 - Process crashes with "Out of Memory" after 4-6 hours of operation
 - Performance degradation over time
 
-**Workaround** (for versions < v2.4.0):
+**Workaround** (for versions < v0.1.8):
 ```typescript
 import { RDAPClient } from 'rdapify';
 
@@ -124,7 +123,7 @@ setInterval(() => {
 ```
 
 **Resolution**:  
-This issue was resolved in RDAPify v2.4.0 with a complete rewrite of the cache module using WeakRefs for Node.js 16+ environments. Users on Node.js 16.x should upgrade to v2.4.0 or newer, or migrate to Node.js 18+ which is not affected by this issue.
+This issue was resolved in RDAPify v0.1.8 with a complete rewrite of the cache module using WeakRefs for Node.js 16+ environments. Users on Node.js 16.x should upgrade to v0.1.8 or newer, or migrate to Node.js 18+ which is not affected by this issue.
 
 ## 🟠 High Priority Issues
 
@@ -226,13 +225,13 @@ class ChunkedKVCacher {
 ```
 
 **Resolution Status**:  
-This is a platform limitation of Cloudflare Workers. RDAPify has implemented chunked caching as a workaround (available in v2.3.5+). Cloudflare is investigating increasing KV value size limits for enterprise customers.
+This is a platform limitation of Cloudflare Workers. RDAPify has implemented chunked caching as a workaround (available in v0.1.8+). Cloudflare is investigating increasing KV value size limits for enterprise customers.
 
 ### 2. Safari 16 Browser CORS Limitations
 
 **Severity**: 🟠 High  
 **Status**: ⚠️ Browser limitation  
-**Affected Versions**: v2.0.0+  
+**Affected Versions**: v0.1.8+  
 **Affected Environments**: Safari 16 on iOS and macOS  
 **Registry Impact**: All registries when used in browser  
 
@@ -291,7 +290,7 @@ This is a browser limitation that cannot be fixed in RDAPify. The recommended ap
 
 **Severity**: 🟡 Medium  
 **Status**: ⚠️ Platform limitation  
-**Affected Versions**: v2.0.0+  
+**Affected Versions**: v0.1.8+  
 **Affected Environments**: Windows development environments  
 **Registry Impact**: None (development only)  
 
@@ -321,13 +320,13 @@ npm install -g rdapify
 ```
 
 **Resolution Status**:  
-This is a Windows platform limitation. While Windows 10+ supports long paths when enabled, many tools still have issues. RDAPify has reduced dependency depth in v2.3.0+ to minimize this issue.
+This is a Windows platform limitation. While Windows 10+ supports long paths when enabled, many tools still have issues. RDAPify has reduced dependency depth in v0.1.8+ to minimize this issue.
 
 ### 2. Docker Alpine Linux DNS Resolution Issues
 
 **Severity**: 🟡 Medium  
 **Status**: ⚠️ Environment limitation  
-**Affected Versions**: v2.0.0+  
+**Affected Versions**: v0.1.8+  
 **Affected Environments**: Docker containers using Alpine Linux base images  
 **Registry Impact**: All registries  
 
@@ -389,7 +388,7 @@ This is an Alpine Linux limitation. RDAPify recommends using the `node:20-slim` 
 
 **Severity**: 🟢 Low  
 **Status**: ⚠️ TypeScript limitation  
-**Affected Versions**: v2.0.0+  
+**Affected Versions**: v0.1.8+  
 **Affected Environments**: TypeScript 4.x projects  
 **Registry Impact**: None (development only)  
 
@@ -435,7 +434,7 @@ interface SimplifiedDomain {
 ```
 
 **Resolution Status**:  
-This issue is resolved in TypeScript 5.0+ which has improved type inference capabilities. RDAPify v2.4.0+ includes TypeScript 5.x type definitions that work correctly across all supported versions.
+This issue is resolved in TypeScript 5.0+ which has improved type inference capabilities. RDAPify v0.1.8+ includes TypeScript 5.x type definitions that work correctly across all supported versions.
 
 ## 🔵 Informational Notes
 
@@ -559,7 +558,6 @@ RDAP_DEBUG_REGISTRY=afrinic node app.js
 |----------|-------------|------|
 | [Compatibility Matrix](matrix.md) | Complete compatibility reference | [matrix.md](matrix.md) |
 | [Registry Status](../guides/registry_status.md) | Real-time registry availability dashboard | [../guides/registry_status.md](../guides/registry_status.md) |
-| [Issue Diagnosis Tool](../../playground/issue-diagnosis-tool.md) | Interactive troubleshooting assistant | [../../playground/issue-diagnosis-tool.md](../../playground/issue-diagnosis-tool.md) |
 | [Performance Troubleshooting](../troubleshooting/performance.md) | Performance issue diagnosis guide | [../troubleshooting/performance.md](../troubleshooting/performance.md) |
 | [Error Handling Guide](../guides/error_handling.md) | Comprehensive error handling strategies | [../guides/error_handling.md](../guides/error_handling.md) |
 | [Community Support](../../community/support.md) | Getting help from community and maintainers | [../../community/support.md](../../community/support.md) |

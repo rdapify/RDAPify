@@ -1,5 +1,8 @@
 # API Playground
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Interactive environment to explore RDAPify API endpoints with real-time execution, parameter customization, and security context visualization  
 📚 **Related**: [Overview](overview.md) | [Examples Gallery](examples.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting-started/five_minutes.md)  
 ⏱️ **Reading Time**: 6 minutes  

@@ -1,5 +1,8 @@
 # Visual Debugger
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Interactive debugging environment for visualizing RDAP query execution, data flows, and security boundaries in real-time with enterprise-grade diagnostics  
 📚 **Related**: [API Playground](api_playground.md) | [Examples Gallery](examples.md) | [Overview](overview.md) | [Error Handling Guide](../guides/error_handling.md)  
 ⏱️ **Reading Time**: 7 minutes  

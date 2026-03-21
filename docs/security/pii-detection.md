@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to detecting and handling Personally Identifiable Information (PII) in RDAP registration data with advanced pattern recognition, context-aware detection, and compliance-preserving processing techniques  
 📚 **Related**: [Data Validation](data_validation.md) | [SSRF Prevention](ssrf_prevention.md) | [GDPR Compliance](../../guides/gdpr_compliance.md) | [Threat Model](threat_model.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [PII Scanner](../../playground/pii-scanner.md) to automatically detect PII patterns in your RDAP responses before deployment
 
 ## 📋 Executive Summary
 
@@ -1188,7 +1187,6 @@ node ./scripts/streaming-benchmark.js --file 10mb-response.json
 | [SSRF Prevention](ssrf_prevention.md) | Server-side request forgery protection | [ssrf_prevention.md](ssrf_prevention.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Threat Model](threat_model.md) | Detailed threat analysis | [threat_model.md](threat_model.md) |
-| [PII Scanner](../../playground/pii-scanner.md) | Interactive PII detection tool | [../../playground/pii-scanner.md](../../playground/pii-scanner.md) |
 | [Redaction Patterns](redaction_patterns.md) | PII redaction implementation guide | [redaction_patterns.md](redaction_patterns.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 | [Data Minimization](../../guides/data_minimization.md) | GDPR Article 5(1)(c) implementation | [../../guides/data_minimization.md](../../guides/data_minimization.md) |

@@ -1,9 +1,11 @@
 # Visualization Tools Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing interactive data visualization tools for RDAP registration data with real-time analytics, security-aware visualizations, and compliance-friendly dashboards  
 📚 **Related**: [Dashboard Components](dashboard_components.md) | [Pattern Analysis](pattern_analysis.md) | [Relationship Mapping](relationship_mapping.md) | [Reporting Automation](reporting_automation.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Visualization Builder](../../playground/visualization-builder.md) to interactively create and customize RDAP data visualizations without writing code
 
 ## 🌐 Visualization Architecture Overview
 
@@ -1478,7 +1480,6 @@ node ./scripts/compare-font-rendering.js --platforms windows,macos,ios,android
 | [Pattern Analysis](pattern_analysis.md) | Advanced pattern detection algorithms | [pattern_analysis.md](pattern_analysis.md) |
 | [Relationship Mapping](relationship_mapping.md) | Domain and entity relationship visualization | [relationship_mapping.md](relationship_mapping.md) |
 | [Reporting Automation](reporting_automation.md) | Automated report generation and delivery | [reporting_automation.md](reporting_automation.md) |
-| [Visualization Builder](../../playground/visualization-builder.md) | Interactive visualization creation tool | [../../playground/visualization-builder.md](../../playground/visualization-builder.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Performance Optimization](../guides/performance.md) | Speed and efficiency techniques | [../guides/performance.md](../guides/performance.md) |
 | [WebGL Acceleration](../guides/webgl_acceleration.md) | Advanced rendering techniques | [../guides/webgl_acceleration.md](../guides/webgl_acceleration.md) |

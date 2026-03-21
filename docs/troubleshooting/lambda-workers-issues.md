@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to diagnosing and resolving issues specific to AWS Lambda deployments of RDAPify with practical troubleshooting techniques, performance optimization strategies, and compliance-aware configurations  
 📚 **Related**: [Common Errors](common_errors.md) | [Debugging](debugging.md) | [Connection Timeout Resolution](connection_timeout.md) | [Proxy Rotation](proxy_rotation.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Lambda Performance Inspector](../../playground/lambda-inspector.md) to automatically analyze your Lambda configuration and identify optimization opportunities
 
 ## 📋 Lambda-Specific Error Classification
 
@@ -814,7 +813,6 @@ exports.handler = async (event) => {
 | [Common Errors](common_errors.md) | Frequently encountered issues and solutions | [common_errors.md](common_errors.md) |
 | [Debugging](debugging.md) | Advanced debugging techniques | [debugging.md](debugging.md) |
 | [Connection Timeout Resolution](connection_timeout.md) | Handling network timeout issues | [connection_timeout.md](connection_timeout.md) |
-| [Lambda Performance Inspector](../../playground/lambda-inspector.md) | Interactive Lambda optimization tool | [../../playground/lambda-inspector.md](../../playground/lambda-inspector.md) |
 | [Lambda Cold Start Optimization](../../../benchmarks/results/lambda-cold-start.md) | Cold start benchmark data | [../../../benchmarks/results/lambda-cold-start.md](../../../benchmarks/results/lambda-cold-start.md) |
 | [Serverless Deployments](../deployments/serverless.md) | Comprehensive serverless guide | [../deployments/serverless.md](../deployments/serverless.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |

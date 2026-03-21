@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility reference for RDAPify across JavaScript runtimes, deployment platforms, and registry types with version support details and environment-specific considerations  
 📚 **Related**: [Node.js Versions](nodejs_versions.md) | [Bun Support](bun.md) | [Deno Support](deno.md) | [Cloudflare Workers](cloudflare_workers.md) | [Browser Support](browsers.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Compatibility Checker](../../playground/compatibility-checker.md) to automatically detect your environment and identify any compatibility issues
 
 ## 🌐 Compatibility Overview
 
@@ -386,7 +385,6 @@ curl -I "https://api.rdapify.dev/domain/example.com"
 | [Deno Support](deno.md) | Deno runtime-specific configuration | [deno.md](deno.md) |
 | [Cloudflare Workers](cloudflare_workers.md) | Cloudflare Workers integration guide | [cloudflare_workers.md](cloudflare_workers.md) |
 | [Browser Support](browsers.md) | Browser compatibility and limitations | [browsers.md](browsers.md) |
-| [Compatibility Checker](../../playground/compatibility-checker.md) | Interactive compatibility validation tool | [../../playground/compatibility-checker.md](../../playground/compatibility-checker.md) |
 | [Performance Benchmarks](../../../benchmarks/results/compatibility.md) | Detailed performance benchmark results | [../../../benchmarks/results/compatibility.md](../../../benchmarks/results/compatibility.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 

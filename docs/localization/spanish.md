@@ -3,7 +3,6 @@
 🎯 **Propósito**: Documentación completa de RDAPify en español para desarrolladores, manteniendo precisión técnica, contexto de seguridad y cumplimiento normativo  
 📚 **Relacionado**: [Guía de Traducción](translation_guide.md) | [Documentación China](chinese.md) | [Documentación Rusa](russian.md) | [Documentación Árabe](arabic.md)  
 ⏱️ **Tiempo de Lectura**: 10 minutos  
-🔍 **Consejo Profesional**: Use el [Validador de Documentación en Español](../../playground/spanish-validator.md) para verificar automáticamente la precisión técnica y cumplimiento normativo de sus traducciones
 
 ## 🌐 ¿Por qué elegir RDAPify?
 

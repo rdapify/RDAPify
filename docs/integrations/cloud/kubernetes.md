@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete guide to deploying and scaling RDAPify in Kubernetes environments for enterprise-grade reliability and performance  
 > **📚 Related:** [AWS Lambda](aws_lambda.md) | [Azure Functions](azure_functions.md) | [Google Cloud Run](google_cloud_run.md)  
 > **⏱️ Reading Time:** 8 minutes  
-> **🔍 Pro Tip:** Use the [Kubernetes Deployment Validator](../../playground/k8s-validator.md) to automatically check your manifests for security and performance best practices
 
 ---
 

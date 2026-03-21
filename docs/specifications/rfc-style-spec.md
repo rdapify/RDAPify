@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for writing RDAP responses that strictly adhere to IETF RFC formatting requirements with emphasis on security, internationalization, and validation best practices  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [Response Format](response_format.md) | [Status Codes](status_codes.md) | [JSONPath Schema](jsonpath_schema.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [RFC Formatter](../../playground/rfc-formatter.md) to automatically format your RDAP responses according to RFC requirements before validation
 
 ## 📐 RFC Style Requirements Overview
 
@@ -421,7 +420,6 @@ rdapify validate --file response.json --strict
 | [Status Codes](status_codes.md) | Comprehensive error code reference | [status_codes.md](status_codes.md) |
 | [JSONPath Schema](jsonpath_schema.md) | JSONPath search capabilities specification | [jsonpath_schema.md](jsonpath_schema.md) |
 | [Response Format](response_format.md) | Complete response structure guide | [response_format.md](response_format.md) |
-| [RFC Formatter](../../playground/rfc-formatter.md) | Interactive RFC formatting tool | [../../playground/rfc-formatter.md](../../playground/rfc-formatter.md) |
 | [Test Vectors](../../../test-vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test-vectors/domain_vectors.json](../../../test-vectors/domain_vectors.json) |
 
 ## 🏷️ RFC Style Specifications

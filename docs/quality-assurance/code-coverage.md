@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive framework for RDAPify's code coverage requirements, measurement methodologies, and quality gates ensuring test-driven development and defect prevention  
 📚 **Related**: [Overview](overview.md) | [Test Vectors](test_vectors.md) | [Benchmarks](benchmarks.md) | [JSONPath Reference](jsonpath_reference.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Coverage Dashboard](../../playground/coverage-dashboard.md) to visualize code coverage gaps and track coverage trends across releases
 
 ## 🌐 Code Coverage Philosophy
 

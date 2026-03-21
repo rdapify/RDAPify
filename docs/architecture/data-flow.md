@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to RDAPify's data flow architecture, detailing how registration data moves through the system with strict validation boundaries, security controls, and performance optimizations  
 📚 **Related**: [Overview](overview.md) | [Error Flow](error_flow.md) | [Layer Design](layer_design.md) | [Plugin Architecture](plugin_architecture.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Data Flow Visualizer](../../playground/data-flow-visualizer.md) to interactively trace data paths through the system with real-time performance metrics
 
 ## 📊 Core Data Flow Patterns
 
@@ -877,7 +876,6 @@ RDAP_LOG_LEVEL=trace node ./app.js --domain example.com
 | [Error Flow](error_flow.md) | Error handling and recovery patterns | [error_flow.md](error_flow.md) |
 | [Layer Design](layer_design.md) | Detailed layer responsibilities | [layer_design.md](layer_design.md) |
 | [Plugin Architecture](plugin_architecture.md) | Extension points for customization | [plugin_architecture.md](plugin_architecture.md) |
-| [Data Flow Visualizer](../../playground/data-flow-visualizer.md) | Interactive data flow exploration tool | [../../playground/data-flow-visualizer.md](../../playground/data-flow-visualizer.md) |
 | [Normalization Rules](../../../specifications/normalization_rules.md) | Detailed field mapping specifications | [../../../specifications/normalization_rules.md](../../../specifications/normalization_rules.md) |
 | [PII Detection](../../security/pii_detection.md) | Personal data identification techniques | [../../security/pii_detection.md](../../security/pii_detection.md) |
 | [Data Validation](../../security/data_validation.md) | Input validation strategies | [../../security/data_validation.md](../../security/data_validation.md) |

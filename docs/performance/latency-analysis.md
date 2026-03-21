@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive analysis of RDAPify latency characteristics, measurement methodologies, and optimization strategies for real-time applications  
 📚 **Related**: [Benchmarks](benchmarks.md) | [Optimization Guide](optimization.md) | [Caching Impact](caching_impact.md) | [Load Testing](load_testing.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Latency Simulator](../../playground/latency-simulator.md) to model latency patterns for your specific deployment before making optimization decisions
 
 ## 📊 Latency Analysis Framework
 

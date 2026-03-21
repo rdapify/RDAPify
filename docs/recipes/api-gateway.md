@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing a secure, high-performance API gateway for RDAP registration data with advanced routing, security policies, and observability capabilities  
 📚 **Related**: [Domain Portfolio](domain_portfolio.md) | [Monitoring Service](monitoring_service.md) | [Critical Alerts](critical_alerts.md) | [Security Privacy](../guides/security_privacy.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [Gateway Configuration Validator](../../playground/gateway-config-validator.md) to automatically verify your API gateway configuration against security best practices and compliance requirements
 
 ## 🌐 API Gateway Architecture Overview
 

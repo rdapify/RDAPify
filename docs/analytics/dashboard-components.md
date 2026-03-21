@@ -1,9 +1,11 @@
 # Dashboard Components Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing real-time, security-aware dashboard components for RDAP registration data visualization with focus on performance, compliance, and user experience  
 📚 **Related**: [Monitoring Service](monitoring_service.md) | [API Gateway](api_gateway.md) | [Data Aggregation](data_aggregation.md) | [Pattern Analysis](pattern_analysis.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Dashboard Preview](../../playground/dashboard-preview.md) to test your dashboard components against live RDAP data before integration
 
 ## 🌐 Dashboard Architecture Overview
 
@@ -1516,7 +1518,6 @@ clinic doctor --autocannon [ -c 500 /websocket ] -- node ./dist/websocket-server
 | [API Gateway](api_gateway.md) | Secure API access patterns | [api_gateway.md](api_gateway.md) |
 | [Data Aggregation](data_aggregation.md) | Large-scale data collection patterns | [data_aggregation.md](data_aggregation.md) |
 | [Pattern Analysis](pattern_analysis.md) | Advanced detection techniques | [pattern_analysis.md](pattern_analysis.md) |
-| [Dashboard Preview](../../playground/dashboard-preview.md) | Interactive testing environment | [../../playground/dashboard-preview.md](../../playground/dashboard-preview.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [WebSocket Security](../guides/websocket_security.md) | Secure real-time communication patterns | [../guides/websocket_security.md](../guides/websocket_security.md) |
 | [Performance Optimization](../guides/performance.md) | Speed and efficiency techniques | [../guides/performance.md](../guides/performance.md) |

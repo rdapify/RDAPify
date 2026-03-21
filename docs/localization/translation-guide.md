@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for translating RDAPify documentation while maintaining technical accuracy, security context, and regulatory compliance across all supported languages  
 📚 **Related**: [Chinese Documentation](chinese.md) | [Spanish Documentation](spanish.md) | [Russian Documentation](russian.md) | [Arabic Documentation](arabic.md) | [Community Hubs](community_hubs.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Translation Validator](../../playground/translation-validator.md) to automatically check your translations for technical accuracy and regulatory compliance
 
 ## 🌐 Why Quality Translation Matters for RDAPify
 
@@ -377,7 +376,7 @@ All terminology follows semantic versioning:
 
 ```markdown
 > 📌 **Glossary Version Notice**  
-> The term "PII Redaction" was updated in Glossary v2.3.0 to clarify handling of IP addresses under GDPR. All translations must be updated before the next documentation release.
+> The term "PII Redaction" was updated in Glossary v0.1.8 to clarify handling of IP addresses under GDPR. All translations must be updated before the next documentation release.
 ```
 
 ## 📞 Contact and Support

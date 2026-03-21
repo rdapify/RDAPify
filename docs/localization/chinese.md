@@ -3,7 +3,6 @@
 🎯 **目的**：为中文开发者提供全面、准确的 RDAPify 文档，保持技术精确性、安全上下文和法规遵从性  
 📚 **相关**：[翻译指南](translation_guide.md) | [西班牙语文档](spanish.md) | [俄语文档](russian.md) | [阿拉伯语文档](arabic.md)  
 ⏱️ **阅读时间**：10 分钟  
-🔍 **专业提示**：使用[中文文档验证器](../../playground/chinese-validator.md)自动检查您的中文翻译是否符合技术准确性和法规遵从性要求
 
 ## 🌐 为什么选择 RDAPify？
 

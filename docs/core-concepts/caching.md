@@ -885,7 +885,6 @@ async function initCache() {
 
 > **🔐 Security Reminder:** Caching introduces significant compliance risks when handling RDAP data. Always enable `redactBeforeStore`, encrypt cache contents, and implement strict retention policies. Never store raw RDAP responses with unredacted PII in any cache layer without documented legal basis and Data Protection Officer approval.
 
-[← Back to Core Concepts](../core-concepts/README.md) | [Next: Offline Mode →](./offline-mode.md)
 
 *Document last updated: December 5, 2025*  
 *Caching engine version: 2.3.0*  

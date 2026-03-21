@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete guide to deploying RDAPify in Docker containers for local development, testing, and production environments  
 > **📚 Related:** [Kubernetes](kubernetes.md) | [Serverless](serverless.md) | [Environment Variables](environment_vars.md)  
 > **⏱️ Reading Time:** 6 minutes  
-> **🔍 Pro Tip:** Use the [Docker Validator](../../playground/docker-validator.md) to automatically check your Docker configurations for security and performance best practices
 
 ---
 
@@ -600,7 +599,7 @@ services:
       - app-network
       
   monitoring:
-    image: prometheus/prometheus:v2.40.0
+    image: prometheus/prometheus:v0.1.8
     deploy:
       replicas: 1
       placement:
@@ -770,7 +769,7 @@ process.on('SIGTERM', () => {
 set -e
 
 IMAGE_NAME="registry.example.com/rdapify"
-IMAGE_TAG="2.3.0"
+IMAGE_TAG="0.1.8"
 SCANNING_ENABLED=${SCANNING_ENABLED:-true}
 
 # Build container
@@ -1040,7 +1039,6 @@ docker run --rm registry.example.com/rdapify:2.3.0 \
 | [Serverless Deployments](serverless.md) | AWS Lambda, Azure Functions | [serverless.md](serverless.md) |
 | [Environment Variables](environment_vars.md) | Configuration management | [environment_vars.md](environment_vars.md) |
 | [Security Whitepaper](../../../security/whitepaper.md) | Complete security architecture | [../../../security/whitepaper.md](../../../security/whitepaper.md) |
-| [Docker Validator](../../playground/docker-validator.md) | Configuration validation tool | [../../playground/docker-validator.md](../../playground/docker-validator.md) |
 | [Container Benchmarks](../../../benchmarks/results/docker-performance.md) | Performance benchmark results | [../../../benchmarks/results/docker-performance.md](../../../benchmarks/results/docker-performance.md) |
 
 ---

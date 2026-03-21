@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to managing test fixtures for RDAPify testing, covering fixture organization, security considerations, performance optimization, and integration with testing frameworks  
 📚 **Related**: [Test Vectors](test_vectors.md) | [Mocking](mocking.md) | [Real Examples](real_examples.md) | [Continuous Testing](continuous_testing.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Fixture Generator](../../playground/fixture-generator.md) to automatically create GDPR-compliant test fixtures from real registry responses
 
 ## 🌐 Test Fixture Architecture Overview
 
@@ -669,7 +668,6 @@ find test/fixtures -name "*.json" -exec du -h {} \; | sort -hr | head -10
 | [Test Vectors](test_vectors.md) | Comprehensive test data sets | [test_vectors.md](test_vectors.md) |
 | [Mocking](mocking.md) | Simulating registry responses | [mocking.md](mocking.md) |
 | [Real Examples](real_examples.md) | Testing with real registry data | [real_examples.md](real_examples.md) |
-| [Fixture Generator](../../playground/fixture-generator.md) | Interactive fixture creation tool | [../../playground/fixture-generator.md](../../playground/fixture-generator.md) |
 | [Testing Overview](overview.md) | Comprehensive testing strategy | [overview.md](overview.md) |
 | [Security Testing](security_testing.md) | Security-focused test patterns | [security_testing.md](security_testing.md) |
 | [Continuous Testing](continuous_testing.md) | CI/CD testing integration | [continuous_testing.md](continuous_testing.md) |

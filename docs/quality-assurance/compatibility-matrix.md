@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility matrix for RDAPify across platforms, environments, and dependency versions to ensure reliable deployment and interoperability  
 📚 **Related**: [Overview](overview.md) | [Test Vectors](test_vectors.md) | [Benchmarks](benchmarks.md) | [JSONPath Reference](jsonpath_reference.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Compatibility Validator](../../playground/compatibility-validator.md) to automatically check your environment against the latest compatibility requirements
 
 ## 🌐 Compatibility Philosophy
 

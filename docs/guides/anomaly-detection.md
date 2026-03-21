@@ -1,9 +1,11 @@
 # 🕵️ Anomaly Detection Guide
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 > **🎯 Purpose:** Comprehensive guide to implementing anomaly detection systems for RDAP data to identify security threats, data quality issues, and registration patterns  
 > **📚 Related:** [Security & Privacy](security_privacy.md) | [Batch Processing](batch-processing.md) | [Analytics Dashboard](../analytics/dashboard_components.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Anomaly Simulator](../../playground/anomaly-simulator.md) to test detection patterns with your specific domain portfolios and threat models
 
 ---
 
@@ -1159,7 +1161,6 @@ class SecurityFocusedDetector {
 | **Relationship Mapping** | Building entity relationship graphs | [../analytics/relationship_mapping.md](../analytics/relationship_mapping.md) |
 | **GDPR Compliance** | Anomaly detection with GDPR compliance | [../../security/gdpr-compliance.md](../../security/gdpr-compliance.md) |
 | **Test Vectors** | Standardized test cases for anomaly detection | [../../test-vectors/anomaly-detection.json](../../test-vectors/anomaly-detection.json) |
-| **Anomaly Simulator** | Interactive testing tool | [../../playground/anomaly-simulator.md](../../playground/anomaly-simulator.md) |
 | **Dashboard Components** | Visualization components for anomaly data | [../analytics/dashboard_components.md](../analytics/dashboard_components.md) |
 
 ---

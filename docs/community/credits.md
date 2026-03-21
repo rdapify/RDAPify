@@ -3,7 +3,6 @@
 🎯 **Purpose**: Formal acknowledgment of all contributors, maintainers, and supporters who have helped shape RDAPify into a trusted, privacy-preserving RDAP client platform for the internet ecosystem  
 📚 **Related**: [Contributing](contributing.md) | [Code of Conduct](../../../CODE_OF_CONDUCT.md) | [Governance](../../../GOVERNANCE.md) | [Events](events.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Contributor Recognition Tool](../../playground/contributor-recognizer.md) to explore interactive visualizations of RDAPify's contribution history and community growth
 
 ## 🤝 Core Maintainers
 
@@ -272,7 +271,6 @@ Different levels of contribution receive appropriate recognition:
 | [Events](events.md) | Community events schedule and organization | [events.md](events.md) |
 | [Code of Conduct](../../../CODE_OF_CONDUCT.md) | Community behavior standards | [../../../CODE_OF_CONDUCT.md](../../../CODE_OF_CONDUCT.md) |
 | [Governance](../../../GOVERNANCE.md) | Project governance structure | [../../../GOVERNANCE.md](../../../GOVERNANCE.md) |
-| [Contributor Recognition Tool](../../playground/contributor-recognizer.md) | Interactive contribution visualization | [../../playground/contributor-recognizer.md](../../playground/contributor-recognizer.md) |
 | [MAINTAINERS.md](../../../MAINTAINERS.md) | Current maintainers and contact information | [../../../MAINTAINERS.md](../../../MAINTAINERS.md) |
 | [Security Researchers](../../security/researchers.md) | Security research contribution program | [../../security/researchers.md](../../security/researchers.md) |
 

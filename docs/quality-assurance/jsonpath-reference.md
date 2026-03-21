@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical reference for JSONPath expressions used in RDAPify for data normalization, extraction, and transformation across all RDAP registry implementations  
 📚 **Related**: [Overview](overview.md) | [Test Vectors](test_vectors.md) | [Code Coverage](code_coverage.md) | [Performance Benchmarks](../performance/benchmarks.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [JSONPath Validator](../../playground/jsonpath-validator.md) to test your expressions against real registry responses before deployment
 
 ## 🌐 JSONPath in RDAPify Context
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Next.js applications for secure domain, IP, and ASN lookups with SSR/SSG support, edge runtime optimization, and enterprise-grade security  
 📚 **Related**: [Express.js](express.md) | [NestJS](nestjs.md) | [Fastify](fastify.md) | [Vercel Deployment](vercel.md) | [React Hooks](../guides/react_hooks.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Next.js Playground](../../playground/nextjs-playground.md) to prototype your RDAP integrations before implementation
 
 ## 🌐 Why Next.js for RDAP Applications?
 

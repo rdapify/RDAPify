@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for enterprise organizations to successfully adopt RDAPify for registration data processing with focus on security, compliance, scalability, and operational excellence  
 📚 **Related**: [SLA Support](sla_support.md) | [Multi-Tenant Architecture](multi_tenant.md) | [Audit Logging](audit_logging.md) | [Data Residency](../../security/data_residency.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [Adoption Readiness Assessment](../../playground/adoption-assessment.md) to evaluate your organization's readiness for RDAPify deployment before beginning the adoption process
 
 ## 🏢 Executive Summary
 

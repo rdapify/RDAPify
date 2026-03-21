@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive analysis of caching strategies' impact on RDAPify performance, resource utilization, and scalability characteristics  
 📚 **Related**: [Benchmarks](benchmarks.md) | [Optimization Guide](optimization.md) | [Latency Analysis](latency_analysis.md) | [Load Testing](load_testing.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Caching Simulator](../../playground/caching-simulator.md) to model cache hit rates and performance impacts for your specific workload before deployment
 
 ## 📊 Caching Performance Impact Overview
 

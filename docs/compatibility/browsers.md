@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility guide for RDAPify in browser environments, detailing performance characteristics, security limitations, and optimization strategies for client-side deployment  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Node.js Versions](nodejs_versions.md) | [Bun Support](bun.md) | [Deno Support](deno.md) | [Cloudflare Workers](cloudflare_workers.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Browser Compatibility Tester](../../playground/browser-compatibility-tester.md) to automatically validate your RDAPify application in different browser environments
 
 ## 📊 Browser Support Matrix
 
@@ -541,10 +540,8 @@ function checkMobileConstraints() {
 |----------|-------------|------|
 | [Compatibility Matrix](matrix.md) | Complete compatibility reference | [matrix.md](matrix.md) |
 | [CORS Proxy Guide](../../guides/cors_proxy.md) | Secure proxy configuration | [../../guides/cors_proxy.md](../../guides/cors_proxy.md) |
-| [Browser Compatibility Tester](../../playground/browser-compatibility-tester.md) | Interactive validation tool | [../../playground/browser-compatibility-tester.md](../../playground/browser-compatibility-tester.md) |
 | [PWA Integration Guide](../../guides/pwa_integration.md) | Progressive Web App setup | [../../guides/pwa_integration.md](../../guides/pwa_integration.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Offline Mode Guide](../../guides/offline_mode.md) | Client-side caching strategies | [../../guides/offline_mode.md](../../guides/offline_mode.md) |
 
 ## 🏷️ Browser Specifications
 

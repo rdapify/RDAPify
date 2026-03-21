@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for load testing RDAPify deployments to validate performance under realistic production conditions while maintaining security and compliance requirements  
 📚 **Related**: [Benchmarks](benchmarks.md) | [Optimization Guide](optimization.md) | [Latency Analysis](latency_analysis.md) | [Caching Impact](caching_impact.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [Load Testing Simulator](../../playground/load-testing-simulator.md) to model your specific workload patterns before executing production tests
 
 ## 📊 Load Testing Methodology Framework
 

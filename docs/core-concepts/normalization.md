@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Understand how RDAPify transforms registry-specific RDAP responses into a consistent, application-ready data model  
 > **📚 Prerequisite:** [What is RDAP](./what-is-rdap.md) and [Architecture Overview](./architecture.md)  
 > **⏱️ Reading Time:** 10 minutes  
-> **🔍 Pro Tip:** Use the [Visual Debugger](../playground/visual-debugger.md) to see normalization in action with live examples
 
 ---
 
@@ -796,7 +795,6 @@ flowchart LR
 | **Privacy Controls** | PII redaction implementation details | [../api-reference/privacy-controls.md](../api-reference/privacy-controls.md) |
 | **Error State Machine** | Handling normalization failures | [./error-state-machine.md](./error-state-machine.md) |
 | **Test Vectors** | Standardized test cases | [../../test-vectors/domain-vectors.json](../../test-vectors/domain-vectors.json) |
-| **Visual Debugger Guide** | Interactive normalization inspection | [../playground/visual-debugger.md](../playground/visual-debugger.md) |
 
 ---
 

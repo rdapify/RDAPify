@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete reference for the `Contact` interface representing normalized RDAP contact information with built-in privacy controls  
 > **📚 Related:** [Entity Type](entity.md) | [DomainResponse](domain-response.md) | [IPResponse](ip-response.md) | [ASNResponse](asn-response.md)  
 > **⏱️ Reading Time:** 5 minutes  
-> **🔍 Pro Tip:** Use the [Visual Debugger](../../playground/visual-debugger.md) to interactively explore contact redaction patterns with real registry data
 
 ---
 

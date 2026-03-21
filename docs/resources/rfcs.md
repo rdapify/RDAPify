@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive reference of RFC documents relevant to RDAP protocol implementation, security, privacy, and performance for RDAPify developers and users  
 📚 **Related**: [Glossary](glossary.md) | [Links](links.md) | [Papers](papers.md) | [Specifications](../../specifications/rdap_rfc.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [RFC Browser](../../playground/rfc-browser.md) to browse RFCs with interactive examples and implementation notes specific to RDAPify
 
 ## 🌐 Core RDAP RFCs
 
@@ -224,7 +223,6 @@ Best practices for implementing RFCs in RDAPify:
 | [Glossary](glossary.md) | Technical terms and definitions | [glossary.md](glossary.md) |
 | [Links](links.md) | Curated collection of useful resources | [links.md](links.md) |
 | [Papers](papers.md) | Academic papers and research publications | [papers.md](papers.md) |
-| [RFC Browser](../../playground/rfc-browser.md) | Interactive RFC exploration tool | [../../playground/rfc-browser.md](../../playground/rfc-browser.md) |
 | [Specifications](../../specifications/rdap_rfc.md) | Detailed RDAP protocol specifications | [../../specifications/rdap_rfc.md](../../specifications/rdap_rfc.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 

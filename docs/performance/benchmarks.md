@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive benchmark analysis of RDAPify performance characteristics across various environments, workloads, and configurations to guide optimization decisions and set realistic expectations  
 📚 **Related**: [Optimization Guide](optimization.md) | [Latency Analysis](latency_analysis.md) | [Load Testing](load_testing.md) | [Caching Impact](caching_impact.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Benchmark Simulator](../../playground/benchmark-simulator.md) to model performance characteristics for your specific workload before deployment
 
 ## 📊 Benchmark Overview
 

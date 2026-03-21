@@ -572,7 +572,7 @@ kubectl delete deployment rdapify-blue
 
 ```bash
 # Update image
-kubectl set image deployment/rdapify rdapify=rdapify:v2.0.0
+kubectl set image deployment/rdapify rdapify=rdapify:v0.1.8
 
 # Monitor rollout
 kubectl rollout status deployment/rdapify

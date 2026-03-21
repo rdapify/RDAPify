@@ -1,9 +1,11 @@
 # Pattern Analysis Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing advanced pattern detection and analysis systems for RDAP registration data with security-aware anomaly detection and compliance-preserving analysis techniques  
 📚 **Related**: [Relationship Mapping](relationship_mapping.md) | [Domain Portfolio](domain_portfolio.md) | [Visualization Tools](../analytics/visualization_tools.md) | [Data Aggregation](data_aggregation.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Pattern Analyzer](../../playground/pattern-analyzer.md) to test your pattern detection configurations against historical RDAP data before production deployment
 
 ## 🌐 Pattern Analysis Architecture Overview
 
@@ -1434,7 +1436,6 @@ node ./scripts/audit-processing-purposes.js --pattern-type spatial
 | [Domain Portfolio](domain_portfolio.md) | Domain portfolio management patterns | [domain_portfolio.md](domain_portfolio.md) |
 | [Visualization Tools](../analytics/visualization_tools.md) | Interactive data visualization components | [../analytics/visualization_tools.md](../analytics/visualization_tools.md) |
 | [Data Aggregation](data_aggregation.md) | Large-scale data collection patterns | [data_aggregation.md](data_aggregation.md) |
-| [Pattern Analyzer](../../playground/pattern-analyzer.md) | Interactive pattern analysis tool | [../../playground/pattern-analyzer.md](../../playground/pattern-analyzer.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Threat Intelligence](../guides/threat_intelligence.md) | Security integration for pattern scoring | [../guides/threat_intelligence.md](../guides/threat_intelligence.md) |
 | [Data Residency](../../enterprise/data_residency.md) | Geographic data handling requirements | [../../enterprise/data_residency.md](../../enterprise/data_residency.md) |

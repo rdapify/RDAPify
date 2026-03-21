@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification of the JSONPath query capabilities for RDAP responses according to RFC 9537, providing implementation guidance for developers with emphasis on security, performance, and compliance considerations  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [Response Format](response_format.md) | [Status Codes](status_codes.md) | [Bootstrap Specification](bootstrap.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [JSONPath Tester](../../playground/jsonpath-tester.md) to interactively test your JSONPath queries against real RDAP responses before implementation
 
 ## 🌐 JSONPath in RDAP Overview
 
@@ -421,7 +420,6 @@ curl https://rdap.example.com/policies/security | jq '.jsonpathRestrictions'
 | [Response Format](response_format.md) | JSON response structure specification | [response_format.md](response_format.md) |
 | [Status Codes](status_codes.md) | Comprehensive error code reference | [status_codes.md](status_codes.md) |
 | [RFC 9537](https://tools.ietf.org/html/rfc9537) | Official JSONPath search specification | [https://tools.ietf.org/html/rfc9537](https://tools.ietf.org/html/rfc9537) |
-| [JSONPath Tester](../../playground/jsonpath-tester.md) | Interactive query testing tool | [../../playground/jsonpath-tester.md](../../playground/jsonpath-tester.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security considerations for JSONPath queries | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Test Vectors](../../../test-vectors/jsonpath_vectors.json) | Valid and invalid JSONPath test cases | [../../../test-vectors/jsonpath_vectors.json](../../../test-vectors/jsonpath_vectors.json) |
 

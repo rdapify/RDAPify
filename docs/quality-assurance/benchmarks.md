@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive benchmark validation framework for RDAPify ensuring protocol compliance, security, performance, and reliability across all supported environments  
 📚 **Related**: [Overview](overview.md) | [Test Vectors](test_vectors.md) | [JSONPath Reference](jsonpath_reference.md) | [Code Coverage](code_coverage.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [Benchmark Simulator](../../playground/benchmark-simulator.md) to model performance characteristics for your specific workload before deployment
 
 ## 🌐 Benchmark Philosophy
 

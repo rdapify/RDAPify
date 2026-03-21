@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for replacing legacy WHOIS protocol with modern, secure RDAP implementation while maintaining compatibility and enhancing functionality  
 📚 **Related**: [Migration Guide](../guides/migration_guide.md) | [RDAP vs WHOIS](../core-concepts/rdap_vs_whois.md) | [Security Privacy](../guides/security_privacy.md) | [Domain Portfolio](domain_portfolio.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [WHOIS Migration Validator](../../playground/whois-migration-validator.md) to automatically analyze your existing WHOIS usage and generate RDAP migration recommendations
 
 ## 🌐 Why Replace WHOIS with RDAP?
 

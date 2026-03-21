@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification for RDAP test vectors providing validation coverage for RFC compliance, security controls, edge cases, and performance benchmarks  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [Response Format](response_format.md) | [Bootstrap Specification](bootstrap.md) | [Security Whitepaper](../../security/whitepaper.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Test Vector Generator](../../playground/test-vector-generator.md) to automatically create custom test vectors for your specific validation scenarios
 
 ## 🌐 Test Vectors Overview
 
@@ -716,7 +715,6 @@ node ./scripts/data-transfer-validation.js --source EU --destination US
 | [RDAP RFC Specification](rdap_rfc.md) | Complete RDAP protocol documentation | [rdap_rfc.md](rdap_rfc.md) |
 | [Response Format](response_format.md) | JSON response structure specification | [response_format.md](response_format.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security architecture and threat modeling | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Test Vector Generator](../../playground/test-vector-generator.md) | Interactive test vector creation tool | [../../playground/test-vector-generator.md](../../playground/test-vector-generator.md) |
 | [Performance Benchmarks](../../../benchmarks/results/api-performance.md) | Performance benchmark results | [../../../benchmarks/results/api-performance.md](../../../benchmarks/results/api-performance.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation guide | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 | [Security Testing](../../testing/security_testing.md) | Security testing methodology and tools | [../../testing/security_testing.md](../../testing/security_testing.md) |

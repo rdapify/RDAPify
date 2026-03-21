@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to implementing priority queue systems for RDAPify to optimize query processing under resource constraints  
 > **📚 Related:** [Rate Limiting](rate-limiting.md) | [Batch Processing](batch-processing.md) | [Performance Optimization](performance.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Priority Queue Simulator](../../playground/priority-simulator.md) to model different prioritization strategies for your specific workload patterns
 
 ---
 
@@ -1298,7 +1297,6 @@ class SecurityPrioritySystem {
 | **Caching Strategies** | Priority-aware caching patterns | [caching-strategies.md](caching-strategies.md) |
 | **Security Whitepaper** | Security architecture for priority systems | [../security/whitepaper.md](../security/whitepaper.md) |
 | **Performance Benchmarks** | Priority queue performance characteristics | [../../benchmarks/results/priority-queues.md](../../benchmarks/results/priority-queues.md) |
-| **Priority Simulator** | Interactive strategy testing tool | [../../playground/priority-simulator.md](../../playground/priority-simulator.md) |
 | **Enterprise Adoption** | Scaling priority systems for large deployments | [../enterprise/adoption-guide.md](../enterprise/adoption-guide.md) |
 
 ---

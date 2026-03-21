@@ -3,7 +3,6 @@
 🎯 **Purpose**: Curated collection of essential external resources, specifications, tools, and communities related to RDAP, internet infrastructure, security, and compliance for RDAPify developers and users  
 📚 **Related**: [RFC References](rfcs.md) | [Glossary](glossary.md) | [Papers](papers.md) | [Specifications](../../specifications/rdap_rfc.md)  
 ⏱️ **Reading Time**: 3 minutes  
-🔍 **Pro Tip**: Use the [Link Checker Tool](../../playground/link-checker.md) to automatically validate these links and discover new resources relevant to your specific use case
 
 ## 🌐 RDAP Protocol and Standards
 

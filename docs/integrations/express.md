@@ -3,7 +3,6 @@
 🎯 **Purpose**: Complete guide for integrating RDAPify with Express.js applications for secure domain, IP, and ASN lookups with enterprise-grade performance, privacy control, and SSRF protection  
 📚 **Related**: [Next.js](nextjs.md) | [NestJS](nestjs.md) | [Fastify](fastify.md) | [Redis](redis.md) | [Docker](docker.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Interactive Playground](../../playground/api_playground.md) to prototype your Express routes before implementation
 
 ## 🌐 Why Express.js for RDAP Applications?
 

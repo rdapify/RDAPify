@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical comparison between RDAPify's modern RDAP-based architecture and legacy WHOIS protocol implementations, focusing on security, performance, compliance, and developer experience  
 📚 **Related**: [Migration Guide](migration_guide.md) | [vs_other_libraries.md](vs_other_libraries.md) | [Security Privacy](../guides/security_privacy.md) | [RFC 7480 Specification](../../specifications/rdap_rfc.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [WHOIS Migration Assistant](../../playground/whois-migration-assistant.md) to automatically analyze your existing WHOIS usage and generate RDAPify migration recommendations
 
 ## 🌐 Architectural Comparison Overview
 
@@ -406,7 +405,6 @@ grep "connection refused" logs/application.log | awk '{print $1,$2}' | uniq -c
 | [WHOIS Replacement Recipe](../recipes/whois_replacement.md) | Production implementation patterns | [../recipes/whois_replacement.md](../recipes/whois_replacement.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Benchmarks](../../benchmarks/results/api-performance.md) | Performance benchmark data | [../../benchmarks/results/api-performance.md](../../benchmarks/results/api-performance.md) |
-| [WHOIS Migration Assistant](../../playground/whois-migration-assistant.md) | Interactive migration tool | [../../playground/whois-migration-assistant.md](../../playground/whois-migration-assistant.md) |
 | [Threat Model](../../security/threat_model.md) | Security threat analysis | [../../security/threat_model.md](../../security/threat_model.md) |
 
 ## 🏷️ Migration Specifications

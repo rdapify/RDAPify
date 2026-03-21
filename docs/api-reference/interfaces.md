@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete reference for core TypeScript interfaces that define RDAPify's extension points and integration contracts  
 > **📚 Related:** [Client API](client.md) | [Cache Adapters](../guides/custom-adapters.md) | [Plugin System](../advanced/plugin-system.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Interface Explorer](../../playground/interface-explorer.md) to interactively visualize interface relationships and implementation examples
 
 ---
 
@@ -977,7 +976,6 @@ rdapify interfaces doc --output docs/api-reference/interfaces/generated.md
 | **Plugin System** | Extending RDAPify with plugins | [../advanced/plugin-system.md](../advanced/plugin-system.md) |
 | **Security Whitepaper** | Security interface design details | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Test Vectors** | Standardized test cases for interfaces | [../../../test-vectors/](../../../test-vectors/) |
-| **Interface Explorer** | Interactive interface visualization tool | [../../playground/interface-explorer.md](../../playground/interface-explorer.md) |
 
 ---
 

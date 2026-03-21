@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete reference for utility functions and helper methods that enhance RDAPify functionality and developer experience  
 > **📚 Related:** [Client API](client.md) | [Types Reference](types/index.md) | [Security Utilities](../../security/utilities.md)  
 > **⏱️ Reading Time:** 5 minutes  
-> **🔍 Pro Tip:** Use the [Utility Explorer](../../playground/utility-explorer.md) to interactively test utility functions with real data
 
 ---
 
@@ -858,7 +857,6 @@ const fastResult = fastNormalizeDomain(rawResponse);
 | **Performance Guide** | Optimizing utility usage | [../../performance/utilities.md](../../performance/utilities.md) |
 | **Compliance Guide** | Compliance-related utilities | [../../security/compliance-utilities.md](../../security/compliance-utilities.md) |
 | **Extension Guide** | Creating custom utilities | [../../advanced/custom-utilities.md](../../advanced/custom-utilities.md) |
-| **Utility Explorer** | Interactive utility testing tool | [../../playground/utility-explorer.md](../../playground/utility-explorer.md) |
 
 ---
 

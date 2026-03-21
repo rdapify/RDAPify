@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to testing RDAPify with real registry responses and production-like scenarios, providing practical examples for unit tests, integration tests, and end-to-end validation  
 📚 **Related**: [Test Vectors](test_vectors.md) | [Fixtures](fixtures.md) | [Mocking](mocking.md) | [Continuous Testing](continuous_testing.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Registry Response Simulator](../../playground/registry-simulator.md) to generate realistic test data for your specific testing scenarios
 
 ## 🌐 Real-World Testing Overview
 
@@ -577,8 +576,6 @@ NODE_OPTIONS='--trace-sync-io' jest --verbose --runInBand
 | [Continuous Testing](continuous_testing.md) | CI/CD testing strategies | [continuous_testing.md](continuous_testing.md) |
 | [Performance Benchmarks](../../../benchmarks/README.md) | Performance benchmark methodology | [../../../benchmarks/README.md](../../../benchmarks/README.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security architecture and testing | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Registry Response Simulator](../../playground/registry-simulator.md) | Interactive test data generator | [../../playground/registry-simulator.md](../../playground/registry-simulator.md) |
-| [Test Vector Generator](../../playground/test-vector-generator.md) | Automated test vector creation | [../../playground/test-vector-generator.md](../../playground/test-vector-generator.md) |
 
 ## 🏷️ Real Examples Specifications
 

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification of the Registration Data Access Protocol (RDAP) JSON response format according to RFC 7483 with detailed field definitions, validation rules, and security considerations  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [RFC Style Guide](rfc_style_spec.md) | [Bootstrap Specification](bootstrap.md) | [Status Codes](status_codes.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Response Validator](../../playground/response-validator.md) to automatically validate your RDAP responses against RFC requirements before deployment
 
 ## 🌐 Response Format Overview
 
@@ -501,7 +500,6 @@ interface InvalidResponse {
 | [Bootstrap Specification](bootstrap.md) | Registry discovery implementation | [bootstrap.md](bootstrap.md) |
 | [Status Codes](status_codes.md) | Comprehensive error code reference | [status_codes.md](status_codes.md) |
 | [JSONPath Schema](jsonpath_schema.md) | JSONPath query capabilities | [jsonpath_schema.md](jsonpath_schema.md) |
-| [Response Validator](../../playground/response-validator.md) | Interactive validation tool | [../../playground/response-validator.md](../../playground/response-validator.md) |
 | [Test Vectors](../../../test-vectors/domain_vectors.json) | Valid and invalid test cases | [../../../test-vectors/domain_vectors.json](../../../test-vectors/domain_vectors.json) |
 
 ## 🏷️ Response Format Specifications

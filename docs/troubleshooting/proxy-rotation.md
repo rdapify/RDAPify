@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to implementing and troubleshooting proxy rotation strategies for RDAPify to handle rate limiting, IP blocking, and geographical restrictions while maintaining compliance and performance  
 📚 **Related**: [Connection Timeout Resolution](connection_timeout.md) | [Lambda Workers Issues](lambda_workers_issues.md) | [Common Errors](common_errors.md) | [Security Best Practices](../../security/best_practices.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Proxy Rotation Tester](../../playground/proxy-rotation-tester.md) to automatically validate your proxy configuration and identify optimal rotation strategies for your use case
 
 ## 🌐 Proxy Rotation Architecture
 
@@ -1011,7 +1010,6 @@ class OptimizedConnectionPool {
 |----------|-------------|------|
 | [Connection Timeout Resolution](connection_timeout.md) | Handling network timeout issues | [connection_timeout.md](connection_timeout.md) |
 | [Lambda Workers Issues](lambda_workers_issues.md) | Serverless deployment troubleshooting | [lambda_workers_issues.md](lambda_workers_issues.md) |
-| [Proxy Rotation Tester](../../playground/proxy-rotation-tester.md) | Interactive proxy validation tool | [../../playground/proxy-rotation-tester.md](../../playground/proxy-rotation-tester.md) |
 | [Security Best Practices](../../security/best_practices.md) | Comprehensive security implementation guide | [../../security/best_practices.md](../../security/best_practices.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Rate Limiting Strategies](../../guides/rate_limiting.md) | Advanced rate limiting techniques | [../../guides/rate_limiting.md](../../guides/rate_limiting.md) |

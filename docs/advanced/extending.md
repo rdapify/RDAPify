@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for extending RDAPify's core functionality through plugins, adapters, and custom implementations while maintaining security boundaries and performance characteristics  
 📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Custom Resolver](custom_resolver.md) | [Custom Normalizer](custom_normalizer.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Extension Validator](../../playground/extension-validator.md) to automatically verify that your extensions maintain security boundaries and performance characteristics before deployment
 
 ## 🌐 Extension Architecture Overview
 
@@ -1059,7 +1058,6 @@ rdapify extension enable --id com.example.my-extension
 | [Custom Resolver](custom_resolver.md) | Registry discovery customization | [custom_resolver.md](custom_resolver.md) |
 | [Custom Normalizer](custom_normalizer.md) | Response normalization | [custom_normalizer.md](custom_normalizer.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Extension Validator](../../playground/extension-validator.md) | Security validation tool | [../../playground/extension-validator.md](../../playground/extension-validator.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection requirements | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 
 ## 🏷️ Extension Specifications

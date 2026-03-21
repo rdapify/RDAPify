@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive glossary of technical, security, compliance, and organizational terms used throughout the RDAPify documentation and codebase  
 📚 **Related**: [RFC References](rfcs.md) | [Links](links.md) | [Papers](papers.md) | [Specifications](../../specifications/rdap_rfc.md)  
 ⏱️ **Reading Time**: 3 minutes  
-🔍 **Pro Tip**: Use the [Glossary Search Tool](../../playground/glossary-search.md) to quickly find definitions and related concepts across the documentation
 
 ## 📚 Technical Terms
 
@@ -135,7 +134,6 @@
 | [Links](links.md) | Curated collection of useful external resources | [links.md](links.md) |
 | [Papers](papers.md) | Academic papers and research related to RDAP | [papers.md](papers.md) |
 | [Specifications](../../specifications/rdap_rfc.md) | Technical specifications for RDAP protocols | [../../specifications/rdap_rfc.md](../../specifications/rdap_rfc.md) |
-| [Glossary Search Tool](../../playground/glossary-search.md) | Interactive glossary search interface | [../../playground/glossary-search.md](../../playground/glossary-search.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture documentation | [../../security/whitepaper.md](../../security/whitepaper.md) |
 
 ## 🏷️ Glossary Specifications

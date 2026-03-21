@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification of HTTP status codes used in RDAP (Registration Data Access Protocol) implementations with implementation guidance for error handling, security considerations, and compliance requirements  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [Response Format](response_format.md) | [RFC Style Guide](rfc_style_spec.md) | [Error Handling Guide](../../guides/error_handling.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Status Code Validator](../../playground/status-validator.md) to automatically test your RDAP implementation's error handling against all defined status codes
 
 ## 🌐 Status Code Categories in RDAP
 
@@ -477,7 +476,6 @@ done
 | [RFC Style Guide](rfc_style_spec.md) | RFC-compliant response formatting | [rfc_style_spec.md](rfc_style_spec.md) |
 | [Error Handling Guide](../../guides/error_handling.md) | Practical error handling patterns | [../../guides/error_handling.md](../../guides/error_handling.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Security considerations for error handling | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Status Code Validator](../../playground/status-validator.md) | Interactive status code testing tool | [../../playground/status-validator.md](../../playground/status-validator.md) |
 | [Test Vectors](../../../test-vectors/status_codes.json) | Comprehensive status code test cases | [../../../test-vectors/status_codes.json](../../../test-vectors/status_codes.json) |
 
 ## 🏷️ Status Code Specifications

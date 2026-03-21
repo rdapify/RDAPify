@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive performance benchmark comparison between RDAPify and competing RDAP/WHOIS libraries, providing objective metrics for enterprise deployment decisions  
 📚 **Related**: [vs_whois.md](vs_whois.md) | [vs_other_libraries.md](vs_other_libraries.md) | [Performance Tuning](../guides/performance.md) | [Benchmarks Repository](https://github.com/rdapify/benchmarks)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Benchmark Simulator](../../playground/benchmark-simulator.md) to model performance for your specific workload before deployment
 
 ## 📊 Benchmark Overview
 
@@ -363,7 +362,6 @@ node ./scripts/registry-connection-limits.js --registries verisign,arin,ripe
 | [vs_whois.md](vs_whois.md) | RDAPify vs legacy WHOIS protocol | [vs_whois.md](vs_whois.md) |
 | [vs_other_libraries.md](vs_other_libraries.md) | Comparison with competing libraries | [vs_other_libraries.md](vs_other_libraries.md) |
 | [Performance Tuning](../guides/performance.md) | Optimization techniques for production | [../guides/performance.md](../guides/performance.md) |
-| [Benchmark Simulator](../../playground/benchmark-simulator.md) | Interactive performance modeling tool | [../../playground/benchmark-simulator.md](../../playground/benchmark-simulator.md) |
 | [Caching Strategies](../guides/caching_strategies.md) | Advanced cache configuration guide | [../guides/caching_strategies.md](../guides/caching_strategies.md) |
 | [Benchmarks Repository](https://github.com/rdapify/benchmarks) | Reproducible benchmark suite | [https://github.com/rdapify/benchmarks](https://github.com/rdapify/benchmarks) |
 | [Load Testing](../testing/load_testing.md) | Production-scale testing methodology | [../testing/load_testing.md](../testing/load_testing.md) |
@@ -380,7 +378,7 @@ node ./scripts/registry-connection-limits.js --registries verisign,arin,ripe
 | **Metrics Collected** | P50/P95/P99 latency, throughput, memory, CPU, error rates |
 | **Repetition Count** | 10 runs per configuration, median values reported |
 | **Statistical Significance** | 95% confidence intervals calculated for all metrics |
-| **Benchmark Version** | RDAPify v2.3.0, tested December 5, 2025 |
+| **Benchmark Version** | RDAPify v0.1.8, tested December 5, 2025 |
 | **Reproducibility** | Full benchmark suite available at github.com/rdapify/benchmarks |
 
 > ⚡ **Performance Guarantee**: RDAPify delivers 95%+ cache hit rates and sub-5ms P95 latency when properly configured for production workloads. For enterprise deployments, we provide performance SLAs with guaranteed response times and throughput commitments. Contact enterprise@rdapify.com for custom performance optimization services.

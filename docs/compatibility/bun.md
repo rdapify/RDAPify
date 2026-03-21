@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive compatibility guide for RDAPify on Bun runtime, detailing performance characteristics, security considerations, and optimization strategies for production deployments  
 📚 **Related**: [Compatibility Matrix](matrix.md) | [Node.js Versions](nodejs_versions.md) | [Deno Support](deno.md) | [Cloudflare Workers](cloudflare_workers.md) | [Browsers](browsers.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Bun Compatibility Checker](../../playground/bun-compatibility-checker.md) to automatically validate your RDAPify application on Bun runtime
 
 ## 📊 Bun Runtime Support Matrix
 
@@ -73,50 +72,44 @@ export const createBunClient = () => {
         ciphers: Bun.env.TLS_CIPHERS || 'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256'
       }
     },
-    offlineMode: {
-      enabled: Bun.env.RDAP_OFFLINE_MODE === 'true',
-      sqlitePath: './data/rdapify-offline.sqlite'
-    }
   });
 };
 ```
 
 ### Bun HTTP Server Integration
+
+RDAPify is a client library — it does not ship a server adapter. Use `RDAPClient` directly inside your `Bun.serve()` handler:
+
 ```typescript
 // server/bun-server.ts
-import { BunServer } from 'rdapify/server';
-import { createBunClient } from '../config/bun';
+import { RDAPClient } from 'rdapify';
 
-const client = createBunClient();
+const client = new RDAPClient();
 
-const server = BunServer({
-  client,
+const server = Bun.serve({
   port: parseInt(Bun.env.PORT || '3000'),
   hostname: Bun.env.HOST || '0.0.0.0',
-  // Bun-specific server optimizations
-  server: {
-    development: Bun.env.NODE_ENV !== 'production',
-    websocket: true, // Enable WebSocket support
-    maxRequestBodySize: 1024 * 1024, // 1MB
-    cert: Bun.env.TLS_CERT,
-    key: Bun.env.TLS_KEY,
-    // Bun.serve() specific options
-    fetch: async (request) => {
-      // Custom request handling
-      const url = new URL(request.url);
-      
-      if (url.pathname === '/health') {
-        return new Response(JSON.stringify({ status: 'ok', uptime: process.uptime() }), {
-          headers: { 'Content-Type': 'application/json' }
-        });
-      }
-      
-      return BunServer.fetch(request, { client });
+  fetch: async (request) => {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({ status: 'ok', uptime: process.uptime() }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
-  }
+
+    const domain = url.searchParams.get('domain');
+    if (!domain) {
+      return new Response('Missing ?domain=', { status: 400 });
+    }
+    const result = await client.domain(domain);
+    return new Response(JSON.stringify(result), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  },
 });
 
-console.log(`🚀 RDAPify server running on http://${server.hostname}:${server.port}`);
+console.log(`Server running on http://${server.hostname}:${server.port}`);
 ```
 
 ## ⚡ Performance Benchmarks
@@ -184,11 +177,14 @@ export const bunSecurityConfig = {
 
 ## 🚀 Bun-Specific Features
 
+> **Planned feature** — Offline mode is not yet implemented in v0.1.8.
+
 ### Native SQLite Offline Mode
 ```typescript
 // features/bun-offline.ts
 import { createBunClient } from '../config/bun';
-import { OfflineMode } from 'rdapify/offline';
+// NOTE: rdapify/offline is not yet available — planned for a future release
+// import { OfflineMode } from 'rdapify/offline';
 
 const client = createBunClient();
 
@@ -384,10 +380,8 @@ curl -i -H "Upgrade: websocket" -H "Connection: Upgrade" http://localhost:8080/r
 | [Compatibility Matrix](matrix.md) | Complete compatibility reference | [matrix.md](matrix.md) |
 | [Node.js Versions](nodejs_versions.md) | Node.js version compatibility | [nodejs_versions.md](nodejs_versions.md) |
 | [Deno Support](deno.md) | Deno runtime-specific configuration | [deno.md](deno.md) |
-| [Bun Compatibility Checker](../../playground/bun-compatibility-checker.md) | Interactive validation tool | [../../playground/bun-compatibility-checker.md](../../playground/bun-compatibility-checker.md) |
 | [Performance Benchmarks](../../../benchmarks/results/bun-performance.md) | Detailed Bun performance data | [../../../benchmarks/results/bun-performance.md](../../../benchmarks/results/bun-performance.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [SQLite Offline Mode](../guides/offline_mode.md) | Offline cache configuration guide | [../guides/offline_mode.md](../guides/offline_mode.md) |
 
 ## 🏷️ Bun Specifications
 

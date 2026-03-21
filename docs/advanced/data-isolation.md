@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing robust data isolation in RDAPify to ensure tenant data separation, regulatory compliance, and security boundaries in multi-tenant deployments  
 📚 **Related**: [Plugin System](plugin_system.md) | [Custom Fetcher](custom_fetcher.md) | [Middleware](middleware.md) | [Security Whitepaper](../../security/whitepaper.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Data Isolation Validator](../../playground/data-isolation-validator.md) to automatically verify your isolation implementation against compliance requirements before production deployment
 
 ## 🌐 Why Data Isolation Matters for RDAP Applications
 

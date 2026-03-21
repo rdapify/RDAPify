@@ -1,9 +1,11 @@
 # Monitoring Service Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing real-time RDAP monitoring services with anomaly detection, security alerts, and compliance reporting capabilities  
 📚 **Related**: [Domain Portfolio](domain_portfolio.md) | [Analytics Dashboard](../analytics/dashboard_components.md) | [Pattern Analysis](../analytics/pattern_analysis.md) | [Critical Alerts](critical_alerts.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Monitoring Dashboard Generator](../../playground/monitoring-dashboard.md) to automatically create Grafana/Prometheus dashboards from your RDAPify monitoring configuration
 
 ## 🌐 Monitoring Architecture Overview
 

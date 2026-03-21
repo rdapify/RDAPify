@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to RDAPify's layered architecture design, detailing responsibilities, boundaries, and interaction patterns between architectural layers for secure and efficient registration data processing  
 📚 **Related**: [Overview](overview.md) | [Data Flow](data_flow.md) | [Error Flow](error_flow.md) | [Plugin Architecture](plugin_architecture.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Layer Inspector](../../playground/layer-inspector.md) to interactively explore layer boundaries and trace data flow across architectural boundaries
 
 ## 🏗️ Layered Architecture Overview
 
@@ -563,7 +562,6 @@ node --trace-gc ./dist/app.js
 | [Data Flow](data_flow.md) | Detailed data processing pipeline | [data_flow.md](data_flow.md) |
 | [Error Flow](error_flow.md) | Error handling and recovery patterns | [error_flow.md](error_flow.md) |
 | [Plugin Architecture](plugin_architecture.md) | Extension points and customization | [plugin_architecture.md](plugin_architecture.md) |
-| [Layer Inspector](../../playground/layer-inspector.md) | Interactive layer exploration tool | [../../playground/layer-inspector.md](../../playground/layer-inspector.md) |
 | [Architecture Decision Records](decision_records.md) | Historical design decisions | [decision_records.md](decision_records.md) |
 | [Performance Benchmarks](../../../benchmarks/results/layer-performance.md) | Layer performance benchmark data | [../../../benchmarks/results/layer-performance.md](../../../benchmarks/results/layer-performance.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |

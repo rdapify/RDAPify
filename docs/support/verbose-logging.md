@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to configuring and utilizing verbose logging in RDAPify for detailed diagnostics, performance analysis, and security auditing with minimal performance impact  
 📚 **Related**: [Troubleshooting](troubleshooting.md) | [Network Debugging](network_debugging.md) | [Getting Help](getting_help.md) | [Performance Tuning](../performance/troubleshooting.md)  
 ⏱️ **Reading Time**: 4 minutes  
-🔍 **Pro Tip**: Use the [Log Analyzer Tool](../../playground/log-analyzer.md) to automatically parse verbose logs and identify patterns, anomalies, and optimization opportunities
 
 ## 📋 Logging Levels and Use Cases
 
@@ -435,7 +434,6 @@ setInterval(() => {
 | [Troubleshooting](troubleshooting.md) | General troubleshooting guide | [troubleshooting.md](troubleshooting.md) |
 | [Network Debugging](network_debugging.md) | Network-level issue diagnosis | [network_debugging.md](network_debugging.md) |
 | [Performance Tuning](../performance/troubleshooting.md) | Performance issue resolution | [../performance/troubleshooting.md](../performance/troubleshooting.md) |
-| [Log Analyzer Tool](../../playground/log-analyzer.md) | Interactive log analysis tool | [../../playground/log-analyzer.md](../../playground/log-analyzer.md) |
 | [Compliance Framework](../../security/compliance.md) | Regulatory compliance requirements | [../../security/compliance.md](../../security/compliance.md) |
 | [Error Handling Guide](../../guides/error_handling.md) | Comprehensive error processing guide | [../../guides/error_handling.md](../../guides/error_handling.md) |
 

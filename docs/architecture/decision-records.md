@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive documentation of significant architectural decisions for RDAPify, providing context, rationale, and consequences to guide future development and maintain architectural integrity  
 📚 **Related**: [Overview](overview.md) | [Data Flow](data_flow.md) | [Error Flow](error_flow.md) | [Layer Design](layer_design.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [ADR Generator](../../playground/adr-generator.md) to automatically create standardized architecture decision records with security and compliance impact analysis
 
 ## 📋 Decision Record Template
 
@@ -743,10 +742,8 @@ adr --graph docs/architecture
 |----------|-------------|------|
 | [ADR Template](adr_template.md) | Standardized ADR template with examples | [adr_template.md](adr_template.md) |
 | [Architecture Overview](overview.md) | High-level system architecture | [overview.md](overview.md) |
-| [ADR Generator](../../playground/adr-generator.md) | Interactive ADR creation tool | [../../playground/adr-generator.md](../../playground/adr-generator.md) |
 | [Decision Log](decision_log.md) | Chronological record of all architectural decisions | [decision_log.md](decision_log.md) |
 | [RFC Process](rfc_process.md) | Request for Comments process for major decisions | [rfc_process.md](rfc_process.md) |
-| [ADR Validator](../../playground/adr-validator.md) | Automated ADR validation tool | [../../playground/adr-validator.md](../../playground/adr-validator.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Performance Benchmarks](../../../benchmarks/results/architecture.md) | Performance impact of architectural decisions | [../../../benchmarks/results/architecture.md](../../../benchmarks/results/architecture.md) |
 

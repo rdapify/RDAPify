@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for contributing to RDAPify project with clear pathways for code, documentation, and community engagement while maintaining security, compliance, and architectural standards  
 📚 **Related**: [Code of Conduct](../../../CODE_OF_CONDUCT.md) | [Governance](../../../GOVERNANCE.md) | [Development Setup](development_setup.md) | [Style Guide](style_guide.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use our [Contribution Checklist Generator](../../playground/contribution-checklist.md) to automatically create a personalized checklist for your first contribution
 
 ## 🌐 Contribution Philosophy
 

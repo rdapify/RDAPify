@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to implementing robust data validation for RDAP registration data processing, protecting against injection attacks, data corruption, and compliance violations with practical implementation patterns  
 📚 **Related**: [SSRF Prevention](ssrf_prevention.md) | [PII Detection](pii_detection.md) | [Threat Model](threat_model.md) | [GDPR Compliance](../../guides/gdpr_compliance.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Data Validator](../../playground/data-validator.md) to automatically test your RDAPify implementation against common validation vulnerabilities
 
 ## 📋 Executive Summary
 
@@ -881,7 +880,6 @@ clinic doctor --autocannon /domain/example.com -- node ./dist/app.js
 | [PII Detection](pii_detection.md) | Personal data identification techniques | [pii_detection.md](pii_detection.md) |
 | [Threat Model](threat_model.md) | Detailed threat analysis | [threat_model.md](threat_model.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
-| [Data Validator](../../playground/data-validator.md) | Interactive validation testing tool | [../../playground/data-validator.md](../../playground/data-validator.md) |
 | [JSON Schema Reference](../../specifications/jsonpath_schema.md) | JSON schema specification for RDAP | [../../specifications/jsonpath_schema.md](../../specifications/jsonpath_schema.md) |
 | [Error Handling Guide](../../guides/error_handling.md) | Comprehensive error processing strategies | [../../guides/error_handling.md](../../guides/error_handling.md) |
 | [Performance Tuning](../../guides/performance.md) | Optimization techniques for production | [../../guides/performance.md](../../guides/performance.md) |

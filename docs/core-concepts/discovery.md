@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Understand how RDAPify discovers authoritative RDAP servers for domains, IP addresses, and autonomous systems  
 > **📚 Prerequisite:** [What is RDAP](./what-is-rdap.md) and [Architecture Overview](./architecture.md)  
 > **⏱️ Reading Time:** 8 minutes  
-> **🔍 Pro Tip:** Use the [Visual Debugger](../playground/visual-debugger.md) to trace discovery flow with live examples
 
 ---
 
@@ -614,7 +613,6 @@ npm run security:url-validate
 | **Security Whitepaper** | Complete security architecture | [../security/whitepaper.md](../security/whitepaper.md) |
 | **Error State Machine** | Detailed error handling flow | [./error-state-machine.md](./error-state-machine.md) |
 | **Caching Strategies** | Advanced caching configurations | [../guides/caching-strategies.md](../guides/caching-strategies.md) |
-| **Offline Mode** | Disconnected operation patterns | [./offline-mode.md](./offline-mode.md) |
 
 ### External Resources
 - [RFC 7484: Finding the Authoritative RDAP Server](https://tools.ietf.org/html/rfc7484)

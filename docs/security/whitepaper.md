@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive security architecture and threat model for RDAPify's registration data processing platform, providing implementation guidance for security teams and compliance officers  
 📚 **Related**: [Threat Model](threat_model.md) | [PII Detection](pii_detection.md) | [GDPR Compliance](../../guides/gdpr_compliance.md) | [Security Testing](../../testing/security_testing.md)  
 ⏱️ **Reading Time**: 12 minutes  
-🔍 **Pro Tip**: Use the [Security Scanner](../../playground/security-scanner.md) to automatically audit your RDAPify configuration against this whitepaper's security controls
 
 ## 📋 Executive Summary
 
@@ -883,7 +882,6 @@ export class GDPRArticle32Controller {
 | [Security Testing](../../testing/security_testing.md) | Security testing methodology | [../../testing/security_testing.md](../../testing/security_testing.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
-| [Security Scanner](../../playground/security-scanner.md) | Interactive security validation tool | [../../playground/security-scanner.md](../../playground/security-scanner.md) |
 | [Incident Response Plan](../../enterprise/incident_response.md) | Security incident handling procedures | [../../enterprise/incident_response.md](../../enterprise/incident_response.md) |
 
 ## 🏷️ Security Specifications

@@ -1,9 +1,11 @@
 # Community Events
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Comprehensive guide to RDAPify community events, including official gatherings, local meetups, workshops, and conferences with practical guidelines for participation and organization  
 📚 **Related**: [Contributing](contributing.md) | [Code of Conduct](../../../CODE_OF_CONDUCT.md) | [Community Credits](credits.md) | [Support Channels](../../support/getting_help.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Event Calendar Widget](../../playground/event-calendar.md) to embed the RDAPify community calendar in your own websites or applications
 
 ## 🌐 Event Philosophy and Strategy
 
@@ -373,7 +375,6 @@ async function generateEventReport(eventId: string): Promise<EventImpactReport> 
 |----------|-------------|------|
 | [Contributing](contributing.md) | How to contribute to RDAPify | [contributing.md](contributing.md) |
 | [Code of Conduct](../../../CODE_OF_CONDUCT.md) | Community behavior standards | [../../../CODE_OF_CONDUCT.md](../../../CODE_OF_CONDUCT.md) |
-| [Event Calendar Widget](../../playground/event-calendar.md) | Interactive calendar embed tool | [../../playground/event-calendar.md](../../playground/event-calendar.md) |
 | [Community Credits](credits.md) | Recognition of community contributors | [credits.md](credits.md) |
 | [Support Channels](../../support/getting_help.md) | Getting help with events | [../../support/getting_help.md](../../support/getting_help.md) |
 | [Conference Speaking Guide](speaking_guide.md) | Guidelines for presenting at events | [speaking_guide.md](speaking_guide.md) |

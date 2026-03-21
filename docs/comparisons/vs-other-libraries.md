@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical comparison between RDAPify and alternative RDAP/WHOIS libraries, focusing on security, performance, compliance, and developer experience for enterprise applications  
 📚 **Related**: [vs_whois.md](vs_whois.md) | [Migration Guide](migration_guide.md) | [Security Privacy](../guides/security_privacy.md) | [Benchmarks](../../benchmarks/results/api-performance.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Library Migration Assistant](../../playground/library-migration-assistant.md) to automatically convert code from competing libraries to RDAPify syntax with security hardening
 
 ## 🌐 Library Landscape Overview
 
@@ -391,7 +390,6 @@ curl -I http://localhost:3000/api/lookup?domain=example.com
 | [Migration Guide](migration_guide.md) | Step-by-step library migration | [migration_guide.md](migration_guide.md) |
 | [Security Privacy](../guides/security_privacy.md) | Core security principles and practices | [../guides/security_privacy.md](../guides/security_privacy.md) |
 | [Benchmarks](../../benchmarks/results/api-performance.md) | Performance benchmark data | [../../benchmarks/results/api-performance.md](../../benchmarks/results/api-performance.md) |
-| [Library Migration Assistant](../../playground/library-migration-assistant.md) | Interactive migration tool | [../../playground/library-migration-assistant.md](../../playground/library-migration-assistant.md) |
 | [Enterprise Deployment](../../enterprise/adoptio) | Production deployment patterns | [../../enterprise/adoption_guide.md](../../enterprise/adoption_guide.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 

@@ -1,9 +1,11 @@
 # SLA Support Guide
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing and managing enterprise-grade Service Level Agreements (SLAs) with RDAPify, ensuring predictable performance, rapid incident response, and business continuity for mission-critical registration data processing  
 📚 **Related**: [Adoption Guide](adoption_guide.md) | [Multi-Tenant Architecture](multi_tenant.md) | [Audit Logging](audit_logging.md) | [Data Residency](../../security/data_residency.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [SLA Calculator](../../playground/sla-calculator.md) to automatically determine your organization's optimal SLA targets based on business criticality and compliance requirements
 
 ## 📊 Enterprise SLA Framework
 
@@ -1530,7 +1532,6 @@ node ./scripts/validate-downtime-measurement.js --incident incident-456
 | [Multi-Tenant Architecture](multi_tenant.md) | Tenant isolation and resource management | [multi_tenant.md](multi_tenant.md) |
 | [Audit Logging](audit_logging.md) | Comprehensive audit trail implementation | [audit_logging.md](audit_logging.md) |
 | [Data Residency](../../security/data_residency.md) | Geographic data handling requirements | [../../security/data_residency.md](../../security/data_residency.md) |
-| [SLA Calculator](../../playground/sla-calculator.md) | Interactive SLA target calculation tool | [../../playground/sla-calculator.md](../../playground/sla-calculator.md) |
 | [Incident Response](../guides/incident_response.md) | Security incident handling procedures | [../guides/incident_response.md](../guides/incident_response.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation guide | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 

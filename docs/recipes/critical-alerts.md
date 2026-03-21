@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing high-priority alerting systems with RDAPify for immediate notification of security-critical domain registration changes and compliance violations  
 📚 **Related**: [Monitoring Service](monitoring_service.md) | [Domain Portfolio](domain_portfolio.md) | [API Gateway](api_gateway.md) | [Security Privacy](../guides/security_privacy.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Alert Simulator](../../playground/alert-simulator.md) to test your critical alert configurations against simulated security incidents before deployment
 
 ## 🌐 Critical Alerting Architecture Overview
 
@@ -1406,7 +1405,6 @@ node ./scripts/check-data-minimization.js --channel all
 | [Domain Portfolio](domain_portfolio.md) | Domain portfolio management patterns | [domain_portfolio.md](domain_portfolio.md) |
 | [API Gateway](api_gateway.md) | Secure API access patterns | [api_gateway.md](api_gateway.md) |
 | [Security Privacy](../guides/security_privacy.md) | Core security principles and practices | [../guides/security_privacy.md](../guides/security_privacy.md) |
-| [Alert Simulator](../../playground/alert-simulator.md) | Interactive testing environment | [../../playground/alert-simulator.md](../../playground/alert-simulator.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Incident Response](../guides/incident_response.md) | Security incident handling procedures | [../guides/incident_response.md](../guides/incident_response.md) |
 

@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete guide to integrating RDAPify with Datadog for comprehensive monitoring, alerting, and performance analytics  
 > **📚 Related:** [Prometheus Integration](prometheus.md) | [New Relic Integration](new_relic.md) | [Performance Optimization](../../guides/performance.md)  
 > **⏱️ Reading Time:** 6 minutes  
-> **🔍 Pro Tip:** Use the [Monitoring Validator](../../../playground/monitoring-validator.md) to automatically check your Datadog configuration for security and performance best practices
 
 ---
 
@@ -1184,7 +1183,6 @@ apm_config:
 | **New Relic Integration** | New Relic monitoring configuration | [new_relic.md](new_relic.md) |
 | **Performance Optimization** | Complete performance tuning guide | [../../guides/performance.md](../../guides/performance.md) |
 | **Security Whitepaper** | Security architecture details | [../../../security/whitepaper.md](../../../security/whitepaper.md) |
-| **Datadog Monitoring Validator** | Interactive configuration tester | [../../../playground/monitoring-validator.md](../../../playground/monitoring-validator.md) |
 | **Sample Dashboards** | Pre-built dashboard templates | [../../../templates/monitoring/datadog_dashboard.json](../../../templates/monitoring/datadog_dashboard.json) |
 
 ---

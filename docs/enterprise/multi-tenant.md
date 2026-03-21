@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing secure, scalable, and compliant multi-tenant architectures with RDAPify for enterprise registration data processing across multiple organizational boundaries  
 📚 **Related**: [SLA Support](sla_support.md) | [Adoption Guide](adoption_guide.md) | [Data Residency](../../security/data_residency.md) | [Audit Logging](audit_logging.md)  
 ⏱️ **Reading Time**: 9 minutes  
-🔍 **Pro Tip**: Use the [Tenant Isolation Validator](../../playground/tenant-isolation-validator.md) to automatically verify your multi-tenant implementation meets security and compliance requirements before deployment
 
 ## 🌐 Multi-Tenant Architecture Overview
 
@@ -1034,7 +1033,6 @@ node ./scripts/check-resource-contention.js --duration 300
 | [Adoption Guide](adoption_guide.md) | Enterprise adoption strategies | [adoption_guide.md](adoption_guide.md) |
 | [Data Residency](../../security/data_residency.md) | Geographic data handling requirements | [../../security/data_residency.md](../../security/data_residency.md) |
 | [Audit Logging](audit_logging.md) | Comprehensive audit trail implementation | [audit_logging.md](audit_logging.md) |
-| [Tenant Isolation Validator](../../playground/tenant-isolation-validator.md) | Security validation tool | [../../playground/tenant-isolation-validator.md](../../playground/tenant-isolation-validator.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Performance Tuning](../guides/performance.md) | Optimization techniques for multi-tenant systems | [../guides/performance.md](../guides/performance.md) |
 | [API Gateway](../recipes/api_gateway.md) | Secure multi-tenant API access patterns | [../recipes/api_gateway.md](../recipes/api_gateway.md) |

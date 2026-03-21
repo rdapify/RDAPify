@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to implementing regulatory compliance controls within RDAPify for GDPR, CCPA, SOC 2, and other frameworks with practical configuration examples and audit-ready reporting  
 📚 **Related**: [GDPR Compliance](../../guides/gdpr_compliance.md) | [PII Detection](pii_detection.md) | [Data Validation](data_validation.md) | [Threat Model](threat_model.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Compliance Validator](../../playground/compliance-validator.md) to automatically check your RDAPify configuration against regulatory requirements and generate audit-ready reports
 
 ## 🏛️ Compliance Framework Overview
 
@@ -1095,7 +1094,6 @@ node ./scripts/audit-access-test.js --storage s3 --permissions read-write
 | [CCPA Compliance](../../guides/ccpa_compliance.md) | California Consumer Privacy Act guide | [../../guides/ccpa_compliance.md](../../guides/ccpa_compliance.md) |
 | [PII Detection](pii_detection.md) | Personal data identification techniques | [pii_detection.md](pii_detection.md) |
 | [Data Validation](data_validation.md) | Input validation for registration data | [data_validation.md](data_validation.md) |
-| [Compliance Validator](../../playground/compliance-validator.md) | Interactive compliance validation tool | [../../playground/compliance-validator.md](../../playground/compliance-validator.md) |
 | [DSAR Processor](dsar_processor.md) | Data Subject Access Request implementation | [dsar_processor.md](dsar_processor.md) |
 | [Data Minimization](../../guides/data_minimization.md) | GDPR Article 5(1)(c) implementation | [../../guides/data_minimization.md](../../guides/data_minimization.md) |
 | [Breach Notification](breach_notification.md) | Security incident reporting procedures | [breach_notification.md](breach_notification.md) |

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to RDAPify's plugin architecture, enabling safe and performant extensibility while maintaining security boundaries and compliance requirements  
 📚 **Related**: [Overview](overview.md) | [Data Flow](data_flow.md) | [Layer Design](layer_design.md) | [Error Flow](error_flow.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Plugin Builder](../../playground/plugin-builder.md) to automatically generate scaffolding for custom RDAPify plugins with security validation
 
 ## 🧩 Plugin Architecture Overview
 
@@ -1014,7 +1013,6 @@ leakage -n 50 -t 100 ./test/plugin-performance-test.js
 | [Data Flow](data_flow.md) | Detailed data processing pipeline | [data_flow.md](data_flow.md) |
 | [Layer Design](layer_design.md) | Deep dive into architectural layers | [layer_design.md](layer_design.md) |
 | [Error Flow](error_flow.md) | Error handling and recovery patterns | [error_flow.md](error_flow.md) |
-| [Plugin Builder](../../playground/plugin-builder.md) | Interactive plugin creation tool | [../../playground/plugin-builder.md](../../playground/plugin-builder.md) |
 | [Plugin API Reference](../api-reference/plugins.md) | Complete plugin API documentation | [../api-reference/plugins.md](../api-reference/plugins.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Compliance Framework](../../security/compliance.md) | Regulatory compliance implementation | [../../security/compliance.md](../../security/compliance.md) |

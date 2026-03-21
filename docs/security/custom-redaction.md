@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to implementing custom PII redaction patterns for RDAP registration data processing with granular control over data exposure, jurisdiction-specific policies, and business logic integration  
 📚 **Related**: [PII Detection](pii_detection.md) | [Data Validation](data_validation.md) | [GDPR Compliance](../../guides/gdpr_compliance.md) | [Threat Model](threat_model.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Redaction Policy Builder](../../playground/redaction-policy-builder.md) to automatically generate custom redaction policies based on your compliance requirements
 
 ## ⚙️ Custom Redaction Architecture
 
@@ -1117,7 +1116,6 @@ curl http://localhost:3000/metrics | grep redaction_cache
 | [Data Validation](data_validation.md) | Input validation for RDAP responses | [data_validation.md](data_validation.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Threat Model](threat_model.md) | Detailed threat analysis | [threat_model.md](threat_model.md) |
-| [Redaction Policy Builder](../../playground/redaction-policy-builder.md) | Interactive policy creation tool | [../../playground/redaction-policy-builder.md](../../playground/redaction-policy-builder.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory compliance implementation | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
 | [Data Minimization](../../guides/data_minimization.md) | GDPR Article 5(1)(c) implementation | [../../guides/data_minimization.md](../../guides/data_minimization.md) |
 | [Caching Strategies](../../guides/caching.md) | Performance optimization techniques | [../../guides/caching.md](../../guides/caching.md) |

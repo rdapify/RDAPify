@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive Russian documentation for RDAPify developers, maintaining technical accuracy, security context, and regulatory compliance  
 📚 **Related**: [Translation Guide](translation_guide.md) | [Chinese Documentation](chinese.md) | [Spanish Documentation](spanish.md) | [Arabic Documentation](arabic.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [Russian Documentation Validator](../../playground/russian-validator.md) to automatically check your Russian translations for technical accuracy and regulatory compliance
 
 ## 🌐 Why Choose RDAPify?
 

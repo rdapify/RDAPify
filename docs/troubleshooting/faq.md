@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive answers to the most common questions and issues encountered when using RDAPify for RDAP data processing across development, testing, and production environments  
 📚 **Related**: [Common Errors](common_errors.md) | [Debugging](debugging.md) | [Connection Timeout Resolution](connection_timeout.md) | [Lambda Workers Issues](lambda_workers_issues.md)  
 ⏱️ **Reading Time**: 10 minutes  
-🔍 **Pro Tip**: Use the [Interactive FAQ Assistant](../../playground/faq-assistant.md) to get personalized answers based on your specific environment and use case
 
 ## 📋 General Questions
 
@@ -468,7 +467,7 @@ const client = new RDAPClient({
     debug: true,
     logLevel: 'debug',
     // Versioned cache keys to prevent stale data
-    version: 'v2.3.1'
+    version: 'v0.1.8'
   }
 });
 
@@ -686,7 +685,7 @@ metadata:
   namespace: production
   labels:
     app: rdapify
-    version: v2.3.1
+    version: v0.1.8
 spec:
   replicas: 3
   selector:
@@ -701,7 +700,7 @@ spec:
     metadata:
       labels:
         app: rdapify
-        version: v2.3.1
+        version: v0.1.8
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "3000"
@@ -1055,7 +1054,6 @@ startServer().catch(console.error);
 | [Connection Timeout Resolution](connection_timeout.md) | Handling network timeout issues | [connection_timeout.md](connection_timeout.md) |
 | [Lambda Workers Issues](lambda_workers_issues.md) | Serverless deployment troubleshooting | [lambda_workers_issues.md](lambda_workers_issues.md) |
 | [Proxy Rotation Strategies](proxy_rotation.md) | Handling IP rate limiting | [proxy_rotation.md](proxy_rotation.md) |
-| [Interactive FAQ Assistant](../../playground/faq-assistant.md) | Personalized answer generator | [../../playground/faq-assistant.md](../../playground/faq-assistant.md) |
 | [Performance Benchmarks](../../../benchmarks/results/faq-performance.md) | Performance benchmark data | [../../../benchmarks/results/faq-performance.md](../../../benchmarks/results/faq-performance.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 

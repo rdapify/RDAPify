@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to preventing Server-Side Request Forgery (SSRF) attacks in RDAP clients with practical implementation strategies, threat modeling, and defense-in-depth architecture for registration data processing systems  
 📚 **Related**: [Security Whitepaper](whitepaper.md) | [Threat Model](threat_model.md) | [Best Practices](best_practices.md) | [PII Detection](pii_detection.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [SSRF Tester](../../playground/ssrf-tester.md) to automatically validate your RDAP client's SSRF protection before deployment
 
 ## ⚠️ Critical SSRF Risk in RDAP Clients
 
@@ -762,7 +761,6 @@ Incident Commander: {commander_name}
 | [Threat Model](threat_model.md) | Detailed threat analysis | [threat_model.md](threat_model.md) |
 | [Best Practices](best_practices.md) | Implementation guidelines | [best_practices.md](best_practices.md) |
 | [PII Detection](pii_detection.md) | Personal data identification | [pii_detection.md](pii_detection.md) |
-| [SSRF Tester](../../playground/ssrf-tester.md) | Interactive validation tool | [../../playground/ssrf-tester.md](../../playground/ssrf-tester.md) |
 | [Vulnerability Disclosure](vulnerability_disclosure.md) | Responsible disclosure process | [vulnerability_disclosure.md](vulnerability_disclosure.md) |
 | [Network Security](../../guides/network_security.md) | Infrastructure protection | [../../guides/network_security.md](../../guides/network_security.md) |
 

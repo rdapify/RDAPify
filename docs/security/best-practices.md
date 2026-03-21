@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to implementing security best practices when using RDAPify for registration data processing, with practical implementation examples and compliance guidance  
 📚 **Related**: [SSRF Prevention](ssrf_prevention.md) | [PII Detection](pii_detection.md) | [GDPR Compliance](../../guides/gdpr_compliance.md) | [Threat Model](threat_model.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Security Validator](../../playground/security-validator.md) to automatically check your RDAPify implementation against these best practices
 
 ## 📋 Executive Summary
 
@@ -1107,7 +1106,6 @@ describe('Security Test Suite', () => {
 | [PII Detection](pii_detection.md) | Personal data identification techniques | [pii_detection.md](pii_detection.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Threat Model](threat_model.md) | Detailed threat analysis | [threat_model.md](threat_model.md) |
-| [Security Validator](../../playground/security-validator.md) | Interactive security validation tool | [../../playground/security-validator.md](../../playground/security-validator.md) |
 | [Data Minimization](../../guides/data_minimization.md) | GDPR Article 5(1)(c) implementation | [../../guides/data_minimization.md](../../guides/data_minimization.md) |
 | [Vulnerability Disclosure](vulnerability_disclosure.md) | Responsible disclosure process | [vulnerability_disclosure.md](vulnerability_disclosure.md) |
 | [Incident Response Plan](../../enterprise/incident_response.md) | Security incident handling procedures | [../../enterprise/incident_response.md](../../enterprise/incident_response.md) |

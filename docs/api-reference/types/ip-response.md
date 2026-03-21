@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Complete reference for the `IPResponse` interface representing normalized RDAP IP address registration data  
 > **📚 Related:** [RDAPClient API](../client.md) | [IP Method](../methods/ip.md) | [Entity Type](entity.md) | [Network Hierarchy](../guides/geo-caching.md)  
 > **⏱️ Reading Time:** 6 minutes  
-> **🔍 Pro Tip:** Use the [Visual Debugger](../../playground/visual-debugger.md) to interactively explore actual `IPResponse` instances with geolocation overlays
 
 ---
 

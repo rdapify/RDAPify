@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to implementing secure, compliant, and efficient logging strategies for RDAPify applications  
 > **📚 Related:** [Error Handling](error_handling.md) | [Security Whitepaper](../security/whitepaper.md) | [Performance Optimization](../performance/optimization.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Log Visualizer](../../playground/log-visualizer.md) to interactively explore log patterns and identify security issues
 
 ---
 
@@ -884,7 +883,6 @@ function logWithConsent(consentContext: {
 | **Error Handling** | Error classification and handling patterns | [error_handling.md](error_handling.md) |
 | **Performance Guide** | Logging performance optimization | [../performance/logging-optimization.md](../performance/logging-optimization.md) |
 | **Test Vectors** | Standardized logging test cases | [../../test-vectors/logging-vectors.json](../../test-vectors/logging-vectors.json) |
-| **Log Visualizer** | Interactive log exploration tool | [../../playground/log-visualizer.md](../../playground/log-visualizer.md) |
 | **Compliance Guide** | Regulatory logging requirements | [../security/compliance.md](../security/compliance.md) |
 
 ---

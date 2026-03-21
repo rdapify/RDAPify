@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing domain portfolio monitoring and management systems using RDAPify with security-first design, compliance awareness, and production-ready performance  
 📚 **Related**: [Batch Processing](../guides/batch_processing.md) | [Anomaly Detection](../guides/anomaly_detection.md) | [Security Privacy](../guides/security_privacy.md) | [Scheduled Reports](scheduled_reports.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Portfolio Health Dashboard](../../playground/portfolio-dashboard.md) to visualize your domain portfolio metrics in real-time with built-in anomaly detection
 
 ## 🌐 Portfolio Management Architecture
 

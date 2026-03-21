@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive reference for all TypeScript types and interfaces used in the RDAPify library  
 > **📚 Related:** [Client API](../client.md) | [Domain Method](../methods/domain.md) | [IP Method](../methods/ip.md) | [ASN Method](../methods/asn.md)  
 > **⏱️ Reading Time:** 3 minutes  
-> **🔍 Pro Tip:** Use the [Visual Type Explorer](../../playground/visual-type-explorer.md) to interactively explore type relationships
 
 ---
 

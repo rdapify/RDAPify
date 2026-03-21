@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing secure, reliable, and compliant webhook integrations with RDAPify for real-time registration data notifications and event-driven workflows  
 📚 **Related**: [Domain Portfolio](domain_portfolio.md) | [Monitoring Service](monitoring_service.md) | [Critical Alerts](critical_alerts.md) | [API Gateway](api_gateway.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Webhook Simulator](../../playground/webhook-simulator.md) to test your webhook integration against simulated RDAP events before production deployment
 
 ## 🌐 Webhook Integration Architecture
 
@@ -1182,7 +1181,6 @@ node ./scripts/audit-data-transfer-agreements.js --webhook-id wh_12345
 | [Monitoring Service](monitoring_service.md) | Real-time monitoring and alerting | [monitoring_service.md](monitoring_service.md) |
 | [Critical Alerts](critical_alerts.md) | High-priority notification workflows | [critical_alerts.md](critical_alerts.md) |
 | [API Gateway](api_gateway.md) | Secure API access patterns | [api_gateway.md](api_gateway.md) |
-| [Webhook Simulator](../../playground/webhook-simulator.md) | Interactive testing environment | [../../playground/webhook-simulator.md](../../playground/webhook-simulator.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
 | [Scheduled Reports](scheduled_reports.md) | Automated compliance reporting | [scheduled_reports.md](scheduled_reports.md) |
 

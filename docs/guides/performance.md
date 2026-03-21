@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to performance optimization strategies for RDAPify in various deployment scenarios  
 > **📚 Related:** [Caching Strategies](caching-strategies.md) | [Rate Limiting](rate-limiting.md) | [Batch Processing](batch-processing.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Performance Analyzer](../../playground/performance-analyzer.md) to profile your specific workload patterns
 
 ---
 
@@ -665,7 +664,6 @@ class SecurityOptimizedClient {
 | **Geo-Caching** | Geographic distribution strategies | [geo-caching.md](geo-caching.md) |
 | **Security Whitepaper** | Security-performance tradeoffs | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | **Benchmarks** | Performance benchmark results | [../../benchmarks/results/latency-comparison.md](../../benchmarks/results/latency-comparison.md) |
-| **Performance Analyzer** | Interactive performance testing tool | [../../playground/performance-analyzer.md](../../playground/performance-analyzer.md) |
 
 ---
 

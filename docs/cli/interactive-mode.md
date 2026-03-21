@@ -55,7 +55,7 @@ rdapify interactive --config ~/.config/rdapify/enterprise.yaml
 
 ### 2. Interactive Shell Overview
 ```
-🚀 RDAPify Interactive Shell v2.3.1
+🚀 RDAPify Interactive Shell v0.1.8
 📚 Type 'help' for command list, 'tutorial' for guided tour
 🔍 Current context: [global]
 🔐 Security level: [production]

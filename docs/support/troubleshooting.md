@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to diagnosing and resolving common issues in RDAPify deployments with practical techniques, diagnostic tools, and escalation procedures for support teams and developers  
 📚 **Related**: [Verbose Logging](verbose_logging.md) | [Network Debugging](network_debugging.md) | [Getting Help](getting_help.md) | [Common Errors](../../troubleshooting/common_errors.md)  
 ⏱️ **Reading Time**: 5 minutes  
-🔍 **Pro Tip**: Use the [Support Diagnostics Tool](../../playground/support-diagnostics.md) to automatically generate a complete troubleshooting report with system information and error context
 
 ## 📋 Troubleshooting Methodology
 
@@ -442,7 +441,6 @@ When contacting support, include this information:
 | [Network Debugging](network_debugging.md) | Network-level troubleshooting techniques | [network_debugging.md](network_debugging.md) |
 | [Getting Help](getting_help.md) | Support channels and community resources | [getting_help.md](getting_help.md) |
 | [Common Errors](../../troubleshooting/common_errors.md) | Frequently encountered issues and solutions | [../../troubleshooting/common_errors.md](../../troubleshooting/common_errors.md) |
-| [Support Diagnostics Tool](../../playground/support-diagnostics.md) | Interactive troubleshooting assistant | [../../playground/support-diagnostics.md](../../playground/support-diagnostics.md) |
 | [Error Diagnosis Tool](../../troubleshooting/debugging.md) | Advanced debugging techniques | [../../troubleshooting/debugging.md](../../troubleshooting/debugging.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 

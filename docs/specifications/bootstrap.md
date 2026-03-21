@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive technical specification for RDAP bootstrap service implementation according to RFC 7484, providing registry discovery infrastructure with fault tolerance, caching strategies, and security controls  
 📚 **Related**: [RDAP RFC Specification](rdap_rfc.md) | [Response Format](response_format.md) | [Security Services](../security/whitepaper.md) | [IANA Bootstrap Repository](https://data.iana.org/rdap/)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Bootstrap Validator](../../playground/bootstrap-validator.md) to automatically verify your bootstrap service implementation against RFC requirements and IANA data formats
 
 ## 🌐 Bootstrap Service Architecture Overview
 
@@ -739,7 +738,6 @@ mtr --report data.iana.org
 | [Response Format](response_format.md) | RDAP JSON response structure specification | [response_format.md](response_format.md) |
 | [IANA Bootstrap Repository](https://data.iana.org/rdap/) | Official bootstrap service endpoints | [https://data.iana.org/rdap/](https://data.iana.org/rdap/) |
 | [Security Whitepaper](../security/whitepaper.md) | Security considerations for bootstrap services | [../security/whitepaper.md](../security/whitepaper.md) |
-| [Bootstrap Validator](../../playground/bootstrap-validator.md) | Interactive bootstrap format validation tool | [../../playground/bootstrap-validator.md](../../playground/bootstrap-validator.md) |
 | [RFC 7484](https://tools.ietf.org/html/rfc7484) | Official bootstrap service RFC | [https://tools.ietf.org/html/rfc7484](https://tools.ietf.org/html/rfc7484) |
 | [Test Vectors](../../test-vectors/bootstrap_vectors.json) | Valid and invalid bootstrap test cases | [../../test-vectors/bootstrap_vectors.json](../../test-vectors/bootstrap_vectors.json) |
 | [Deployment Guide](../enterprise/adoption_guide.md) | Bootstrap service deployment in production | [../enterprise/adoption_guide.md](../enterprise/adoption_guide.md) |

@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to implementing geographic caching strategies for RDAPify to optimize global request latency and reliability  
 > **📚 Related:** [Caching Strategies](caching-strategies.md) | [Architecture Overview](../core-concepts/architecture.md) | [Performance Benchmarks](../../benchmarks/results/geo-distribution.md)  
 > **⏱️ Reading Time:** 7 minutes  
-> **🔍 Pro Tip:** Use the [Geo-Cache Simulator](../../playground/geo-cache-simulator.md) to model performance impact for your global user distribution
 
 ---
 
@@ -876,7 +875,6 @@ class EnterpriseGeoCacheService {
 | **Performance Benchmarks** | Geo-distribution performance data | [../../benchmarks/results/geo-distribution.md](../../benchmarks/results/geo-distribution.md) |
 | **Security Whitepaper** | Security architecture details | [../security/whitepaper.md](../security/whitepaper.md) |
 | **Enterprise Adoption** | Scaling for large deployments | [../enterprise/adoption-guide.md](../enterprise/adoption-guide.md) |
-| **Geo-Cache Simulator** | Interactive strategy testing | [../../playground/geo-cache-simulator.md](../../playground/geo-cache-simulator.md) |
 | **Compliance Guide** | Regulatory requirements by region | [../security/compliance.md](../security/compliance.md) |
 
 ---

@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing custom fetchers in RDAPify to handle specialized network requirements, proxy configurations, and security constraints while maintaining protocol compliance  
 📚 **Related**: [Plugin System](plugin_system.md) | [Custom Resolver](custom_resolver.md) | [Custom Normalizer](custom_normalizer.md) | [Middleware](../guides/middleware.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Network Simulator](../../playground/network-simulator.md) to test your custom fetcher under various network conditions before production deployment
 
 ## 🌐 Why Custom Fetchers Matter
 
@@ -1115,7 +1114,6 @@ export class DebugFetcher implements Fetcher {
 | [Custom Normalizer](custom_normalizer.md) | Response normalization | [custom_normalizer.md](custom_normalizer.md) |
 | [Middleware](../guides/middleware.md) | Request/response processing pipeline | [../guides/middleware.md](../guides/middleware.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Complete security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Network Simulator](../../playground/network-simulator.md) | Testing network conditions | [../../playground/network-simulator.md](../../playground/network-simulator.md) |
 | [Connection Pooling](../guides/connection_pooling.md) | Performance optimization guide | [../guides/connection_pooling.md](../guides/connection_pooling.md) |
 
 ## 🏷️ Custom Fetcher Specifications

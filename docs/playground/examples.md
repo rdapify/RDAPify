@@ -1,5 +1,8 @@
 # Playground Examples Gallery
 
+> **Planned feature** — This documentation describes functionality that is under development and not yet available in the current release (v0.1.8). Details may change before launch.
+
+
 🎯 **Purpose**: Interactive collection of practical RDAPify examples demonstrating core concepts through hands-on experimentation in the playground environment  
 📚 **Related**: [API Playground](api_playground.md) | [Overview](overview.md) | [Visual Debugger](visual_debugger.md) | [Five-Minute Tutorial](../getting-started/five_minutes.md)  
 ⏱️ **Reading Time**: 5 minutes  

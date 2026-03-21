@@ -583,7 +583,6 @@ RDAPify is designed for sustainable long-term maintenance:
 | **Bootstrap Discovery** | Registry discovery mechanics | [./discovery.md](./discovery.md) |
 | **Error State Machine** | Detailed error handling flow | [./error-state-machine.md](./error-state-machine.md) |
 | **Caching Strategies** | Advanced caching configurations | [../guides/caching-strategies.md](../guides/caching-strategies.md) |
-| **Offline Mode** | Disconnected operation patterns | [./offline-mode.md](./offline-mode.md) |
 | **Security Whitepaper** | Complete security architecture | [../security/whitepaper.md](../security/whitepaper.md) |
 
 ---

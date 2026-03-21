@@ -3,7 +3,6 @@
 > **🎯 Purpose:** Comprehensive guide to implementing secure, compliant, and privacy-preserving RDAP applications with RDAPify  
 > **📚 Related:** [Security Whitepaper](../security/whitepaper.md) | [Compliance Guide](../security/compliance.md) | [GDPR Implementation](../security/gdpr-compliance.md)  
 > **⏱️ Reading Time:** 8 minutes  
-> **🔍 Pro Tip:** Use the [Security Scanner](../../playground/security-scanner.md) to automatically detect security misconfigurations in your RDAPify implementation
 
 ---
 
@@ -822,7 +821,6 @@ describe('Fuzz Security Tests', () => {
 | **GDPR Compliance Guide** | Detailed GDPR implementation | [../security/gdpr-compliance.md](../security/gdpr-compliance.md) |
 | **SSRF Prevention** | Comprehensive SSRF protection guide | [../security/ssrf-prevention.md](../security/ssrf-prevention.md) |
 | **Test Vectors** | Security test cases and vectors | [../../test-vectors/security-vectors.json](../../test-vectors/security-vectors.json) |
-| **Security Scanner** | Interactive security configuration tool | [../../playground/security-scanner.md](../../playground/security-scanner.md) |
 | **Incident Response Playbook** | Step-by-step incident handling | [../security/incident-response.md](../security/incident-response.md) |
 | **Compliance Matrix** | Regulatory requirements by region | [../security/compliance-matrix.md](../security/compliance-matrix.md) |
 

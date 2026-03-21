@@ -1,9 +1,11 @@
 # Reporting Automation Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing automated, compliance-aware reporting systems with RDAPify for domain portfolio monitoring, security alerts, and regulatory compliance  
 📚 **Related**: [Scheduled Reports](scheduled_reports.md) | [Domain Portfolio](domain_portfolio.md) | [Critical Alerts](critical_alerts.md) | [Data Aggregation](data_aggregation.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Report Template Generator](../../playground/report-template-generator.md) to automatically create customized report templates based on your compliance requirements and business needs
 
 ## 🌐 Reporting Automation Architecture Overview
 
@@ -1262,7 +1264,6 @@ node ./scripts/audit-data-transfers.js --report-id report_12345
 | [Critical Alerts](critical_alerts.md) | High-priority notification workflows | [critical_alerts.md](critical_alerts.md) |
 | [Data Aggregation](data_aggregation.md) | Large-scale data collection patterns | [data_aggregation.md](data_aggregation.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
-| [Report Template Generator](../../playground/report-template-generator.md) | Interactive template creation tool | [../../playground/report-template-generator.md](../../playground/report-template-generator.md) |
 | [Webhook Integration](webhook_integration.md) | Event-driven notification system | [webhook_integration.md](webhook_integration.md) |
 
 ## 🏷️ Reporting Automation Specifications

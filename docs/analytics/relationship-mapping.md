@@ -1,9 +1,11 @@
 # Relationship Mapping Recipe
 
+> **Requires `@rdapify/pro`** — The features described in this guide are provided by the [`@rdapify/pro`](https://github.com/rdapify/RDAPify-Pro) commercial package. Install it alongside `rdapify` to use this functionality.
+
+
 🎯 **Purpose**: Comprehensive guide for implementing domain relationship mapping systems with RDAPify to visualize and analyze registration data relationships while maintaining security boundaries and compliance requirements  
 📚 **Related**: [Domain Portfolio](domain_portfolio.md) | [Pattern Analysis](../analytics/pattern_analysis.md) | [Visualization Tools](../analytics/visualization_tools.md) | [Data Aggregation](data_aggregation.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Relationship Mapper](../../playground/relationship-mapper.md) to interactively explore domain relationships and generate mapping configurations before implementation
 
 ## 🌐 Relationship Mapping Architecture Overview
 
@@ -1417,7 +1419,6 @@ node ./scripts/audit-data-transfers.js --relationship-graph
 | [Data Aggregation](data_aggregation.md) | Large-scale relationship data collection | [data_aggregation.md](data_aggregation.md) |
 | [Critical Alerts](critical_alerts.md) | Security alerting for relationship changes | [critical_alerts.md](critical_alerts.md) |
 | [GDPR Compliance](../../guides/gdpr_compliance.md) | Privacy protection implementation guide | [../../guides/gdpr_compliance.md](../../guides/gdpr_compliance.md) |
-| [Relationship Mapper](../../playground/relationship-mapper.md) | Interactive relationship mapping tool | [../../playground/relationship-mapper.md](../../playground/relationship-mapper.md) |
 | [Threat Intelligence](../guides/threat_intelligence.md) | Security integration for relationship scoring | [../guides/threat_intelligence.md](../guides/threat_intelligence.md) |
 
 ## 🏷️ Relationship Mapping Specifications

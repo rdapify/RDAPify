@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive bibliography of academic papers, research publications, and scholarly articles relevant to RDAP protocol development, security, privacy, and performance for RDAPify developers and researchers  
 📚 **Related**: [RFC References](rfcs.md) | [Glossary](glossary.md) | [Links](links.md) | [Specifications](../../specifications/rdap_rfc.md)  
 ⏱️ **Reading Time**: 6 minutes  
-🔍 **Pro Tip**: Use the [Research Paper Analyzer](../../playground/paper-analyzer.md) to automatically extract key concepts and implementation insights from academic papers related to your specific use case
 
 ## 📚 RDAP Protocol Research
 
@@ -245,7 +244,6 @@ Proceedings of the ACM Web Conference, 3456-3469.
 | [RFC References](rfcs.md) | Complete list of relevant RFC documents | [rfcs.md](rfcs.md) |
 | [Glossary](glossary.md) | Technical terms and definitions | [glossary.md](glossary.md) |
 | [Links](links.md) | Curated collection of useful resources | [links.md](links.md) |
-| [Research Paper Analyzer](../../playground/paper-analyzer.md) | AI-powered paper analysis tool | [../../playground/paper-analyzer.md](../../playground/paper-analyzer.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Standards Participation](../community/standards_participation.md) | How to participate in RDAP standardization | [../community/standards_participation.md](../community/standards_participation.md) |
 

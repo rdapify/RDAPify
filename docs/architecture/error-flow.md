@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to RDAPify's error handling architecture, detailing state machines, failure recovery strategies, and resilience patterns for robust registration data processing  
 📚 **Related**: [Overview](overview.md) | [Data Flow](data_flow.md) | [Layer Design](layer_design.md) | [Plugin Architecture](plugin_architecture.md)  
 ⏱️ **Reading Time**: 7 minutes  
-🔍 **Pro Tip**: Use the [Error Flow Simulator](../../playground/error-flow-simulator.md) to interactively test error handling scenarios and visualize state transitions
 
 ## 📊 Error State Machine Overview
 
@@ -1100,7 +1099,6 @@ node ./scripts/recovery-analysis.js --service registry --metrics
 | [Data Flow](data_flow.md) | Detailed data processing pipeline | [data_flow.md](data_flow.md) |
 | [Layer Design](layer_design.md) | Deep dive into architectural layers | [layer_design.md](layer_design.md) |
 | [Plugin Architecture](plugin_architecture.md) | Extension points and customization | [plugin_architecture.md](plugin_architecture.md) |
-| [Error Flow Simulator](../../playground/error-flow-simulator.md) | Interactive error handling exploration tool | [../../playground/error-flow-simulator.md](../../playground/error-flow-simulator.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [Resilience Patterns](../../../patterns/resilience.md) | Advanced fault tolerance strategies | [../../../patterns/resilience.md](../../../patterns/resilience.md) |
 | [Performance Tuning](../performance-tuning.md) | Optimization techniques for error handling | [../performance-tuning.md](../performance-tuning.md) |

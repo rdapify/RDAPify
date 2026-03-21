@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to RDAPify's plugin system for extending core functionality while maintaining security boundaries and compliance requirements  
 📚 **Related**: [Custom Adapters](../guides/custom_adapters.md) | [Middleware](../guides/middleware.md) | [Extending RDAPify](extending.md) | [Security Whitepaper](../../security/whitepaper.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Plugin Validator](../../playground/plugin-validator.md) to automatically check your plugins for security issues and compatibility problems before deployment
 
 ## 🌐 Architectural Overview
 
@@ -928,7 +927,6 @@ rdapify plugin enable --id com.example.my-plugin
 | [Middleware](../guides/middleware.md) | Request/response middleware patterns | [../guides/middleware.md](../guides/middleware.md) |
 | [Extending RDAPify](extending.md) | Advanced extension techniques | [extending.md](extending.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
-| [Plugin Validator](../../playground/plugin-validator.md) | Security validation tool | [../../playground/plugin-validator.md](../../playground/plugin-validator.md) |
 | [Enterprise Deployment](../enterprise/adoption_guide.md) | Enterprise plugin management | [../enterprise/adoption_guide.md](../enterprise/adoption_guide.md) |
 
 ## 🏷️ Plugin System Specifications

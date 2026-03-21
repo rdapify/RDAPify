@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide to diagnosing and resolving common errors encountered when using RDAPify for registration data processing, with practical troubleshooting steps and preventative measures  
 📚 **Related**: [Debugging Guide](debugging.md) | [Connection Timeouts](connection_timeout.md) | [Lambda Workers Issues](lambda_workers_issues.md) | [FAQ](faq.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Error Diagnosis Tool](../../playground/error-diagnosis.md) to automatically identify error patterns and generate solutions from log files
 
 ## 📋 Error Classification System
 
@@ -548,7 +547,6 @@ class ErrorPatternAnalyzer {
 | [Connection Timeout Resolution](connection_timeout.md) | Handling network timeout issues | [connection_timeout.md](connection_timeout.md) |
 | [Lambda Workers Guide](lambda_workers_issues.md) | Serverless deployment troubleshooting | [lambda_workers_issues.md](lambda_workers_issues.md) |
 | [Proxy Rotation Strategies](proxy_rotation.md) | Handling IP rate limiting | [proxy_rotation.md](proxy_rotation.md) |
-| [Error Diagnosis Tool](../../playground/error-diagnosis.md) | Interactive error analysis tool | [../../playground/error-diagnosis.md](../../playground/error-diagnosis.md) |
 | [Security Whitepaper](../../security/whitepaper.md) | Comprehensive security architecture | [../../security/whitepaper.md](../../security/whitepaper.md) |
 | [SSRF Prevention Guide](../../security/ssrf_prevention.md) | Server-side request forgery protection | [../../security/ssrf_prevention.md](../../security/ssrf_prevention.md) |
 | [PII Detection Guide](../../security/pii_detection.md) | Personal data identification techniques | [../../security/pii_detection.md](../../security/pii_detection.md) |

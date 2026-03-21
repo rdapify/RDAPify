@@ -3,7 +3,6 @@
 🎯 **Purpose**: Comprehensive guide for implementing enterprise-grade audit logging systems with RDAPify to ensure regulatory compliance, security monitoring, and operational visibility for registration data processing  
 📚 **Related**: [Multi-Tenant Architecture](multi_tenant.md) | [SLA Support](sla_support.md) | [Data Residency](../../security/data_residency.md) | [Compliance Framework](../../security/compliance_framework.md)  
 ⏱️ **Reading Time**: 8 minutes  
-🔍 **Pro Tip**: Use the [Audit Log Validator](../../playground/audit-log-validator.md) to automatically verify your audit logging implementation meets regulatory requirements before production deployment
 
 ## 🌐 Audit Logging Architecture Overview
 
@@ -1820,7 +1819,6 @@ node ./scripts/audit-data-transfers.js --audit-type compliance
 | [SLA Support](sla_support.md) | Performance guarantees for audit processing | [sla_support.md](sla_support.md) |
 | [Data Residency](../../security/data_residency.md) | Geographic constraints for audit data | [../../security/data_residency.md](../../security/data_residency.md) |
 | [Compliance Framework](../../security/compliance_framework.md) | Regulatory requirements for audit trails | [../../security/compliance_framework.md](../../security/compliance_framework.md) |
-| [Audit Log Validator](../../playground/audit-log-validator.md) | Automated compliance validation tool | [../../playground/audit-log-validator.md](../../playground/audit-log-validator.md) |
 | [PII Detection](../../security/pii_detection.md) | Personal data identification techniques | [../../security/pii_detection.md](../../security/pii_detection.md) |
 | [Blockchain Attestation](../guides/blockchain_attestation.md) | Cryptographic proof of audit integrity | [../guides/blockchain_attestation.md](../guides/blockchain_attestation.md) |
 | [Retention Management](../guides/retention_management.md) | Automated data lifecycle management | [../guides/retention_management.md](../guides/retention_management.md) |
