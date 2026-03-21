@@ -17,14 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Rust native backend** — when `@rdapify/core` (optional peer dependency) is installed, the five core query methods (`domain`, `ip`, `asn`, `nameserver`, `entity`) are executed by a compiled Rust binary, reducing latency significantly for high-throughput scenarios
-- **`backend` option** on `RDAPClientOptions`: `'auto'` (default — uses native if available, falls back to TypeScript silently), `'native'` (requires `@rdapify/core`, throws at construction if missing), `'typescript'` (always uses TypeScript pipeline regardless of installation)
-- **`isNativeAvailable()`** utility — detect at runtime whether `@rdapify/core` is installed and loadable
+- **Rust native backend** — when `rdapify-nd` (optional peer dependency) is installed, the five core query methods (`domain`, `ip`, `asn`, `nameserver`, `entity`) are dispatched to a compiled Rust binary, reducing per-call overhead for high-throughput scenarios
+- **`backend` option** on `RDAPClientOptions`: `'auto'` (default — uses native if available, falls back to TypeScript silently), `'native'` (requires `rdapify-nd`, throws at construction if absent), `'typescript'` (always uses the TypeScript pipeline regardless of what is installed)
+- **`isNativeAvailable()`** utility — runtime detection of whether `rdapify-nd` is installed and loadable
+- **`NativeBackend`** class exported for advanced use cases (direct access to the adapter)
+- **28 unit tests** added for the NativeBackend adapter: field mapping (`meta`→`metadata`, `queried_at`→`timestamp`), `objectClass` injection, numeric ASN coercion, and module-absent fallback
 
 ### Notes
 
-- The native backend bypasses TypeScript-layer features (middleware hooks, rate limiting, audit logging, deduplication); best suited for simple high-throughput scenarios
-- Response shapes are fully compatible: the adapter normalises `meta` → `metadata`, `queried_at` → `timestamp`, and injects `objectClass` to match TypeScript interfaces exactly
+- The native backend bypasses the TypeScript pipeline (middleware hooks, rate limiting, audit logging, deduplication); best suited for latency-sensitive, high-throughput scenarios where those features are not required
+- Response shapes are fully compatible: the adapter normalises Rust snake_case fields to match TypeScript interfaces exactly
 
 ## [0.1.7] - 2026-03-19
 

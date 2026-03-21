@@ -79,8 +79,8 @@ console.log({
   registrar: result.registrar?.name,
   status: result.status,
   nameservers: result.nameservers,
-  created: result.events.find((e) => e.type === 'created')?.date,
-  expires: result.events.find((e) => e.type === 'expiration')?.date,
+  created: result.events.find((e) => e.eventAction === 'registration')?.eventDate,
+  expires: result.events.find((e) => e.eventAction === 'expiration')?.eventDate,
 });
 ```
 
@@ -91,10 +91,9 @@ import { RDAPClient } from 'rdapify';
 
 // Create a secure client with optimized defaults
 const client = new RDAPClient({
-  cache: true, // Automatic caching (1 hour TTL)
-  redactPII: true, // Automatically redact personal information
+  cache: true,             // In-memory LRU cache (1 hour TTL)
+  privacy: true,           // Automatic PII redaction (GDPR/CCPA)
   retry: {
-    // Smart retries for transient failures
     maxAttempts: 3,
     backoff: 'exponential',
   },
@@ -410,7 +409,7 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.7 (Alpha)
+**Current Release**: v0.1.8 (Alpha)
 
 ### 🎉 What's New in v0.1.7
 
@@ -451,7 +450,7 @@ Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct]
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### ✅ Full Feature Set (v0.1.7)
+### ✅ Full Feature Set (v0.1.8)
 
 - ✅ **RDAP Client**: Domain, IP, ASN, Nameserver, and Entity queries with automatic IANA bootstrap discovery
 - ✅ **CLI Tool**: Command-line interface with human-readable and JSON output (`domain`, `ip`, `asn`, `nameserver`, `entity`)
@@ -585,13 +584,11 @@ src/
 
 ## 📚 Additional Documentation
 
-- **[Release Documentation](./docs/releases/)** - Complete phase documentation
-- **[ALL_PHASES_COMPLETE.md](./docs/releases/ALL_PHASES_COMPLETE.md)** - Complete overview
-- **[PHASE_1_COMPLETE.md](./docs/releases/PHASE_1_COMPLETE.md)** - Core improvements
-- **[PHASE_2_COMPLETE.md](./docs/releases/PHASE_2_COMPLETE.md)** - Advanced features
-- **[PHASE_3_COMPLETE.md](./docs/releases/PHASE_3_COMPLETE.md)** - Authentication & network
-- **[CHANGELOG.md](./CHANGELOG.md)** - Detailed version history
-- **[ADDITIONAL_IMPROVEMENTS.md](./ADDITIONAL_IMPROVEMENTS.md)** - Implementation status
+- **[Getting Started](./docs/getting-started/)** — Installation, quick start, first query
+- **[API Reference](./docs/api-reference/)** — Full TypeScript API documentation
+- **[Guides](./docs/guides/)** — Caching, error handling, performance, observability
+- **[Security](./docs/security/)** — SSRF protection, PII redaction, threat model
+- **[CHANGELOG.md](./CHANGELOG.md)** — Detailed version history
 
 ## 🔍 Version Verification
 
