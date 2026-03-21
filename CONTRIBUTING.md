@@ -143,7 +143,7 @@ const url = `https://example.com?domain=${domain}`; // Vulnerable to injection
 
 ### Test Coverage
 
-- New features must have ≥95% test coverage
+- New features must have ≥80% test coverage (branches, functions, lines, statements)
 - Bug fixes must include regression tests
 - Critical paths must have 100% coverage
 
@@ -156,14 +156,8 @@ npm run test:unit
 # Integration tests
 npm run test:integration
 
-# Security tests
+# Security tests (SSRF + injection)
 npm run test:security
-
-# Fuzzing tests
-npm run test:fuzz
-
-# End-to-end tests
-npm run test:e2e
 ```
 
 ### Test Vectors
@@ -266,7 +260,7 @@ When contributing security-sensitive code:
 - Include negative tests (attempt to bypass protections)
 - Test with security scanning tools (Bandit, Semgrep)
 - Document threat modeling in PR description
-- Follow our [Security Whitepaper](security/whitepaper.md) guidelines
+- Follow our [Security Whitepaper](docs/security/whitepaper.md) guidelines
 
 ## 📦 Commit Message Convention
 
@@ -436,6 +430,6 @@ By contributing to RDAPify, you agree that your contributions will be licensed u
 
 **Thank you for contributing to RDAPify!** Together, we're building a better, more secure internet infrastructure tool for everyone.
 
-Last updated: January 22, 2025  
+Last updated: March 21, 2026
 Questions? Contact maintainers@rdapify.com  
 Website: https://rdapify.com

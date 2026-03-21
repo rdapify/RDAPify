@@ -4,7 +4,7 @@
 
 Security is foundational to RDAPify's design. As a library that interacts with internet registry data and makes network requests on behalf of applications, we take a defense-in-depth approach to security with particular emphasis on **SSRF protection**, input validation, and secure data handling.
 
-This document outlines our security policies and procedures. For comprehensive technical details, see our [Security Whitepaper](security/whitepaper.md).
+This document outlines our security policies and procedures. For comprehensive technical details, see our [Security Whitepaper](docs/security/whitepaper.md).
 
 ## Supported Versions 
 
@@ -119,21 +119,20 @@ RDAPify implements multiple layers of protection against Server-Side Request For
 const client = new RDAPClient({
   // Network Security
   timeout: 5000,               // 5 second max timeout
-  httpsOnly: true,             // Reject HTTP connections
-  validateCertificates: true, // Enforce certificate validation
-  
-  // SSRF Protection
-  allowPrivateIPs: false,       // Block private IP ranges
-  whitelistRDAPServers: true,   // Use only IANA bootstrap servers
-  
+  ssrfProtection: true,        // Block private IPs and internal hosts (default: true)
+
   // Privacy Compliance
-  redactPII: true,              // GDPR-compliant data handling
-  includeRaw: false,            // Don't store raw responses
-  
+  privacy: true,               // GDPR-compliant PII redaction
+  includeRaw: false,           // Don't store raw responses
+
   // Resource Protection
   rateLimit: { max: 100, window: 60000 }, // 100 requests/minute
-  maxConcurrent: 10,            // Limit parallel requests
-  cacheTTL: 3600                // 1 hour max cache time
+
+  // Retry & Resilience
+  retry: {
+    maxAttempts: 3,
+    backoff: 'exponential',
+  },
 });
 ```
 
@@ -155,8 +154,7 @@ All commits undergo:
 Run security tests locally:
 ```bash
 npm run test:security    # SSRF and injection tests
-npm run test:fuzzing     # Input fuzzing
-npm run audit            # Dependency vulnerability check
+npm audit                # Dependency vulnerability check
 ```
 
 ### Third-Party Audits
@@ -173,7 +171,7 @@ RDAPify is designed to help you meet compliance requirements:
 | **GDPR** | ✅ Full | [Privacy Policy](PRIVACY.md) |
 | **CCPA** | ✅ Full | [Privacy Policy](PRIVACY.md) |
 | **SOC 2** | ⚠️ In progress | Available to enterprise customers |
-| **OWASP ASVS** | ✅ Level 1-2 | [Security Whitepaper](security/whitepaper.md) |
+| **OWASP ASVS** | ✅ Level 1-2 | [Security Whitepaper](docs/security/whitepaper.md) |
 | **NIST 800-53** | ⚠️ Partial | Available to enterprise customers |
 
 ## Security Advisories
@@ -198,5 +196,5 @@ For security-related questions or concerns:
 
 ---
 
-> **Note**: This document is regularly updated. Last reviewed: January 22, 2026  
+> **Note**: This document is regularly updated. Last reviewed: March 21, 2026
 > RDAPify is provided "as is" without warranty. See [LICENSE](LICENSE) for full terms.

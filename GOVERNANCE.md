@@ -50,5 +50,3 @@ RDAPify operates under a **meritocratic stewardship model** where technical exce
 - **General**: hello@rdapify.com
 
 ---
-
-**Full Policy**: See `.project/internal/GOVERNANCE.md` for complete governance framework.

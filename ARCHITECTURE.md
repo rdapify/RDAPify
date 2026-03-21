@@ -40,7 +40,7 @@ Main entry point for all RDAP queries.
 import { RDAPClient } from 'rdapify';
 
 const client = new RDAPClient();
-const result = await client.queryDomain('example.com');
+const result = await client.domain('example.com');
 ```
 
 ### 2. Core Ports (Interfaces)
@@ -120,14 +120,14 @@ QueryOrchestrator (Application)
 
 ### Caching Strategy
 - **L1 Cache**: In-memory LRU (1-hour TTL)
-- **L2 Cache**: Redis (future)
+- **L2 Cache**: Redis (available via `RedisCache` adapter)
 - **L3 Cache**: CDN edge cache (future)
 
 ### Optimization Techniques
 - Parallel bootstrap discovery
 - Connection pooling
+- Batch processing
 - Response streaming (future)
-- Batch processing (future)
 
 ## Testing Architecture
 
@@ -143,13 +143,13 @@ QueryOrchestrator (Application)
 ```
 
 ### Test Coverage
-- Unit Tests: >90% coverage
+- Unit Tests: ≥80% coverage (branches, functions, lines, statements)
 - Integration Tests: Critical paths
 - E2E Tests: User scenarios (future)
 
 ## Extensibility
 
-### Plugin System (Future)
+### Plugin System
 ```typescript
 client.use(customMiddleware);
 client.use(customCache);
@@ -170,20 +170,12 @@ const client = new RDAPClient({
 
 ## Documentation
 
-For detailed architecture documentation, see:
-- `docs/architecture/overview.md` - Complete architecture guide
-- `docs/architecture/layer-design.md` - Layer responsibilities
-- `docs/architecture/decision-records.md` - ADRs
-- `src/README.md` - Source code structure
-
-## Diagrams
-
-Visual architecture diagrams available in:
-- `diagrams/architecture_overview.mmd`
-- `diagrams/data_flow.mmd`
-- `diagrams/cache_strategy.mmd`
+For detailed documentation, see [`docs/`](docs/):
+- [`docs/core-concepts/architecture.md`](docs/core-concepts/architecture.md) — in-depth architecture guide
+- [`docs/guides/`](docs/guides/) — caching, error handling, performance
+- [`docs/security/`](docs/security/) — SSRF protection, PII redaction, threat model
 
 ---
 
-**Last Updated**: January 24, 2026  
-**Version**: 0.1.2
+**Last Updated**: March 21, 2026
+**Version**: 0.1.8

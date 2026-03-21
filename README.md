@@ -111,7 +111,7 @@ const entity = await client.entity('ARIN-HN-1', 'https://rdap.arin.net/registry'
 
 ```json
 {
-  "domain": "example.com",
+  "query": "example.com",
   "registrar": "Internet Assigned Numbers Authority",
   "status": ["clientDeleteProhibited", "clientTransferProhibited", "clientUpdateProhibited"],
   "nameservers": ["a.iana-servers.net", "b.iana-servers.net"],
@@ -338,7 +338,7 @@ We don't treat security as an add-on feature — it's fundamental to our design.
 | MitM           | Mandatory HTTPS, certificate validation  | 🟠 Important |
 | Data Injection | Schema validation, strict parsing        | 🟠 Important |
 
-Read our [Security Whitepaper](security/whitepaper.md) for deeper technical details and advanced scenarios.
+Read our [Security Whitepaper](docs/security/whitepaper.md) for deeper technical details and advanced scenarios.
 
 ## 📚 Documentation
 
@@ -351,7 +351,7 @@ RDAPify provides comprehensive documentation in the repository:
 - **[Guides](docs/guides/)** - Error handling, caching strategies, and performance optimization
 - **[Examples](examples/)** - Real-world code examples and use cases
 
-> **Note**: Full documentation site is planned for future release. For now, browse the [docs/](docs/) directory in the repository.
+> **Tip**: Full API and guide documentation is available in the [`docs/`](docs/) directory.
 
 ## 🌐 Interactive Playground
 
@@ -359,7 +359,7 @@ Try RDAPify directly in your browser — no installation required: **[rdapify.co
 
 ## 📊 Performance Benchmarks
 
-Measured on the Rust core (`cargo bench`, Criterion, Linux x86-64, mock HTTP server):
+Measured on the **native backend** (`rdapify-nd`, `cargo bench`, Criterion, Linux x86-64, mock HTTP server). TypeScript pipeline benchmarks are ~10-20× higher latency:
 
 | Scenario | Latency |
 |----------|---------|
@@ -394,18 +394,6 @@ RDAPify is an open source project. Get help or contribute:
 ### 🤝 Contributing
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 - **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
-
-
-## 🤝 Contributing
-
-We welcome contributions! Whether you're a:
-
-- Developer wanting to fix bugs or add features
-- Writer improving documentation
-- Tester reporting issues
-- Security engineer reviewing code
-
-Start by reading our [Contribution Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 🚧 Project Status
 
