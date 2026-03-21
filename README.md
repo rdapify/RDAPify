@@ -360,7 +360,22 @@ Try RDAPify directly in your browser — no installation required: **[rdapify.co
 
 ## 📊 Performance Benchmarks
 
-> **Coming Soon**: Comprehensive benchmarks with real-world data will be published in future releases. Current alpha focuses on correctness and security over performance optimization.
+Measured on the Rust core (`cargo bench`, Criterion, Linux x86-64, mock HTTP server):
+
+| Scenario | Latency |
+|----------|---------|
+| Query — no cache (bootstrap + fetch + normalise) | ~180 µs |
+| Query — **cache hit** | **~2.3 µs** (~80× faster) |
+| Cache read (DashMap, fresh TTL) | ~124 ns |
+| SSRF URL validation | ~141–295 ns |
+
+> **With the native backend** (`npm install rdapify-nd`), the five core query methods
+> run inside compiled Rust rather than the TypeScript pipeline — lower per-call
+> overhead for high-throughput scenarios.
+>
+> ```ts
+> const client = new RDAPClient({ backend: 'auto' }); // uses rdapify-nd if installed
+> ```
 
 ## 👥 Community & Support
 
@@ -459,11 +474,30 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 - ✅ **Authentication**: Basic, Bearer, API Key, OAuth2
 - ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5 with bypass patterns
 - ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
+- ✅ **Rust Native Backend**: optional `rdapify-nd` for lower-latency queries via compiled Rust (`backend: 'auto' | 'native' | 'typescript'`)
 - ✅ **Multi-runtime**: Node.js 20+, Bun, Deno, Cloudflare Workers
 - ✅ **TypeScript Strict**: Full type definitions with strict mode
 - ✅ **Test Coverage**: 34 test files, 620+ tests (unit + integration)
 
-### 🔜 Coming in v0.1.8
+### 🎉 What's New in v0.1.8
+
+**Rust Native Backend (`rdapify-nd`)**
+- ✅ **Optional native backend**: install `rdapify-nd` alongside `rdapify` for lower-latency queries powered by compiled Rust
+- ✅ **`backend` option**: `'auto'` (default, uses native if available), `'native'` (require native), `'typescript'` (always use TS pipeline)
+- ✅ **`isNativeAvailable()`**: runtime detection utility to check if native binary is loaded
+- ✅ **Transparent fallback**: when `rdapify-nd` is absent, all existing behaviour is preserved with zero configuration change
+
+```ts
+import { RDAPClient, isNativeAvailable } from 'rdapify';
+
+console.log(isNativeAvailable()); // true if rdapify-nd is installed
+
+const client = new RDAPClient({ backend: 'auto' });   // transparent
+const client2 = new RDAPClient({ backend: 'native' }); // throws if not installed
+const client3 = new RDAPClient({ backend: 'typescript' }); // always TS pipeline
+```
+
+### 🔜 Coming in v0.1.9
 
 - ⏳ **Domain Availability**: `client.checkAvailability('example.com')` — instant availability check via RDAP
 - ⏳ **Bulk Availability**: `client.checkAvailabilityBatch(['a.com', 'b.com'])` — check multiple domains at once
