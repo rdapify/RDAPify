@@ -442,6 +442,30 @@ export { CloudflareWorkersFetcher } from './infrastructure/http/CloudflareWorker
 export type { CloudflareWorkersFetcherOptions } from './infrastructure/http/CloudflareWorkersFetcher';
 
 // ============================================================================
+// v0.2.3 — Framework Integrations
+// ============================================================================
+
+/**
+ * GraphQL schema and resolvers (framework-agnostic).
+ * Works with graphql-yoga, Apollo Server, and any standards-compliant GraphQL runtime.
+ */
+export { createRdapifySchema, RDAPIFY_TYPE_DEFS } from './integrations/graphql';
+export type { RdapifyResolvers } from './integrations/graphql';
+
+/**
+ * Express.js router factory.
+ * Registers `/domain/:name`, `/ip/:address`, `/asn/:number` routes.
+ */
+export { rdapifyExpress, MinimalRouter } from './integrations/express';
+export type { RouterLike, RequestLike, ResponseLike } from './integrations/express';
+
+/**
+ * NestJS dynamic module and injection decorator.
+ */
+export { RdapifyModule, InjectRdapClient, RDAPIFY_CLIENT_TOKEN } from './integrations/nestjs';
+export type { RdapifyModuleOptions, RdapifyDynamicModule } from './integrations/nestjs';
+
+// ============================================================================
 // Default Export
 // ============================================================================
 
