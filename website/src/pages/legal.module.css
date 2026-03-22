@@ -1,0 +1,216 @@
+/* ── Shared styles for legal pages (terms, privacy, refund) ── */
+
+.main {
+  background: var(--ifm-background-color);
+}
+
+/* ── Header ── */
+.header {
+  padding: 5rem 0 3rem;
+  text-align: center;
+  background: #050505;
+  color: #fafafa;
+  border-bottom: 1px solid #1e1e22;
+}
+
+[data-theme='light'] .header {
+  background: #fafafa;
+  color: #0a0a0a;
+  border-bottom-color: #e4e4e7;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #25c2a0;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 1.8rem; }
+}
+
+.meta {
+  font-size: 0.88rem;
+  color: #71717a;
+}
+
+.meta strong {
+  color: #a1a1aa;
+}
+
+[data-theme='light'] .meta strong {
+  color: #3f3f46;
+}
+
+/* ── Layout ── */
+.content {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1rem 5rem;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* ── Table of Contents (sidebar) ── */
+.toc {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1.5rem);
+  align-self: start;
+}
+
+@media (max-width: 768px) {
+  .toc {
+    position: static;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    padding-bottom: 1.5rem;
+  }
+}
+
+.tocTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #71717a;
+  margin-bottom: 0.75rem;
+}
+
+.tocList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tocItem {
+  margin-bottom: 0.35rem;
+}
+
+.tocLink {
+  font-size: 0.82rem;
+  color: #a1a1aa;
+  text-decoration: none;
+  line-height: 1.6;
+  display: block;
+  padding: 0.15rem 0;
+  transition: color 0.15s ease;
+}
+
+.tocLink:hover {
+  color: #25c2a0;
+}
+
+[data-theme='light'] .tocLink { color: #71717a; }
+[data-theme='light'] .tocLink:hover { color: #0f766e; }
+
+/* ── Body ── */
+.body {
+  min-width: 0;
+}
+
+.body h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.body h2:first-child {
+  margin-top: 0;
+}
+
+.body h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.body p {
+  font-size: 0.92rem;
+  color: #d4d4d8;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+[data-theme='light'] .body p {
+  color: #3f3f46;
+}
+
+.body ul, .body ol {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.body li {
+  font-size: 0.92rem;
+  color: #d4d4d8;
+  line-height: 1.75;
+  margin-bottom: 0.4rem;
+}
+
+[data-theme='light'] .body li {
+  color: #3f3f46;
+}
+
+.body a {
+  color: #25c2a0;
+  text-decoration: none;
+}
+
+.body a:hover {
+  text-decoration: underline;
+}
+
+.body strong {
+  font-weight: 600;
+  color: #fafafa;
+}
+
+[data-theme='light'] .body strong {
+  color: #0a0a0a;
+}
+
+/* ── Contact Card ── */
+.contactCard {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #27272a;
+  background: #111113;
+}
+
+[data-theme='light'] .contactCard {
+  background: #f9fafb;
+  border-color: #e4e4e7;
+}
+
+.contactCard p {
+  margin: 0;
+}
+
+.contactCard a {
+  color: #25c2a0;
+  font-weight: 600;
+}

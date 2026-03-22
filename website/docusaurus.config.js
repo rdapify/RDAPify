@@ -120,6 +120,11 @@ const config = {
             label: 'Blog',
           },
           {
+            to: '/pricing',
+            position: 'left',
+            label: 'Pricing',
+          },
+          {
             href: 'https://github.com/rdapify/rdapify',
             label: 'GitHub',
             position: 'right',
@@ -175,6 +180,10 @@ const config = {
                 to: '/blog',
               },
               {
+                label: 'Pricing',
+                to: '/pricing',
+              },
+              {
                 label: 'GitHub',
                 href: 'https://github.com/rdapify',
               },
@@ -182,13 +191,26 @@ const config = {
                 label: 'npm',
                 href: 'https://www.npmjs.com/package/rdapify',
               },
+            ],
+          },
+          {
+            title: 'Legal',
+            items: [
+              {
+                label: 'Terms of Service',
+                to: '/terms',
+              },
+              {
+                label: 'Privacy Policy',
+                to: '/privacy',
+              },
+              {
+                label: 'Refund Policy',
+                to: '/refund',
+              },
               {
                 label: 'Security',
                 to: '/security',
-              },
-              {
-                label: 'Privacy',
-                to: '/privacy',
               },
             ],
           },

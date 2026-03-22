@@ -1,0 +1,365 @@
+/* ── Main ── */
+.main {
+  background: var(--ifm-background-color);
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 5rem 0 2rem;
+  text-align: center;
+  background: #050505;
+  color: #fafafa;
+}
+
+[data-theme='light'] .hero {
+  background: #fafafa;
+  color: #0a0a0a;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #25c2a0;
+  margin-bottom: 1rem;
+}
+
+.heroTitle {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .heroTitle { font-size: 2rem; }
+}
+
+.heroSub {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #a1a1aa;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+[data-theme='light'] .heroSub { color: #52525b; }
+
+/* ── Cards Section ── */
+.cards {
+  padding: 3rem 0 4rem;
+  background: #050505;
+}
+
+[data-theme='light'] .cards {
+  background: #fafafa;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1060px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 996px) {
+  .cardGrid { grid-template-columns: 1fr; max-width: 420px; }
+}
+
+/* ── Card ── */
+.card {
+  position: relative;
+  border-radius: 14px;
+  border: 1px solid #27272a;
+  background: #111113;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: #3f3f46;
+  transform: translateY(-2px);
+}
+
+[data-theme='light'] .card {
+  background: #fff;
+  border-color: #e4e4e7;
+}
+
+[data-theme='light'] .card:hover {
+  border-color: #a1a1aa;
+}
+
+.cardPopular {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 16px 48px rgba(59, 130, 246, 0.1);
+}
+
+[data-theme='light'] .cardPopular {
+  border-color: #3b82f6;
+}
+
+.popularBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  z-index: 2;
+}
+
+.cardAccent {
+  height: 3px;
+}
+
+.cardHeader {
+  padding: 2rem 1.75rem 1.5rem;
+}
+
+.tierName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.tierDesc {
+  font-size: 0.88rem;
+  color: #a1a1aa;
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  min-height: 2.5em;
+}
+
+[data-theme='light'] .tierDesc { color: #71717a; }
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.price {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.period {
+  font-size: 0.95rem;
+  color: #71717a;
+}
+
+/* ── Features ── */
+.featureList {
+  list-style: none;
+  padding: 0 1.75rem;
+  margin: 0;
+  flex: 1;
+  border-top: 1px solid #1e1e22;
+  padding-top: 1.5rem;
+}
+
+[data-theme='light'] .featureList {
+  border-top-color: #e4e4e7;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: #d4d4d8;
+  line-height: 1.5;
+  margin-bottom: 0.85rem;
+}
+
+[data-theme='light'] .featureItem { color: #3f3f46; }
+
+.checkIcon {
+  color: #25c2a0;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* ── Card Footer ── */
+.cardFooter {
+  padding: 1.5rem 1.75rem 2rem;
+}
+
+.tierCta {
+  display: block;
+  text-align: center;
+  padding: 0.7rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+
+.ctaPrimary {
+  background: #3b82f6;
+  color: #fff !important;
+}
+
+.ctaPrimary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  color: #fff !important;
+}
+
+.ctaGhost {
+  background: transparent;
+  color: #a1a1aa !important;
+  border: 1px solid #27272a;
+}
+
+.ctaGhost:hover {
+  border-color: #52525b;
+  color: #fafafa !important;
+}
+
+[data-theme='light'] .ctaGhost {
+  color: #52525b !important;
+  border-color: #d4d4d8;
+}
+
+[data-theme='light'] .ctaGhost:hover {
+  border-color: #a1a1aa;
+  color: #0a0a0a !important;
+}
+
+/* ── Section Title ── */
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.025em;
+  margin-bottom: 3rem;
+}
+
+/* ── FAQ ── */
+.faqSection {
+  padding: 5rem 0;
+  border-top: 1px solid var(--ifm-color-emphasis-100);
+}
+
+.faqList {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.faqItem:hover {
+  border-color: #3f3f46;
+}
+
+[data-theme='light'] .faqItem {
+  border-color: #e4e4e7;
+}
+
+[data-theme='light'] .faqItem:hover {
+  border-color: #a1a1aa;
+}
+
+.faqOpen {
+  border-color: rgba(37, 194, 160, 0.3);
+}
+
+.faqQuestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.1rem 1.25rem;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.faqChevron {
+  font-size: 1.2rem;
+  color: #71717a;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.faqAnswer {
+  padding: 0 1.25rem 1.1rem;
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  line-height: 1.7;
+  margin: 0;
+}
+
+[data-theme='light'] .faqAnswer { color: #52525b; }
+
+/* ── Paddle ── */
+.paddleSection {
+  padding: 3rem 0 5rem;
+}
+
+.paddleBadge {
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #111113;
+}
+
+[data-theme='light'] .paddleBadge {
+  background: #fff;
+  border-color: #e4e4e7;
+}
+
+.paddleText {
+  font-size: 0.78rem;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.paddleLogo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #25c2a0;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.paddleSub {
+  font-size: 0.82rem;
+  color: #71717a;
+  line-height: 1.6;
+  margin: 0;
+}
