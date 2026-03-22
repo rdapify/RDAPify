@@ -296,27 +296,45 @@ export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
   const paddleReady = useRef(false);
 
-  // تحميل وتهيئة Paddle.js مرة واحدة بعد اكتمال تحميل السكريبت
+  // تحميل Paddle.js وتهيئته بعد التأكد من توفر window.Paddle
   useEffect(() => {
-    if (document.getElementById('paddle-js')) return;
-    const script = document.createElement('script');
-    script.id = 'paddle-js';
-    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
-    script.async = true;
-    script.onload = () => {
+    const token = customFields.paddleClientToken;
+    const env   = customFields.paddleEnvironment;
+
+    function initPaddle() {
       if (paddleReady.current) return;
-      if (customFields.paddleEnvironment !== 'production') {
-        window.Paddle.Environment.set('sandbox');
-      }
-      window.Paddle.Initialize({ token: customFields.paddleClientToken });
+      if (env !== 'production') window.Paddle.Environment.set('sandbox');
+      window.Paddle.Initialize({ token });
       paddleReady.current = true;
-    };
-    document.head.appendChild(script);
+    }
+
+    if (window.Paddle) {
+      initPaddle();
+      return;
+    }
+
+    if (!document.getElementById('paddle-js')) {
+      const script = document.createElement('script');
+      script.id = 'paddle-js';
+      script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    // polling حتى يتحمّل السكريبت
+    const interval = setInterval(() => {
+      if (window.Paddle) {
+        clearInterval(interval);
+        initPaddle();
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
   }, []);
 
   function openCheckout(priceId) {
-    if (!window.Paddle || !paddleReady.current) {
-      console.warn('Paddle not ready yet');
+    if (!paddleReady.current) {
+      alert('Paddle is still loading, please try again.');
       return;
     }
     window.Paddle.Checkout.open({
