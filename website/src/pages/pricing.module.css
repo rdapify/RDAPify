@@ -281,6 +281,9 @@
 .ctaPrimary {
   background: #3b82f6;
   color: #fff !important;
+  border: none;
+  cursor: pointer;
+  width: 100%;
 }
 
 .ctaPrimary:hover {

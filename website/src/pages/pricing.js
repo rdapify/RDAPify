@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
@@ -226,10 +226,11 @@ const STRINGS = {
   },
 };
 
-function PricingCard({ tier, popularBadge, billing }) {
+function PricingCard({ tier, popularBadge, billing, onCheckout }) {
   const isProTier = !!tier.priceMonthly;
   const displayPrice  = isProTier ? (billing === 'yearly' ? tier.priceYearly  : tier.priceMonthly)  : tier.price;
   const displayPeriod = isProTier ? (billing === 'yearly' ? tier.periodYearly : tier.periodMonthly) : tier.period;
+  const priceId = isProTier ? (billing === 'yearly' ? tier.priceIdYearly : tier.priceIdMonthly) : null;
 
   return (
     <div className={clsx(styles.card, tier.popular && styles.cardPopular)}>
@@ -252,15 +253,21 @@ function PricingCard({ tier, popularBadge, billing }) {
         ))}
       </ul>
       <div className={styles.cardFooter}>
-        <Link
-          className={clsx(
-            styles.tierCta,
-            tier.ctaStyle === 'primary' ? styles.ctaPrimary : styles.ctaGhost
-          )}
-          to={tier.ctaLink}
-        >
-          {tier.cta}
-        </Link>
+        {priceId ? (
+          <button
+            className={clsx(styles.tierCta, styles.ctaPrimary)}
+            onClick={() => onCheckout(priceId)}
+          >
+            {tier.cta}
+          </button>
+        ) : (
+          <Link
+            className={clsx(styles.tierCta, styles.ctaGhost)}
+            to={tier.ctaLink}
+          >
+            {tier.cta}
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -284,9 +291,41 @@ function FAQItem({ item }) {
 }
 
 export default function Pricing() {
-  const { i18n: { currentLocale } } = useDocusaurusContext();
+  const { i18n: { currentLocale }, siteConfig: { customFields } } = useDocusaurusContext();
   const s = STRINGS[currentLocale] || STRINGS.en;
   const [billing, setBilling] = useState('monthly');
+  const paddleReady = useRef(false);
+
+  // تحميل Paddle.js مرة واحدة
+  useEffect(() => {
+    if (document.getElementById('paddle-js')) return;
+    const script = document.createElement('script');
+    script.id = 'paddle-js';
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
+  function openCheckout(priceId) {
+    if (!window.Paddle) return;
+    if (!paddleReady.current) {
+      if (customFields.paddleEnvironment !== 'production') {
+        window.Paddle.Environment.set('sandbox');
+      }
+      window.Paddle.Initialize({ token: customFields.paddleClientToken });
+      paddleReady.current = true;
+    }
+    window.Paddle.Checkout.open({
+      items: [{ priceId, quantity: 1 }],
+    });
+  }
+
+  // أضف priceId للـ Pro tier
+  const tiers = s.tiers.map(t =>
+    t.priceMonthly
+      ? { ...t, priceIdMonthly: customFields.paddlePriceMonthly, priceIdYearly: customFields.paddlePriceYearly }
+      : t
+  );
 
   return (
     <Layout title={s.layoutTitle} description={s.layoutDesc}>
@@ -331,8 +370,8 @@ export default function Pricing() {
         <section className={styles.cards}>
           <div className="container">
             <div className={styles.cardGrid}>
-              {s.tiers.map((tier) => (
-                <PricingCard key={tier.name} tier={tier} popularBadge={s.popularBadge} billing={billing} />
+              {tiers.map((tier) => (
+                <PricingCard key={tier.name} tier={tier} popularBadge={s.popularBadge} billing={billing} onCheckout={openCheckout} />
               ))}
             </div>
           </div>
