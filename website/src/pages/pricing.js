@@ -295,11 +295,22 @@ export default function Pricing() {
   const s = STRINGS[currentLocale] || STRINGS.en;
   const [billing, setBilling] = useState('monthly');
 
+  // Inject config for paddle-init.js (static script can't access React context)
+  if (typeof window !== 'undefined') {
+    window.__paddleConfig = {
+      token: customFields.paddleClientToken,
+      environment: customFields.paddleEnvironment,
+    };
+  }
+
   function openCheckout(priceId) {
     if (!window.__paddleReady) {
       alert('Paddle is still loading, please try again in a moment.');
       return;
     }
+    // No customer object is passed intentionally: this is a public static marketing
+    // page with no user sessions. Paddle will collect the customer's email during
+    // checkout. The billing app (Next.js) handles customer binding via webhooks.
     window.Paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
     });

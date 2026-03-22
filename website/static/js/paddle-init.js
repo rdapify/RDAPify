@@ -1,8 +1,13 @@
 (function () {
   function init() {
     if (!window.Paddle) { setTimeout(init, 200); return; }
-    window.Paddle.Environment.set('sandbox');
-    window.Paddle.Initialize({ token: 'test_d6223301dd42e130437c8632d68' });
+    // Read config from Docusaurus-injected global (set by inline script in pricing page)
+    var cfg = window.__paddleConfig || {};
+    var env = cfg.environment || 'production';
+    var token = cfg.token || '';
+    if (!token) return;
+    if (env !== 'production') window.Paddle.Environment.set(env);
+    window.Paddle.Initialize({ token: token });
     window.__paddleReady = true;
   }
   init();
