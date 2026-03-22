@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
@@ -294,47 +294,10 @@ export default function Pricing() {
   const { i18n: { currentLocale }, siteConfig: { customFields } } = useDocusaurusContext();
   const s = STRINGS[currentLocale] || STRINGS.en;
   const [billing, setBilling] = useState('monthly');
-  const paddleReady = useRef(false);
-
-  // تحميل Paddle.js وتهيئته بعد التأكد من توفر window.Paddle
-  useEffect(() => {
-    const token = customFields.paddleClientToken;
-    const env   = customFields.paddleEnvironment;
-
-    function initPaddle() {
-      if (paddleReady.current) return;
-      if (env !== 'production') window.Paddle.Environment.set('sandbox');
-      window.Paddle.Initialize({ token });
-      paddleReady.current = true;
-    }
-
-    if (window.Paddle) {
-      initPaddle();
-      return;
-    }
-
-    if (!document.getElementById('paddle-js')) {
-      const script = document.createElement('script');
-      script.id = 'paddle-js';
-      script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
-      script.async = true;
-      document.head.appendChild(script);
-    }
-
-    // polling حتى يتحمّل السكريبت
-    const interval = setInterval(() => {
-      if (window.Paddle) {
-        clearInterval(interval);
-        initPaddle();
-      }
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
 
   function openCheckout(priceId) {
-    if (!paddleReady.current) {
-      alert('Paddle is still loading, please try again.');
+    if (!window.__paddleReady) {
+      alert('Paddle is still loading, please try again in a moment.');
       return;
     }
     window.Paddle.Checkout.open({

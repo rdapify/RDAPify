@@ -23,6 +23,11 @@ const config = {
     paddlePriceYearly: 'pri_01kmabw7z48nnz88m7yj8mkmy6',
   },
 
+  scripts: [
+    { src: 'https://cdn.paddle.com/paddle/v2/paddle.js', async: true },
+    { src: '/js/paddle-init.js', defer: true },
+  ],
+
   onBrokenLinks: 'warn',
 
   markdown: {
