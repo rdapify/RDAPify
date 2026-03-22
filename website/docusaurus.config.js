@@ -17,10 +17,10 @@ const config = {
   projectName: 'rdapify',
 
   customFields: {
-    paddleClientToken: 'live_d5b5902ea96d58a0206822ec9ca',
-    paddleEnvironment: 'production',
-    paddlePriceMonthly: 'pri_01kma2gafad90p13xydsdp1jd2',
-    paddlePriceYearly: 'pri_01kma2gafad90p13xydsdp1jd2',
+    paddleClientToken: 'test_d6223301dd42e130437c8632d68',
+    paddleEnvironment: 'sandbox',
+    paddlePriceMonthly: 'pri_01kmabthtk0550h8e2gakkhreg',
+    paddlePriceYearly: 'pri_01kmabw7z48nnz88m7yj8mkmy6',
   },
 
   onBrokenLinks: 'warn',
