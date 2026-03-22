@@ -47,6 +47,74 @@
 
 [data-theme='light'] .heroSub { color: #52525b; }
 
+/* ── Billing Toggle ── */
+.toggleSection {
+  padding: 2rem 0 0;
+  background: #050505;
+  text-align: center;
+}
+
+[data-theme='light'] .toggleSection {
+  background: #fafafa;
+}
+
+.billingToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #111113;
+  border: 1px solid #27272a;
+  border-radius: 10px;
+  padding: 0.3rem;
+}
+
+[data-theme='light'] .billingToggle {
+  background: #f4f4f5;
+  border-color: #e4e4e7;
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #71717a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.toggleBtnActive {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.toggleBtn:hover:not(.toggleBtnActive) {
+  color: #d4d4d8;
+}
+
+[data-theme='light'] .toggleBtn:hover:not(.toggleBtnActive) {
+  color: #3f3f46;
+}
+
+.saveBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(37, 194, 160, 0.15);
+  color: #25c2a0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.toggleBtnActive .saveBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
 /* ── Cards Section ── */
 .cards {
   padding: 3rem 0 4rem;

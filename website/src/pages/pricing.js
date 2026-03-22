@@ -15,6 +15,9 @@ const STRINGS = {
     heroTitle: 'Simple, transparent pricing',
     heroSub: 'Start free with the open-source library. Upgrade to Pro when you need monitoring, analytics, and higher rate limits.',
     popularBadge: 'Most Popular',
+    billingMonthly: 'Monthly',
+    billingYearly: 'Yearly',
+    saveBadge: 'Save 35%',
     faqEyebrow: 'FAQ',
     faqTitle: 'Frequently asked questions',
     paddleText: 'Payments securely processed by',
@@ -43,10 +46,12 @@ const STRINGS = {
       {
         name: 'Pro',
         description: 'For teams and businesses that need monitoring, analytics, and higher limits.',
-        price: '$49',
-        period: '/month',
+        priceMonthly: '$19',
+        priceYearly: '$149',
+        periodMonthly: '/month',
+        periodYearly: '/year',
         accent: '#3b82f6',
-        cta: 'Start Free Trial',
+        cta: 'Get Started',
         ctaLink: '/docs/getting-started/installation',
         ctaStyle: 'primary',
         popular: true,
@@ -95,7 +100,7 @@ const STRINGS = {
       },
       {
         q: 'Can I cancel my subscription at any time?',
-        a: 'Yes. You can cancel your Pro subscription at any time. You will retain access to Pro features until the end of your current billing period. We also offer a 14-day money-back guarantee for new subscribers.',
+        a: 'Yes. You can cancel your Pro subscription at any time. You will retain access to Pro features until the end of your current billing period. Refunds are handled by Paddle in accordance with their refund policy.',
       },
       {
         q: 'What happens if I exceed my rate limits?',
@@ -118,6 +123,9 @@ const STRINGS = {
     heroTitle: 'أسعار بسيطة وشفافة',
     heroSub: 'ابدأ مجاناً بالمكتبة مفتوحة المصدر. انتقل إلى Pro عندما تحتاج المراقبة والتحليلات وحدود معدل أعلى.',
     popularBadge: 'الأكثر شعبية',
+    billingMonthly: 'شهري',
+    billingYearly: 'سنوي',
+    saveBadge: 'وفّر 35%',
     faqEyebrow: 'الأسئلة الشائعة',
     faqTitle: 'أسئلة مطروحة بكثرة',
     paddleText: 'تتم معالجة المدفوعات بأمان عبر',
@@ -146,10 +154,12 @@ const STRINGS = {
       {
         name: 'Pro',
         description: 'للفرق والشركات التي تحتاج مراقبة وتحليلات وحدود أعلى.',
-        price: '$49',
-        period: '/شهر',
+        priceMonthly: '$19',
+        priceYearly: '$149',
+        periodMonthly: '/شهر',
+        periodYearly: '/سنة',
         accent: '#3b82f6',
-        cta: 'ابدأ التجربة المجانية',
+        cta: 'ابدأ الآن',
         ctaLink: '/docs/getting-started/installation',
         ctaStyle: 'primary',
         popular: true,
@@ -198,7 +208,7 @@ const STRINGS = {
       },
       {
         q: 'هل يمكنني إلغاء اشتراكي في أي وقت؟',
-        a: 'نعم. يمكنك إلغاء اشتراك Pro في أي وقت. ستحتفظ بالوصول إلى ميزات Pro حتى نهاية فترة الفوترة الحالية. كما نقدم ضماناً لاسترداد الأموال خلال 14 يوماً للمشتركين الجدد.',
+        a: 'نعم. يمكنك إلغاء اشتراك Pro في أي وقت. ستحتفظ بالوصول إلى ميزات Pro حتى نهاية فترة الفوترة الحالية. تتم معالجة المبالغ المستردة من قِبل Paddle وفقاً لسياسة الاسترداد الخاصة بهم.',
       },
       {
         q: 'ماذا يحدث إذا تجاوزت حدود المعدل؟',
@@ -216,7 +226,11 @@ const STRINGS = {
   },
 };
 
-function PricingCard({ tier, popularBadge }) {
+function PricingCard({ tier, popularBadge, billing }) {
+  const isProTier = !!tier.priceMonthly;
+  const displayPrice  = isProTier ? (billing === 'yearly' ? tier.priceYearly  : tier.priceMonthly)  : tier.price;
+  const displayPeriod = isProTier ? (billing === 'yearly' ? tier.periodYearly : tier.periodMonthly) : tier.period;
+
   return (
     <div className={clsx(styles.card, tier.popular && styles.cardPopular)}>
       {tier.popular && <span className={styles.popularBadge}>{popularBadge}</span>}
@@ -225,8 +239,8 @@ function PricingCard({ tier, popularBadge }) {
         <h3 className={styles.tierName}>{tier.name}</h3>
         <p className={styles.tierDesc}>{tier.description}</p>
         <div className={styles.priceRow}>
-          <span className={styles.price}>{tier.price}</span>
-          {tier.period && <span className={styles.period}>{tier.period}</span>}
+          <span className={styles.price}>{displayPrice}</span>
+          {displayPeriod && <span className={styles.period}>{displayPeriod}</span>}
         </div>
       </div>
       <ul className={styles.featureList}>
@@ -272,6 +286,7 @@ function FAQItem({ item }) {
 export default function Pricing() {
   const { i18n: { currentLocale } } = useDocusaurusContext();
   const s = STRINGS[currentLocale] || STRINGS.en;
+  const [billing, setBilling] = useState('monthly');
 
   return (
     <Layout title={s.layoutTitle} description={s.layoutDesc}>
@@ -291,12 +306,33 @@ export default function Pricing() {
           </div>
         </section>
 
+        {/* Billing Toggle */}
+        <section className={styles.toggleSection}>
+          <div className="container">
+            <div className={styles.billingToggle}>
+              <button
+                className={clsx(styles.toggleBtn, billing === 'monthly' && styles.toggleBtnActive)}
+                onClick={() => setBilling('monthly')}
+              >
+                {s.billingMonthly}
+              </button>
+              <button
+                className={clsx(styles.toggleBtn, billing === 'yearly' && styles.toggleBtnActive)}
+                onClick={() => setBilling('yearly')}
+              >
+                {s.billingYearly}
+                <span className={styles.saveBadge}>{s.saveBadge}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* Pricing Cards */}
         <section className={styles.cards}>
           <div className="container">
             <div className={styles.cardGrid}>
               {s.tiers.map((tier) => (
-                <PricingCard key={tier.name} tier={tier} popularBadge={s.popularBadge} />
+                <PricingCard key={tier.name} tier={tier} popularBadge={s.popularBadge} billing={billing} />
               ))}
             </div>
           </div>
