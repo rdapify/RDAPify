@@ -12,7 +12,7 @@ import {
   InMemoryAuditAdapter,
   FileAuditAdapter,
 } from '../../src/infrastructure/logging/AuditLogger';
-import type { AuditEvent, AuditEventType } from '../../src/infrastructure/logging/AuditLogger';
+import type { AuditEvent, AuditEventType, AuditLogAdapter } from '../../src/infrastructure/logging/AuditLogger';
 import * as fsMod from 'fs/promises';
 
 // ---------------------------------------------------------------------------
@@ -488,5 +488,22 @@ describe('FileAuditAdapter', () => {
   it('flush() should resolve without error', async () => {
     const adapter = new FileAuditAdapter('/tmp/audit-flush.log');
     await expect(adapter.flush()).resolves.toBeUndefined();
+  });
+});
+
+describe('AuditLogger — logCacheHit()', () => {
+  it('logs a CACHE_HIT event via logCacheHit()', () => {
+    const written: AuditEvent[] = [];
+    const mockAdapter: AuditLogAdapter = {
+      write: jest.fn().mockImplementation(async (e: AuditEvent) => { written.push(e); }),
+      flush: jest.fn().mockResolvedValue(undefined),
+    };
+
+    const logger = new AuditLogger({ adapter: mockAdapter });
+    logger.logCacheHit({ queryType: 'domain', query: 'example.com' });
+
+    expect(mockAdapter.write).toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'CACHE_HIT', queryType: 'domain', query: 'example.com' })
+    );
   });
 });

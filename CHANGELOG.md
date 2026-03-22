@@ -7,6 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - planned February 2027
+
+### Summary
+API freeze release. `RDAPClient` interface is stable and guaranteed not to
+have breaking changes in subsequent 1.x releases. All 83 public exports are
+classified in `API_STABILITY_ANALYSIS.md`.
+
+### Highlights
+- **Branch coverage**: ≥ 90% (1066 tests).
+- **API freeze**: 83 exports locked; all deprecated APIs removed.
+- **Runtime support**: Node.js (confirmed), Bun/Deno/Cloudflare Workers (verified externally).
+- **Security Audit**: all critical/high findings resolved (requires external audit completion).
+- **Documentation**: complete Arabic and English docs at rdapify.com.
+
+### Breaking Changes (from 0.3.1)
+All APIs marked `@deprecated` in v0.3.1 are removed in v1.0.0.
+See `MIGRATION_1_0.md` (to be published with release).
+
+## [0.3.1] - unreleased
+
+### Deprecated
+
+The following APIs are deprecated as of v0.3.1 and will be removed or changed in v1.0.0.
+Migration paths are listed. Warnings are emitted via `process.emitWarning` (Node.js)
+or `console.warn` (other runtimes) at most once per process lifetime.
+
+| API | Deprecation Code | Migration |
+|-----|-----------------|-----------|
+| `client.getBatchProcessor()` | `DEP_RDAPIFY_0001` | Use `client.streamBatch()` for streaming results, or call `processBatch()` via the batch processor. In v1.0.0, `processBatch()` will be a direct method on `RDAPClient`. |
+
+### Added
+
+- **API Stability Analysis** — `API_STABILITY_ANALYSIS.md` in the internal planning directory classifies all 83 public exports as Stable / Evolving / Deprecated for the v1.0.0 API freeze; details migration paths for each deprecated API
+- **`BrowserFetcher`** — browser-compatible RDAP fetcher that routes requests through a developer-supplied CORS-enabled reverse proxy; uses only Web-standard APIs (`fetch`, `AbortSignal`, `URLSearchParams`); enables rdapify in React, Vue, Angular, and vanilla browser environments
+- **`BrowserFetcherOptions`** type — `{ proxyUrl: string; timeout?: number; headers?: Record<string, string> }`
+
+### Changed
+
+- `BatchProcessor` class JSDoc updated to reflect its evolving status; direct class imports should prefer `client.streamBatch()` or the convenience methods added in v1.0.0
+- Fixed unhandled promise rejection in `BatchProcessor.processBatch()` when `continueOnError: false` — `.finally()` on the inner promise was creating a dangling rejected promise; replaced with `.then(cleanup, cleanup)` to safely remove completed items from the in-progress list
+
+### Coverage
+
+- Branch coverage increased to **80.25%** (above the 80% jest threshold) by adding targeted tests for previously uncovered branches across `Logger`, `MetricsCollector`, `nestjs.ts`, `nameserver.ts`, `express.ts`, `BatchProcessor`, and `QueryPriority` modules
+
+## [0.3.0] - unreleased
+
+### Added
+
+- **Streaming batch API** — `client.streamBatch(requests, options?)` is an async generator that yields `BatchQueryResult` items as each query completes; processes queries in concurrency-bounded chunks so at most `concurrency` (default 5) requests are ever in-flight simultaneously; suitable for 1000+ query sets with no memory overflow; `continueOnError: true` by default isolates per-query failures; exports new `StreamBatchOptions` type
+- **Prometheus exporter** — `PrometheusExporter` converts internal `MetricsCollector` data to the [Prometheus text-based exposition format v0.0.4](https://prometheus.io/docs/instrumenting/exposition_formats/); supports custom metric prefix, constant labels, and `createHttpHandler()` which returns a request handler compatible with Node.js, Express, and Fastify; `PrometheusExporter.CONTENT_TYPE` constant provides the correct `Content-Type` header value
+- **Grafana dashboard template** — `RDAPIFY_GRAFANA_DASHBOARD` is a ready-to-import Grafana dashboard JSON with panels for total queries, success rate, cache hit rate, average response time, P50/P90/P99 latency percentiles, queries by type, and error breakdown by error type
+- **OpenTelemetry OTLP trace exporter** — `TelemetryExporter` ships RDAP query spans to any OTLP/HTTP JSON endpoint (Jaeger, Grafana Tempo, Honeycomb, etc.); zero `@opentelemetry/sdk-node` dependency — uses Web-standard `fetch`; `client.startSpan()` / `client.endSpan()` API; enabled via `ClientConfig.telemetry.endpoint`; errors silently swallowed to avoid disrupting query path
+- **Multi-region bootstrap** — `BootstrapOptions.regions?: Array<'us' | 'eu' | 'ap'>` configures preferred regional IANA bootstrap mirror order; `BootstrapDiscovery` tries each regional URL in order and falls back to the primary IANA endpoint on network failure; duplicate URLs (same region mapping) are de-duplicated automatically
+- **Deprecation warning utility** — `deprecated(name, alternative?, code?)` emits a Node.js `DeprecationWarning` via `process.emitWarning` (or `console.warn` in Deno/Bun/CF Workers); each unique `code` is emitted at most once per process lifetime; `_resetDeprecationState()` available for tests
+- **`TelemetryOptions` type exported** — new configuration interface in `RDAPClientOptions.telemetry`
+- **42 new unit tests**: streaming batch (10), Prometheus exporter (10), TelemetryExporter (9), deprecation (7), multi-region bootstrap (5)
+- **API snapshot updated** — 82 exported symbols
+
+## [0.2.3] - unreleased
+
+### Added
+
+- **GraphQL integration** — `createRdapifySchema(client)` returns a `{ typeDefs, resolvers }` object compatible with graphql-yoga, Apollo Server, and any standards-compliant GraphQL runtime; no `graphql` peer dependency required at import time; exports `RDAPIFY_TYPE_DEFS` (SDL string) and `RdapifyResolvers` type
+  - `Query.domain(name: String!)` — resolves `ldhName`, `registrar` (flattened to name string), `status`, `expiresAt`, `createdAt`, `updatedAt` (dates extracted from `events[]`)
+  - `Query.ip(address: String!)` — resolves `country`, `name`, `startAddress`, `endAddress`, `status`
+  - `Query.asn(number: String!)` — resolves `name`, `status`, `startAutnum`, `endAutnum`
+- **Express.js integration** — `rdapifyExpress(client, router?)` registers `GET /domain/:name`, `GET /ip/:address`, `GET /asn/:number` routes on any Express-compatible router; when no router is provided, creates a `MinimalRouter` (duck-typed; no `express` peer dependency required); errors are returned as `{ error: string }` with status 500
+- **NestJS integration** — `RdapifyModule.forRoot(options?)` returns a NestJS-compatible `DynamicModule` that provides `RDAPClient` via the `RDAPIFY_CLIENT_TOKEN` symbol; `@InjectRdapClient()` is a `ParameterDecorator` factory that marks constructor parameters for injection; zero `@nestjs/common` dependency
+- **24 new unit tests**: GraphQL schema (9), Express routes (8), NestJS module + decorator (7)
+- **7 new public exports**: `createRdapifySchema`, `RDAPIFY_TYPE_DEFS`, `RdapifyResolvers` (type), `rdapifyExpress`, `MinimalRouter`, `RouterLike` (type), `RequestLike` (type), `ResponseLike` (type), `RdapifyModule`, `InjectRdapClient`, `RDAPIFY_CLIENT_TOKEN`, `RdapifyModuleOptions` (type), `RdapifyDynamicModule` (type)
+- **API snapshot updated** — 78 exported symbols
+
 ## [0.2.2] - unreleased
 
 ### Added

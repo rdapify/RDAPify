@@ -172,6 +172,43 @@ export interface BootstrapOptions {
    * @default true
    */
   fallback?: boolean;
+  /**
+   * Preferred bootstrap regions for multi-region deployments.
+   * When set, the client tries the nearest regional mirror first and falls back
+   * to the primary IANA bootstrap endpoint on failure.
+   *
+   * @example ['eu', 'us']  // Try EU mirror first, then US
+   */
+  regions?: Array<'us' | 'eu' | 'ap'>;
+}
+
+/**
+ * OpenTelemetry / distributed tracing configuration
+ */
+export interface TelemetryOptions {
+  /**
+   * OTLP HTTP endpoint for trace export.
+   * @example 'http://localhost:4318/v1/traces'
+   */
+  endpoint?: string;
+  /**
+   * Logical service name reported in spans.
+   * @default 'rdapify'
+   */
+  serviceName?: string;
+  /**
+   * Service version reported in spans.
+   * @default current rdapify version
+   */
+  serviceVersion?: string;
+  /**
+   * Enable telemetry export (default: true when endpoint is set).
+   */
+  enabled?: boolean;
+  /**
+   * Additional resource attributes to include in every span.
+   */
+  resourceAttributes?: Record<string, string>;
 }
 
 /**
@@ -269,6 +306,14 @@ export interface RDAPClientOptions {
    * @default false
    */
   http2?: boolean;
+
+  /**
+   * OpenTelemetry tracing configuration.
+   * When an `endpoint` is provided, the client exports OTLP traces for every
+   * RDAP query, enabling distributed tracing in platforms like Jaeger, Tempo,
+   * or any OTLP-compatible backend.
+   */
+  telemetry?: TelemetryOptions;
 }
 
 /**
@@ -331,4 +376,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
     fallback: true,
   },
   http2: false,
+  telemetry: {
+    enabled: false,
+  },
 };

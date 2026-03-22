@@ -218,4 +218,39 @@ describe('Normalizer', () => {
       ]);
     });
   });
+
+  describe('normalize() — missing objectClassName', () => {
+    it('throws ParseError when objectClassName is missing', () => {
+      const { ParseError } = require('../../src/shared/errors');
+      expect(() =>
+        normalizer.normalize({} as any, 'test', 'https://rdap.example.com', false, false)
+      ).toThrow(ParseError);
+    });
+  });
+
+  describe('normalize() — includeRaw branch', () => {
+    it('includes raw field on domain response when includeRaw: true', () => {
+      const raw = { objectClassName: 'domain', ldhName: 'example.com', handle: 'X', status: [] };
+      const result = normalizer.normalize(raw, 'example.com', 'https://rdap.example.com', false, true) as any;
+      expect(result.raw).toBeDefined();
+    });
+
+    it('includes raw field on ip response when includeRaw: true', () => {
+      const raw = { objectClassName: 'ip network', handle: 'X', ipVersion: 'v4', startAddress: '8.8.8.8', endAddress: '8.8.8.8' };
+      const result = normalizer.normalize(raw, '8.8.8.8', 'https://rdap.arin.net', false, true) as any;
+      expect(result.raw).toBeDefined();
+    });
+
+    it('includes raw field on asn response when includeRaw: true', () => {
+      const raw = { objectClassName: 'autnum', handle: 'X', startAutnum: 15169, endAutnum: 15169 };
+      const result = normalizer.normalize(raw, 'AS15169', 'https://rdap.arin.net', false, true) as any;
+      expect(result.raw).toBeDefined();
+    });
+
+    it('includes raw field on entity response when includeRaw: true', () => {
+      const raw = { objectClassName: 'entity', handle: 'GOGL' };
+      const result = normalizer.normalize(raw, 'GOGL', 'https://rdap.arin.net', false, true) as any;
+      expect(result.raw).toBeDefined();
+    });
+  });
 });

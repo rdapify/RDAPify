@@ -28,6 +28,8 @@ import type {
 import { deepMerge, calculateBackoff, sleep } from '../../shared/utils/helpers';
 import { QueryOrchestrator } from '../services';
 import { BatchProcessor } from '../services/BatchProcessor';
+import type { BatchQueryRequest, StreamBatchOptions } from '../services/BatchProcessor';
+import type { QueryTypeLiteral, BatchQueryResult } from '../../shared/types/generics';
 import { MiddlewareManager } from '../hooks/MiddlewareHooks';
 import type { MiddlewareOptions } from '../hooks/MiddlewareHooks';
 import { QueryDeduplicator } from '../deduplication/QueryDeduplicator';
@@ -506,10 +508,42 @@ export class RDAPClient {
   }
 
   /**
-   * Gets batch processor instance for batch operations
+   * Gets batch processor instance for batch operations.
+   *
+   * @deprecated Use `client.streamBatch()` for streaming results as they arrive
+   * or `client.getBatchProcessor().processBatch()` for collecting all results.
+   * `getBatchProcessor()` exposes an internal class and will be removed in v1.0.0.
+   * DEP_RDAPIFY_0001
    */
   getBatchProcessor(): BatchProcessor {
     return this.batchProcessor;
+  }
+
+  /**
+   * Streams query results as an async iterable, yielding each result as soon
+   * as it completes rather than waiting for the entire batch to finish.
+   *
+   * Suitable for large query sets (1 000+ items) — at most `concurrency`
+   * queries are ever in-flight simultaneously, so memory usage stays flat.
+   *
+   * @param requests - Queries to execute
+   * @param options  - Concurrency (default 5) and error-handling options
+   *
+   * @example
+   * ```typescript
+   * const requests = domains.map(d => ({ type: 'domain' as const, query: d }));
+   *
+   * for await (const result of client.streamBatch(requests, { concurrency: 10 })) {
+   *   if (result.error) console.error(result.query, result.error.message);
+   *   else console.log(result.query, result.result!.registrar?.name);
+   * }
+   * ```
+   */
+  streamBatch<T extends QueryTypeLiteral>(
+    requests: BatchQueryRequest<T>[],
+    options?: StreamBatchOptions
+  ): AsyncGenerator<BatchQueryResult<T>, void, unknown> {
+    return this.batchProcessor.streamBatch(requests, options);
   }
 
   /**

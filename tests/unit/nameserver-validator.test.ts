@@ -38,6 +38,15 @@ describe('validateNameserver', () => {
     const longLabel = 'a'.repeat(64) + '.example.com';
     expect(() => validateNameserver(longLabel)).toThrow(ValidationError);
   });
+
+  it('rejects labels with invalid special characters', () => {
+    expect(() => validateNameserver('abc!.example.com')).toThrow(ValidationError);
+  });
+
+  it('accepts labels ending with hyphen as punycode-style without throwing', () => {
+    // "abc-" ends with hyphen: fails standard label regex but passes punycode regex → no throw
+    expect(() => validateNameserver('abc-.example.com')).not.toThrow();
+  });
 });
 
 describe('normalizeNameserver', () => {

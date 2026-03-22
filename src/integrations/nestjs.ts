@@ -130,6 +130,7 @@ export function InjectRdapClient(): ParameterDecorator {
     // This stub is intentionally minimal — it marks the parameter so
     // frameworks that read NestJS metadata can inject via RDAPIFY_CLIENT_TOKEN.
     if (typeof Reflect !== 'undefined' && typeof (Reflect as Record<string, unknown>)['defineMetadata'] === 'function') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
       const defineMetadata = (Reflect as Record<string, Function>)['defineMetadata']!;
       defineMetadata('self:paramtypes', RDAPIFY_CLIENT_TOKEN, _target, _propertyKey);
     }

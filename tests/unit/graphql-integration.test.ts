@@ -101,4 +101,64 @@ describe('createRdapifySchema()', () => {
 
     await expect(schema.resolvers.Query.domain(null, { name: 'bad.com' })).rejects.toThrow('network error');
   });
+
+  it('domain resolver extracts expiresAt from events', async () => {
+    const mockDomain = jest.fn().mockResolvedValueOnce({
+      query: 'example.com',
+      status: ['active'],
+      events: [
+        { type: 'expiration', date: '2027-01-01T00:00:00Z' },
+        { type: 'registration', date: '2020-01-01T00:00:00Z' },
+        { type: 'last changed', date: '2024-06-15T00:00:00Z' },
+      ],
+    });
+    const schema = createRdapifySchema(makeClient({ domain: mockDomain }));
+    const result = (await schema.resolvers.Query.domain(null, { name: 'example.com' })) as Record<string, unknown>;
+
+    expect(result['expiresAt']).toBe('2027-01-01T00:00:00Z');
+    expect(result['createdAt']).toBe('2020-01-01T00:00:00Z');
+    expect(result['updatedAt']).toBe('2024-06-15T00:00:00Z');
+  });
+
+  it('domain resolver returns null dates when events missing', async () => {
+    const mockDomain = jest.fn().mockResolvedValueOnce({ query: 'example.com', status: [] });
+    const schema = createRdapifySchema(makeClient({ domain: mockDomain }));
+    const result = (await schema.resolvers.Query.domain(null, { name: 'example.com' })) as Record<string, unknown>;
+
+    expect(result['expiresAt']).toBeNull();
+    expect(result['createdAt']).toBeNull();
+    expect(result['updatedAt']).toBeNull();
+  });
+
+  it('ip resolver propagates errors', async () => {
+    const mockIp = jest.fn().mockRejectedValueOnce(new Error('ip error'));
+    const schema = createRdapifySchema(makeClient({ ip: mockIp }));
+
+    await expect(schema.resolvers.Query.ip(null, { address: 'bad' })).rejects.toThrow('ip error');
+  });
+
+  it('asn resolver propagates errors', async () => {
+    const mockAsn = jest.fn().mockRejectedValueOnce(new Error('asn error'));
+    const schema = createRdapifySchema(makeClient({ asn: mockAsn }));
+
+    await expect(schema.resolvers.Query.asn(null, { number: 'AS0' })).rejects.toThrow('asn error');
+  });
+
+  it('ip resolver returns null for missing optional fields', async () => {
+    const mockIp = jest.fn().mockResolvedValueOnce({ query: '1.2.3.4', status: [] });
+    const schema = createRdapifySchema(makeClient({ ip: mockIp }));
+    const result = (await schema.resolvers.Query.ip(null, { address: '1.2.3.4' })) as Record<string, unknown>;
+
+    expect(result['country']).toBeNull();
+    expect(result['name']).toBeNull();
+    expect(result['startAddress']).toBeNull();
+    expect(result['endAddress']).toBeNull();
+  });
+
+  it('asn resolver converts query to string', async () => {
+    const mockAsn = jest.fn().mockResolvedValueOnce({ query: 15169, name: 'GOOGLE', status: [] });
+    const schema = createRdapifySchema(makeClient({ asn: mockAsn }));
+    const result = (await schema.resolvers.Query.asn(null, { number: 'AS15169' })) as Record<string, unknown>;
+    expect(typeof result['query']).toBe('string');
+  });
 });

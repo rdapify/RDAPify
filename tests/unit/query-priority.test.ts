@@ -162,9 +162,19 @@ describe('QueryPriorityQueue', () => {
 
       // Add items without waiting for processing
       queue.enqueue('item-1', 'normal');
-      
+
       // Size might be 0 or 1 depending on processing speed
       expect(queue.size()).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('processor rejection', () => {
+    it('rejects the enqueue promise when the processor throws', async () => {
+      const errorQueue = new QueryPriorityQueue<string>(1, async (_item) => {
+        throw new Error('processor failed');
+      });
+
+      await expect(errorQueue.enqueue('bad-item', 'normal')).rejects.toThrow('processor failed');
     });
   });
 });

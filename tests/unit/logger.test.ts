@@ -204,4 +204,48 @@ describe('Logger', () => {
       expect(capturedLogs).toHaveLength(0);
     });
   });
+
+  describe('json format', () => {
+    it('outputs JSON-stringified entries when format is json', () => {
+      const lines: string[] = [];
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation((msg: string) => {
+        lines.push(msg);
+      });
+
+      const jsonLogger = new Logger({ format: 'json', level: 'debug' });
+      jsonLogger.info('json test');
+
+      expect(lines.length).toBeGreaterThan(0);
+      const parsed = JSON.parse(lines[0]!);
+      expect(parsed.message).toBe('json test');
+
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('export()', () => {
+    it('returns a copy of all stored logs', () => {
+      logger.info('exp 1');
+      logger.warn('exp 2');
+      const exported = logger.export();
+      expect(exported).toHaveLength(2);
+      // Should be a copy, not the internal reference
+      exported.splice(0);
+      expect(logger.getLogs()).toHaveLength(2);
+    });
+  });
+
+  describe('getLogsInRange() — boundary', () => {
+    it('excludes logs outside the time range', () => {
+      const past = Date.now() - 10000;
+      const future = Date.now() + 10000;
+      logger.info('in range');
+      const inRange = logger.getLogsInRange(past, future);
+      expect(inRange.length).toBeGreaterThan(0);
+
+      // Nothing should match a range entirely in the future
+      const none = logger.getLogsInRange(future, future + 1000);
+      expect(none).toHaveLength(0);
+    });
+  });
 });

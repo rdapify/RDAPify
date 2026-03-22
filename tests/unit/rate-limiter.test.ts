@@ -282,4 +282,49 @@ describe('RateLimiter', () => {
       // Should not throw or cause issues
     });
   });
+
+  describe('cleanup interval — branch coverage', () => {
+    it('cleanup removes expired records (empty → delete key)', () => {
+      jest.useFakeTimers();
+
+      const limiter = new RateLimiter({ enabled: true, maxRequests: 100, windowMs: 100 });
+
+      // Record some requests
+      (limiter as Record<string, unknown>)['requests'].set('key1', [
+        { timestamp: Date.now() - 200, count: 1 }, // expired
+      ]);
+
+      // Advance past cleanup interval (60000ms)
+      jest.advanceTimersByTime(60001);
+
+      const stats = limiter.getStats();
+      // Expired key should be cleaned up
+      expect(stats.activeKeys).toBe(0);
+
+      limiter.destroy();
+      jest.useRealTimers();
+    });
+
+    it('cleanup keeps valid records (non-empty → set key)', () => {
+      jest.useFakeTimers();
+
+      // Use windowMs larger than the cleanup interval so record stays valid after 60s
+      const limiter = new RateLimiter({ enabled: true, maxRequests: 100, windowMs: 300000 });
+
+      // Record a recent request (not expired)
+      (limiter as Record<string, unknown>)['requests'].set('key1', [
+        { timestamp: Date.now(), count: 1 }, // still valid (300s window, only 60s elapsed)
+      ]);
+
+      // Advance past cleanup interval
+      jest.advanceTimersByTime(60001);
+
+      const stats = limiter.getStats();
+      // Valid record should still be there
+      expect(stats.activeKeys).toBe(1);
+
+      limiter.destroy();
+      jest.useRealTimers();
+    });
+  });
 });

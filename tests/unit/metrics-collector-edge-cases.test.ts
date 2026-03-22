@@ -119,3 +119,54 @@ describe('MetricsCollector', () => {
     });
   });
 });
+
+describe('MetricsCollector — additional branch coverage', () => {
+  const makeMetric = (type: 'domain' | 'ip' = 'domain', success = true) => ({
+    type,
+    query: 'x.com',
+    success,
+    duration: 100,
+    cached: false,
+    timestamp: Date.now(),
+  });
+
+  it('getWindow() returns metrics inside time range', () => {
+    const collector = new MetricsCollector({ enabled: true });
+    const before = Date.now() - 5000;
+    collector.record(makeMetric());
+    const after = Date.now() + 5000;
+
+    const inside = collector.getWindow(before, after);
+    expect(inside.length).toBeGreaterThan(0);
+
+    const outside = collector.getWindow(after, after + 1000);
+    expect(outside).toHaveLength(0);
+  });
+
+  it('getByType() filters by query type', () => {
+    const collector = new MetricsCollector({ enabled: true });
+    collector.record(makeMetric('domain'));
+    collector.record(makeMetric('ip'));
+
+    expect(collector.getByType('domain')).toHaveLength(1);
+    expect(collector.getByType('ip')).toHaveLength(1);
+    expect(collector.getByType('asn')).toHaveLength(0);
+  });
+
+  it('getFailures() returns only failed metrics', () => {
+    const collector = new MetricsCollector({ enabled: true });
+    collector.record(makeMetric('domain', true));
+    collector.record(makeMetric('domain', false));
+
+    const failures = collector.getFailures();
+    expect(failures).toHaveLength(1);
+    expect(failures[0]!.success).toBe(false);
+  });
+
+  it('import() loads metrics into collector', () => {
+    const collector = new MetricsCollector({ enabled: true });
+    const batch = [makeMetric(), makeMetric('ip')];
+    collector.import(batch);
+    expect(collector.export()).toHaveLength(2);
+  });
+});

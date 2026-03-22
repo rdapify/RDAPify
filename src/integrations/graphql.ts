@@ -96,14 +96,16 @@ export function createRdapifySchema(client: RDAPClient): {
     Query: {
       domain: async (_: unknown, args: { name: string }) => {
         const r = await client.domain(args.name);
+        const findEvent = (type: string) =>
+          r.events?.find((e) => e.type === type)?.date ?? null;
         return {
           query: r.query,
           ldhName: r.ldhName ?? null,
           registrar: r.registrar?.name ?? null,
           status: r.status ?? [],
-          expiresAt: r.expiresAt?.toISOString() ?? null,
-          createdAt: r.createdAt?.toISOString() ?? null,
-          updatedAt: r.updatedAt?.toISOString() ?? null,
+          expiresAt: findEvent('expiration'),
+          createdAt: findEvent('registration'),
+          updatedAt: findEvent('last changed'),
         };
       },
 

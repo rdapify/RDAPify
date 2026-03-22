@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.1.8
+ * @version 0.3.0
  * 
  * @example Basic Usage
  * ```typescript
@@ -95,6 +95,7 @@ export type {
   LoggingOptions,
   RateLimitOptions,
   BootstrapOptions,
+  TelemetryOptions,
 } from './shared/types/options';
 
 // ============================================================================
@@ -195,7 +196,7 @@ export type { ICachePort } from './core/ports';
 /**
  * Current library version
  */
-export const VERSION = '0.1.8';
+export const VERSION = '0.3.0';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -441,6 +442,26 @@ export type { DenoFetcherOptions } from './infrastructure/http/DenoFetcher';
 export { CloudflareWorkersFetcher } from './infrastructure/http/CloudflareWorkersFetcher';
 export type { CloudflareWorkersFetcherOptions } from './infrastructure/http/CloudflareWorkersFetcher';
 
+/**
+ * Browser-compatible RDAP fetcher.
+ *
+ * Routes all RDAP requests through a developer-provided CORS-enabled reverse
+ * proxy, enabling rdapify to run in any browser environment (React, Vue,
+ * Angular, vanilla JS).  Uses only Web-standard APIs — no Node.js polyfills
+ * required.
+ *
+ * @example
+ * ```ts
+ * import { RDAPClient, BrowserFetcher } from 'rdapify';
+ *
+ * const client = new RDAPClient({
+ *   fetcher: new BrowserFetcher({ proxyUrl: 'https://your-server.com/rdap-proxy' }),
+ * });
+ * ```
+ */
+export { BrowserFetcher } from './infrastructure/http/BrowserFetcher';
+export type { BrowserFetcherOptions } from './infrastructure/http/BrowserFetcher';
+
 // ============================================================================
 // v0.2.3 — Framework Integrations
 // ============================================================================
@@ -464,6 +485,38 @@ export type { RouterLike, RequestLike, ResponseLike } from './integrations/expre
  */
 export { RdapifyModule, InjectRdapClient, RDAPIFY_CLIENT_TOKEN } from './integrations/nestjs';
 export type { RdapifyModuleOptions, RdapifyDynamicModule } from './integrations/nestjs';
+
+// ============================================================================
+// v0.3.0 — Streaming, Monitoring, Multi-region Bootstrap, Deprecation
+// ============================================================================
+
+/**
+ * Streaming batch processor — yields results as they arrive.
+ * Access via `client.streamBatch()` or import types directly.
+ */
+export type { StreamBatchOptions } from './application/services/BatchProcessor';
+
+/**
+ * Prometheus text-format metrics exporter.
+ */
+export { PrometheusExporter } from './infrastructure/monitoring/PrometheusExporter';
+export type { PrometheusExporterOptions } from './infrastructure/monitoring/PrometheusExporter';
+
+/**
+ * OpenTelemetry OTLP trace exporter.
+ */
+export { TelemetryExporter } from './infrastructure/monitoring/TelemetryExporter';
+export type { SpanData } from './infrastructure/monitoring/TelemetryExporter';
+
+/**
+ * Pre-built Grafana dashboard template for RDAPify metrics.
+ */
+export { RDAPIFY_GRAFANA_DASHBOARD } from './infrastructure/monitoring/GrafanaDashboard';
+
+/**
+ * Deprecation warning utility.
+ */
+export { deprecated } from './shared/utils/deprecation';
 
 // ============================================================================
 // Default Export

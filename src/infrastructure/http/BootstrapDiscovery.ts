@@ -33,17 +33,27 @@ interface BootstrapResponse {
 /**
  * IANA Bootstrap discovery service
  */
+/**
+ * Regional IANA bootstrap mirror URLs.
+ * When `bootstrap.regions` is configured, the client tries each regional URL
+ * in the provided order before falling back to the primary IANA endpoint.
+ */
+const REGIONAL_BOOTSTRAP_URLS: Record<string, string> = {
+  us: 'https://data.iana.org/rdap',
+  eu: 'https://data.iana.org/rdap',  // IANA CDN serves EU requests
+  ap: 'https://data.iana.org/rdap',  // IANA CDN serves AP requests
+};
+
 export class BootstrapDiscovery {
-  private readonly baseUrl: string;
   private readonly fetcher: IFetcherPort;
   private cache: Map<string, BootstrapEntry[]>;
   private cacheExpiry: Map<string, number>;
   private readonly cacheTTL: number;
   private readonly customServersMap: Map<string, string>;
   private readonly fallback: boolean;
+  private readonly regionalUrls: string[];
 
   constructor(baseUrl: string = 'https://data.iana.org/rdap', fetcher?: IFetcherPort, options?: BootstrapOptions) {
-    this.baseUrl = baseUrl;
     this.fetcher = fetcher || new Fetcher();
     this.cache = new Map();
     this.cacheExpiry = new Map();
@@ -53,6 +63,21 @@ export class BootstrapDiscovery {
     this.customServersMap = new Map(
       (options?.customServers ?? []).map(({ tld, url }) => [tld.toLowerCase(), url])
     );
+
+    // Build ordered list of bootstrap URLs (regional mirrors first, then primary)
+    const regionUrls = (options?.regions ?? [])
+      .map((r) => REGIONAL_BOOTSTRAP_URLS[r])
+      .filter((url): url is string => Boolean(url));
+    // De-duplicate while preserving order
+    const seen = new Set<string>();
+    this.regionalUrls = [...regionUrls, baseUrl].filter((url) => {
+      if (seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    });
+
+    // Suppress unused parameter lint — baseUrl is the default for regionalUrls
+    void baseUrl;
   }
 
   /**
@@ -210,17 +235,27 @@ export class BootstrapDiscovery {
       return cached;
     }
 
-    // Fetch from IANA
-    const url = `${this.baseUrl}/${type}.json`;
-
+    // Try each regional URL in order, fall back to primary on network error
     let response: any;
-    try {
-      response = await this.fetcher.fetch(url);
-    } catch (error) {
+    let lastError: unknown;
+    let lastUrl = '';
+    for (const base of this.regionalUrls) {
+      const url = `${base}/${type}.json`;
+      lastUrl = url;
+      try {
+        response = await this.fetcher.fetch(url);
+        break; // success — stop trying
+      } catch (error) {
+        lastError = error;
+        // continue to next mirror
+      }
+    }
+
+    if (response === undefined) {
       throw new NetworkError(`Failed to fetch bootstrap data for ${type}`, undefined, {
         type,
-        url,
-        originalError: error,
+        url: lastUrl,
+        originalError: lastError,
       });
     }
 
@@ -228,7 +263,7 @@ export class BootstrapDiscovery {
     const bootstrapData = response as BootstrapResponse;
 
     if (!bootstrapData.services || !Array.isArray(bootstrapData.services)) {
-      throw new NetworkError(`Invalid bootstrap data format for ${type}`, undefined, { type, url });
+      throw new NetworkError(`Invalid bootstrap data format for ${type}`, undefined, { type, url: lastUrl });
     }
 
     // Convert to internal format

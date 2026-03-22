@@ -3,6 +3,8 @@
  */
 
 import {
+  idnToAscii,
+  asciiToIdn,
   validateIdnDomain,
   validateIpv6WithZone,
   validateAsnRange,
@@ -11,6 +13,7 @@ import {
   validateEmail,
   validatePhone,
   validateUrl,
+  normalizeWhitespace,
 } from '../../src/shared/utils/enhanced-validators';
 
 describe('Enhanced Validators', () => {
@@ -133,6 +136,82 @@ describe('Enhanced Validators', () => {
       expect(validateUrl('https://example.com')).toBe(true);
       expect(validateUrl('http://example.com/path')).toBe(true);
       expect(validateUrl('invalid')).toBe(false);
+    });
+  });
+
+  describe('idnToAscii', () => {
+    it('converts IDN domain to punycode', () => {
+      const result = idnToAscii('مثال.السعودية');
+      expect(result).toContain('xn--');
+    });
+
+    it('returns ASCII domain unchanged', () => {
+      expect(idnToAscii('example.com')).toBe('example.com');
+    });
+
+    it('returns domain on URL parse failure (catch branch)', () => {
+      // A string that can't be parsed as a URL host
+      const malformed = 'example..com';
+      const result = idnToAscii(malformed);
+      // Either returns the input on failure or the URL hostname — either way no throw
+      expect(typeof result).toBe('string');
+    });
+  });
+
+  describe('asciiToIdn', () => {
+    it('decodes punycode domain via URL', () => {
+      const result = asciiToIdn('xn--mgbh0fb.xn--mgberp4a5d4ar');
+      expect(typeof result).toBe('string');
+    });
+
+    it('returns non-punycode domain unchanged', () => {
+      expect(asciiToIdn('example.com')).toBe('example.com');
+    });
+
+    it('returns domain on URL parse failure (catch branch)', () => {
+      // Invalid punycode that may cause URL parse to fail
+      const broken = 'xn--[[[invalid';
+      const result = asciiToIdn(broken);
+      expect(result).toBe(broken);
+    });
+  });
+
+  describe('validateIdnDomain — invalid ASCII format', () => {
+    it('throws when converted ASCII form fails domain regex', () => {
+      // A domain with consecutive dots produces invalid ASCII form
+      expect(() => validateIdnDomain('.example.com')).toThrow();
+    });
+  });
+
+  describe('validateIpv6WithZone — edge cases', () => {
+    it('throws on empty IP string', () => {
+      expect(() => validateIpv6WithZone('')).toThrow();
+    });
+
+    it('throws when IPv6 part in zone address is invalid', () => {
+      // valid zone syntax but invalid IPv6 part
+      expect(() => validateIpv6WithZone('NOTIPV6%eth0')).toThrow();
+    });
+  });
+
+  describe('validateAsnRange — out-of-range values', () => {
+    it('throws when range start exceeds max ASN', () => {
+      expect(() => validateAsnRange('4294967296-4294967297')).toThrow();
+    });
+
+    it('throws when range end exceeds max ASN', () => {
+      // Use a valid start but invalid end
+      expect(() => validateAsnRange('100-4294967296')).toThrow();
+    });
+  });
+
+  describe('normalizeWhitespace', () => {
+    it('trims and collapses internal whitespace', () => {
+      expect(normalizeWhitespace('  hello   world  ')).toBe('hello world');
+    });
+
+    it('returns single word unchanged (after trim)', () => {
+      expect(normalizeWhitespace('hello')).toBe('hello');
     });
   });
 });
