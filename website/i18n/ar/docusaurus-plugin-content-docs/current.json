@@ -1,0 +1,130 @@
+{
+  "version.label": {
+    "message": "التالي",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.advanced": {
+    "message": "متقدم",
+    "description": "The label for category 'advanced' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.analytics": {
+    "message": "التحليلات",
+    "description": "The label for category 'analytics' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.api-reference": {
+    "message": "مرجع API",
+    "description": "The label for category 'api-reference' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.methods": {
+    "message": "الوظائف",
+    "description": "The label for category 'methods' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.📑 Types Reference Index": {
+    "message": "📑 فهرس أنواع البيانات",
+    "description": "The label for category '📑 Types Reference Index' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.architecture": {
+    "message": "البنية المعمارية",
+    "description": "The label for category 'architecture' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.cli": {
+    "message": "أداة CLI",
+    "description": "The label for category 'cli' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.community": {
+    "message": "المجتمع",
+    "description": "The label for category 'community' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.comparisons": {
+    "message": "المقارنات",
+    "description": "The label for category 'comparisons' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.compatibility": {
+    "message": "التوافق",
+    "description": "The label for category 'compatibility' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.core-concepts": {
+    "message": "المفاهيم الأساسية",
+    "description": "The label for category 'core-concepts' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.enterprise": {
+    "message": "المؤسسات",
+    "description": "The label for category 'enterprise' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.getting-started": {
+    "message": "البدء السريع",
+    "description": "The label for category 'getting-started' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.guides": {
+    "message": "الأدلة",
+    "description": "The label for category 'guides' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.integrations": {
+    "message": "التكاملات",
+    "description": "The label for category 'integrations' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.cloud": {
+    "message": "السحابة",
+    "description": "The label for category 'cloud' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.databases": {
+    "message": "قواعد البيانات",
+    "description": "The label for category 'databases' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.deployment": {
+    "message": "النشر",
+    "description": "The label for category 'deployment' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.monitoring": {
+    "message": "المراقبة",
+    "description": "The label for category 'monitoring' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Internal Documentation": {
+    "message": "التوثيق الداخلي",
+    "description": "The label for category 'Internal Documentation' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.localization": {
+    "message": "التوطين",
+    "description": "The label for category 'localization' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.performance": {
+    "message": "الأداء",
+    "description": "The label for category 'performance' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.playground": {
+    "message": "الملعب التجريبي",
+    "description": "The label for category 'playground' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.quality-assurance": {
+    "message": "ضمان الجودة",
+    "description": "The label for category 'quality-assurance' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.recipes": {
+    "message": "وصفات جاهزة",
+    "description": "The label for category 'recipes' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.resources": {
+    "message": "الموارد",
+    "description": "The label for category 'resources' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.security": {
+    "message": "الأمان",
+    "description": "The label for category 'security' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.specifications": {
+    "message": "المواصفات",
+    "description": "The label for category 'specifications' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.support": {
+    "message": "الدعم",
+    "description": "The label for category 'support' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.testing": {
+    "message": "الاختبار",
+    "description": "The label for category 'testing' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.troubleshooting": {
+    "message": "استكشاف الأخطاء",
+    "description": "The label for category 'troubleshooting' in sidebar 'tutorialSidebar'"
+  }
+}

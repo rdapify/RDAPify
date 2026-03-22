@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "مدونة RDAPify",
+    "description": "The title for the blog used in SEO"
+  },
+  "description": {
+    "message": "دروس تعليمية وأدلة ورؤى حول بروتوكول RDAP وذكاء النطاقات وبيانات تسجيل الإنترنت",
+    "description": "The description for the blog used in SEO"
+  },
+  "sidebar.title": {
+    "message": "أحدث المقالات",
+    "description": "The label for the left sidebar"
+  }
+}

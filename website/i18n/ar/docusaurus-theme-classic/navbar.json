@@ -1,0 +1,26 @@
+{
+  "logo.alt": {
+    "message": "شعار RDAPify",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Docs": {
+    "message": "التوثيق",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.Playground": {
+    "message": "الملعب التجريبي",
+    "description": "Navbar item with label Playground"
+  },
+  "item.label.Blog": {
+    "message": "المدونة",
+    "description": "Navbar item with label Blog"
+  },
+  "item.label.Pricing": {
+    "message": "الأسعار",
+    "description": "Navbar item with label Pricing"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}
