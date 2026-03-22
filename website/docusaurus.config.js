@@ -21,6 +21,8 @@ const config = {
     paddleEnvironment: 'sandbox',
     paddlePriceMonthly: 'pri_01kmabthtk0550h8e2gakkhreg',
     paddlePriceYearly: 'pri_01kmabw7z48nnz88m7yj8mkmy6',
+    paddlePriceTeamMonthly: 'pri_team_monthly_xxx',
+    paddlePriceTeamYearly: 'pri_team_yearly_xxx',
   },
 
   scripts: [

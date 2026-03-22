@@ -10,10 +10,10 @@ import styles from './pricing.module.css';
 const STRINGS = {
   en: {
     layoutTitle: 'Pricing — RDAPify',
-    layoutDesc: 'RDAPify pricing plans. Free open-source tier, Pro for teams, and Enterprise for organizations.',
+    layoutDesc: 'RDAPify pricing plans. Free open-source tier, Pro for developers, Team for businesses, and Enterprise for organizations.',
     eyebrow: 'Pricing',
     heroTitle: 'Simple, transparent pricing',
-    heroSub: 'Start free with the open-source library. Upgrade to Pro when you need monitoring, analytics, and higher rate limits.',
+    heroSub: 'Start free with the open-source library. Upgrade to Pro or Team when you need monitoring, analytics, and higher rate limits.',
     popularBadge: 'Most Popular',
     billingMonthly: 'Monthly',
     billingYearly: 'Yearly',
@@ -40,21 +40,22 @@ const STRINGS = {
           'Automatic PII redaction',
           'In-memory caching',
           'Community support (GitHub)',
-          'Rate limited (60 req/min)',
+          'Rate limited (10 req/min, 100 req/day)',
         ],
       },
       {
         name: 'Pro',
-        description: 'For teams and businesses that need monitoring, analytics, and higher limits.',
+        description: 'For individual developers and small teams that need monitoring and analytics.',
         priceMonthly: '$19',
         priceYearly: '$149',
         periodMonthly: '/month',
         periodYearly: '/year',
+        yearlyMonthlyEquivalent: '$12.4',
         accent: '#3b82f6',
         cta: 'Get Started',
         ctaLink: '/docs/getting-started/installation',
         ctaStyle: 'primary',
-        popular: true,
+        tier: 'pro',
         features: [
           'Everything in Free, plus:',
           'Bulk domain monitoring',
@@ -64,7 +65,33 @@ const STRINGS = {
           'CSV & JSON export',
           'Redis & custom cache adapters',
           'Priority email support',
-          'Higher rate limits (600 req/min)',
+          '1 device, 1 user',
+          'Higher rate limits (500 req/min)',
+        ],
+      },
+      {
+        name: 'Team',
+        description: 'For growing teams and businesses that need collaboration and higher limits.',
+        priceMonthly: '$49',
+        priceYearly: '$349',
+        periodMonthly: '/month',
+        periodYearly: '/year',
+        yearlyMonthlyEquivalent: '$29.1',
+        accent: '#8b5cf6',
+        cta: 'Get Started',
+        ctaLink: '/docs/getting-started/installation',
+        ctaStyle: 'primary',
+        popular: true,
+        tier: 'team',
+        features: [
+          'Everything in Pro, plus:',
+          'Up to 10 devices & 10 users',
+          'Team management & roles',
+          'Shared monitoring dashboards',
+          'Advanced analytics & trends',
+          'Priority support & SLA',
+          'Higher rate limits (2,000 req/min)',
+          'Custom cache adapters',
         ],
       },
       {
@@ -77,7 +104,8 @@ const STRINGS = {
         ctaLink: 'mailto:sales@rdapify.com',
         ctaStyle: 'ghost',
         features: [
-          'Everything in Pro, plus:',
+          'Everything in Team, plus:',
+          'Unlimited devices & users',
           'Unlimited rate limits',
           'Dedicated support & SLA',
           'On-premise deployment option',
@@ -92,7 +120,7 @@ const STRINGS = {
     faq: [
       {
         q: 'Can I use the free tier in production?',
-        a: 'Yes. The open-source rdapify library is MIT-licensed and free for any use — personal, commercial, or enterprise. The free tier has rate limits (60 requests/minute) which are sufficient for most individual use cases.',
+        a: 'Yes. The open-source rdapify library is MIT-licensed and free for any use — personal, commercial, or enterprise. The free tier has rate limits (10 requests/minute, 100 requests/day) which are sufficient for most individual use cases.',
       },
       {
         q: 'What payment methods do you accept?',
@@ -100,7 +128,7 @@ const STRINGS = {
       },
       {
         q: 'Can I cancel my subscription at any time?',
-        a: 'Yes. You can cancel your Pro subscription at any time. You will retain access to Pro features until the end of your current billing period. Refunds are handled by Paddle in accordance with their refund policy.',
+        a: 'Yes. You can cancel your Pro or Team subscription at any time. You will retain access to paid features until the end of your current billing period. Refunds are handled by Paddle in accordance with their refund policy.',
       },
       {
         q: 'What happens if I exceed my rate limits?',
@@ -118,10 +146,10 @@ const STRINGS = {
   },
   ar: {
     layoutTitle: 'الأسعار — RDAPify',
-    layoutDesc: 'خطط أسعار RDAPify. طبقة مجانية مفتوحة المصدر، Pro للفرق، وEnterprise للمؤسسات.',
+    layoutDesc: 'خطط أسعار RDAPify. طبقة مجانية مفتوحة المصدر، Pro للمطورين، Team للفرق، وEnterprise للمؤسسات.',
     eyebrow: 'الأسعار',
     heroTitle: 'أسعار بسيطة وشفافة',
-    heroSub: 'ابدأ مجاناً بالمكتبة مفتوحة المصدر. انتقل إلى Pro عندما تحتاج المراقبة والتحليلات وحدود معدل أعلى.',
+    heroSub: 'ابدأ مجاناً بالمكتبة مفتوحة المصدر. انتقل إلى Pro أو Team عندما تحتاج المراقبة والتحليلات وحدود معدل أعلى.',
     popularBadge: 'الأكثر شعبية',
     billingMonthly: 'شهري',
     billingYearly: 'سنوي',
@@ -148,21 +176,22 @@ const STRINGS = {
           'إخفاء PII تلقائي',
           'تخزين مؤقت في الذاكرة',
           'دعم المجتمع (GitHub)',
-          'معدل محدود (60 طلب/دقيقة)',
+          'معدل محدود (10 طلب/دقيقة، 100 طلب/يوم)',
         ],
       },
       {
         name: 'Pro',
-        description: 'للفرق والشركات التي تحتاج مراقبة وتحليلات وحدود أعلى.',
+        description: 'للمطورين الأفراد والفرق الصغيرة التي تحتاج مراقبة وتحليلات.',
         priceMonthly: '$19',
         priceYearly: '$149',
         periodMonthly: '/شهر',
         periodYearly: '/سنة',
+        yearlyMonthlyEquivalent: '$12.4',
         accent: '#3b82f6',
         cta: 'ابدأ الآن',
         ctaLink: '/docs/getting-started/installation',
         ctaStyle: 'primary',
-        popular: true,
+        tier: 'pro',
         features: [
           'كل ما في المجاني، بالإضافة إلى:',
           'مراقبة النطاقات بالجملة',
@@ -172,7 +201,33 @@ const STRINGS = {
           'تصدير CSV وJSON',
           'Redis ومحوّلات تخزين مؤقت مخصصة',
           'دعم بريد إلكتروني ذو أولوية',
-          'حدود معدل أعلى (600 طلب/دقيقة)',
+          'جهاز واحد، مستخدم واحد',
+          'حدود معدل أعلى (500 طلب/دقيقة)',
+        ],
+      },
+      {
+        name: 'Team',
+        description: 'للفرق والشركات النامية التي تحتاج تعاوناً وحدوداً أعلى.',
+        priceMonthly: '$49',
+        priceYearly: '$349',
+        periodMonthly: '/شهر',
+        periodYearly: '/سنة',
+        yearlyMonthlyEquivalent: '$29.1',
+        accent: '#8b5cf6',
+        cta: 'ابدأ الآن',
+        ctaLink: '/docs/getting-started/installation',
+        ctaStyle: 'primary',
+        popular: true,
+        tier: 'team',
+        features: [
+          'كل ما في Pro، بالإضافة إلى:',
+          'حتى 10 أجهزة و10 مستخدمين',
+          'إدارة الفريق والأدوار',
+          'لوحات مراقبة مشتركة',
+          'تحليلات متقدمة واتجاهات',
+          'دعم ذو أولوية واتفاقية SLA',
+          'حدود معدل أعلى (2,000 طلب/دقيقة)',
+          'محوّلات تخزين مؤقت مخصصة',
         ],
       },
       {
@@ -185,7 +240,8 @@ const STRINGS = {
         ctaLink: 'mailto:sales@rdapify.com',
         ctaStyle: 'ghost',
         features: [
-          'كل ما في Pro، بالإضافة إلى:',
+          'كل ما في Team، بالإضافة إلى:',
+          'أجهزة ومستخدمين غير محدودين',
           'حدود معدل غير محدودة',
           'دعم مخصص واتفاقية مستوى الخدمة SLA',
           'خيار النشر المحلي',
@@ -200,7 +256,7 @@ const STRINGS = {
     faq: [
       {
         q: 'هل يمكنني استخدام الطبقة المجانية في الإنتاج؟',
-        a: 'نعم. مكتبة rdapify مفتوحة المصدر مرخصة بـ MIT ومجانية لأي استخدام — شخصي أو تجاري أو مؤسسي. تمتلك الطبقة المجانية حدود معدل (60 طلباً/دقيقة) وهي كافية لمعظم حالات الاستخدام الفردية.',
+        a: 'نعم. مكتبة rdapify مفتوحة المصدر مرخصة بـ MIT ومجانية لأي استخدام — شخصي أو تجاري أو مؤسسي. تمتلك الطبقة المجانية حدود معدل (10 طلبات/دقيقة، 100 طلب/يوم) وهي كافية لمعظم حالات الاستخدام الفردية.',
       },
       {
         q: 'ما طرق الدفع التي تقبلونها؟',
@@ -208,7 +264,7 @@ const STRINGS = {
       },
       {
         q: 'هل يمكنني إلغاء اشتراكي في أي وقت؟',
-        a: 'نعم. يمكنك إلغاء اشتراك Pro في أي وقت. ستحتفظ بالوصول إلى ميزات Pro حتى نهاية فترة الفوترة الحالية. تتم معالجة المبالغ المستردة من قِبل Paddle وفقاً لسياسة الاسترداد الخاصة بهم.',
+        a: 'نعم. يمكنك إلغاء اشتراك Pro أو Team في أي وقت. ستحتفظ بالوصول إلى الميزات المدفوعة حتى نهاية فترة الفوترة الحالية. تتم معالجة المبالغ المستردة من قِبل Paddle وفقاً لسياسة الاسترداد الخاصة بهم.',
       },
       {
         q: 'ماذا يحدث إذا تجاوزت حدود المعدل؟',
@@ -227,10 +283,11 @@ const STRINGS = {
 };
 
 function PricingCard({ tier, popularBadge, billing, onCheckout }) {
-  const isProTier = !!tier.priceMonthly;
-  const displayPrice  = isProTier ? (billing === 'yearly' ? tier.priceYearly  : tier.priceMonthly)  : tier.price;
-  const displayPeriod = isProTier ? (billing === 'yearly' ? tier.periodYearly : tier.periodMonthly) : tier.period;
-  const priceId = isProTier ? (billing === 'yearly' ? tier.priceIdYearly : tier.priceIdMonthly) : null;
+  const isPaidTier = !!tier.priceMonthly;
+  const displayPrice  = isPaidTier ? (billing === 'yearly' ? tier.priceYearly  : tier.priceMonthly)  : tier.price;
+  const displayPeriod = isPaidTier ? (billing === 'yearly' ? tier.periodYearly : tier.periodMonthly) : tier.period;
+  const priceId = isPaidTier ? (billing === 'yearly' ? tier.priceIdYearly : tier.priceIdMonthly) : null;
+  const monthlyEquivalent = isPaidTier && billing === 'yearly' ? tier.yearlyMonthlyEquivalent : null;
 
   return (
     <div className={clsx(styles.card, tier.popular && styles.cardPopular)}>
@@ -243,6 +300,9 @@ function PricingCard({ tier, popularBadge, billing, onCheckout }) {
           <span className={styles.price}>{displayPrice}</span>
           {displayPeriod && <span className={styles.period}>{displayPeriod}</span>}
         </div>
+        {monthlyEquivalent && (
+          <p className={styles.monthlyEquivalent}>= {monthlyEquivalent}/mo</p>
+        )}
       </div>
       <ul className={styles.featureList}>
         {tier.features.map((f, i) => (
@@ -316,12 +376,26 @@ export default function Pricing() {
     });
   }
 
-  // أضف priceId للـ Pro tier
-  const tiers = s.tiers.map(t =>
-    t.priceMonthly
-      ? { ...t, priceIdMonthly: customFields.paddlePriceMonthly, priceIdYearly: customFields.paddlePriceYearly }
-      : t
-  );
+  // أضف priceId للـ Pro و Team tiers
+  const tiers = s.tiers.map(t => {
+    if (t.tier === 'pro' || (!t.tier && t.priceMonthly && !t.popular)) {
+      // Pro tier (backward compat: if no 'tier' property, check if it has priceMonthly and is not popular)
+      return {
+        ...t,
+        priceIdMonthly: customFields.paddlePriceMonthly,
+        priceIdYearly: customFields.paddlePriceYearly,
+      };
+    }
+    if (t.tier === 'team' || (!t.tier && t.priceMonthly && t.popular)) {
+      // Team tier
+      return {
+        ...t,
+        priceIdMonthly: customFields.paddlePriceTeamMonthly,
+        priceIdYearly: customFields.paddlePriceTeamYearly,
+      };
+    }
+    return t;
+  });
 
   return (
     <Layout title={s.layoutTitle} description={s.layoutDesc}>

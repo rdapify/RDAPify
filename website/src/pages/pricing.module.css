@@ -127,14 +127,18 @@
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  max-width: 1060px;
+  max-width: 1280px;
   margin: 0 auto;
   align-items: start;
 }
 
-@media (max-width: 996px) {
+@media (max-width: 1200px) {
+  .cardGrid { grid-template-columns: repeat(2, 1fr); max-width: 860px; }
+}
+
+@media (max-width: 768px) {
   .cardGrid { grid-template-columns: 1fr; max-width: 420px; }
 }
 
@@ -226,6 +230,17 @@
 
 .period {
   font-size: 0.95rem;
+  color: #71717a;
+}
+
+.monthlyEquivalent {
+  font-size: 0.82rem;
+  color: #a1a1aa;
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+[data-theme='light'] .monthlyEquivalent {
   color: #71717a;
 }
 
