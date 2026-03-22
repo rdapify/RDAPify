@@ -68,6 +68,17 @@ const config = {
         blog: {
           showReadingTime: true,
           editUrl: 'https://github.com/rdapify/rdapify/tree/main/website/',
+          blogTitle: 'RDAPify Blog',
+          blogDescription: 'Tutorials, guides, and insights on RDAP, domain intelligence, and internet registration data',
+          blogSidebarTitle: 'Recent Posts',
+          blogSidebarCount: 'ALL',
+          postsPerPage: 10,
+          feedOptions: {
+            type: 'all',
+            title: 'RDAPify Blog',
+            description: 'Stay up to date with RDAP protocol guides, tutorials, and domain intelligence insights',
+            copyright: `Copyright © ${new Date().getFullYear()} RDAPify Contributors`,
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -102,6 +113,11 @@ const config = {
             to: '/playground',
             position: 'left',
             label: 'Playground',
+          },
+          {
+            to: '/blog',
+            position: 'left',
+            label: 'Blog',
           },
           {
             href: 'https://github.com/rdapify/rdapify',
@@ -154,6 +170,10 @@ const config = {
           {
             title: 'More',
             items: [
+              {
+                label: 'Blog',
+                to: '/blog',
+              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/rdapify',

@@ -109,3 +109,44 @@ div[class*='announcementBar'] {
 .theme-doc-sidebar-item-link-level-1 > a {
   font-weight: 500;
 }
+
+/* ── Blog ── */
+.blog-list-page .blog-post-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+article[class*='blogPost'] {
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+article[class*='blogPost']:last-child {
+  border-bottom: none;
+}
+
+.blog-post-page .markdown h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.blog-post-page .markdown table {
+  display: table;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+.blog-post-page .markdown table th {
+  background: var(--ifm-color-emphasis-100);
+  font-weight: 600;
+}
+
+.blog-tags-page .tag-cloud a {
+  transition: transform 0.15s ease;
+}
+
+.blog-tags-page .tag-cloud a:hover {
+  transform: scale(1.05);
+}
