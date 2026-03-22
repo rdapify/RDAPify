@@ -18,7 +18,7 @@ const config = {
 
   customFields: {
     paddleClientToken: 'live_d5b5902ea96d58a0206822ec9ca',
-    paddleEnvironment: 'sandbox',
+    paddleEnvironment: 'production',
     paddlePriceMonthly: 'pri_01kma2gafad90p13xydsdp1jd2',
     paddlePriceYearly: 'pri_01kma2gafad90p13xydsdp1jd2',
   },
