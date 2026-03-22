@@ -296,24 +296,28 @@ export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
   const paddleReady = useRef(false);
 
-  // تحميل Paddle.js مرة واحدة
+  // تحميل وتهيئة Paddle.js مرة واحدة بعد اكتمال تحميل السكريبت
   useEffect(() => {
     if (document.getElementById('paddle-js')) return;
     const script = document.createElement('script');
     script.id = 'paddle-js';
     script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
     script.async = true;
-    document.head.appendChild(script);
-  }, []);
-
-  function openCheckout(priceId) {
-    if (!window.Paddle) return;
-    if (!paddleReady.current) {
+    script.onload = () => {
+      if (paddleReady.current) return;
       if (customFields.paddleEnvironment !== 'production') {
         window.Paddle.Environment.set('sandbox');
       }
       window.Paddle.Initialize({ token: customFields.paddleClientToken });
       paddleReady.current = true;
+    };
+    document.head.appendChild(script);
+  }, []);
+
+  function openCheckout(priceId) {
+    if (!window.Paddle || !paddleReady.current) {
+      console.warn('Paddle not ready yet');
+      return;
     }
     window.Paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
