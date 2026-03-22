@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import CodeBlock from '@theme/CodeBlock';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 import styles from './index.module.css';
 
@@ -19,24 +20,6 @@ console.log(ip.organization);    // "Google LLC"
 
 const asn = await client.queryASN(15169);
 console.log(asn.name);           // "GOOGLE"`;
-
-const TIMELINE = [
-  {
-    year: '1982',
-    title: 'WHOIS is born',
-    desc: 'A plain-text protocol designed for ARPANET. No structure, no security, no privacy.',
-  },
-  {
-    year: '2015',
-    title: 'RDAP standardized',
-    desc: 'RFC 7480-7484 define a modern, RESTful replacement with JSON responses and access control.',
-  },
-  {
-    year: '2024',
-    title: 'RDAPify ships',
-    desc: 'A unified TypeScript client that makes RDAP as simple as a single function call.',
-  },
-];
 
 const BEFORE_AFTER = {
   before: `// The old way: raw WHOIS
@@ -62,49 +45,87 @@ console.log(result.expiresAt);    // ISO date string
 // SSRF protection, PII redaction, caching — all built in`,
 };
 
-const PILLARS = [
-  {
-    label: 'Security',
-    value: 'SSRF protection, certificate pinning, input sanitization',
-    accent: '#25c2a0',
+const STRINGS = {
+  en: {
+    heroEyebrow: 'WHOIS is dead. Long live RDAP.',
+    heroTitle: <>The modern way to query<br />registration data</>,
+    heroSub: 'RDAPify gives you a single, type-safe API to query domains, IPs, and ASNs across every global registry — with security, privacy, and caching out of the box.',
+    getStarted: 'Get Started',
+    tryPlayground: 'Try the Playground',
+    storyEyebrow: 'The story',
+    storyTitle: 'From ARPANET to npm install',
+    timeline: [
+      { year: '1982', title: 'WHOIS is born', desc: 'A plain-text protocol designed for ARPANET. No structure, no security, no privacy.' },
+      { year: '2015', title: 'RDAP standardized', desc: 'RFC 7480-7484 define a modern, RESTful replacement with JSON responses and access control.' },
+      { year: '2024', title: 'RDAPify ships', desc: 'A unified TypeScript client that makes RDAP as simple as a single function call.' },
+    ],
+    baEyebrow: 'Before & after',
+    baTitle: 'See the difference',
+    baLabelBefore: 'Before',
+    baLabelAfter: 'After',
+    pillarsEyebrow: 'Built for production',
+    pillarsTitle: "Everything you need, nothing you don't",
+    pillars: [
+      { label: 'Security', value: 'SSRF protection, certificate pinning, input sanitization', accent: '#25c2a0' },
+      { label: 'Privacy', value: 'Automatic PII redaction, GDPR & CCPA compliance built in', accent: '#3b82f6' },
+      { label: 'Performance', value: 'Smart caching, connection pooling, gzip/brotli compression', accent: '#a78bfa' },
+      { label: 'TypeScript', value: '100% type coverage with IDE autocompletion and compile-time safety', accent: '#f59e0b' },
+    ],
+    ctaTitle: 'Ready to replace WHOIS?',
+    readDocs: 'Read the Docs',
+    viewGitHub: 'View on GitHub',
+    viewNpm: 'View on npm',
+    layoutTitle: 'RDAPify — The Modern Way to Query Registration Data',
+    layoutDesc: 'Unified, type-safe RDAP client. Query domains, IPs, and ASNs across all global registries with one API.',
   },
-  {
-    label: 'Privacy',
-    value: 'Automatic PII redaction, GDPR & CCPA compliance built in',
-    accent: '#3b82f6',
+  ar: {
+    heroEyebrow: 'WHOIS انتهى. يحيا RDAP.',
+    heroTitle: <>الطريقة الحديثة للاستعلام<br />عن بيانات التسجيل</>,
+    heroSub: 'توفّر لك RDAPify واجهة برمجية واحدة وآمنة للاستعلام عن النطاقات وعناوين IP وأرقام AS عبر جميع سجلات الإنترنت العالمية — مع الأمان والخصوصية والتخزين المؤقت جاهزة للاستخدام.',
+    getStarted: 'ابدأ الآن',
+    tryPlayground: 'جرّب الملعب',
+    storyEyebrow: 'القصة',
+    storyTitle: 'من ARPANET إلى npm install',
+    timeline: [
+      { year: '1982', title: 'ولادة WHOIS', desc: 'بروتوكول نص عادي صُمّم لشبكة ARPANET. بلا هيكل، بلا أمان، بلا خصوصية.' },
+      { year: '2015', title: 'توحيد RDAP', desc: 'عرّفت معايير RFC 7480-7484 بديلاً حديثاً وموحّداً بردود JSON والتحكم في الوصول.' },
+      { year: '2024', title: 'إطلاق RDAPify', desc: 'عميل TypeScript موحّد يجعل RDAP بسيطاً كاستدعاء دالة واحدة.' },
+    ],
+    baEyebrow: 'قبل وبعد',
+    baTitle: 'شاهد الفرق',
+    baLabelBefore: 'قبل',
+    baLabelAfter: 'بعد',
+    pillarsEyebrow: 'مبني للإنتاج',
+    pillarsTitle: 'كل ما تحتاجه، لا أكثر ولا أقل',
+    pillars: [
+      { label: 'الأمان', value: 'حماية SSRF، تثبيت الشهادات، تنقية المدخلات', accent: '#25c2a0' },
+      { label: 'الخصوصية', value: 'إخفاء PII تلقائي، امتثال GDPR و CCPA مدمج', accent: '#3b82f6' },
+      { label: 'الأداء', value: 'تخزين مؤقت ذكي، تجميع الاتصالات، ضغط gzip/brotli', accent: '#a78bfa' },
+      { label: 'TypeScript', value: 'تغطية أنواع 100% مع الإكمال التلقائي وسلامة وقت التجميع', accent: '#f59e0b' },
+    ],
+    ctaTitle: 'هل أنت مستعد لاستبدال WHOIS؟',
+    readDocs: 'اقرأ التوثيق',
+    viewGitHub: 'عرض على GitHub',
+    viewNpm: 'عرض على npm',
+    layoutTitle: 'RDAPify — الطريقة الحديثة للاستعلام عن بيانات التسجيل',
+    layoutDesc: 'عميل RDAP موحّد وآمن. استعلم عن النطاقات وعناوين IP وأرقام AS عبر جميع سجلات الإنترنت بواجهة واحدة.',
   },
-  {
-    label: 'Performance',
-    value: 'Smart caching, connection pooling, gzip/brotli compression',
-    accent: '#a78bfa',
-  },
-  {
-    label: 'TypeScript',
-    value: '100% type coverage with IDE autocompletion and compile-time safety',
-    accent: '#f59e0b',
-  },
-];
+};
 
-function Hero() {
+function Hero({ s }) {
   return (
     <header className={styles.hero}>
       <div className={clsx('container', styles.heroInner)}>
         <div className={styles.heroText}>
-          <p className={styles.eyebrow}>WHOIS is dead. Long live RDAP.</p>
-          <h1 className={styles.heroTitle}>
-            The modern way to query<br />
-            registration data
-          </h1>
-          <p className={styles.heroSub}>
-            RDAPify gives you a single, type-safe API to query domains, IPs, and ASNs
-            across every global registry — with security, privacy, and caching out of the box.
-          </p>
+          <p className={styles.eyebrow}>{s.heroEyebrow}</p>
+          <h1 className={styles.heroTitle}>{s.heroTitle}</h1>
+          <p className={styles.heroSub}>{s.heroSub}</p>
           <div className={styles.heroCta}>
             <Link className={styles.btnPrimary} to="/docs/getting-started/installation">
-              Get Started
+              {s.getStarted}
             </Link>
             <Link className={styles.btnGhost} to="/playground">
-              Try the Playground
+              {s.tryPlayground}
             </Link>
           </div>
         </div>
@@ -126,16 +147,14 @@ function Hero() {
   );
 }
 
-function Timeline() {
+function Timeline({ s }) {
   return (
     <section className={styles.timeline}>
       <div className="container">
-        <h2 className={styles.sectionEyebrow}>The story</h2>
-        <h3 className={styles.sectionTitle}>
-          From ARPANET to npm install
-        </h3>
+        <h2 className={styles.sectionEyebrow}>{s.storyEyebrow}</h2>
+        <h3 className={styles.sectionTitle}>{s.storyTitle}</h3>
         <div className={styles.timelineTrack}>
-          {TIMELINE.map(({ year, title, desc }) => (
+          {s.timeline.map(({ year, title, desc }) => (
             <div key={year} className={styles.timelineItem}>
               <div className={styles.timelineMarker}>
                 <span className={styles.timelineYear}>{year}</span>
@@ -153,21 +172,21 @@ function Timeline() {
   );
 }
 
-function BeforeAfter() {
+function BeforeAfter({ s }) {
   return (
     <section className={styles.beforeAfter}>
       <div className="container">
-        <h2 className={styles.sectionEyebrow}>Before &amp; after</h2>
-        <h3 className={styles.sectionTitle}>See the difference</h3>
+        <h2 className={styles.sectionEyebrow}>{s.baEyebrow}</h2>
+        <h3 className={styles.sectionTitle}>{s.baTitle}</h3>
         <div className={styles.baGrid}>
           <div className={styles.baCard}>
-            <span className={styles.baLabel} data-variant="before">Before</span>
+            <span className={styles.baLabel} data-variant="before">{s.baLabelBefore}</span>
             <CodeBlock language="javascript" className={styles.baCode}>
               {BEFORE_AFTER.before}
             </CodeBlock>
           </div>
           <div className={styles.baCard}>
-            <span className={styles.baLabel} data-variant="after">After</span>
+            <span className={styles.baLabel} data-variant="after">{s.baLabelAfter}</span>
             <CodeBlock language="typescript" className={styles.baCode}>
               {BEFORE_AFTER.after}
             </CodeBlock>
@@ -178,14 +197,14 @@ function BeforeAfter() {
   );
 }
 
-function Pillars() {
+function Pillars({ s }) {
   return (
     <section className={styles.pillars}>
       <div className="container">
-        <h2 className={styles.sectionEyebrow}>Built for production</h2>
-        <h3 className={styles.sectionTitle}>Everything you need, nothing you don't</h3>
+        <h2 className={styles.sectionEyebrow}>{s.pillarsEyebrow}</h2>
+        <h3 className={styles.sectionTitle}>{s.pillarsTitle}</h3>
         <div className={styles.pillarGrid}>
-          {PILLARS.map(({ label, value, accent }) => (
+          {s.pillars.map(({ label, value, accent }) => (
             <div key={label} className={styles.pillarCard}>
               <div className={styles.pillarAccent} style={{ background: accent }} />
               <h4 className={styles.pillarLabel}>{label}</h4>
@@ -198,24 +217,24 @@ function Pillars() {
   );
 }
 
-function BottomCta() {
+function BottomCta({ s }) {
   return (
     <section className={styles.bottomCta}>
       <div className="container">
         <div className={styles.ctaCard}>
-          <h2>Ready to replace WHOIS?</h2>
+          <h2>{s.ctaTitle}</h2>
           <div className={styles.ctaInstall}>
             <code>npm install rdapify</code>
           </div>
           <div className={styles.ctaLinks}>
             <Link className="button button--primary button--lg" to="/docs/getting-started/installation">
-              Read the Docs
+              {s.readDocs}
             </Link>
             <Link className="button button--outline button--primary button--lg" to="https://github.com/rdapify/rdapify">
-              View on GitHub
+              {s.viewGitHub}
             </Link>
             <Link className="button button--outline button--primary button--lg" to="https://www.npmjs.com/package/rdapify">
-              View on npm
+              {s.viewNpm}
             </Link>
           </div>
         </div>
@@ -225,16 +244,17 @@ function BottomCta() {
 }
 
 export default function Home() {
+  const { i18n: { currentLocale } } = useDocusaurusContext();
+  const s = STRINGS[currentLocale] || STRINGS.en;
+
   return (
-    <Layout
-      title="RDAPify — The Modern Way to Query Registration Data"
-      description="Unified, type-safe RDAP client. Query domains, IPs, and ASNs across all global registries with one API.">
-      <Hero />
+    <Layout title={s.layoutTitle} description={s.layoutDesc}>
+      <Hero s={s} />
       <main>
-        <Timeline />
-        <BeforeAfter />
-        <Pillars />
-        <BottomCta />
+        <Timeline s={s} />
+        <BeforeAfter s={s} />
+        <Pillars s={s} />
+        <BottomCta s={s} />
       </main>
     </Layout>
   );
