@@ -1,4 +1,5 @@
 ---
+date: 2026-03-22
 slug: whois-is-dead-why-rdap-is-the-future
 title: "WHOIS is Dead: Why RDAP is the Future of Domain Lookups"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "WHOIS served the internet for 40+ years, but it's being replaced. 
 keywords: [whois alternative, rdap protocol, domain lookup api, whois replacement, rdap vs whois, domain registration data]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-22
 
 WHOIS has been the backbone of domain registration lookups since 1982. But after 40+ years of service, it's officially being replaced. ICANN has mandated the transition to RDAP (Registration Data Access Protocol), and major registries are already making the switch.
 
@@ -146,5 +148,6 @@ The transition isn't optional — it's happening now. The sooner you migrate, th
 Start with `npm install rdapify` and make your first RDAP query in under 5 minutes.
 
 ---
+date: 2026-03-22
 
 *Have questions about migrating from WHOIS to RDAP? Join our [GitHub Discussions](https://github.com/rdapify/rdapify/discussions) or check out the [Getting Started guide](/docs/getting-started/installation).*

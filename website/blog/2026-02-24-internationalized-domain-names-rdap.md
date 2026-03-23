@@ -1,4 +1,5 @@
 ---
+date: 2026-02-24
 slug: internationalized-domain-names-rdap
 title: "Internationalized Domain Names (IDN) with RDAP: A Complete Guide"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "How RDAP handles Internationalized Domain Names (IDN) — Unicode 
 keywords: [internationalized domain names, idn rdap, unicode domain lookup, punycode rdap, arabic domain names, chinese domain lookup, idna rdap]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-24
 
 Over half the world doesn't use Latin characters. Internationalized Domain Names (IDN) let you register domains in Arabic, Chinese, Cyrillic, Devanagari, and dozens of other scripts. RDAP was built with internationalization in mind — unlike WHOIS, which was ASCII-only. Here's everything you need to know.
 
@@ -194,5 +196,6 @@ const chineseTLD = await client.domain('xn--fiq228c5hs.xn--vermgensberatung-pwb'
 RDAP's native Unicode support is a significant advantage over WHOIS. You get clean, structured responses with both ACE and Unicode forms, making it easy to build truly international domain management tools.
 
 ---
+date: 2026-02-24
 
 *Try IDN lookups in our [Playground](/playground) — it handles both Unicode and Punycode forms.*

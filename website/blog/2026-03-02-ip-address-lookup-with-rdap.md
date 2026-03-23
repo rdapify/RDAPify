@@ -1,4 +1,5 @@
 ---
+date: 2026-03-02
 slug: ip-address-lookup-with-rdap
 title: "IP Address Lookup with RDAP: A Practical Guide"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Learn how to look up IP address ownership, geolocation hints, and 
 keywords: [ip address lookup, ip whois lookup, rdap ip query, who owns ip address, ip address information, ip network lookup, ipv6 lookup]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-02
 
 Need to find out who owns an IP address, what network it belongs to, or when it was allocated? RDAP provides structured, authoritative answers. This guide shows you how to perform IP lookups with real code examples.
 
@@ -259,5 +261,6 @@ const client = new RDAPClient({
 IP address lookups with RDAP give you structured, authoritative data about network allocations and ownership. Whether you're investigating security incidents, reporting abuse, or analyzing network traffic, RDAP provides reliable answers in a consistent JSON format.
 
 ---
+date: 2026-03-02
 
 *Try IP lookups in our [Playground](/playground) or install RDAPify: `npm install rdapify`.*

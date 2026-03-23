@@ -1,4 +1,5 @@
 ---
+date: 2026-02-08
 slug: building-domain-intelligence-api-with-rdapify
 title: "Building a Domain Intelligence API with RDAPify"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Build a production-ready domain intelligence REST API using RDAPif
 keywords: [domain intelligence api, domain lookup api, build whois api, rdap api nodejs, domain information api, domain data api, ip lookup api]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-08
 
 Want to build your own domain intelligence API? In this tutorial, we'll create a production-ready REST API that provides domain, IP, and ASN lookups using RDAPify. Full source code included — deploy it in minutes.
 
@@ -465,5 +467,6 @@ Most PaaS platforms auto-detect Node.js. Add a start script:
 - **Use RDAPify Pro** — Bulk monitoring, change detection, and webhooks built-in
 
 ---
+date: 2026-02-08
 
 *Full source code on [GitHub](https://github.com/rdapify/rdapify/tree/main/examples). Need help? Join [GitHub Discussions](https://github.com/rdapify/rdapify/discussions).*

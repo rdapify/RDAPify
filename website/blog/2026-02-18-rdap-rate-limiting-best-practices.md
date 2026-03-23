@@ -1,4 +1,5 @@
 ---
+date: 2026-02-18
 slug: rdap-rate-limiting-best-practices
 title: "RDAP Rate Limiting: Best Practices for Respectful Querying"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "How RDAP rate limiting works, what happens when you exceed limits,
 keywords: [rdap rate limit, domain lookup rate limit, rdap 429 error, respectful rdap client, rdap throttling, domain query rate]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-18
 
 RDAP servers are public infrastructure shared by everyone. Aggressive querying gets you rate-limited — or blocked entirely. Here's how rate limiting works in RDAP and how to build clients that stay within bounds.
 
@@ -228,5 +230,6 @@ class PerRegistryLimiter {
 Respectful RDAP querying isn't just good etiquette — it keeps your application working reliably. Implement caching, backoff, and queue management, and you'll rarely see a 429 response.
 
 ---
+date: 2026-02-18
 
 *RDAPify handles backoff and `Retry-After` automatically. See the [client documentation](/docs/api-reference/client).*

@@ -1,4 +1,5 @@
 ---
+date: 2026-02-28
 slug: rdap-in-serverless-functions-aws-lambda
 title: "Using RDAP in Serverless Functions: AWS Lambda, Vercel, and Cloudflare Workers"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "How to use RDAPify in serverless environments — AWS Lambda, Verc
 keywords: [rdap aws lambda, domain lookup serverless, vercel rdap, cloudflare workers domain lookup, serverless whois, rdap edge functions]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-28
 
 Serverless functions are a natural fit for RDAP lookups — stateless, scalable, and pay-per-use. But serverless brings unique challenges: cold starts, timeout limits, and stateless caching. Here's how to make RDAPify work efficiently in each major serverless environment.
 
@@ -271,5 +273,6 @@ compatibility_date = "2024-01-01"
 6. **Handle errors explicitly** — Return proper HTTP status codes
 
 ---
+date: 2026-02-28
 
 *RDAPify works in Node.js 20+, Deno, Bun, and browser environments. See [Multi-Environment docs](/docs/getting-started/installation).*

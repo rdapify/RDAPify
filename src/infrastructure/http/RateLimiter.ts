@@ -148,6 +148,20 @@ export class RateLimiter {
   }
 
   /**
+   * Returns whether the rate limiter is enabled
+   */
+  isEnabled(): boolean {
+    return this.enabled;
+  }
+
+  /**
+   * Returns the rate limiter configuration
+   */
+  getConfig(): { maxRequests: number; windowMs: number } {
+    return { maxRequests: this.maxRequests, windowMs: this.windowMs };
+  }
+
+  /**
    * Gets rate limiter statistics
    */
   getStats(): {

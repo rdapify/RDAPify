@@ -1,4 +1,5 @@
 ---
+date: 2026-02-14
 slug: whois-to-rdap-enterprise-migration-guide
 title: "From WHOIS to RDAP: A Migration Guide for Enterprise Applications"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "A practical migration guide for enterprise teams moving from WHOIS
 keywords: [whois to rdap migration, enterprise rdap, rdap migration guide, replace whois with rdap, rdap enterprise integration, domain lookup migration]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-14
 
 Your enterprise has been using WHOIS for years. Now ICANN is deprecating it, registries are shutting down WHOIS endpoints, and your parsing code breaks every other week. It's time to migrate to RDAP. This guide gives you a structured, low-risk migration path.
 
@@ -328,5 +330,6 @@ Migrating from WHOIS to RDAP is an investment that pays off immediately: structu
 Start with shadow mode today. Your future self will thank you.
 
 ---
+date: 2026-02-14
 
 *Questions about enterprise migration? Join our [GitHub Discussions](https://github.com/rdapify/rdapify/discussions) or check out the [API Reference](/docs/api-reference/client).*

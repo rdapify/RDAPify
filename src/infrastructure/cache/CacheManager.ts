@@ -9,6 +9,7 @@ import type { CacheOptions } from '../../shared/types/options';
 
 import { InMemoryCache } from './InMemoryCache';
 import { RedisCache } from './RedisCache';
+import { StaleWhileRevalidateCache } from './StaleWhileRevalidateCache';
 
 /**
  * Cache interface that all cache implementations must follow
@@ -62,6 +63,13 @@ export class CacheManager implements ICache {
       case 'none':
         // No-op cache
         this.cache = new NoOpCache();
+        break;
+
+      case 'stale-while-revalidate':
+        this.cache = new StaleWhileRevalidateCache(
+          options.maxSize || 1000,
+          options.revalidateCallback
+        );
         break;
     }
   }

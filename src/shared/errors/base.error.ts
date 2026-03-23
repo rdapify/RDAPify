@@ -221,6 +221,15 @@ export class SSRFProtectionError extends RDAPifyError {
 }
 
 /**
+ * Search not supported — RDAP server returned 404 or 501 for a search request.
+ */
+export class SearchNotSupportedError extends RDAPifyError {
+  constructor(message: string, context?: Record<string, any>) {
+    super(message, 'SEARCH_NOT_SUPPORTED', 404, context);
+  }
+}
+
+/**
  * Query was aborted by a `beforeQuery` middleware hook calling `ctx.abort()`.
  */
 export class QueryAbortedError extends RDAPifyError {

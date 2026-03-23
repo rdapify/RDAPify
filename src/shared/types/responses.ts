@@ -27,6 +27,8 @@ export interface DomainResponse {
   links?: RDAPLink[];
   remarks?: RDAPRemark[];
   raw?: any;
+  /** Non-standard RDAP extension fields from the raw response */
+  extensions?: Record<string, unknown>;
   metadata: {
     source: string;
     timestamp: string;
@@ -53,6 +55,8 @@ export interface IPResponse {
   links?: RDAPLink[];
   remarks?: RDAPRemark[];
   raw?: any;
+  /** Non-standard RDAP extension fields from the raw response */
+  extensions?: Record<string, unknown>;
   metadata: {
     source: string;
     timestamp: string;
@@ -78,6 +82,8 @@ export interface ASNResponse {
   links?: RDAPLink[];
   remarks?: RDAPRemark[];
   raw?: any;
+  /** Non-standard RDAP extension fields from the raw response */
+  extensions?: Record<string, unknown>;
   metadata: {
     source: string;
     timestamp: string;
@@ -104,6 +110,8 @@ export interface NameserverResponse {
   links?: RDAPLink[];
   remarks?: RDAPRemark[];
   raw?: any;
+  /** Non-standard RDAP extension fields from the raw response */
+  extensions?: Record<string, unknown>;
   metadata: {
     source: string;
     timestamp: string;
@@ -126,11 +134,36 @@ export interface EntityResponse {
   links?: RDAPLink[];
   remarks?: RDAPRemark[];
   raw?: any;
+  /** Non-standard RDAP extension fields from the raw response */
+  extensions?: Record<string, unknown>;
   metadata: {
     source: string;
     timestamp: string;
     cached: boolean;
   };
+}
+
+/**
+ * Search result wrapper for RDAP search queries
+ */
+export interface SearchResult<T> {
+  results: T[];
+  totalCount?: number;
+  query: string;
+}
+
+/**
+ * Explain result for debugging RDAP query pipeline
+ */
+export interface ExplainResult {
+  query: string;
+  queryType: 'domain' | 'ip' | 'asn' | 'nameserver' | 'entity';
+  detectedType: string;
+  bootstrapServer: string | null;
+  builtUrl: string | null;
+  cacheStatus: 'hit' | 'miss' | 'disabled';
+  latencyMs: number;
+  error?: string;
 }
 
 /**

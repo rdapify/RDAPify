@@ -1,4 +1,5 @@
 ---
+date: 2026-03-08
 slug: brand-protection-detect-typosquatting-rdap
 title: "Brand Protection with RDAP: Detect Typosquatting and Domain Abuse"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Learn how to use RDAP to monitor your brand against typosquatting,
 keywords: [typosquatting detection, brand protection domain, cybersquatting monitoring, domain brand abuse, rdap brand monitoring, detect similar domains]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-08
 
 Someone registered `paypa1.com` before PayPal noticed. Thousands of brands are targeted every day by typosquatters, cybersquatters, and phishing actors. RDAP gives you the tools to monitor and respond. Here's how to build a brand protection system.
 
@@ -286,5 +288,6 @@ async function getAbuseContact(domain: string) {
 Brand protection is an ongoing battle, but RDAP makes it systematic. Automated scanning catches threats early — before they can be weaponized for phishing or traffic theft. Start with your most valuable brand names and expand from there.
 
 ---
+date: 2026-03-08
 
 *Need bulk monitoring? [RDAPify Pro](https://rdapify.com) includes built-in brand monitoring with change detection and webhook alerts.*

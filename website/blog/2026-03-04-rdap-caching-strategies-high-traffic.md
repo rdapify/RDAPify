@@ -1,4 +1,5 @@
 ---
+date: 2026-03-04
 slug: rdap-caching-strategies-high-traffic
 title: "RDAP Caching Strategies for High-Traffic Applications"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Optimize RDAP query performance with smart caching strategies. Lea
 keywords: [rdap caching, domain lookup performance, cache rdap responses, high traffic domain lookup, optimize rdap queries, redis rdap cache]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-04
 
 If your application performs millions of domain lookups, naive RDAP querying will hammer registries, hit rate limits, and slow everything down. Smart caching is the difference between a system that scales and one that breaks. Here's how to do it right.
 
@@ -249,5 +251,6 @@ Cache hit rates achieved: 89% (in-memory), 94% (Redis).
 Caching transforms RDAP from a bottleneck into a fast, reliable service. Start with RDAPify's built-in memory cache, then add Redis when you need distributed caching across multiple instances. Aim for a cache hit rate above 90% in production.
 
 ---
+date: 2026-03-04
 
 *RDAPify's caching system supports custom adapters for Redis, Memcached, and any other store. See the [Cache documentation](/docs/getting-started/installation).*

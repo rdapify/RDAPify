@@ -51,6 +51,12 @@ export interface CacheOptions {
    * @default 'rdapify:'
    */
   keyPrefix?: string;
+  /**
+   * Callback invoked when stale-while-revalidate triggers a background refresh.
+   * Called with the cache key and the newly fetched fresh value.
+   * Only used when `strategy` is `'stale-while-revalidate'`.
+   */
+  revalidateCallback?: (key: string, freshValue: import('./responses').RDAPResponse) => void;
 }
 
 /**
@@ -69,6 +75,13 @@ export interface SSRFProtectionOptions {
   blockedDomains?: string[];
   /** Custom allowed domains (whitelist) */
   allowedDomains?: string[];
+  /**
+   * Enable DNS rebinding protection.
+   * When true, resolves domain names via DNS and validates each returned IP
+   * against SSRF rules before allowing the request.
+   * @default false
+   */
+  dnsRebinding?: boolean;
 }
 
 /**
@@ -130,6 +143,14 @@ export interface RateLimitOptions {
   maxRequests?: number;
   /** Time window in milliseconds */
   windowMs?: number;
+  /**
+   * Rate limiter backend adapter.
+   * - `'memory'` (default): single-process in-memory token bucket
+   * - `'redis'`: distributed via Redis; requires `redisClient`
+   */
+  adapter?: 'memory' | 'redis';
+  /** Redis client instance for distributed rate limiting (required when `adapter: 'redis'`) */
+  redisClient?: unknown;
 }
 
 /**
@@ -314,6 +335,23 @@ export interface RDAPClientOptions {
    * or any OTLP-compatible backend.
    */
   telemetry?: TelemetryOptions;
+
+  /**
+   * AbortSignal to cancel in-flight RDAP requests.
+   * Pass an AbortController's signal to cancel all requests made by this client.
+   * When the signal fires, in-flight requests throw QueryAbortedError.
+   */
+  signal?: AbortSignal;
+
+  /**
+   * Anonymous usage telemetry configuration.
+   * Disabled by default. When enabled, sends anonymous usage statistics
+   * (install ID, node version, platform, query types used) to rdapify.com.
+   */
+  usageTelemetry?: {
+    enabled?: boolean;
+    endpoint?: string;
+  };
 }
 
 /**
@@ -339,6 +377,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
     blockLinkLocal: true,
     blockedDomains: [],
     allowedDomains: [],
+    dnsRebinding: false,
   },
   privacy: {
     redactPII: true,
@@ -377,6 +416,11 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   },
   http2: false,
   telemetry: {
+    enabled: false,
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signal: undefined as any,
+  usageTelemetry: {
     enabled: false,
   },
 };

@@ -1,4 +1,5 @@
 ---
+date: 2026-03-06
 slug: securing-domain-lookups-ssrf-protection
 title: "Securing Domain Lookups: A Guide to SSRF Protection in RDAP Clients"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "RDAP clients make outbound HTTP requests — making them potential
 keywords: [ssrf protection, server side request forgery, secure domain lookup, rdap security, ssrf prevention nodejs, domain lookup security]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-06
 
 Every RDAP client makes outbound HTTP requests to external servers. If user input influences those requests, you have a potential Server-Side Request Forgery (SSRF) vulnerability. This guide shows you how SSRF attacks work in the context of domain lookups and how to defend against them.
 
@@ -210,5 +212,6 @@ function validateDomainInput(input: string): boolean {
 RDAP clients are powerful tools, but they make outbound HTTP requests based on semi-trusted data. SSRF protection isn't optional — it's essential. RDAPify builds these defenses in by default, so you can query registration data safely without rolling your own security layer.
 
 ---
+date: 2026-03-06
 
 *Learn more about RDAPify's security features in our [Security documentation](/docs/guides/error-handling) or run the SSRF test suite: `npm run test:security`.*

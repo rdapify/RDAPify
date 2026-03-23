@@ -1,4 +1,5 @@
 ---
+date: 2026-03-12
 slug: build-whois-cli-tool-nodejs-rdap
 title: "Build Your Own WHOIS-like CLI Tool with Node.js and RDAP"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Build a command-line domain lookup tool using Node.js and RDAPify.
 keywords: [whois cli tool, build whois command, nodejs cli domain lookup, rdap cli, domain lookup command line, create whois alternative]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-12
 
 The built-in `whois` command is showing its age. Let's build a modern replacement using Node.js and RDAP — with colored output, JSON mode, and support for domains, IPs, and ASNs. You'll have it running in under 30 minutes.
 
@@ -276,5 +278,6 @@ rdapify asn 15169
 ```
 
 ---
+date: 2026-03-12
 
 *Full CLI source code available in the [RDAPify examples](https://github.com/rdapify/rdapify/tree/main/examples).*

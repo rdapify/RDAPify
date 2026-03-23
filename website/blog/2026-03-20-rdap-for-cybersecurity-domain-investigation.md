@@ -1,4 +1,5 @@
 ---
+date: 2026-03-20
 slug: rdap-for-cybersecurity-domain-investigation
 title: "RDAP for Cybersecurity: How to Investigate Suspicious Domains"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Learn how cybersecurity professionals use RDAP to investigate susp
 keywords: [domain investigation, threat intelligence rdap, suspicious domain lookup, cybersecurity domain analysis, malicious domain detection, rdap security research]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-20
 
 When a suspicious domain appears in your logs, RDAP is your first tool for investigation. It gives you registration history, nameserver patterns, registrar data, and status flags — all in structured JSON. Here's how security professionals use it effectively.
 
@@ -252,5 +254,6 @@ async function investigateBatch(domains: string[]) {
 RDAP transforms domain investigation from manual text parsing into structured, automated analysis. Combined with other threat intelligence sources, it gives security teams a fast, reliable way to triage suspicious domains.
 
 ---
+date: 2026-03-20
 
 *Questions about using RDAPify for security research? Join our [GitHub Discussions](https://github.com/rdapify/rdapify/discussions).*

@@ -3,6 +3,7 @@
  * @module fetcher/SSRFProtection
  */
 
+import * as dns from 'dns';
 import { SSRFProtectionError } from '../../shared/types/errors';
 import type { SSRFProtectionOptions } from '../../shared/types/options';
 import { isPrivateIP, isLocalhost, isLinkLocal, validateIP } from '../../shared/utils/validators';
@@ -21,6 +22,7 @@ export class SSRFProtection {
       blockLinkLocal: options.blockLinkLocal ?? true,
       blockedDomains: options.blockedDomains || [],
       allowedDomains: options.allowedDomains || [],
+      dnsRebinding: options.dnsRebinding ?? false,
     };
   }
 
@@ -174,11 +176,36 @@ export class SSRFProtection {
       }
     }
 
-    // Note: In a production environment, you would also want to:
-    // 1. Resolve the domain to IP addresses
-    // 2. Check each resolved IP against the same rules
-    // However, this requires DNS resolution which is environment-specific
-    // and will be implemented in the Fetcher class
+    // DNS rebinding protection: resolve domain and validate each resolved IP
+    if (this.options.dnsRebinding) {
+      await this.validateDnsRebinding(hostname, url);
+    }
+  }
+
+  /**
+   * Resolves the hostname via DNS and validates each returned IP address.
+   * Throws SSRFProtectionError if any resolved IP is private/local.
+   * Silently ignores DNS resolution failures (ENOTFOUND, etc.).
+   */
+  private async validateDnsRebinding(hostname: string, url: string): Promise<void> {
+    let ipv4Addresses: string[] = [];
+    let ipv6Addresses: string[] = [];
+
+    try {
+      ipv4Addresses = await dns.promises.resolve4(hostname);
+    } catch {
+      // Ignore resolution failures — domain may not have A records or may not exist
+    }
+
+    try {
+      ipv6Addresses = await dns.promises.resolve6(hostname);
+    } catch {
+      // Ignore resolution failures — domain may not have AAAA records or may not exist
+    }
+
+    for (const ip of [...ipv4Addresses, ...ipv6Addresses]) {
+      await this.validateIPAddress(ip, url);
+    }
   }
 
   /**

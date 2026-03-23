@@ -36,4 +36,6 @@ export type {
   RDAPResponse,
   RawRDAPResponse,
   AvailabilityResult,
+  SearchResult,
+  ExplainResult,
 } from './responses';

@@ -16,8 +16,10 @@ import { SSRFProtection, PIIRedactor } from '../../infrastructure/security';
 import { MetricsCollector } from '../../infrastructure/monitoring/MetricsCollector';
 import { Logger } from '../../infrastructure/logging/Logger';
 import type { LogLevel } from '../../infrastructure/logging/Logger';
-import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse, AvailabilityResult } from '../../shared/types';
-import { ValidationError, RDAPServerError } from '../../shared/errors';
+import type { DomainResponse, IPResponse, ASNResponse, NameserverResponse, EntityResponse, AvailabilityResult, ExplainResult, SearchResult } from '../../shared/types';
+import { ValidationError, RDAPServerError, SearchNotSupportedError } from '../../shared/errors';
+import { UsageTelemetry } from '../../infrastructure/telemetry/UsageTelemetry';
+import { validateDomain as _validateDomainFn, validateIP as _validateIPFn, validateASN as _validateASNFn } from '../../shared/utils/validators';
 import { DEFAULT_OPTIONS } from '../../shared/types/options';
 import type {
   RDAPClientOptions,
@@ -152,6 +154,7 @@ export class RDAPClient {
         maxRedirects: this.options.maxRedirects,
         ssrfProtection: this.ssrfProtection,
         http2: this.options.http2,
+        signal: this.options.signal,
         logRedirect: (fromUrl, toUrl) => {
           this.logger?.warn(`Redirect: ${fromUrl} → ${toUrl}`);
           if (this.debugEnabled && this.debugLogger) {
@@ -285,7 +288,9 @@ export class RDAPClient {
    */
   async domain(domain: string): Promise<DomainResponse> {
     if (this.nativeBackend) return this.nativeBackend.domain(domain);
-    return this.orchestrator.queryDomain(domain);
+    const result = await this.orchestrator.queryDomain(domain);
+    this.pingTelemetry('domain');
+    return result;
   }
 
   /**
@@ -303,7 +308,9 @@ export class RDAPClient {
    */
   async ip(ip: string): Promise<IPResponse> {
     if (this.nativeBackend) return this.nativeBackend.ip(ip);
-    return this.orchestrator.queryIP(ip);
+    const result = await this.orchestrator.queryIP(ip);
+    this.pingTelemetry('ip');
+    return result;
   }
 
   /**
@@ -320,7 +327,9 @@ export class RDAPClient {
    */
   async asn(asn: string | number): Promise<ASNResponse> {
     if (this.nativeBackend) return this.nativeBackend.asn(asn);
-    return this.orchestrator.queryASN(asn);
+    const result = await this.orchestrator.queryASN(asn);
+    this.pingTelemetry('asn');
+    return result;
   }
 
   /**
@@ -337,7 +346,9 @@ export class RDAPClient {
    */
   async nameserver(nameserver: string): Promise<NameserverResponse> {
     if (this.nativeBackend) return this.nativeBackend.nameserver(nameserver);
-    return this.orchestrator.queryNameserver(nameserver);
+    const result = await this.orchestrator.queryNameserver(nameserver);
+    this.pingTelemetry('nameserver');
+    return result;
   }
 
   /**
@@ -357,7 +368,9 @@ export class RDAPClient {
    */
   async entity(handle: string, serverUrl: string): Promise<EntityResponse> {
     if (this.nativeBackend) return this.nativeBackend.entity(handle, serverUrl);
-    return this.orchestrator.queryEntity(handle, serverUrl);
+    const result = await this.orchestrator.queryEntity(handle, serverUrl);
+    this.pingTelemetry('entity');
+    return result;
   }
 
   /**
@@ -417,6 +430,199 @@ export class RDAPClient {
   }
 
   /**
+   * Searches for domains matching a pattern via the RDAP Search API (RFC 7483).
+   *
+   * @param pattern - Domain name search pattern (may include wildcards, e.g. "example*")
+   * @param serverUrl - Optional RDAP server base URL; falls back to bootstrap discovery for "com"
+   * @returns Search results containing matching domain responses
+   * @throws {SearchNotSupportedError} When the server returns 404 or 501
+   *
+   * @example
+   * ```typescript
+   * const results = await client.searchDomains('example*', 'https://rdap.verisign.com/com/v1');
+   * console.log(results.results.length);
+   * ```
+   */
+  async searchDomains(
+    pattern: string,
+    serverUrl?: string
+  ): Promise<SearchResult<DomainResponse>> {
+    const server = serverUrl ?? (await this.bootstrap.discoverDomain('example.com'));
+    const url = `${server}/domains?name=${encodeURIComponent(pattern)}`;
+
+    let raw: any;
+    try {
+      raw = await this.fetchWithRetry(url);
+    } catch (error) {
+      if (
+        error instanceof RDAPServerError &&
+        (error.statusCode === 404 || error.statusCode === 501)
+      ) {
+        throw new SearchNotSupportedError(
+          `RDAP server does not support domain search: ${server}`,
+          { pattern, serverUrl: server }
+        );
+      }
+      throw error;
+    }
+
+    const domainSearchResults: any[] = raw['domainSearchResults'] ?? [];
+    const results = domainSearchResults.map((item: any) =>
+      this.normalizer.normalize(item, pattern, server, false, this.options.includeRaw) as DomainResponse
+    );
+
+    return { results, totalCount: results.length, query: pattern };
+  }
+
+  /**
+   * Searches for entities matching a pattern via the RDAP Search API (RFC 7483).
+   *
+   * @param pattern - Entity handle or name search pattern
+   * @param serverUrl - RDAP server base URL to query
+   * @returns Search results containing matching entity responses
+   * @throws {SearchNotSupportedError} When the server returns 404 or 501
+   */
+  async searchEntities(
+    pattern: string,
+    serverUrl?: string
+  ): Promise<SearchResult<EntityResponse>> {
+    if (!serverUrl) {
+      throw new SearchNotSupportedError(
+        'searchEntities requires an explicit serverUrl — there is no global bootstrap for entities',
+        { pattern }
+      );
+    }
+
+    const url = `${serverUrl}/entities?fn=${encodeURIComponent(pattern)}`;
+
+    let raw: any;
+    try {
+      raw = await this.fetchWithRetry(url);
+    } catch (error) {
+      if (
+        error instanceof RDAPServerError &&
+        (error.statusCode === 404 || error.statusCode === 501)
+      ) {
+        throw new SearchNotSupportedError(
+          `RDAP server does not support entity search: ${serverUrl}`,
+          { pattern, serverUrl }
+        );
+      }
+      throw error;
+    }
+
+    const entitySearchResults: any[] = raw['entitySearchResults'] ?? [];
+    const results = entitySearchResults.map((item: any) =>
+      this.normalizer.normalize(item, pattern, serverUrl, false, this.options.includeRaw) as EntityResponse
+    );
+
+    return { results, totalCount: results.length, query: pattern };
+  }
+
+  /**
+   * Explains the RDAP query pipeline for a given input without making a real RDAP request.
+   * Useful for debugging server discovery, cache status, and URL construction.
+   *
+   * @param query - A domain, IP address, or ASN to explain
+   * @returns Detailed breakdown of the query pipeline
+   *
+   * @example
+   * ```typescript
+   * const info = await client.explain('example.com');
+   * console.log(info.bootstrapServer); // 'https://rdap.verisign.com/com/v1'
+   * console.log(info.builtUrl);        // 'https://rdap.verisign.com/com/v1/domain/example.com'
+   * ```
+   */
+  async explain(query: string): Promise<ExplainResult> {
+    const startTime = Date.now();
+
+    // Auto-detect query type
+    let queryType: ExplainResult['queryType'] = 'domain';
+    let detectedType = 'unknown';
+
+    try {
+      if (/^\d+$/.test(query) || /^AS\d+$/i.test(query)) {
+        _validateASNFn(query);
+        queryType = 'asn';
+        detectedType = 'asn';
+      } else if (query.includes('.') && /^\d/.test(query)) {
+        _validateIPFn(query);
+        queryType = 'ip';
+        detectedType = 'ipv4';
+      } else if (query.includes(':')) {
+        _validateIPFn(query);
+        queryType = 'ip';
+        detectedType = 'ipv6';
+      } else {
+        _validateDomainFn(query);
+        queryType = 'domain';
+        detectedType = 'domain';
+      }
+    } catch {
+      // Validation failed — default to domain
+      queryType = 'domain';
+      detectedType = 'unknown';
+    }
+
+    // Check cache (without side effects)
+    const cacheEnabled = this.options.cache !== false;
+    let cacheStatus: ExplainResult['cacheStatus'] = cacheEnabled ? 'miss' : 'disabled';
+
+    if (cacheEnabled) {
+      const { generateCacheKey } = await import('../../shared/utils/helpers');
+      const cacheKey = generateCacheKey(queryType, query.toLowerCase());
+      const cached = await this.cache.get(cacheKey);
+      if (cached) cacheStatus = 'hit';
+    }
+
+    // Discover bootstrap server
+    let bootstrapServer: string | null = null;
+    let builtUrl: string | null = null;
+    let error: string | undefined;
+
+    try {
+      if (queryType === 'domain') {
+        bootstrapServer = await this.bootstrap.discoverDomain(query.toLowerCase());
+        builtUrl = `${bootstrapServer}/domain/${query.toLowerCase()}`;
+      } else if (queryType === 'ip') {
+        const version = _validateIPFn(query);
+        bootstrapServer =
+          version === 'v4'
+            ? await this.bootstrap.discoverIPv4(query)
+            : await this.bootstrap.discoverIPv6(query);
+        builtUrl = `${bootstrapServer}/ip/${query}`;
+      } else if (queryType === 'asn') {
+        const asnNum = _validateASNFn(query);
+        bootstrapServer = await this.bootstrap.discoverASN(asnNum);
+        builtUrl = `${bootstrapServer}/autnum/${asnNum}`;
+      }
+    } catch (err) {
+      error = err instanceof Error ? err.message : String(err);
+    }
+
+    return {
+      query,
+      queryType,
+      detectedType,
+      bootstrapServer,
+      builtUrl,
+      cacheStatus,
+      latencyMs: Date.now() - startTime,
+      error,
+    };
+  }
+
+  /**
+   * Fires anonymous usage telemetry if enabled — never awaited, never throws.
+   */
+  private pingTelemetry(queryType: string): void {
+    const telemetryOpts = this.options.usageTelemetry as { enabled?: boolean; endpoint?: string } | undefined;
+    if (telemetryOpts?.enabled === true) {
+      UsageTelemetry.ping(queryType, telemetryOpts.endpoint);
+    }
+  }
+
+  /**
    * Fetches data with retry logic
    */
   private async fetchWithRetry(url: string): Promise<any> {
@@ -463,6 +669,53 @@ export class RDAPClient {
    */
   private normalizeOptions(options: RDAPClientOptions): Required<RDAPClientOptions> {
     return deepMerge(DEFAULT_OPTIONS, options);
+  }
+
+  /**
+   * Validates the client configuration asynchronously.
+   * Checks reachability of custom bootstrap URLs and Redis connectivity.
+   *
+   * @returns Validation result with errors and warnings
+   *
+   * @example
+   * ```typescript
+   * const result = await client.validate();
+   * if (!result.valid) {
+   *   console.error('Configuration errors:', result.errors);
+   * }
+   * ```
+   */
+  async validate(): Promise<{ valid: boolean; errors: string[]; warnings: string[] }> {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    // Check custom bootstrap URL reachability
+    const bootstrapUrl = this.options.bootstrapUrl;
+    if (bootstrapUrl && bootstrapUrl !== 'https://data.iana.org/rdap') {
+      try {
+        await this.fetcher.fetch(`${bootstrapUrl}/dns.json`);
+      } catch {
+        errors.push(`Bootstrap URL unreachable: ${bootstrapUrl}`);
+      }
+    }
+
+    // Check Redis connectivity
+    const cacheOpts = this.options.cache as any;
+    if (cacheOpts?.strategy === 'redis' && cacheOpts?.redisClient) {
+      try {
+        await (cacheOpts.redisClient as any).ping();
+      } catch {
+        errors.push('Redis connection failed');
+      }
+    }
+
+    // Warn when SSRF protection is disabled
+    const ssrfOpts = this.options.ssrfProtection as any;
+    if (ssrfOpts?.enabled === false) {
+      warnings.push('SSRF protection disabled — not safe for production');
+    }
+
+    return { valid: errors.length === 0, errors, warnings };
   }
 
   /**

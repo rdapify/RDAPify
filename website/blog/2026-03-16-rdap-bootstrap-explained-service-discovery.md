@@ -1,4 +1,5 @@
 ---
+date: 2026-03-16
 slug: rdap-bootstrap-explained-service-discovery
 title: "RDAP Bootstrap Explained: How Automatic Service Discovery Works"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "A deep dive into RDAP's bootstrap mechanism — how clients automa
 keywords: [rdap bootstrap, rdap service discovery, iana bootstrap, rdap server discovery, how rdap works, rdap iana files]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-16
 
 One of RDAP's most elegant features is automatic service discovery via bootstrap. You query `example.com` and your client automatically knows to contact Verisign's RDAP server — no hardcoded lists needed. Here's how it works under the hood.
 
@@ -205,5 +207,6 @@ The `publication` date in each file tells you when it was last updated. Clients 
 RDAP bootstrap is an elegant solution to the server discovery problem. Instead of maintaining fragile hardcoded lists, clients trust a centralized, machine-readable source maintained by IANA. It's one of the reasons RDAP scales gracefully to 1,500+ TLDs and all of internet IP space.
 
 ---
+date: 2026-03-16
 
 *Curious about RDAPify's internals? Check out the [source on GitHub](https://github.com/rdapify/rdapify).*

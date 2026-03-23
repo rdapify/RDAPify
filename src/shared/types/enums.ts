@@ -69,7 +69,7 @@ export type RoleType =
 /**
  * Cache strategy types
  */
-export type CacheStrategy = 'memory' | 'redis' | 'custom' | 'none';
+export type CacheStrategy = 'memory' | 'redis' | 'custom' | 'none' | 'stale-while-revalidate';
 
 /**
  * Retry backoff strategies

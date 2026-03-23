@@ -169,7 +169,7 @@ const config = {
           ignorePatterns: ['/tags/**', '/search'],
         },
         gtag: {
-          trackingID: 'G-QRTT9VZGJM',
+          trackingID: 'G-QMD0P4G18Z',
           anonymizeIP: true,
         },
       }),

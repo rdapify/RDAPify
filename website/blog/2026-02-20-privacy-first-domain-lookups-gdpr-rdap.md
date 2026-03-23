@@ -1,4 +1,5 @@
 ---
+date: 2026-02-20
 slug: privacy-first-domain-lookups-gdpr-rdap
 title: "Privacy-First Domain Lookups: GDPR-Compliant RDAP Queries"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "How to perform domain lookups while respecting GDPR and privacy re
 keywords: [gdpr domain lookup, privacy rdap, pii redaction domain, gdpr whois, domain data privacy, compliant domain lookup, data protection rdap]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-20
 
 Since GDPR took effect in 2018, domain registration data has been a compliance minefield. WHOIS exposed personal data freely. RDAP was designed with privacy in mind — but you still need to handle responses carefully. This guide shows you how to build privacy-compliant domain lookup tools.
 
@@ -306,5 +308,6 @@ async function cleanupOldRecords() {
 RDAP was designed with privacy in mind, but the protocol alone doesn't make you compliant. You need to handle responses carefully, minimize data collection, and implement proper safeguards. RDAPify's built-in PII redaction gives you a strong starting point.
 
 ---
+date: 2026-02-20
 
 *Learn more about RDAPify's privacy features in our [documentation](/docs/getting-started/installation) or check our [Privacy Policy](/privacy).*

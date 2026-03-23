@@ -1,42 +1,43 @@
 {
   "name": "rdapify",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.js"
-    },
-    "./node": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.js"
-    },
-    "./deno": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
     },
     "./worker": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./deno": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/esm/index.js"
     },
     "./errors": {
-      "types": "./dist/shared/errors/base.error.d.ts",
-      "require": "./dist/shared/errors/base.error.js",
-      "import": "./dist/shared/errors/base.error.js"
+      "types": "./dist/types/shared/errors/base.error.d.ts",
+      "require": "./dist/cjs/shared/errors/base.error.js",
+      "import": "./dist/esm/shared/errors/base.error.js"
     },
     "./types": {
-      "types": "./dist/shared/types/index.d.ts",
-      "require": "./dist/shared/types/index.js",
-      "import": "./dist/shared/types/index.js"
+      "types": "./dist/types/shared/types/index.d.ts",
+      "require": "./dist/cjs/shared/types/index.js",
+      "import": "./dist/esm/shared/types/index.js"
     },
     "./validators": {
-      "types": "./dist/shared/utils/validators/index.d.ts",
-      "require": "./dist/shared/utils/validators/index.js",
-      "import": "./dist/shared/utils/validators/index.js"
+      "types": "./dist/types/shared/utils/validators/index.d.ts",
+      "require": "./dist/cjs/shared/utils/validators/index.js",
+      "import": "./dist/esm/shared/utils/validators/index.js"
     }
   },
   "bin": {
@@ -51,7 +52,10 @@
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "npm run clean && tsc",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
     "clean": "rimraf dist",
     "test": "jest --runInBand",
     "test:unit": "jest --testPathPattern=unit",

@@ -17,6 +17,34 @@ import type {
 import { ParseError } from '../../shared/errors';
 
 /**
+ * RFC 7483 standard fields — all other top-level fields are vendor extensions.
+ */
+const RFC7483_STANDARD_FIELDS = new Set([
+  'objectClassName', 'handle', 'ldhName', 'unicodeName', 'status', 'entities',
+  'events', 'links', 'remarks', 'nameservers', 'secureDNS', 'registrar',
+  'ipVersion', 'startAddress', 'endAddress', 'cidr0_cidrs', 'name', 'type',
+  'country', 'startAutnum', 'endAutnum', 'port43', 'publicIds', 'network',
+  'rdapConformance', 'notices', 'vcardArray', 'roles', 'ipAddresses',
+]);
+
+/**
+ * Extracts non-standard extension fields from a raw RDAP response.
+ */
+function extractExtensions(raw: RawRDAPResponse): Record<string, unknown> | undefined {
+  const extensions: Record<string, unknown> = {};
+  let hasExtensions = false;
+
+  for (const key of Object.keys(raw)) {
+    if (!RFC7483_STANDARD_FIELDS.has(key)) {
+      extensions[key] = raw[key];
+      hasExtensions = true;
+    }
+  }
+
+  return hasExtensions ? extensions : undefined;
+}
+
+/**
  * Normalizes RDAP responses to a consistent format
  */
 export class Normalizer {
@@ -80,6 +108,7 @@ export class Normalizer {
       registrar: this.extractRegistrar(raw),
       links: raw['links'] || [],
       remarks: raw['remarks'] || [],
+      extensions: extractExtensions(raw),
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -119,6 +148,7 @@ export class Normalizer {
       events: this.normalizeEvents(raw['events'] || []),
       links: raw['links'] || [],
       remarks: raw['remarks'] || [],
+      extensions: extractExtensions(raw),
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -157,6 +187,7 @@ export class Normalizer {
       events: this.normalizeEvents(raw['events'] || []),
       links: raw['links'] || [],
       remarks: raw['remarks'] || [],
+      extensions: extractExtensions(raw),
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -199,6 +230,7 @@ export class Normalizer {
       events: this.normalizeEvents(raw['events'] || []),
       links: raw['links'] || [],
       remarks: raw['remarks'] || [],
+      extensions: extractExtensions(raw),
       metadata: {
         source,
         timestamp: new Date().toISOString(),
@@ -234,6 +266,7 @@ export class Normalizer {
       events: this.normalizeEvents(raw['events'] || []),
       links: raw['links'] || [],
       remarks: raw['remarks'] || [],
+      extensions: extractExtensions(raw),
       metadata: {
         source,
         timestamp: new Date().toISOString(),

@@ -1,4 +1,5 @@
 ---
+date: 2026-02-26
 slug: asn-lookup-made-simple-with-rdap
 title: "ASN Lookup Made Simple: Query Autonomous System Numbers with RDAP"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Learn how to look up Autonomous System Numbers (ASNs) using RDAP. 
 keywords: [asn lookup, autonomous system number, asn whois, bgp asn lookup, who owns asn, asn information api, asn query tool]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-26
 
 Every major network on the internet is identified by an Autonomous System Number (ASN). Whether you're analyzing BGP routes, investigating network ownership, or building infrastructure intelligence tools, ASN lookups are a fundamental capability. Here's how to do it with RDAP.
 
@@ -240,5 +242,6 @@ console.log(asn.name); // "GOOGLE"
 ASN lookups with RDAP give you structured, authoritative data about network operators. Combined with IP lookups, you can build comprehensive network intelligence tools that map infrastructure to organizations.
 
 ---
+date: 2026-02-26
 
 *Try ASN lookups in our [Playground](/playground) or install RDAPify: `npm install rdapify`.*

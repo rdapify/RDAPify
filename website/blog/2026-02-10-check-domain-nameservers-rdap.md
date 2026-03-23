@@ -1,4 +1,5 @@
 ---
+date: 2026-02-10
 slug: check-domain-nameservers-rdap
 title: "How to Check Domain Nameservers with RDAP"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "A practical guide to querying domain nameserver information using 
 keywords: [check domain nameservers, rdap nameserver lookup, domain ns records, nameserver change detection, dns hijacking detection, rdap nameserver query]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-02-10
 
 Nameserver data is one of the most security-relevant pieces of domain registration information. Unexpected nameserver changes can indicate domain hijacking, account compromise, or infrastructure takeovers. Here's how to query and monitor nameserver data with RDAP.
 
@@ -238,5 +240,6 @@ async function monitorNSHijacking(
 RDAP makes nameserver data structured and easy to work with. Whether you're auditing your own domains, monitoring for hijacking, or building DNS intelligence tools, the combination of domain queries and direct nameserver lookups gives you everything you need.
 
 ---
+date: 2026-02-10
 
 *Try nameserver lookups in our [Playground](/playground) or install RDAPify: `npm install rdapify`.*

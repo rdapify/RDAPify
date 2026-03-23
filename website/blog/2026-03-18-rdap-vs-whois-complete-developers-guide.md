@@ -1,4 +1,5 @@
 ---
+date: 2026-03-18
 slug: rdap-vs-whois-complete-developers-guide
 title: "RDAP vs WHOIS: The Complete Developer's Guide (2026)"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "A detailed technical comparison of RDAP and WHOIS for developers. 
 keywords: [rdap vs whois, rdap whois comparison, domain lookup protocol, whois replacement 2026, rdap tutorial, registration data protocol]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-18
 
 Choosing between RDAP and WHOIS in 2026 isn't really a choice — RDAP is the clear successor. But understanding *why* and *how* they differ helps you build better domain intelligence tools. This guide breaks down every technical difference with real code examples.
 
@@ -260,5 +262,6 @@ npm install rdapify
 ```
 
 ---
+date: 2026-03-18
 
 *Need help migrating from WHOIS to RDAP? Check out our [migration guide](/blog/whois-to-rdap-enterprise-migration-guide) or ask in [GitHub Discussions](https://github.com/rdapify/rdapify/discussions).*

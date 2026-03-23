@@ -4,7 +4,7 @@
  */
 
 import type { RawRDAPResponse } from '../../shared/types';
-import { NetworkError, TimeoutError, RDAPServerError, RDAPifyError } from '../../shared/errors';
+import { NetworkError, TimeoutError, RDAPServerError, RDAPifyError, QueryAbortedError } from '../../shared/errors';
 import type { TimeoutOptions } from '../../shared/types/options';
 import { withTimeout } from '../../shared/utils/helpers';
 
@@ -24,6 +24,8 @@ export interface FetcherOptions {
   logRedirect?: (fromUrl: string, toUrl: string) => void;
   /** Enable HTTP/2 multiplexing hints (opt-in). @default false */
   http2?: boolean;
+  /** AbortSignal to cancel in-flight requests */
+  signal?: AbortSignal;
 }
 
 /**
@@ -38,6 +40,7 @@ export class Fetcher {
   private readonly ssrfProtection?: SSRFProtection;
   private readonly logRedirect?: (fromUrl: string, toUrl: string) => void;
   readonly http2: boolean;
+  private readonly signal?: AbortSignal;
 
   constructor(options: FetcherOptions = {}) {
     this.timeout = {
@@ -53,6 +56,7 @@ export class Fetcher {
     this.ssrfProtection = options.ssrfProtection;
     this.logRedirect = options.logRedirect;
     this.http2 = options.http2 ?? false;
+    this.signal = options.signal;
   }
 
   /**
@@ -111,11 +115,16 @@ export class Fetcher {
           method: 'GET',
           headers: requestHeaders,
           redirect: 'manual', // Handle redirects manually for SSRF protection
+          signal: this.signal,
         }),
         this.timeout.request,
         `Request timeout after ${this.timeout.request}ms`
       );
     } catch (error) {
+      // AbortController cancellation
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new QueryAbortedError(url);
+      }
       if (error instanceof Error && error.message.includes('timeout')) {
         throw new TimeoutError(`Request timed out after ${this.timeout.request}ms`, { url });
       }

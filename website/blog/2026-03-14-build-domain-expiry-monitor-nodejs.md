@@ -1,4 +1,5 @@
 ---
+date: 2026-03-14
 slug: build-domain-expiry-monitor-nodejs
 title: "How to Build a Domain Expiry Monitor with Node.js"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "Step-by-step tutorial to build a domain expiry monitor using Node.
 keywords: [domain expiry monitor, domain expiration checker, nodejs domain monitor, domain renewal alert, check domain expiry date, rdap domain lookup]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-14
 
 Forgetting to renew a domain can take down your entire business. Let's build a domain expiry monitor in Node.js that checks your domains daily and alerts you before they expire. Complete, working code you can deploy in minutes.
 
@@ -264,5 +266,6 @@ jobs:
 - **RDAPify Pro** — Use `@rdapify/pro` for built-in bulk monitoring with change detection
 
 ---
+date: 2026-03-14
 
 *The full source code is available on [GitHub](https://github.com/rdapify/rdapify/tree/main/examples). Questions? Join our [Discord](https://discord.gg/rdapify).*

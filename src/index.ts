@@ -63,6 +63,8 @@ export type {
   RDAPNameserver,
   RawRDAPResponse,
   AvailabilityResult,
+  SearchResult,
+  ExplainResult,
   
   // Enum types
   QueryType,
@@ -127,7 +129,8 @@ export {
   ParseError,
   CacheError,
   RateLimitError,
-  
+  SearchNotSupportedError,
+
   // Type guards
   isRDAPifyError,
   isSSRFProtectionError,
@@ -194,9 +197,18 @@ export type { ICachePort } from './core/ports';
 // ============================================================================
 
 /**
+ * Anonymous usage telemetry (opt-in, disabled by default).
+ */
+export { UsageTelemetry } from './infrastructure/telemetry/UsageTelemetry';
+
+// ============================================================================
+// v0.3.1
+// ============================================================================
+
+/**
  * Current library version
  */
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -237,6 +249,12 @@ export { BatchProcessor } from './application/services/BatchProcessor';
  * ```
  */
 export { RateLimiter } from './infrastructure/http/RateLimiter';
+
+/**
+ * Distributed rate limiter backed by Redis for multi-process/multi-instance deployments.
+ */
+export { DistributedRateLimiter } from './infrastructure/http/DistributedRateLimiter';
+export type { RedisRateLimitClient } from './infrastructure/http/DistributedRateLimiter';
 
 /**
  * Connection pool for efficient HTTP connection reuse

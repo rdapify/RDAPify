@@ -13,11 +13,14 @@ const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
 const SNAPSHOT_PATH = path.join(__dirname, '..', 'api-snapshot.json');
-const DIST_PATH = path.join(__dirname, '..', 'dist', 'index.js');
+// Prefer dist/cjs/index.js (dual-export layout); fall back to dist/index.js for compat
+const DIST_CJS = path.join(__dirname, '..', 'dist', 'cjs', 'index.js');
+const DIST_LEGACY = path.join(__dirname, '..', 'dist', 'index.js');
+const DIST_PATH = fs.existsSync(DIST_CJS) ? DIST_CJS : DIST_LEGACY;
 
 // Check if dist exists
 if (!fs.existsSync(DIST_PATH)) {
-  console.error('❌ dist/index.js not found. Run `npm run build` first.');
+  console.error('❌ dist/cjs/index.js not found. Run `npm run build` first.');
   process.exit(1);
 }
 

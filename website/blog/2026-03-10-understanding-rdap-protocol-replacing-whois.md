@@ -1,4 +1,5 @@
 ---
+date: 2026-03-10
 slug: understanding-rdap-protocol-replacing-whois
 title: "Understanding RDAP: The Protocol Replacing WHOIS"
 authors: [rdapify]
@@ -7,6 +8,7 @@ description: "A comprehensive introduction to RDAP (Registration Data Access Pro
 keywords: [what is rdap, rdap explained, rdap protocol, registration data access protocol, rdap standard, rdap rfc, how rdap works]
 image: /img/rdapify-social-card.png
 ---
+date: 2026-03-10
 
 RDAP (Registration Data Access Protocol) is the modern standard for querying internet registration data — domain names, IP addresses, and autonomous system numbers. If you work with DNS, networking, cybersecurity, or domain management, RDAP is a protocol you need to know.
 
@@ -252,5 +254,6 @@ RDAP is a well-designed, modern protocol that solves the real problems with WHOI
 The protocol is already live and authoritative for most of the internet's registration data. Now is the time to learn it and build with it.
 
 ---
+date: 2026-03-10
 
 *Ready to start querying? Install RDAPify with `npm install rdapify` and follow our [Getting Started guide](/docs/getting-started/installation).*
