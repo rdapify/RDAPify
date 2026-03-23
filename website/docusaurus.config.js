@@ -17,7 +17,7 @@ const config = {
   projectName: 'rdapify',
 
   customFields: {
-    paddleClientToken: 'live_d5b5902ea96d58a0206822ec9ca',
+    paddleClientToken: 'live_a7bb812fe63dc120029ea183a66',
     paddleEnvironment: 'production',
     paddlePriceMonthly: 'pri_01kmc06bj6pvs2wrrk20g5pr40',
     paddlePriceYearly: 'pri_01kmc08c1ej50661655w5t7mce',
