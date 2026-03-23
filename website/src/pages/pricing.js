@@ -344,8 +344,6 @@ export default function Pricing() {
   const { i18n: { currentLocale }, siteConfig: { customFields } } = useDocusaurusContext();
   const s = STRINGS[currentLocale] || STRINGS.en;
   const [billing, setBilling] = useState('monthly');
-  const [coupon, setCoupon] = useState('');
-
   // Inject config for paddle-init.js (static script can't access React context)
   if (typeof window !== 'undefined') {
     window.__paddleConfig = {
@@ -359,13 +357,9 @@ export default function Pricing() {
       alert('Paddle is still loading, please try again in a moment.');
       return;
     }
-    const opts = {
+    window.Paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
-    };
-    if (coupon.trim()) {
-      opts.discountCode = coupon.trim();
-    }
-    window.Paddle.Checkout.open(opts);
+    });
   }
 
   // أضف priceId للـ Pro و Team tiers
@@ -425,16 +419,6 @@ export default function Pricing() {
                 <span className={styles.saveBadge}>{s.saveBadge}</span>
               </button>
             </div>
-          </div>
-          {/* Coupon */}
-          <div className={styles.couponRow}>
-            <input
-              type="text"
-              className={styles.couponInput}
-              placeholder={currentLocale === 'ar' ? 'كود الخصم' : 'Discount code'}
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-            />
           </div>
         </section>
 
