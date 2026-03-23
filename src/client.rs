@@ -39,8 +39,10 @@ use crate::cache::MemoryCache;
 use crate::error::{RdapError, Result};
 use crate::http::{Fetcher, FetcherConfig, Normalizer};
 use crate::security::{SsrfConfig, SsrfGuard};
-use crate::types::{AsnResponse, AvailabilityResult, DomainResponse, EntityResponse, IpResponse, NameserverResponse};
-pub use crate::stream::{DomainEvent, IpEvent, StreamConfig};
+pub use crate::stream::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
+use crate::types::{
+    AsnResponse, AvailabilityResult, DomainResponse, EntityResponse, IpResponse, NameserverResponse,
+};
 
 // ── Client configuration ──────────────────────────────────────────────────────
 
@@ -369,7 +371,10 @@ impl RdapClient {
             for name in names {
                 let event = match client.domain(&name).await {
                     Ok(r) => DomainEvent::Result(Box::new(r)),
-                    Err(e) => DomainEvent::Error { query: name, error: e },
+                    Err(e) => DomainEvent::Error {
+                        query: name,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     // Receiver was dropped — cancel gracefully.
@@ -385,7 +390,11 @@ impl RdapClient {
     ///
     /// See [`stream_domain`](RdapClient::stream_domain) for details on
     /// back-pressure and cancellation semantics.
-    pub fn stream_ip(&self, addresses: Vec<String>, config: StreamConfig) -> ReceiverStream<IpEvent> {
+    pub fn stream_ip(
+        &self,
+        addresses: Vec<String>,
+        config: StreamConfig,
+    ) -> ReceiverStream<IpEvent> {
         let (tx, rx) = mpsc::channel(config.buffer_size);
         let client = self.clone();
 
@@ -393,7 +402,66 @@ impl RdapClient {
             for addr in addresses {
                 let event = match client.ip(&addr).await {
                     Ok(r) => IpEvent::Result(Box::new(r)),
-                    Err(e) => IpEvent::Error { query: addr, error: e },
+                    Err(e) => IpEvent::Error {
+                        query: addr,
+                        error: e,
+                    },
+                };
+                if tx.send(event).await.is_err() {
+                    break;
+                }
+            }
+        });
+
+        ReceiverStream::new(rx)
+    }
+
+    /// Streams RDAP ASN results for multiple queries.
+    ///
+    /// See [`stream_domain`](RdapClient::stream_domain) for details on
+    /// back-pressure and cancellation semantics.
+    pub fn stream_asn(&self, asns: Vec<String>, config: StreamConfig) -> ReceiverStream<AsnEvent> {
+        let (tx, rx) = mpsc::channel(config.buffer_size);
+        let client = self.clone();
+
+        tokio::spawn(async move {
+            for asn in asns {
+                let event = match client.asn(&asn).await {
+                    Ok(r) => AsnEvent::Result(Box::new(r)),
+                    Err(e) => AsnEvent::Error {
+                        query: asn,
+                        error: e,
+                    },
+                };
+                if tx.send(event).await.is_err() {
+                    break;
+                }
+            }
+        });
+
+        ReceiverStream::new(rx)
+    }
+
+    /// Streams RDAP nameserver results for multiple queries.
+    ///
+    /// See [`stream_domain`](RdapClient::stream_domain) for details on
+    /// back-pressure and cancellation semantics.
+    pub fn stream_nameserver(
+        &self,
+        nameservers: Vec<String>,
+        config: StreamConfig,
+    ) -> ReceiverStream<NameserverEvent> {
+        let (tx, rx) = mpsc::channel(config.buffer_size);
+        let client = self.clone();
+
+        tokio::spawn(async move {
+            for ns in nameservers {
+                let event = match client.nameserver(&ns).await {
+                    Ok(r) => NameserverEvent::Result(Box::new(r)),
+                    Err(e) => NameserverEvent::Error {
+                        query: ns,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     break;

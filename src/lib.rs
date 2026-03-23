@@ -70,4 +70,4 @@ pub use types::{
 pub use cache::{CacheConfig, MemoryCache};
 pub use http::{FetcherConfig, Normalizer};
 pub use security::{SsrfConfig, SsrfGuard};
-pub use stream::{DomainEvent, IpEvent, StreamConfig};
+pub use stream::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};

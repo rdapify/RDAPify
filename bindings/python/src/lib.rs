@@ -5,7 +5,7 @@
 
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyModule};
-use rdapify::RdapClient;
+use rdapify::{AsnEvent, NameserverEvent, RdapClient, StreamConfig};
 
 fn runtime() -> tokio::runtime::Runtime {
     tokio::runtime::Runtime::new().expect("failed to create Tokio runtime")
@@ -89,6 +89,119 @@ fn entity(py: Python<'_>, handle: &str, server_url: &str) -> PyResult<Py<PyDict>
     to_py_dict(py, &result)
 }
 
+/// Check whether a single domain name is available for registration.
+///
+/// :param name: Domain name (e.g. "example.com").
+/// :returns: Dictionary with keys ``available`` (bool) and ``expires_at`` (str or None).
+#[pyfunction]
+fn domain_available(py: Python<'_>, name: &str) -> PyResult<Py<PyDict>> {
+    let c = client()?;
+    let result = runtime()
+        .block_on(c.domain_available(name))
+        .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(e.to_string()))?;
+    let dict = PyDict::new_bound(py);
+    dict.set_item("available", result.available)?;
+    dict.set_item("expires_at", result.expires_at)?;
+    Ok(dict.unbind())
+}
+
+/// Check domain availability for a batch of domain names concurrently.
+///
+/// :param names: List of domain name strings.
+/// :returns: List of dicts, each with keys ``name``, ``available``, ``expires_at``, ``error``.
+#[pyfunction]
+fn domain_available_batch(py: Python<'_>, names: Vec<String>) -> PyResult<Vec<Py<PyDict>>> {
+    let c = client()?;
+    let results = runtime().block_on(c.domain_available_batch(names.clone(), None));
+    let mut output = Vec::with_capacity(results.len());
+    for (i, res) in results.into_iter().enumerate() {
+        let dict = PyDict::new_bound(py);
+        let name = names.get(i).map(|s| s.as_str()).unwrap_or("?");
+        match res {
+            Ok(avail) => {
+                dict.set_item("name", &avail.domain)?;
+                dict.set_item("available", avail.available)?;
+                dict.set_item("expires_at", avail.expires_at)?;
+                dict.set_item("error", py.None())?;
+            }
+            Err(e) => {
+                dict.set_item("name", name)?;
+                dict.set_item("available", false)?;
+                dict.set_item("expires_at", py.None())?;
+                dict.set_item("error", e.to_string())?;
+            }
+        }
+        output.push(dict.unbind());
+    }
+    Ok(output)
+}
+
+/// Stream RDAP ASN results for multiple queries, collecting all into a list.
+///
+/// :param queries: List of ASN strings (e.g. ["AS15169", "AS32934"]).
+/// :returns: List of dicts with keys ``query``, ``result`` (dict or None), ``error`` (str or None).
+#[pyfunction]
+fn stream_asn(py: Python<'_>, queries: Vec<String>) -> PyResult<Vec<Py<PyDict>>> {
+    let c = client()?;
+    let events: Vec<AsnEvent> = runtime().block_on(
+        tokio_stream::StreamExt::collect::<Vec<_>>(c.stream_asn(queries, StreamConfig::default())),
+    );
+    let mut output = Vec::with_capacity(events.len());
+    for event in events {
+        let dict = PyDict::new_bound(py);
+        match event {
+            AsnEvent::Result(r) => {
+                let query = r.query.to_string();
+                let result_dict = to_py_dict(py, r.as_ref())?;
+                dict.set_item("query", query)?;
+                dict.set_item("result", result_dict)?;
+                dict.set_item("error", py.None())?;
+            }
+            AsnEvent::Error { query, error } => {
+                dict.set_item("query", query)?;
+                dict.set_item("result", py.None())?;
+                dict.set_item("error", error.to_string())?;
+            }
+        }
+        output.push(dict.unbind());
+    }
+    Ok(output)
+}
+
+/// Stream RDAP nameserver results for multiple queries, collecting all into a list.
+///
+/// :param queries: List of nameserver hostnames (e.g. ["ns1.google.com"]).
+/// :returns: List of dicts with keys ``query``, ``result`` (dict or None), ``error`` (str or None).
+#[pyfunction]
+fn stream_nameserver(py: Python<'_>, queries: Vec<String>) -> PyResult<Vec<Py<PyDict>>> {
+    let c = client()?;
+    let events: Vec<NameserverEvent> = runtime().block_on(
+        tokio_stream::StreamExt::collect::<Vec<_>>(
+            c.stream_nameserver(queries, StreamConfig::default()),
+        ),
+    );
+    let mut output = Vec::with_capacity(events.len());
+    for event in events {
+        let dict = PyDict::new_bound(py);
+        match event {
+            NameserverEvent::Result(r) => {
+                let query = r.query.clone();
+                let result_dict = to_py_dict(py, r.as_ref())?;
+                dict.set_item("query", query)?;
+                dict.set_item("result", result_dict)?;
+                dict.set_item("error", py.None())?;
+            }
+            NameserverEvent::Error { query, error } => {
+                dict.set_item("query", query)?;
+                dict.set_item("result", py.None())?;
+                dict.set_item("error", error.to_string())?;
+            }
+        }
+        output.push(dict.unbind());
+    }
+    Ok(output)
+}
+
 /// rdapify_py — Unified RDAP client for Python, powered by Rust.
 #[pymodule]
 #[pyo3(name = "rdapify_py")]
@@ -98,6 +211,10 @@ fn rdapify_py(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(asn, m)?)?;
     m.add_function(wrap_pyfunction!(nameserver, m)?)?;
     m.add_function(wrap_pyfunction!(entity, m)?)?;
+    m.add_function(wrap_pyfunction!(domain_available, m)?)?;
+    m.add_function(wrap_pyfunction!(domain_available_batch, m)?)?;
+    m.add_function(wrap_pyfunction!(stream_asn, m)?)?;
+    m.add_function(wrap_pyfunction!(stream_nameserver, m)?)?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     Ok(())
 }

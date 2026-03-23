@@ -672,17 +672,33 @@ async fn client_with_cache_disabled_does_not_cache() {
     let client = RdapClient::with_config(ClientConfig {
         bootstrap_url: Some(base.to_string()),
         cache: false,
-        ssrf: SsrfConfig { enabled: false, ..Default::default() },
-        fetcher: FetcherConfig { timeout: Duration::from_secs(5), max_attempts: 1, ..Default::default() },
+        ssrf: SsrfConfig {
+            enabled: false,
+            ..Default::default()
+        },
+        fetcher: FetcherConfig {
+            timeout: Duration::from_secs(5),
+            max_attempts: 1,
+            ..Default::default()
+        },
         custom_bootstrap_servers: Default::default(),
         ..Default::default()
     })
     .expect("client build failed");
 
-    client.domain("example.com").await.expect("first call failed");
-    let res = client.domain("example.com").await.expect("second call failed");
+    client
+        .domain("example.com")
+        .await
+        .expect("first call failed");
+    let res = client
+        .domain("example.com")
+        .await
+        .expect("second call failed");
 
-    assert!(!res.meta.cached, "response should not be cached when cache is disabled");
+    assert!(
+        !res.meta.cached,
+        "response should not be cached when cache is disabled"
+    );
 }
 
 #[tokio::test]
@@ -714,7 +730,10 @@ async fn client_with_max_attempts_1_does_not_retry() {
     let client = RdapClient::with_config(ClientConfig {
         bootstrap_url: Some(base.to_string()),
         cache: false,
-        ssrf: SsrfConfig { enabled: false, ..Default::default() },
+        ssrf: SsrfConfig {
+            enabled: false,
+            ..Default::default()
+        },
         fetcher: FetcherConfig {
             timeout: Duration::from_secs(5),
             max_attempts: 1,
@@ -726,7 +745,10 @@ async fn client_with_max_attempts_1_does_not_retry() {
     .expect("client build failed");
 
     let err = client.domain("example.com").await.unwrap_err();
-    assert!(matches!(err, RdapError::HttpStatus { status: 503, .. }), "got: {err}");
+    assert!(
+        matches!(err, RdapError::HttpStatus { status: 503, .. }),
+        "got: {err}"
+    );
 }
 
 // ── Custom bootstrap servers ──────────────────────────────────────────────────
@@ -758,8 +780,15 @@ async fn custom_bootstrap_server_used_without_iana_fetch() {
     let client = RdapClient::with_config(ClientConfig {
         bootstrap_url: Some(format!("{base}/THIS_SHOULD_NOT_BE_CALLED")),
         cache: false,
-        ssrf: SsrfConfig { enabled: false, ..Default::default() },
-        fetcher: FetcherConfig { timeout: Duration::from_secs(5), max_attempts: 1, ..Default::default() },
+        ssrf: SsrfConfig {
+            enabled: false,
+            ..Default::default()
+        },
+        fetcher: FetcherConfig {
+            timeout: Duration::from_secs(5),
+            max_attempts: 1,
+            ..Default::default()
+        },
         custom_bootstrap_servers: custom,
         ..Default::default()
     })
@@ -784,9 +813,7 @@ async fn stream_domain_yields_results_for_all_queries() {
         .mock("GET", "/dns.json")
         .with_status(200)
         .with_header("content-type", "application/json")
-        .with_body(
-            common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string(),
-        )
+        .with_body(common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string())
         .expect_at_least(1)
         .create_async()
         .await;
@@ -827,9 +854,7 @@ async fn stream_domain_isolates_individual_errors() {
         .mock("GET", "/dns.json")
         .with_status(200)
         .with_header("content-type", "application/json")
-        .with_body(
-            common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string(),
-        )
+        .with_body(common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string())
         .expect_at_least(1)
         .create_async()
         .await;
@@ -881,9 +906,7 @@ async fn stream_domain_cancel_mid_stream_does_not_panic() {
         .mock("GET", "/dns.json")
         .with_status(200)
         .with_header("content-type", "application/json")
-        .with_body(
-            common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string(),
-        )
+        .with_body(common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string())
         .expect_at_least(0)
         .create_async()
         .await;
@@ -925,7 +948,10 @@ async fn client_config_accepts_connection_pool_settings() {
         max_connections_per_host: 1,
         ..Default::default()
     });
-    assert!(client.is_ok(), "client build should succeed with pool config");
+    assert!(
+        client.is_ok(),
+        "client build should succeed with pool config"
+    );
 }
 
 #[tokio::test]

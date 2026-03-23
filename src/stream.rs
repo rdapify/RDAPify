@@ -1,7 +1,8 @@
 //! Async streaming API for batch RDAP queries.
 //!
-//! The `stream_domain` and `stream_ip` methods on [`crate::RdapClient`]
-//! return [`tokio_stream::wrappers::ReceiverStream`] values that yield events
+//! The `stream_domain`, `stream_ip`, `stream_asn`, and `stream_nameserver`
+//! methods on [`crate::RdapClient`] return
+//! [`tokio_stream::wrappers::ReceiverStream`] values that yield events
 //! as results arrive.
 //!
 //! # Back-pressure
@@ -16,7 +17,7 @@
 //! without leaking any resources.
 
 use crate::error::RdapError;
-use crate::types::{DomainResponse, IpResponse};
+use crate::types::{AsnResponse, DomainResponse, IpResponse, NameserverResponse};
 
 // ── Events ────────────────────────────────────────────────────────────────────
 
@@ -42,6 +43,34 @@ pub enum IpEvent {
     /// The query for this IP address failed.
     Error {
         /// The IP address that was queried.
+        query: String,
+        /// The error that occurred.
+        error: RdapError,
+    },
+}
+
+/// Emitted by [`crate::RdapClient::stream_asn`] for each queried ASN.
+#[derive(Debug)]
+pub enum AsnEvent {
+    /// Successful RDAP response for the queried ASN.
+    Result(Box<AsnResponse>),
+    /// The query for this ASN failed.
+    Error {
+        /// The ASN that was queried.
+        query: String,
+        /// The error that occurred.
+        error: RdapError,
+    },
+}
+
+/// Emitted by [`crate::RdapClient::stream_nameserver`] for each queried nameserver.
+#[derive(Debug)]
+pub enum NameserverEvent {
+    /// Successful RDAP response for the queried nameserver.
+    Result(Box<NameserverResponse>),
+    /// The query for this nameserver failed.
+    Error {
+        /// The nameserver hostname that was queried.
         query: String,
         /// The error that occurred.
         error: RdapError,

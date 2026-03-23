@@ -1,6 +1,6 @@
 [package]
 name = "rdapify-node"
-version = "0.1.0"
+version = "0.1.3"
 edition = "2021"
 description = "Node.js binding for rdapify"
 license = "MIT"
@@ -18,6 +18,9 @@ napi-derive = "2"
 
 # Async runtime (matches tokio in rdapify)
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+# Stream utilities for collecting ReceiverStream results
+tokio-stream = { version = "0.1", features = ["sync"] }
 
 # JSON serialization (for passing structs across the FFI boundary)
 serde = { version = "1", features = ["derive"] }

@@ -41,3 +41,31 @@ export declare function nameserver(hostname: string): Promise<any>
  * @returns Normalised RDAP entity object
  */
 export declare function entity(handle: string, serverUrl: string): Promise<any>
+/**
+ * Check whether a domain is available for registration.
+ *
+ * @param name - Domain name (e.g. "example.com")
+ * @returns Object with `available` boolean and `expiresAt` string or null
+ */
+export declare function domainAvailable(name: string): Promise<any>
+/**
+ * Check availability for multiple domains concurrently.
+ *
+ * @param names - Array of domain names to check
+ * @returns Array of objects with `name`, `available`, `expiresAt`, and `error` fields
+ */
+export declare function domainAvailableBatch(names: Array<string>): Promise<Array<any>>
+/**
+ * Stream RDAP ASN results for multiple queries, collecting all events.
+ *
+ * @param queries - Array of ASN values (e.g. ["15169", "AS32934"])
+ * @returns Array of objects with `query`, `result`, and `error` fields
+ */
+export declare function streamAsn(queries: Array<string>): Promise<Array<any>>
+/**
+ * Stream RDAP nameserver results for multiple queries, collecting all events.
+ *
+ * @param queries - Array of nameserver hostnames (e.g. ["ns1.google.com"])
+ * @returns Array of objects with `query`, `result`, and `error` fields
+ */
+export declare function streamNameserver(queries: Array<string>): Promise<Array<any>>

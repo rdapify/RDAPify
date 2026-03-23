@@ -37,7 +37,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.android-arm64.node')
           } else {
-            nativeBinding = require('@rdapify/core-android-arm64')
+            nativeBinding = require('rdapify-nd-android-arm64')
           }
         } catch (e) {
           loadError = e
@@ -49,7 +49,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.android-arm-eabi.node')
           } else {
-            nativeBinding = require('@rdapify/core-android-arm-eabi')
+            nativeBinding = require('rdapify-nd-android-arm-eabi')
           }
         } catch (e) {
           loadError = e
@@ -69,7 +69,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.win32-x64-msvc.node')
           } else {
-            nativeBinding = require('@rdapify/core-win32-x64-msvc')
+            nativeBinding = require('rdapify-nd-win32-x64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -83,7 +83,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.win32-ia32-msvc.node')
           } else {
-            nativeBinding = require('@rdapify/core-win32-ia32-msvc')
+            nativeBinding = require('rdapify-nd-win32-ia32-msvc')
           }
         } catch (e) {
           loadError = e
@@ -97,7 +97,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.win32-arm64-msvc.node')
           } else {
-            nativeBinding = require('@rdapify/core-win32-arm64-msvc')
+            nativeBinding = require('rdapify-nd-win32-arm64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -113,7 +113,7 @@ switch (platform) {
       if (localFileExisted) {
         nativeBinding = require('./rdapify.darwin-universal.node')
       } else {
-        nativeBinding = require('@rdapify/core-darwin-universal')
+        nativeBinding = require('rdapify-nd-darwin-universal')
       }
       break
     } catch {}
@@ -124,7 +124,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.darwin-x64.node')
           } else {
-            nativeBinding = require('@rdapify/core-darwin-x64')
+            nativeBinding = require('rdapify-nd-darwin-x64')
           }
         } catch (e) {
           loadError = e
@@ -138,7 +138,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.darwin-arm64.node')
           } else {
-            nativeBinding = require('@rdapify/core-darwin-arm64')
+            nativeBinding = require('rdapify-nd-darwin-arm64')
           }
         } catch (e) {
           loadError = e
@@ -157,7 +157,7 @@ switch (platform) {
       if (localFileExisted) {
         nativeBinding = require('./rdapify.freebsd-x64.node')
       } else {
-        nativeBinding = require('@rdapify/core-freebsd-x64')
+        nativeBinding = require('rdapify-nd-freebsd-x64')
       }
     } catch (e) {
       loadError = e
@@ -174,7 +174,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-x64-musl.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-x64-musl')
+              nativeBinding = require('rdapify-nd-linux-x64-musl')
             }
           } catch (e) {
             loadError = e
@@ -187,7 +187,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-x64-gnu.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-x64-gnu')
+              nativeBinding = require('rdapify-nd-linux-x64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -203,7 +203,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-arm64-musl.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-arm64-musl')
+              nativeBinding = require('rdapify-nd-linux-arm64-musl')
             }
           } catch (e) {
             loadError = e
@@ -216,7 +216,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-arm64-gnu.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-arm64-gnu')
+              nativeBinding = require('rdapify-nd-linux-arm64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -232,7 +232,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-arm-musleabihf.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-arm-musleabihf')
+              nativeBinding = require('rdapify-nd-linux-arm-musleabihf')
             }
           } catch (e) {
             loadError = e
@@ -245,7 +245,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-arm-gnueabihf.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-arm-gnueabihf')
+              nativeBinding = require('rdapify-nd-linux-arm-gnueabihf')
             }
           } catch (e) {
             loadError = e
@@ -261,7 +261,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-riscv64-musl.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-riscv64-musl')
+              nativeBinding = require('rdapify-nd-linux-riscv64-musl')
             }
           } catch (e) {
             loadError = e
@@ -274,7 +274,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./rdapify.linux-riscv64-gnu.node')
             } else {
-              nativeBinding = require('@rdapify/core-linux-riscv64-gnu')
+              nativeBinding = require('rdapify-nd-linux-riscv64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -289,7 +289,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./rdapify.linux-s390x-gnu.node')
           } else {
-            nativeBinding = require('@rdapify/core-linux-s390x-gnu')
+            nativeBinding = require('rdapify-nd-linux-s390x-gnu')
           }
         } catch (e) {
           loadError = e
@@ -310,10 +310,14 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { domain, ip, asn, nameserver, entity } = nativeBinding
+const { domain, ip, asn, nameserver, entity, domainAvailable, domainAvailableBatch, streamAsn, streamNameserver } = nativeBinding
 
 module.exports.domain = domain
 module.exports.ip = ip
 module.exports.asn = asn
 module.exports.nameserver = nameserver
 module.exports.entity = entity
+module.exports.domainAvailable = domainAvailable
+module.exports.domainAvailableBatch = domainAvailableBatch
+module.exports.streamAsn = streamAsn
+module.exports.streamNameserver = streamNameserver

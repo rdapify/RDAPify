@@ -220,7 +220,10 @@ mod tests {
     #[test]
     fn retryable_http_statuses() {
         for status in [429u16, 500, 502, 503, 504] {
-            let err = RdapError::HttpStatus { status, url: "https://example.com/".to_string() };
+            let err = RdapError::HttpStatus {
+                status,
+                url: "https://example.com/".to_string(),
+            };
             assert!(is_retryable(&err), "expected {status} to be retryable");
         }
     }
@@ -228,14 +231,20 @@ mod tests {
     #[test]
     fn non_retryable_http_statuses() {
         for status in [400u16, 401, 403, 404, 422] {
-            let err = RdapError::HttpStatus { status, url: "https://example.com/".to_string() };
+            let err = RdapError::HttpStatus {
+                status,
+                url: "https://example.com/".to_string(),
+            };
             assert!(!is_retryable(&err), "expected {status} to NOT be retryable");
         }
     }
 
     #[test]
     fn timeout_is_retryable() {
-        let err = RdapError::Timeout { millis: 5000, url: "https://example.com/".to_string() };
+        let err = RdapError::Timeout {
+            millis: 5000,
+            url: "https://example.com/".to_string(),
+        };
         assert!(is_retryable(&err));
     }
 
@@ -289,10 +298,16 @@ mod tests {
     // ── fetch — HTTP responses via mockito ────────────────────────────────────
 
     fn disabled_ssrf_fetcher() -> Fetcher {
-        let ssrf = SsrfGuard::with_config(SsrfConfig { enabled: false, ..Default::default() });
+        let ssrf = SsrfGuard::with_config(SsrfConfig {
+            enabled: false,
+            ..Default::default()
+        });
         Fetcher::with_config(
             ssrf,
-            FetcherConfig { max_attempts: 1, ..Default::default() },
+            FetcherConfig {
+                max_attempts: 1,
+                ..Default::default()
+            },
         )
         .unwrap()
     }

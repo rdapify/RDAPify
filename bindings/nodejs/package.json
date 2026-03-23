@@ -1,6 +1,6 @@
 {
   "name": "rdapify-nd",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Native Node.js binding for rdapify — powered by Rust",
   "main": "index.js",
   "types": "index.d.ts",

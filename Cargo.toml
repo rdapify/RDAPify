@@ -1,6 +1,6 @@
 [package]
 name = "rdapify"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 rust-version = "1.75"
 description = "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls"

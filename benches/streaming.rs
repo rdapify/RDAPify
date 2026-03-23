@@ -5,8 +5,8 @@
 
 use criterion::{criterion_group, criterion_main, Criterion};
 
-use rdapify::{RdapClient, StreamConfig};
 use rdapify::stream::DomainEvent;
+use rdapify::{RdapClient, StreamConfig};
 use tokio_stream::StreamExt;
 
 // ---------------------------------------------------------------------------
@@ -43,18 +43,12 @@ fn bench_stream_domain_10(c: &mut Criterion) {
                 let mut server = mockito::Server::new_async().await;
 
                 // Register mock endpoints for 10 domains
-                let domains: Vec<String> =
-                    (1..=10).map(|i| format!("bench{i}.com")).collect();
+                let domains: Vec<String> = (1..=10).map(|i| format!("bench{i}.com")).collect();
 
                 let bootstrap_body = {
                     let services: Vec<serde_json::Value> = domains
                         .iter()
-                        .map(|_| {
-                            serde_json::json!([
-                                ["com"],
-                                [format!("{}/", server.url())]
-                            ])
-                        })
+                        .map(|_| serde_json::json!([["com"], [format!("{}/", server.url())]]))
                         .collect();
                     serde_json::json!({
                         "version": "1.0",

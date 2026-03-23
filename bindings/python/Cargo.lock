@@ -855,7 +855,7 @@ dependencies = [
 
 [[package]]
 name = "rdapify"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "chrono",
  "dashmap",
@@ -872,13 +872,14 @@ dependencies = [
 
 [[package]]
 name = "rdapify-python"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "pyo3",
  "rdapify",
  "serde",
  "serde_json",
  "tokio",
+ "tokio-stream",
 ]
 
 [[package]]

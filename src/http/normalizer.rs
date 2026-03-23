@@ -359,7 +359,9 @@ mod tests {
                 { "ldhName": "NS2.EXAMPLE.COM" }
             ]
         });
-        let res = norm().domain("example.com", raw, "https://rdap.example/", false).unwrap();
+        let res = norm()
+            .domain("example.com", raw, "https://rdap.example/", false)
+            .unwrap();
 
         assert_eq!(res.query, "example.com");
         assert_eq!(res.ldh_name.as_deref(), Some("EXAMPLE.COM"));
@@ -374,14 +376,18 @@ mod tests {
     #[test]
     fn domain_cached_flag_propagates() {
         let raw = json!({ "ldhName": "EXAMPLE.COM" });
-        let res = norm().domain("example.com", raw, "https://rdap.example/", true).unwrap();
+        let res = norm()
+            .domain("example.com", raw, "https://rdap.example/", true)
+            .unwrap();
         assert!(res.meta.cached);
     }
 
     #[test]
     fn domain_missing_optional_fields_are_none() {
         let raw = json!({});
-        let res = norm().domain("example.com", raw, "https://rdap.example/", false).unwrap();
+        let res = norm()
+            .domain("example.com", raw, "https://rdap.example/", false)
+            .unwrap();
         assert!(res.ldh_name.is_none());
         assert!(res.unicode_name.is_none());
         assert!(res.handle.is_none());
@@ -471,7 +477,9 @@ mod tests {
             "country": "US",
             "parentHandle": "NET-192-0-0-0-0"
         });
-        let res = norm().ip("192.0.2.0/24", raw, "https://rdap.arin.net/", false).unwrap();
+        let res = norm()
+            .ip("192.0.2.0/24", raw, "https://rdap.arin.net/", false)
+            .unwrap();
 
         assert_eq!(res.query, "192.0.2.0/24");
         assert_eq!(res.handle.as_deref(), Some("NET-192-0-2-0-1"));
@@ -522,7 +530,9 @@ mod tests {
             "type": "DIRECT ALLOCATION",
             "country": "US"
         });
-        let res = norm().asn(15169, raw, "https://rdap.arin.net/", false).unwrap();
+        let res = norm()
+            .asn(15169, raw, "https://rdap.arin.net/", false)
+            .unwrap();
 
         assert_eq!(res.query, 15169);
         assert_eq!(res.handle.as_deref(), Some("AS15169"));
@@ -559,7 +569,9 @@ mod tests {
                 "v6": ["2001:db8::1"]
             }
         });
-        let res = norm().nameserver("ns1.example.com", raw, "s", false).unwrap();
+        let res = norm()
+            .nameserver("ns1.example.com", raw, "s", false)
+            .unwrap();
 
         assert_eq!(res.query, "ns1.example.com");
         assert_eq!(res.handle.as_deref(), Some("NS-1"));
@@ -571,7 +583,9 @@ mod tests {
     #[test]
     fn nameserver_empty_ip_addresses_when_field_absent() {
         let raw = json!({ "ldhName": "NS1.EXAMPLE.COM" });
-        let res = norm().nameserver("ns1.example.com", raw, "s", false).unwrap();
+        let res = norm()
+            .nameserver("ns1.example.com", raw, "s", false)
+            .unwrap();
         assert!(res.ip_addresses.v4.is_empty());
         assert!(res.ip_addresses.v6.is_empty());
     }
@@ -600,7 +614,10 @@ mod tests {
         assert_eq!(res.handle.as_deref(), Some("ENTITY-1"));
         assert_eq!(res.roles.len(), 2);
         assert!(res.roles.iter().any(|r| matches!(r, RdapRole::Registrant)));
-        assert!(res.roles.iter().any(|r| matches!(r, RdapRole::Administrative)));
+        assert!(res
+            .roles
+            .iter()
+            .any(|r| matches!(r, RdapRole::Administrative)));
         assert!(res.vcard_array.is_some());
     }
 
@@ -628,18 +645,19 @@ mod tests {
 
     #[test]
     fn extract_vcard_name_returns_fn_property() {
-        let vcard = json!(["vcard", [
-            ["version", {}, "text", "4.0"],
-            ["fn",      {}, "text", "Acme Corp"]
-        ]]);
+        let vcard = json!([
+            "vcard",
+            [
+                ["version", {}, "text", "4.0"],
+                ["fn", {}, "text", "Acme Corp"]
+            ]
+        ]);
         assert_eq!(extract_vcard_name(&vcard), Some("Acme Corp".to_string()));
     }
 
     #[test]
     fn extract_vcard_name_returns_none_when_no_fn() {
-        let vcard = json!(["vcard", [
-            ["version", {}, "text", "4.0"]
-        ]]);
+        let vcard = json!(["vcard", [["version", {}, "text", "4.0"]]]);
         assert_eq!(extract_vcard_name(&vcard), None);
     }
 
@@ -660,7 +678,13 @@ mod tests {
         let res = norm().domain("example.com", raw, "s", false).unwrap();
         assert!(res.status.iter().any(|s| matches!(s, RdapStatus::Active)));
         assert!(res.status.iter().any(|s| matches!(s, RdapStatus::Locked)));
-        assert!(res.status.iter().any(|s| matches!(s, RdapStatus::TransferProhibited)));
-        assert!(res.status.iter().any(|s| matches!(s, RdapStatus::Other(v) if v == "unknownStatus")));
+        assert!(res
+            .status
+            .iter()
+            .any(|s| matches!(s, RdapStatus::TransferProhibited)));
+        assert!(res
+            .status
+            .iter()
+            .any(|s| matches!(s, RdapStatus::Other(v) if v == "unknownStatus")));
     }
 }

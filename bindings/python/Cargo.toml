@@ -1,6 +1,6 @@
 [package]
 name = "rdapify-python"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Python binding for rdapify"
 license = "MIT"
@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 [dependencies]
 rdapify   = { path = "../.." }
 pyo3      = { version = "0.22", features = ["extension-module", "abi3-py38"] }
-tokio     = { version = "1", features = ["rt-multi-thread", "macros"] }
-serde_json = "1"
-serde     = { version = "1", features = ["derive"] }
+tokio        = { version = "1", features = ["rt-multi-thread", "macros"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+serde_json   = "1"
+serde        = { version = "1", features = ["derive"] }
