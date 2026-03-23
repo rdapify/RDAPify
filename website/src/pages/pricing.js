@@ -357,9 +357,17 @@ export default function Pricing() {
       alert('Paddle is still loading, please try again in a moment.');
       return;
     }
-    window.Paddle.Checkout.open({
+    var opts = {
       items: [{ priceId, quantity: 1 }],
-    });
+      settings: { allowDiscount: true },
+    };
+    // Support ?discount=CODE in URL for pre-applied coupons
+    if (typeof window !== 'undefined') {
+      var params = new URLSearchParams(window.location.search);
+      var dc = params.get('discount');
+      if (dc) opts.discountCode = dc;
+    }
+    window.Paddle.Checkout.open(opts);
   }
 
   // أضف priceId للـ Pro و Team tiers
