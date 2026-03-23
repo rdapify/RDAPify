@@ -110,6 +110,39 @@
   border-radius: 4px;
 }
 
+.couponRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.couponInput {
+  padding: 0.5rem 1rem;
+  border-radius: 7px;
+  border: 1px solid #27272a;
+  background: #111113;
+  color: #d4d4d8;
+  font-size: 0.85rem;
+  text-align: center;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.couponInput:focus {
+  border-color: #3b82f6;
+}
+
+.couponInput::placeholder {
+  color: #52525b;
+}
+
+[data-theme='light'] .couponInput {
+  background: #f4f4f5;
+  border-color: #e4e4e7;
+  color: #3f3f46;
+}
+
 .toggleBtnActive .saveBadge {
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
