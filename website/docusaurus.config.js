@@ -30,6 +30,71 @@ const config = {
     { src: '/js/paddle-init.js', defer: true },
   ],
 
+  // JSON-LD structured data injected into every page
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': 'https://rdapify.com/#organization',
+            name: 'RDAPify',
+            url: 'https://rdapify.com',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://rdapify.com/img/logo.png',
+            },
+            description:
+              'Unified, type-safe RDAP client for querying domains, IPs, and ASNs across all global registries.',
+            sameAs: [
+              'https://github.com/rdapify/rdapify',
+              'https://www.npmjs.com/package/rdapify',
+            ],
+          },
+          {
+            '@type': 'WebSite',
+            '@id': 'https://rdapify.com/#website',
+            url: 'https://rdapify.com',
+            name: 'RDAPify',
+            description:
+              'Modern, type-safe RDAP client. Query domains, IPs, and ASNs across all global registries with one API.',
+            publisher: { '@id': 'https://rdapify.com/#organization' },
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'https://rdapify.com/search?q={search_term_string}',
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          },
+          {
+            '@type': 'SoftwareApplication',
+            '@id': 'https://rdapify.com/#software',
+            name: 'RDAPify',
+            applicationCategory: 'DeveloperApplication',
+            operatingSystem: 'Node.js 20+',
+            programmingLanguage: 'TypeScript',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+            },
+            url: 'https://rdapify.com',
+            downloadUrl: 'https://www.npmjs.com/package/rdapify',
+            codeRepository: 'https://github.com/rdapify/rdapify',
+            publisher: { '@id': 'https://rdapify.com/#organization' },
+            description:
+              'A fast, secure, type-safe RDAP client for Node.js. Query domain, IP, ASN, nameserver, and entity data across all global RDAP registries.',
+          },
+        ],
+      }),
+    },
+  ],
+
   onBrokenLinks: 'warn',
 
   markdown: {
@@ -97,10 +162,17 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-        gtag: {
-          trackingID: 'G-XXXXXXXXXX',
-          anonymizeIP: true,
+        sitemap: {
+          lastmod: 'date',
+          changefreq: null,
+          priority: null,
+          ignorePatterns: ['/tags/**', '/search'],
         },
+        // NOTE: Replace G-XXXXXXXXXX with your real Google Analytics 4 ID when available
+        // gtag: {
+        //   trackingID: 'G-XXXXXXXXXX',
+        //   anonymizeIP: true,
+        // },
       }),
     ],
   ],
@@ -109,6 +181,11 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/rdapify-social-card.png',
+      metadata: [
+        { name: 'keywords', content: 'rdap, whois, domain lookup, ip lookup, asn lookup, rdap client, typescript, nodejs, rdapify' },
+        { name: 'twitter:site', content: '@rdapify' },
+        { property: 'og:type', content: 'website' },
+      ],
       navbar: {
         title: '',
         logo: {
@@ -236,17 +313,18 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ['bash', 'json', 'typescript', 'javascript'],
       },
-      algolia: {
-        appId: 'YOUR_APP_ID',
-        apiKey: 'YOUR_SEARCH_API_KEY',
-        indexName: 'rdapify',
-        contextualSearch: true,
-        searchParameters: {},
-      },
+      // NOTE: Algolia search is disabled — replace placeholders with real keys from https://docsearch.algolia.com/apply/
+      // algolia: {
+      //   appId: 'YOUR_APP_ID',
+      //   apiKey: 'YOUR_SEARCH_API_KEY',
+      //   indexName: 'rdapify',
+      //   contextualSearch: true,
+      //   searchParameters: {},
+      // },
       announcementBar: {
-        id: 'v016_release',
+        id: 'v030_release',
         content:
-          '🚀 RDAPify v0.1.6 is out — CLI tool, Redis cache adapter & enterprise features. <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify/releases">See what\'s new</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify">⭐ Star on GitHub</a>',
+          '🚀 RDAPify v0.3.0 is out — native Rust backend, batch processing & enterprise features. <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify/releases">See what\'s new</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/rdapify/rdapify">⭐ Star on GitHub</a>',
         backgroundColor: '#1a1a2e',
         textColor: '#25c2a0',
         isCloseable: true,
