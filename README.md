@@ -397,109 +397,106 @@ RDAPify is an open source project. Get help or contribute:
 
 ## 🚧 Project Status
 
-**Current Release**: v0.1.8 (Alpha)
+**Current Release**: v0.3.0 (Alpha)
 
-### 🎉 What's New in v0.1.7
+### 🎉 What's New in v0.3.0
 
-**Nameserver & Entity Query Support**
-- ✅ **Nameserver Queries**: `client.nameserver('ns1.example.com')` — auto-discovery via IANA DNS bootstrap
-- ✅ **Entity Queries**: `client.entity('ARIN-HN-1', serverUrl)` — contact/registrant/registrar lookup
-- ✅ **CLI Extended**: `rdapify nameserver <hostname>`, `rdapify entity <handle> --server <url>`
-- ✅ **New Types**: `NameserverResponse` and `EntityResponse` exported from main entry point
-- ✅ **New Validators**: `validateNameserver`, `validateEntityHandle`, `normalizeNameserver`, `normalizeEntityHandle`
-- ✅ **All query types** now support full pipeline: caching, middleware hooks, metrics, deduplication, PII redaction
+**Streaming, Monitoring & Runtime Maturity**
+- ✅ **Streaming Batch API**: `client.streamBatch(queries[])` — `AsyncIterable<QueryResult>` with back-pressure (no overflow at 1000+ queries)
+- ✅ **Prometheus Exporter**: `PrometheusExporter` class with `createHttpHandler()` for metrics scraping
+- ✅ **Grafana Dashboard**: Built-in `RDAPIFY_GRAFANA_DASHBOARD` JSON template — import directly into Grafana
+- ✅ **OpenTelemetry Traces**: `TelemetryExporter` + `ClientConfig.telemetry.endpoint` for distributed tracing
+- ✅ **Multi-region Bootstrap**: `ClientConfig.bootstrap.regions: ['us', 'eu', 'ap']` — auto-selects nearest IANA mirror
+- ✅ **Deprecation Engine**: `deprecated()` utility — runtime warning via `process.emitWarning`, emitted once per code path
+- ✅ **BrowserFetcher**: Full browser-compatible fetcher for proxy-based browser environments
 
-### v0.1.6 — CLI Tool & Runtime Support
-- ✅ **CLI Tool**: `rdapify domain <name>`, `rdapify ip <addr>`, `rdapify asn <num>` — zero external dependencies
-- ✅ **CLI Flags**: `--json`, `--no-cache`, `--timeout <ms>`, `--version/-v`, `--help/-h`
-- ✅ **Cloudflare Workers**: Full runtime detection and support (`isCloudflareWorkers()`)
-- ✅ **Critical Redis Fix**: `RedisCache.clear()` no longer wipes the entire database
+### v0.2.3 — Framework Integrations
 
-**v0.1.5 — Compliance & Middleware**
-- ✅ **Redis Cache**: Production-ready Redis adapter with peer-dependency pattern
-- ✅ **Middleware Hooks**: `beforeQuery`, `afterQuery`, `onError`, `onCacheHit`, `onCacheMiss`, `onRetry` lifecycle hooks
-- ✅ **Query Deduplicator**: Collapses concurrent identical in-flight requests into a single Promise
-- ✅ **Audit Logger**: GDPR/SOC2/CCPA-compliant audit trail with in-memory and file (NDJSON) adapters
-- ✅ **Response Validator**: RFC 7483 schema validation with strict/lenient/off modes
+- ✅ **GraphQL Schema**: framework-agnostic `{ typeDefs, resolvers }` — works with graphql-yoga and any GraphQL server
+- ✅ **Express Middleware**: `rdapifyExpress(client)` — `GET /domain/:name`, `/ip/:address`, `/asn/:number`
+- ✅ **NestJS Module**: `RdapifyModule.forRoot(config)` + `@InjectRdapClient()` decorator
 
-**v0.1.4 — TypeScript Strict Mode**
-- ✅ TypeScript strict mode throughout the entire codebase
+### v0.2.2 — Edge Runtime Support
 
-**v0.1.3 — 15+ Defensive Bug Fixes**
-- ✅ Normalizer null checks, BootstrapDiscovery NaN guard, Fetcher redirect validation
-- ✅ ConnectionPool acquire timeout, PIIRedactor `structuredClone`, SSRFProtection IPv6 brackets
-- ✅ MetricsCollector division-by-zero protection
+- ✅ **Deno Support**: `DenoFetcher` with `isDeno()` runtime detection
+- ✅ **Cloudflare Workers**: `CloudflareWorkersFetcher` — no `fs` or `process` dependencies; edge-compatible
+- ✅ **Package exports**: `./worker`, `./deno`, `./node` entry points
 
-**Previous Releases (v0.1.0–v0.1.2)**
-- ✅ Authentication (Basic/Bearer/API Key/OAuth2), Proxy (HTTP/HTTPS/SOCKS4/SOCKS5), Compression (gzip/brotli/deflate)
-- ✅ Retry strategies with circuit breaker, query prioritization, enhanced validation (IDN, IPv6 zones, ASN ranges)
-- ✅ Connection pooling (30-40% faster), metrics & monitoring, request/response logging
-- ✅ Persistent cache (file-based), interactive playground
+### v0.2.1 — Bun Runtime
+
+- ✅ **BunFetcher**: `BunFetcher implements IFetcherPort` — uses `Bun.fetch`; auto-selected when Bun is detected
+- ✅ **CI**: Bun job added to `.github/workflows/ci.yml`
+
+### v0.2.0 — Core Enhancements
+
+- ✅ **Circuit Breaker**: complete `closed → open → half-open → closed/open` state machine
+- ✅ **Redis Pipeline**: batch `getMany`/`setMany` + SHA-256 key compression for long keys
+- ✅ **Middleware `ctx.abort()`**: `beforeQuery` hooks can now abort queries (`QueryAbortedError`)
+- ✅ **Middleware Priority**: numeric priority ordering (lower = higher priority)
+- ✅ **HTTP/2 Support**: opt-in via `ClientConfig.http2: boolean`
+
+### v0.1.9 — Availability & Bootstrap
+
+- ✅ **Domain Availability**: `client.checkAvailability(domain)` — RDAP-only, returns `{ available, expiresAt? }`
+- ✅ **Bulk Availability**: `client.checkAvailabilityBatch(domains[])` — concurrent batch
+- ✅ **Live Integration Tests**: opt-in `npm run test:live` via `LIVE_TESTS=1` (weekly CI workflow, does not block merge)
+- ✅ **Advanced Bootstrap Config**: `customServers`, `ttl` override, `fallback` to IANA
+
+**Previous Releases (v0.1.0–v0.1.8)**
+- ✅ Rust native backend (`rdapify-nd`), CLI tool, nameserver/entity queries, TypeScript strict mode
+- ✅ Redis cache, middleware hooks, query deduplication, audit logger, RFC 7483 response validation
+- ✅ Authentication (Basic/Bearer/API Key/OAuth2), proxy (HTTP/HTTPS/SOCKS4/SOCKS5), compression
+- ✅ Retry strategies, circuit breaker, query prioritization, connection pooling, metrics & monitoring
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### ✅ Full Feature Set (v0.1.8)
+### ✅ Full Feature Set (v0.3.0)
 
 - ✅ **RDAP Client**: Domain, IP, ASN, Nameserver, and Entity queries with automatic IANA bootstrap discovery
-- ✅ **CLI Tool**: Command-line interface with human-readable and JSON output (`domain`, `ip`, `asn`, `nameserver`, `entity`)
+- ✅ **Domain Availability**: `client.checkAvailability()` + `client.checkAvailabilityBatch()` via RDAP
+- ✅ **CLI Tool**: `rdapify domain/ip/asn/nameserver/entity` with `--json`, `--no-cache`, `--timeout`, `--server` flags
 - ✅ **SSRF Protection**: Blocks private IPs, localhost, link-local, CIDR matching (IPv4/IPv6)
 - ✅ **Data Normalization**: Consistent response format across all registries
 - ✅ **PII Redaction**: Automatic redaction of emails, phones, addresses (GDPR/CCPA)
 - ✅ **Audit Logging**: Compliance-grade audit trail (GDPR/SOC2/CCPA) with NDJSON file adapter
 - ✅ **In-Memory Cache**: LRU cache with TTL support
 - ✅ **Persistent Cache**: File-based cache that survives restarts
-- ✅ **Redis Cache**: Production-ready Redis adapter
+- ✅ **Redis Cache**: Production-ready Redis adapter with pipeline + key compression
 - ✅ **Connection Pooling**: HTTP connection reuse (30-40% faster)
 - ✅ **Metrics & Monitoring**: Comprehensive query tracking and analysis
+- ✅ **Prometheus Exporter**: `PrometheusExporter` + `createHttpHandler()` for metrics scraping
+- ✅ **Grafana Dashboard**: Built-in JSON dashboard template
+- ✅ **OpenTelemetry Traces**: Distributed tracing via `TelemetryExporter`
 - ✅ **Request/Response Logging**: Structured logging with configurable levels
 - ✅ **Retry Strategies**: Circuit breaker (closed/open/half-open) with exponential backoff
 - ✅ **Query Prioritization**: High/normal/low priority queue
 - ✅ **Query Deduplication**: Collapse concurrent identical requests into one
-- ✅ **Middleware Hooks**: Lifecycle hooks for query pipeline customization
+- ✅ **Middleware Hooks**: Lifecycle hooks with `ctx.abort()` support and priority ordering
 - ✅ **Response Validation**: RFC 7483 schema validation
 - ✅ **Enhanced Validation**: IDN domains, IPv6 zones, ASN ranges
 - ✅ **Authentication**: Basic, Bearer, API Key, OAuth2
 - ✅ **Proxy Support**: HTTP/HTTPS/SOCKS4/SOCKS5 with bypass patterns
 - ✅ **Response Compression**: gzip, brotli, deflate (60-80% bandwidth reduction)
-- ✅ **Rust Native Backend**: optional `rdapify-nd` for lower-latency queries via compiled Rust (`backend: 'auto' | 'native' | 'typescript'`)
-- ✅ **Multi-runtime**: Node.js 20+, Bun, Deno, Cloudflare Workers
+- ✅ **HTTP/2 Support**: opt-in via `ClientConfig.http2: boolean`
+- ✅ **Streaming API**: `client.streamBatch()` — `AsyncIterable<QueryResult>` with back-pressure
+- ✅ **Multi-region Bootstrap**: `ClientConfig.bootstrap.regions` — nearest IANA mirror selection
+- ✅ **GraphQL Schema**: framework-agnostic `{ typeDefs, resolvers }` for graphql-yoga and others
+- ✅ **Express Middleware**: `rdapifyExpress(client)` — drop-in REST routes
+- ✅ **NestJS Module**: `RdapifyModule.forRoot(config)` + `@InjectRdapClient()` decorator
+- ✅ **Rust Native Backend**: optional `rdapify-nd` (`backend: 'auto' | 'native' | 'typescript'`)
+- ✅ **Multi-runtime**: Node.js 20+, Bun (`BunFetcher`), Deno (`DenoFetcher`), Cloudflare Workers (`CloudflareWorkersFetcher`), Browser (`BrowserFetcher`)
+- ✅ **Deprecation Engine**: runtime warnings via `process.emitWarning`, once per code path
 - ✅ **TypeScript Strict**: Full type definitions with strict mode
-- ✅ **Test Coverage**: 34 test files, 620+ tests (unit + integration)
+- ✅ **Test Coverage**: 1066+ tests (unit + integration + security), 90.4% branch coverage
 
-### 🎉 What's New in v0.1.8
+### 🔜 Coming in v1.0.0-rc.1
 
-**Rust Native Backend (`rdapify-nd`)**
-- ✅ **Optional native backend**: install `rdapify-nd` alongside `rdapify` for lower-latency queries powered by compiled Rust
-- ✅ **`backend` option**: `'auto'` (default, uses native if available), `'native'` (require native), `'typescript'` (always use TS pipeline)
-- ✅ **`isNativeAvailable()`**: runtime detection utility to check if native binary is loaded
-- ✅ **Transparent fallback**: when `rdapify-nd` is absent, all existing behaviour is preserved with zero configuration change
+- ⏳ **API Freeze**: all public exports locked — no breaking changes after this point
+- ⏳ **External Security Audit**: independent audit firm review of rdapify + rdapify-rust
+- ⏳ **Runtime Certification**: Bun, Deno, and Cloudflare Workers verified in live environments
+- ⏳ **RC Feedback Period**: 4-week community feedback window before stable release
 
-```ts
-import { RDAPClient, isNativeAvailable } from 'rdapify';
-
-console.log(isNativeAvailable()); // true if rdapify-nd is installed
-
-const client = new RDAPClient({ backend: 'auto' });   // transparent
-const client2 = new RDAPClient({ backend: 'native' }); // throws if not installed
-const client3 = new RDAPClient({ backend: 'typescript' }); // always TS pipeline
-```
-
-### 🔜 Coming in v0.1.9
-
-- ⏳ **Domain Availability**: `client.checkAvailability('example.com')` — instant availability check via RDAP
-- ⏳ **Bulk Availability**: `client.checkAvailabilityBatch(['a.com', 'b.com'])` — check multiple domains at once
-- ⏳ **Live Integration Tests**: opt-in via `LIVE_TESTS=1` against real RDAP servers
-- ⏳ **Advanced Bootstrap Config**: custom bootstrap servers, TTL overrides, redundancy fallback
-
-### 📋 Roadmap to v0.2.0
-
-- RDAP Testing CLI (`rdapify test server`, `rdapify test benchmark`)
-- RDAP Extensions Registry (REGEXT support)
-- Bootstrap Store Adapters (File, Redis, Database)
-- Advanced Reporting (`client.generateReport()`)
-- RFC 9083 / RFC 9535 support
-
-See [ROADMAP.md](ROADMAP.md) for the complete roadmap and [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ## 🏗️ Code Architecture
 
