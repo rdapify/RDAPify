@@ -359,6 +359,9 @@ export default function Pricing() {
     }
     window.Paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
+      settings: {
+        displayMode: 'overlay',
+      },
     });
   }
 
