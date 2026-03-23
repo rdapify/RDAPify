@@ -168,11 +168,10 @@ const config = {
           priority: null,
           ignorePatterns: ['/tags/**', '/search'],
         },
-        // NOTE: Replace G-XXXXXXXXXX with your real Google Analytics 4 ID when available
-        // gtag: {
-        //   trackingID: 'G-XXXXXXXXXX',
-        //   anonymizeIP: true,
-        // },
+        gtag: {
+          trackingID: 'G-QRTT9VZGJM',
+          anonymizeIP: true,
+        },
       }),
     ],
   ],
