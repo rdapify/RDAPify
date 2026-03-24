@@ -2,9 +2,17 @@
 
 ## Supported Versions
 
-| Version | Supported |
-| ------- | --------- |
-| 0.1.x   | ✅        |
+| Version | Supported          | Notes                         |
+| ------- | ------------------ | ----------------------------- |
+| 0.2.x   | ✅ Active support  | Current stable (core + py)    |
+| 0.1.x   | ❌ End of life     | Upgrade to 0.2.x              |
+
+### Bindings
+
+| Binding     | Version | Supported          |
+| ----------- | ------- | ------------------ |
+| rdapify-nd  | 0.1.3   | ✅ Active          |
+| rdapify-py  | 0.2.1   | ✅ Active          |
 
 ## Reporting a Vulnerability
 

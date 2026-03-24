@@ -107,4 +107,4 @@ let res = client.asn("AS15169").await?;
 
 MIT — حر للاستخدام الشخصي والتجاري.
 
-© 2025 RDAPify Contributors
+© 2026 RDAPify Contributors
