@@ -1,180 +1,184 @@
 # سجل التغييرات
 
-توثيق جميع التغييرات الملحوظة في هذا المشروع في هذا الملف.
+توثيق جميع التغييرات الملحوظة في هذا المشروع.
 
 الصيغة مبنية على [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 وهذا المشروع يتبع [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [غير مُصدّر]
 
-## [1.0.0] - مخطط فبراير 2027
+## [0.3.2] - 2026-03-24
 
-### الملخص
-إصدار API freeze. واجهة `RDAPClient` مستقرة ومضمونة عدم وجود تغييرات breaking في الإصدارات اللاحقة 1.x. جميع 83 تصديراً عاماً مصنفة في `API_STABILITY_ANALYSIS.md`.
+### تم إصلاحه
+- `TelemetryExporter`: `RDAPIFY_VERSION` يُقرأ الآن من `package.json` (كان `'0.2.3'`)
+- `src/index.ts`: JSDoc `@version` صُحّح إلى `0.3.2`
+- تصدير `VERSION` حُدّث إلى `'0.3.2'`
+- قوالب cloud ومثال `express_app` حُدّثت إلى `^0.3.1`
+- `SECURITY.md`: 0.2.x و 0.3.x مدعومان الآن
 
-### الميزات البارزة
-- **تغطية الفروع**: ≥ 90% (1066 اختبار).
-- **API freeze**: 83 تصديراً مقفولة؛ جميع APIs المهملة محذوفة.
-- **دعم Runtime**: Node.js (مؤكد)، Bun/Deno/Cloudflare Workers (تم التحقق خارجياً).
-- **تدقيق الأمان**: تم حل جميع النتائج الحرجة/العالية (يتطلب اكتمال التدقيق الخارجي).
-- **التوثيق**: وثائق عربية وإنجليزية كاملة على rdapify.com.
+### داخلي
+- خطاف `prepublishOnly` أُعيد تفعيله
+- `docs.yml`: أُزيلت حلول `|| true`
 
-### تغييرات Breaking (من 0.3.1)
-جميع APIs المجهزة بـ `@deprecated` في v0.3.1 محذوفة في v1.0.0.
-انظر `MIGRATION_1_0.md` (سيتم نشره مع الإصدار).
-
-## [0.3.1] - غير مُصدّر
+## [0.3.1] - 2026-03-23
 
 ### مهملة
-
-APIs التالية مهملة اعتباراً من v0.3.1 وسيتم إزالتها أو تغييرها في v1.0.0.
-قوائم المسارات البديلة مدرجة. التحذيرات صادرة عبر `process.emitWarning` (Node.js)
-أو `console.warn` (runtimes أخرى) في معظم الأحوال مرة واحدة لكل lifetime العملية.
-
-| API | كود الإيقاف | الهجرة |
-|-----|-----------|--------|
-| `client.getBatchProcessor()` | `DEP_RDAPIFY_0001` | استخدم `client.streamBatch()` للحصول على نتائج streaming أو استدعاء `processBatch()` عبر معالج الدفعات. في v1.0.0، ستكون `processBatch()` طريقة مباشرة على `RDAPClient`. |
+- `client.getBatchProcessor()` (`DEP_RDAPIFY_0001`) — استخدم `client.streamBatch()`
 
 ### مضاف
-
-- **تحليل استقرار API** — `API_STABILITY_ANALYSIS.md` في دليل التخطيط الداخلي يصنف جميع 83 تصديراً عاماً كـ Stable / Evolving / Deprecated لـ API freeze v1.0.0؛ تفاصيل مسارات الهجرة لكل API مهملة
-- **`BrowserFetcher`** — منتقي RDAP متوافق مع المتصفح يوجه الطلبات عبر وكيل عكسي يدعم CORS من المطور؛ يستخدم فقط Web-standard APIs (`fetch` و `AbortSignal` و `URLSearchParams`)؛ يفعّل rdapify في بيئات React و Vue و Angular و vanilla browser
-- **نوع `BrowserFetcherOptions`** — `{ proxyUrl: string; timeout?: number; headers?: Record<string, string> }`
+- تحليل استقرار API — 83 تصديراً مصنّفاً
+- `BrowserFetcher` — منتقي RDAP متوافق مع المتصفح
 
 ### تم تغييره
+- إصلاح promise rejection غير معالج في `BatchProcessor.processBatch()`
 
-- تم تحديث JSDoc فئة `BatchProcessor` ليعكس حالتها المتطورة؛ استيرادات فئة مباشرة يجب أن تفضّل `client.streamBatch()` أو طرق الراحة المضافة في v1.0.0
-- تم إصلاح promise rejection غير معالج في `BatchProcessor.processBatch()` عند `continueOnError: false` — `.finally()` على promise الداخلي كان ينشئ promise مرفوض معلق؛ تم استبداله بـ `.then(cleanup, cleanup)` لإزالة آمنة للعناصر المكتملة من قائمة في-التقدم
-
-## [0.3.0] - أكتوبر 2026
+## [0.3.0] - 2026-03-22
 
 ### مضاف
+- **Streaming Batch API** — `client.streamBatch()` مولّد async
+- **Prometheus Exporter** — مع `createHttpHandler()`
+- **قالب Grafana** — `RDAPIFY_GRAFANA_DASHBOARD`
+- **OpenTelemetry OTLP** — `TelemetryExporter`
+- **Bootstrap متعدد المناطق** — `regions`
+- **أداة الإيقاف** — `deprecated()`
+- 42 اختبار جديد
 
-- **Streaming Batch API**: `client.streamBatch(queries[])` — `AsyncIterable<QueryResult>` مع back-pressure (لا overflow في 1000+ استعلام)
-- **Prometheus Exporter**: فئة `PrometheusExporter` مع `createHttpHandler()` لـ metrics scraping
-- **لوحة معلومات Grafana**: قالب JSON مدمج `RDAPIFY_GRAFANA_DASHBOARD` — استيراد مباشر إلى Grafana
-- **OpenTelemetry Traces**: `TelemetryExporter` + `ClientConfig.telemetry.endpoint` للتتبع الموزع
-- **Bootstrap متعدد المناطق**: `ClientConfig.bootstrap.regions: ['us', 'eu', 'ap']` — اختيار تلقائي لأقرب مرآة IANA
-- **محرك الإيقاف**: أداة `deprecated()` — تحذير وقت التشغيل عبر `process.emitWarning`
-- **BrowserFetcher**: منتقي متوافق مع المتصفح لبيئات proxy-based browser
-
-### تم تصحيحه
-
-- تم إصلاح promise rejection غير معالج في batch processor
-- تحسينات الأداء على connection pooling
-- تحسينات دقة اختبار التغطية
-
-## [0.2.3] - سبتمبر 2026
+## [0.2.3] - 2026-03-22
 
 ### مضاف
+- **مخطط GraphQL** — `createRdapifySchema(client)`
+- **وسيط Express** — `rdapifyExpress(client)`
+- **وحدة NestJS** — `RdapifyModule.forRoot()`
+- 24 اختبار جديد
 
-- **مخطط GraphQL**: `{ typeDefs, resolvers }` — يعمل مع graphql-yoga وأي خادم GraphQL
-- **وسيط Express**: `rdapifyExpress(client)` — `GET /domain/:name` و `/ip/:address` و `/asn/:number`
-- **وحدة NestJS**: `RdapifyModule.forRoot(config)` + decorator `@InjectRdapClient()`
+## [0.2.2] - 2026-03-22
 
-## [0.2.2] - أغسطس 2026
-
-### مضاف
-
-- **دعم Deno**: `DenoFetcher` مع اكتشاف runtime `isDeno()`
-- **Cloudflare Workers**: `CloudflareWorkersFetcher` — بدون اعتماديات `fs` أو `process`
-- **تصدير الحزمة**: نقاط دخول `./worker` و `./deno` و `./node`
-
-## [0.2.1] - يوليو 2026
+> **ملاحظة:** الإصدارات 0.1.9 إلى 0.2.2 نُشرت دفعة واحدة (2026-03-22) من نفس الـ commit.
 
 ### مضاف
+- **دعم Deno** — `DenoFetcher`
+- **Cloudflare Workers** — `CloudflareWorkersFetcher`
+- **تصدير الحزمة** — `./worker` و `./deno` و `./node`
+- 22 اختبار جديد
 
-- **BunFetcher**: `BunFetcher implements IFetcherPort` — استخدام `Bun.fetch`
-- **CI**: وظيفة Bun المضافة إلى `.github/workflows/ci.yml`
-
-## [0.2.0] - يونيو 2026
-
-### مضاف
-
-- **قاطع الدائرة**: الحالة الكاملة `closed → open → half-open → closed/open`
-- **Redis Pipeline**: batch `getMany`/`setMany` + ضغط مفاتيح SHA-256
-- **Middleware `ctx.abort()`**: يمكن لخطافات `beforeQuery` إيقاف الاستعلامات
-- **أولوية Middleware**: ترتيب الأولوية الرقمي (الأقل = أولوية أعلى)
-- **دعم HTTP/2**: اختياري عبر `ClientConfig.http2: boolean`
-
-## [0.1.9] - إبريل 2026
+## [0.2.1] - 2026-03-22
 
 ### مضاف
+- **دعم Bun** — `BunFetcher` مع `isBun()`
+- 14 اختبار جديد
 
-- **توفر النطاق**: `client.checkAvailability(domain)` — RDAP فقط
-- **التوفر بالدفعات**: `client.checkAvailabilityBatch(domains[])` — دفعة متزامنة
-- **اختبارات التكامل المباشرة**: إختيار عبر `LIVE_TESTS=1`
-- **إعداد Bootstrap متقدم**: `customServers` و override `ttl`
-
-## [0.1.8] - مارس 2026
+## [0.2.0] - 2026-03-22
 
 ### مضاف
+- **قاطع الدائرة** — `CircuitBreaker`
+- **إيقاف Middleware** — `ctx.abort()`
+- **أولوية Middleware** — ترتيب رقمي
+- **ضغط مفاتيح Redis** — SHA-256
+- **Redis pipeline** — `getMany`/`setMany`
+- **HTTP/2** — اختياري
+- 63 اختبار جديد
 
-- **CLI Tool**: `rdapify domain/ip/asn/nameserver/entity` مع flags
-- **استعلامات Nameserver و Entity**: `client.nameserver()` و `client.entity()` مع دعم RDAP الكامل
-
-## [0.1.7] - فبراير 2026
-
-### مضاف
-
-- **أداة CLI**: دعم domain و ip و asn
-- **مسارات دخول معكوسة**: تحسينات إضافية
-
-## [0.1.6] - يناير 2026
+## [0.1.9] - 2026-03-22
 
 ### مضاف
+- **توفر النطاق** — `client.checkAvailability()` و `checkAvailabilityBatch()`
+- **اختبارات تكامل مباشرة** — `LIVE_TESTS=1`
+- **إعداد Bootstrap متقدم** — `customServers` و `ttl` و `fallback`
+- 17 اختبار جديد
 
-- **دعم IPv6**: معالجة كاملة للعناوين IPv6
-- **تحسينات التحقق**: تحسينات validation
-
-## [0.1.5] - ديسمبر 2025
-
-### مضاف
-
-- **Audit Logging**: مسار تدقيق GDPR/SOC2/CCPA
-- **تحسينات الأداء**: تحسينات connection pooling
-
-## [0.1.4] - نوفمبر 2025
+## [0.1.8] - 2026-03-21
 
 ### مضاف
+- **Rust native backend** — عبر `rdapify-nd`
+- **خيار `backend`** — `'auto'` | `'native'` | `'typescript'`
+- 28 اختبار جديد
 
-- **دعم Proxy**: HTTP/HTTPS/SOCKS4/SOCKS5
-- **مصادقة متقدمة**: Basic/Bearer/API Key/OAuth2
+## [0.1.7] - 2026-03-19
 
-## [0.1.3] - أكتوبر 2025
-
-### مضاف
-
-- **ضغط الاستجابة**: gzip/brotli/deflate
-- **استراتيجيات إعادة المحاولة**: Circuit breaker مع exponential backoff
-
-## [0.1.2] - سبتمبر 2025
+### تم إصلاحه
+- مزامنة Playground، Jest forceExit، اختبارات redis-cache
 
 ### مضاف
+- استعلامات Nameserver و Entity مع أوامر CLI
 
-- **Connection Pooling**: إعادة استخدام اتصال HTTP
-- **مراقبة ومقاييس**: جمع مقاييس شامل
-- **تسجيل منظم**: مستويات قابلة للتكوين
-
-## [0.1.1] - أغسطس 2025
+## [0.1.6] - 2026-03-17
 
 ### مضاف
+- أداة CLI — `rdapify domain/ip/asn`
+- كشف Cloudflare Workers
 
-- **Persistent Cache**: ذاكرة مؤقتة قائمة على ملفات JSON
-- **Redis Cache**: محول Redis
-- **مصادقة**: Basic و Bearer Token و API Key
+### تم إصلاحه
+- RedisCache.clear() و size() (حرج) — إصلاح مسح DB الكامل
 
-## [0.1.0] - يوليو 2025
+## [0.1.5] - 2026-03-14
 
 ### مضاف
+- RedisCache، AuthenticationManager، ProxyManager، CompressionManager
+- PersistentCache، MiddlewareManager، QueryDeduplicator، AuditLogger، ResponseValidator
 
-- **عميل RDAP الأساسي**: استعلامات Domain و IP و ASN
-- **حماية SSRF**: حجب IPs الخاصة والداخلية
-- **حذف PII**: حذف تلقائي للبيانات الشخصية
-- **ذاكرة مؤقتة داخل الذاكرة**: ذاكرة مؤقتة LRU مع TTL
-- **Normalization**: تطبيع الاستجابة عبر السجلات
-- **TypeScript Strict**: تعريفات نوع كاملة
+## [0.1.4] - 2026-03-13
+
+### مضاف
+- MiddlewareHooks، QueryDeduplicator، AuditLogger، ResponseValidator
+
+## [0.1.3] - 2026-03-12
+
+### تم إصلاحه
+- فحوصات null دفاعية في Normalizer و BootstrapDiscovery و Fetcher
+- مهلة ConnectionPool، نسخ عميق PIIRedactor، أقواس IPv6، حماية القسمة على صفر
+
+## [0.1.2] - 2026-01-28
+
+### مضاف
+- Playground تفاعلي، Connection Pooling، مقاييس ومراقبة، تسجيل منظم
+
+## [0.1.1] - 2026-01-25
+
+### مضاف
+- مصادقة، دعم Proxy، ضغط الاستجابة، استراتيجيات إعادة المحاولة
+- أولوية الاستعلامات، التحقق المحسّن، Persistent Cache، Rate Limiting
+
+## [0.1.0] - 2025-12-05
+
+### مضاف
+- الإصدار العام الأول — عميل RDAP مع domain و IP و ASN
+- IANA Bootstrap، حماية SSRF، حذف PII، ذاكرة مؤقتة، 146 اختبار
+
+## [0.1.0-alpha.4] - 2026-01-23
+
+### مضاف
+- Dependabot، CI/CD محسّن، CodeQL، Playground، ملفات صحة المجتمع
+
+## [0.1.0-alpha.2] - 2026-01-22
+
+### تم إصلاحه
+- إلغاء مؤقت timeout في `withTimeout()`
+
+## [0.1.0-alpha.1] - 2026-01-22
+
+### مضاف
+- إصدار alpha الأول — عميل RDAP، حماية SSRF، حذف PII، 146 اختبار
 
 ---
 
-تم تعديل آخر: مارس 2026
+[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/rdapify/RDAPify/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/rdapify/RDAPify/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/rdapify/RDAPify/compare/v0.2.3...v0.3.0
+[0.2.3]: https://github.com/rdapify/RDAPify/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/rdapify/RDAPify/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/rdapify/RDAPify/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/rdapify/RDAPify/compare/v0.1.9...v0.2.0
+[0.1.9]: https://github.com/rdapify/RDAPify/compare/v0.1.8...v0.1.9
+[0.1.8]: https://github.com/rdapify/RDAPify/compare/v0.1.7...v0.1.8
+[0.1.7]: https://github.com/rdapify/RDAPify/compare/v0.1.6...v0.1.7
+[0.1.6]: https://github.com/rdapify/RDAPify/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/rdapify/RDAPify/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/rdapify/RDAPify/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/rdapify/RDAPify/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/rdapify/RDAPify/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/rdapify/RDAPify/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.4...v0.1.0
+[0.1.0-alpha.4]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.2...v0.1.0-alpha.4
+[0.1.0-alpha.2]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
+[0.1.0-alpha.1]: https://github.com/rdapify/RDAPify/releases/tag/v0.1.0-alpha.1

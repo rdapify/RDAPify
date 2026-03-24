@@ -24,25 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs.yml`: removed `|| true` fallbacks that silently hid link-check and
   markdownlint failures
 
-## [1.0.0] - planned February 2027
-
-### Summary
-API freeze release. `RDAPClient` interface is stable and guaranteed not to
-have breaking changes in subsequent 1.x releases. All 83 public exports are
-classified in `API_STABILITY_ANALYSIS.md`.
-
-### Highlights
-- **Branch coverage**: ≥ 90% (1066 tests).
-- **API freeze**: 83 exports locked; all deprecated APIs removed.
-- **Runtime support**: Node.js (confirmed), Bun/Deno/Cloudflare Workers (verified externally).
-- **Security Audit**: all critical/high findings resolved (requires external audit completion).
-- **Documentation**: complete Arabic and English docs at rdapify.com.
-
-### Breaking Changes (from 0.3.1)
-All APIs marked `@deprecated` in v0.3.1 are removed in v1.0.0.
-See `MIGRATION_1_0.md` (to be published with release).
-
-## [0.3.1] - unreleased
+## [0.3.1] - 2026-03-23
 
 ### Deprecated
 
@@ -69,7 +51,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 
 - Branch coverage increased to **80.25%** (above the 80% jest threshold) by adding targeted tests for previously uncovered branches across `Logger`, `MetricsCollector`, `nestjs.ts`, `nameserver.ts`, `express.ts`, `BatchProcessor`, and `QueryPriority` modules
 
-## [0.3.0] - unreleased
+## [0.3.0] - 2026-03-22
 
 ### Added
 
@@ -83,7 +65,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **42 new unit tests**: streaming batch (10), Prometheus exporter (10), TelemetryExporter (9), deprecation (7), multi-region bootstrap (5)
 - **API snapshot updated** — 82 exported symbols
 
-## [0.2.3] - unreleased
+## [0.2.3] - 2026-03-22
 
 ### Added
 
@@ -97,7 +79,11 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **7 new public exports**: `createRdapifySchema`, `RDAPIFY_TYPE_DEFS`, `RdapifyResolvers` (type), `rdapifyExpress`, `MinimalRouter`, `RouterLike` (type), `RequestLike` (type), `ResponseLike` (type), `RdapifyModule`, `InjectRdapClient`, `RDAPIFY_CLIENT_TOKEN`, `RdapifyModuleOptions` (type), `RdapifyDynamicModule` (type)
 - **API snapshot updated** — 78 exported symbols
 
-## [0.2.2] - unreleased
+## [0.2.2] - 2026-03-22
+
+> **Note:** Versions 0.1.9 through 0.2.2 were published in a batch on the same
+> day (2026-03-22) from the same commit (bb7d250dc). Changelog entries reflect
+> the intended scope of each version.
 
 ### Added
 
@@ -107,7 +93,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **Priority order** — fetcher auto-selection order: Cloudflare Workers → Deno → Bun → Node.js (standard `Fetcher`)
 - **22 new unit tests**: DenoFetcher (9 tests), CloudflareWorkersFetcher (13 tests)
 
-## [0.2.1] - unreleased
+## [0.2.1] - 2026-03-22
 
 ### Added
 
@@ -116,7 +102,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **CI Bun job** — `.github/workflows/ci.yml` now includes a `test-bun` job that installs dependencies with `bun install` and runs the unit test suite under Bun
 - **14 unit tests** for `BunFetcher`: `resolveFetch()` detection (Bun present / absent / non-function), successful fetch, header forwarding, custom headers, 4xx/5xx → `RDAPServerError`, timeout → `TimeoutError`, generic error → `NetworkError`, SSRF protection integration, Bun.fetch preference over global fetch
 
-## [0.2.0] - unreleased
+## [0.2.0] - 2026-03-22
 
 ### Added
 
@@ -129,7 +115,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **`QueryAbortedError`** exported from public API
 - **63 new unit tests**: circuit breaker state transitions (14), middleware abort + priority (14), Redis key compression + pipeline (17), HTTP/2 (5), middleware hooks compatibility fix (2)
 
-## [0.1.9] - unreleased
+## [0.1.9] - 2026-03-22
 
 ### Added
 
@@ -434,7 +420,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - **Query Prioritization**: Critical queries execute first
 - **Persistent Cache**: Faster startup with pre-loaded cache
 
-## [0.1.0] - 2025-01-25
+## [0.1.0] - 2025-12-05
 
 ### Added
 - Initial public release of RDAPify
@@ -485,7 +471,7 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 - Mocked fixtures for reliable testing
 - Coverage reporting
 
-## [0.1.0-alpha.4] - 2025-01-25
+## [0.1.0-alpha.4] - 2026-01-23
 
 ### Added
 - Dependabot configuration for automated dependency updates
@@ -564,4 +550,24 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 
 ---
 
-[0.1.0-alpha.1]: https://github.com/rdapify/rdapify/releases/tag/v0.1.0-alpha.1
+[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/rdapify/RDAPify/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/rdapify/RDAPify/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/rdapify/RDAPify/compare/v0.2.3...v0.3.0
+[0.2.3]: https://github.com/rdapify/RDAPify/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/rdapify/RDAPify/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/rdapify/RDAPify/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/rdapify/RDAPify/compare/v0.1.9...v0.2.0
+[0.1.9]: https://github.com/rdapify/RDAPify/compare/v0.1.8...v0.1.9
+[0.1.8]: https://github.com/rdapify/RDAPify/compare/v0.1.7...v0.1.8
+[0.1.7]: https://github.com/rdapify/RDAPify/compare/v0.1.6...v0.1.7
+[0.1.6]: https://github.com/rdapify/RDAPify/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/rdapify/RDAPify/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/rdapify/RDAPify/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/rdapify/RDAPify/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/rdapify/RDAPify/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/rdapify/RDAPify/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.4...v0.1.0
+[0.1.0-alpha.4]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.2...v0.1.0-alpha.4
+[0.1.0-alpha.2]: https://github.com/rdapify/RDAPify/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
+[0.1.0-alpha.1]: https://github.com/rdapify/RDAPify/releases/tag/v0.1.0-alpha.1
