@@ -6,7 +6,7 @@
  * 
  * @packageDocumentation
  * @module rdapify
- * @version 0.3.0
+ * @version 0.3.2
  * 
  * @example Basic Usage
  * ```typescript
@@ -208,7 +208,7 @@ export { UsageTelemetry } from './infrastructure/telemetry/UsageTelemetry';
 /**
  * Current library version
  */
-export const VERSION = '0.3.1';
+export const VERSION = '0.3.2';
 
 // ============================================================================
 // Service Exports (Advanced Usage)

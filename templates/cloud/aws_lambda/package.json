@@ -10,7 +10,7 @@
     "test": "sam local invoke RDAPifyFunction -e test-event.json"
   },
   "dependencies": {
-    "rdapify": "^0.1.0-alpha.4"
+    "rdapify": "^0.3.1"
   },
   "devDependencies": {
     "aws-sam-cli": "^1.0.0"

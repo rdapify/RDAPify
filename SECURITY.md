@@ -6,14 +6,16 @@ Security is foundational to RDAPify's design. As a library that interacts with i
 
 This document outlines our security policies and procedures. For comprehensive technical details, see our [Security Whitepaper](docs/security/whitepaper.md).
 
-## Supported Versions 
+## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x-alpha | ⚠️ Alpha - security fixes only |
-| < 0.1.x | ❌ Not supported   |
+| Version     | Supported          | Notes                    |
+| ----------- | ------------------ | ------------------------ |
+| 0.3.x       | ✅ Active support  | Current stable           |
+| 0.2.x       | ✅ Security fixes  | LTS until v0.4.0         |
+| 0.1.x       | ❌ End of life     | Upgrade to 0.3.x         |
+| 0.1.x-alpha | ❌ End of life     | Development only         |
 
-> **Note**: This is an alpha release. Production use is not recommended until v1.0.0.
+> **Note**: Production use is not recommended until v1.0.0. See [CHANGELOG](CHANGELOG.md) for release details.
 
 ## Reporting a Vulnerability
 
@@ -196,5 +198,5 @@ For security-related questions or concerns:
 
 ---
 
-> **Note**: This document is regularly updated. Last reviewed: March 21, 2026
+> **Note**: This document is regularly updated. Last reviewed: March 24, 2026
 > RDAPify is provided "as is" without warranty. See [LICENSE](LICENSE) for full terms.

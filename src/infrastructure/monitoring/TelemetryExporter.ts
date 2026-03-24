@@ -23,10 +23,25 @@
  * @module infrastructure/monitoring/TelemetryExporter
  */
 
+import { join } from 'path';
 import type { TelemetryOptions } from '../../shared/types/options';
 
-// Kept in sync with package.json version
-const RDAPIFY_VERSION = '0.2.3';
+// Read version from the nearest package.json up the directory tree.
+// Works from both src/ (dev) and dist/cjs/ (published) layouts.
+function findPackageVersion(): string {
+  let dir = __dirname;
+  for (let i = 0; i < 6; i++) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pkg = require(join(dir, 'package.json')) as { version: string };
+      if (pkg.version) return pkg.version;
+    } catch { /* keep climbing */ }
+    dir = join(dir, '..');
+  }
+  return '0.0.0';
+}
+
+const RDAPIFY_VERSION = findPackageVersion();
 
 /** A minimal OTLP span representation */
 export interface SpanData {

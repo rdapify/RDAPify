@@ -48,7 +48,7 @@ exports.handler = async (event) => {
         },
         body: JSON.stringify({
           status: 'healthy',
-          version: '0.1.0-alpha.4',
+          version: require('./package.json').version,
           timestamp: new Date().toISOString()
         })
       };

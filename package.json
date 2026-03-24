@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -72,7 +72,7 @@
     "verify:api": "node scripts/verify-api.js",
     "verify:api:update": "npm run build && node scripts/verify-api.js",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run verify:api",
-    "prepublishOnly_disabled_for_manual_publish": "npm run verify",
+    "prepublishOnly": "npm run verify",
     "prepack": "npm run build",
     "prepare": "husky install",
     "playground": "npm run build && cd playground && npm install && npm start",

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-03-24
+
+### Fixed
+- `TelemetryExporter`: `RDAPIFY_VERSION` now dynamically read from `package.json`
+  instead of hardcoded `'0.2.3'` — OTLP spans now report the correct library version
+- `src/index.ts`: JSDoc `@version` corrected to `0.3.2` (was `0.3.0`)
+- `VERSION` export updated to `'0.3.2'`
+- Cloud templates (`aws_lambda`, `azure_functions`, `google_cloud_run`) and
+  `express_app` example updated from `^0.1.0-alpha.4` to `^0.3.1`
+- `SECURITY.md`: Supported versions updated — 0.2.x and 0.3.x now listed as active
+
+### Internal
+- `prepublishOnly` hook restored — all npm publishes now run `verify`
+  (lint + typecheck + test + build + API snapshot check)
+- `docs.yml`: removed `|| true` fallbacks that silently hid link-check and
+  markdownlint failures
+
 ## [1.0.0] - planned February 2027
 
 ### Summary
