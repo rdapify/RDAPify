@@ -7,64 +7,74 @@
 
 ## [غير مُصدّر]
 
-## [0.2.0] — غير مُصدّر
+## [0.2.1] — 2026-03-23
 
 ### مضاف
+- **`stream_asn()`** و **`stream_nameserver()`** — إكمال واجهة Streaming
+- **rdapify-nd v0.1.3** — تحديث ربط Node.js
+- **rdapify-py v0.2.1** — تحديث ربط Python
 
-- **واجهة برمجية Async Streaming** — `client.stream_domain(names) -> ReceiverStream<DomainEvent>` و `client.stream_ip(addresses) -> ReceiverStream<IpEvent>`؛ تنتج النتائج مع وصولها دون تخزين الدفعة الكاملة
-- **Back-pressure** — قناة `tokio::sync::mpsc` محدودة؛ `StreamConfig.buffer_size` تتحكم في السعة (افتراضي 32)؛ المُرسلون يحجبون عندما يتأخر المستهلك — لا نمو ذاكرة غير محدود على نطاق واسع
-- **تعددات `DomainEvent` / `IpEvent`** — متغيرات `Ok(DomainResponse)` / `Err(RdapError)`؛ المتغيرات الكبيرة مصندوقة لقمع `clippy::large_enum_variant`
-- **تكوين Connection pool** — `ClientConfig.reuse_connections: bool` (افتراضي `true`) و `ClientConfig.max_connections_per_host: usize` (افتراضي `10`)
-- **Go binding** (`rdapify-go`) — دالف cgo أولية في `bindings/go/rdapify.go` حول هدف `cdylib`؛ تعريض 5 دوال متزامنة (`domain` و `ip` و `asn` و `nameserver` و `entity`) تقود داخلياً تشغيل `tokio`؛ رأس C `rdapify.h` مع تعليقات توثيق كاملة؛ تم إضافة وظيفة فحص بناء CI إلى `.github/workflows/ci.yml`
-- **معيار Streaming** — `benches/streaming.rs` (Criterion) قياس الإنتاجية لـ `stream_domain` تحت حمل متزامن
+### تم إصلاحه
+- تصحيح إصدار rdapify-py من 0.1.1 إلى 0.2.1
 
-### الاختبارات
-
-- تدفق يأخذ جميع النتائج بالترتيب
-- الخطأ في عنصر واحد لا يلغي العناصر المتبقية
-- الإلغاء في منتصف Stream (إسقاط المستقبل) ينهي المُرسل برفق
-
-## [0.1.3] — غير مُصدّر
+## [0.2.0] — 2026-03-22
 
 ### مضاف
+- **واجهة Async Streaming** — `stream_domain()` و `stream_ip()` مع back-pressure
+- **تكوين Connection pool** — `reuse_connections` و `max_connections_per_host`
+- **Go binding** (`rdapify-go`) — دالف cgo أولية مع 5 دوال متزامنة
+- **معيار Streaming** — `benches/streaming.rs` (Criterion)
 
-- **`domain_available()`** — `client.domain_available(name) -> Result<AvailabilityResult>` يتحقق ما إذا كان النطاق متاحاً للتسجيل؛ إرجاع `available: true` في HTTP 404 من السجل، `available: false` مع `expires_at` للنطاقات المسجلة
-- **نوع `AvailabilityResult`**: `{ domain: String, available: bool, expires_at: Option<String> }` — مُصدَّر من الـ API العام
-- **`ClientConfig.custom_bootstrap_servers: HashMap<String, String>`** — تجاوز TLD → عنوان URL خادم RDAP مخصص، استشير قبل بحث Bootstrap IANA
-- 11 اختبار تكامل جديد: مسار سعيد `domain_available`، 404 → متاح، انتشار الخطأ، نطاق/IP/ASN غير صحيح، ذاكرة مؤقتة معطلة، max_attempts=1، خادم bootstrap مخصص
+## [0.1.3] — 2026-03-22
+
+### مضاف
+- **`domain_available()`** — فحص توفر النطاق عبر RDAP
+- **`AvailabilityResult`** — نوع مُصدَّر
+- **`custom_bootstrap_servers`** — تجاوز خادم RDAP مخصص
+- 11 اختبار تكامل جديد
 
 ## [0.1.2] — 2026-03-21
 
 ### تم تغييره
-
-- **إعادة تسمية**: تم إعادة تسمية Node.js binding من `@rdapify/core` → `rdapify-nd` على npm
-- **إعادة تسمية**: تم إعادة تسمية Python binding من `rdapify` → `rdapify-py` على PyPI؛ اسم استيراد Python تم تغييره من `rdapify` → `rdapify_py`
-- **الأداء**: ربط `rdapify-nd` napi الآن يستخدم `OnceLock<RdapClient>` على مستوى الوحدة — يلغي overhead بناء العميل لكل استدعاء
+- إعادة تسمية Node.js binding: `@rdapify/core` → `rdapify-nd`
+- إعادة تسمية Python binding: `rdapify` → `rdapify-py`
+- أداء: `OnceLock<RdapClient>` singleton في rdapify-nd
 
 ### تم إصلاحه
+- CI: إصلاح هدف `aarch64-apple-darwin` المكرر
 
-- **CI**: تم إصلاح هدف `aarch64-apple-darwin` المكرر في مصفوفة بناء napi `bindings.yml` (كان مدرجاً أيضاً في `napi.triples.defaults`)
+## [0.1.1] — 2026-03-21
 
-### التوثيق
+### تم إصلاحه
+- **أمان**: ترقية `idna` لحل GHSA لمعالجة تسمية النطاق غير الصحيحة
+- **أمان**: ترقية `rustls-webpki` لحل GHSA لاستنزاف CPU
+- **CI**: إصلاح وظيفة MSRV وlive-test workflow
 
-- أضيفت أمثلة استخدام كاملة لـ `rdapify-nd` (Node.js) و `rdapify-py` (Python) في README
+### تم تغييره
+- سير عمل CI/CD للروابط ينشر تلقائياً على tags
 
-## [0.1.1] — 2026-03-20
-
-### مضاف
-
-- دعم معيار DNS over HTTPS
-- تحسينات موثوقية الاتصال
-
-## [0.1.0] — 2026-03-15
+## [0.1.0] — 2026-03-20
 
 ### مضاف
-
-- **عميل RDAP الأساسي** — استعلامات Domain و IP و ASN
-- **IANA Bootstrap** — اكتشاف خادم تلقائي
-- **حماية SSRF** — حجب IP الخاصة
-- **ذاكرة مؤقتة** — ذاكرة مؤقتة داخل الذاكرة مع TTL
+- **5 أنواع استعلام** عبر `RdapClient`: `domain()` و `ip()` و `asn()` و `nameserver()` و `entity()`
+- **IANA Bootstrap** (RFC 9224) — اكتشاف خادم RDAP تلقائي
+- **حماية SSRF** — حجب العناوين الخاصة وloopback وlink-local
+- **ذاكرة مؤقتة** — `DashMap` مع TTL قابل للتكوين
+- **IDN / Punycode** — عبر `idna` crate (RFC 5891)
+- **إعادة محاولة** — exponential back-off
+- **CLI** — `rdapify domain/ip/asn/nameserver/entity`
+- **ربط Node.js** (`rdapify-nd`) عبر napi-rs
+- **ربط Python** (`rdapify-py`) عبر PyO3 + maturin
+- 43 اختبار تكامل، CI متعدد المنصات، سير عمل إصدار آلي
 
 ---
 
-آخر تحديث: مارس 2026
+[Unreleased]: https://github.com/rdapify/rdapify-rs/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/rdapify/rdapify-rs/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/rdapify/rdapify-rs/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/rdapify/rdapify-rs/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/rdapify/rdapify-rs/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/rdapify/rdapify-rs/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/rdapify/rdapify-rs/releases/tag/v0.1.0
+
+© 2026 RDAPify Contributors

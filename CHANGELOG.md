@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] — unreleased
+## [0.2.1] — 2026-03-23
+
+### Added
+
+- **`stream_asn()`** and **`stream_nameserver()`** — complete the streaming API with ASN and nameserver query streams
+- **rdapify-nd v0.1.3** — Node.js binding updated to match core v0.2.1
+- **rdapify-py v0.2.1** — Python binding updated to match core v0.2.1
+
+### Fixed
+
+- rdapify-py version corrected from 0.1.1 to 0.2.1 (PyPI already had 0.2.0)
+
+## [0.2.0] — 2026-03-22
 
 ### Added
 
@@ -24,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - error in one item does not cancel remaining items
 - cancel mid-stream (drop receiver) terminates sender gracefully
 
-## [0.1.3] — unreleased
+## [0.1.3] — 2026-03-22
 
 ### Added
 
@@ -84,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Automated release workflow** — triggered on `v*.*.*` tags; verifies tag matches `Cargo.toml` version; publishes to crates.io; creates GitHub Release with CHANGELOG entry
 - **Daily live-test workflow** — runs against real RDAP servers at 06:00 UTC; opens a GitHub Issue on failure
 
-[Unreleased]: https://github.com/rdapify/rdapify-rs/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/rdapify/rdapify-rs/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/rdapify/rdapify-rs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/rdapify/rdapify-rs/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/rdapify/rdapify-rs/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/rdapify/rdapify-rs/compare/v0.1.1...v0.1.2
