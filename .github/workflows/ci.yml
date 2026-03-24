@@ -142,4 +142,4 @@ jobs:
           CGO_LDFLAGS: "-L../../target/release -lrdapify"
           CGO_CFLAGS: "-I."
         # `go vet` validates CGo syntax without requiring the full link step
-        run: go vet ./... || true
+        run: go vet ./...
