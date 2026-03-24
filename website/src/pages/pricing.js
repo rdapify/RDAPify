@@ -13,7 +13,7 @@ const STRINGS = {
     layoutDesc: 'RDAPify pricing plans. Free open-source tier, Pro for developers, Team for businesses, and Enterprise for organizations.',
     eyebrow: 'Pricing',
     heroTitle: 'Simple, transparent pricing',
-    heroSub: 'Start free with the open-source library. Upgrade to Pro or Team when you need monitoring, analytics, and higher rate limits.',
+    heroSub: 'Start free with the open-source library. Upgrade to Pro or Team when you need monitoring, analytics, and team collaboration.',
     popularBadge: 'Most Popular',
     billingMonthly: 'Monthly',
     billingYearly: 'Yearly',
@@ -40,7 +40,7 @@ const STRINGS = {
           'Automatic PII redaction',
           'In-memory caching',
           'Community support (GitHub)',
-          'Rate limited (10 req/min, 100 req/day)',
+          'No usage limits — MIT licensed',
         ],
       },
       {
@@ -115,7 +115,7 @@ const STRINGS = {
     faq: [
       {
         q: 'Can I use the free tier in production?',
-        a: 'Yes. The open-source rdapify library is MIT-licensed and free for any use — personal, commercial, or enterprise. The free tier has rate limits (10 requests/minute, 100 requests/day) which are sufficient for most individual use cases.',
+        a: 'Yes. The open-source rdapify library is MIT-licensed and free for any use — personal, commercial, or enterprise. There are no usage limits on the free tier.',
       },
       {
         q: 'What payment methods do you accept?',
@@ -126,8 +126,8 @@ const STRINGS = {
         a: 'Yes. You can cancel your Pro or Team subscription at any time. You will retain access to paid features until the end of your current billing period. Refunds are handled by Paddle in accordance with their refund policy.',
       },
       {
-        q: 'What happens if I exceed my rate limits?',
-        a: 'Requests exceeding your rate limit will receive a 429 (Too Many Requests) response with a Retry-After header. You can upgrade your plan at any time for higher limits, or contact us for custom rate limit configurations.',
+        q: 'What are the differences between Free and Pro?',
+        a: 'The free rdapify library gives you full RDAP querying with no usage limits. Pro adds bulk domain monitoring, change detection, analytics, webhook integrations, and priority support.',
       },
       {
         q: 'Do you offer discounts for startups or open-source projects?',
@@ -144,7 +144,7 @@ const STRINGS = {
     layoutDesc: 'خطط أسعار RDAPify. طبقة مجانية مفتوحة المصدر، Pro للمطورين، Team للفرق، وEnterprise للمؤسسات.',
     eyebrow: 'الأسعار',
     heroTitle: 'أسعار بسيطة وشفافة',
-    heroSub: 'ابدأ مجاناً بالمكتبة مفتوحة المصدر. انتقل إلى Pro أو Team عندما تحتاج المراقبة والتحليلات وحدود معدل أعلى.',
+    heroSub: 'ابدأ مجاناً بالمكتبة مفتوحة المصدر. انتقل إلى Pro أو Team عندما تحتاج المراقبة والتحليلات والتعاون الجماعي.',
     popularBadge: 'الأكثر شعبية',
     billingMonthly: 'شهري',
     billingYearly: 'سنوي',
@@ -171,7 +171,7 @@ const STRINGS = {
           'إخفاء PII تلقائي',
           'تخزين مؤقت في الذاكرة',
           'دعم المجتمع (GitHub)',
-          'معدل محدود (10 طلب/دقيقة، 100 طلب/يوم)',
+          'بلا حدود استخدام — رخصة MIT',
         ],
       },
       {
@@ -246,7 +246,7 @@ const STRINGS = {
     faq: [
       {
         q: 'هل يمكنني استخدام الطبقة المجانية في الإنتاج؟',
-        a: 'نعم. مكتبة rdapify مفتوحة المصدر مرخصة بـ MIT ومجانية لأي استخدام — شخصي أو تجاري أو مؤسسي. تمتلك الطبقة المجانية حدود معدل (10 طلبات/دقيقة، 100 طلب/يوم) وهي كافية لمعظم حالات الاستخدام الفردية.',
+        a: 'نعم. مكتبة rdapify مفتوحة المصدر مرخصة بـ MIT ومجانية لأي استخدام — شخصي أو تجاري أو مؤسسي. لا توجد حدود على الاستخدام في الطبقة المجانية.',
       },
       {
         q: 'ما طرق الدفع التي تقبلونها؟',
@@ -257,8 +257,8 @@ const STRINGS = {
         a: 'نعم. يمكنك إلغاء اشتراك Pro أو Team في أي وقت. ستحتفظ بالوصول إلى الميزات المدفوعة حتى نهاية فترة الفوترة الحالية. تتم معالجة المبالغ المستردة من قِبل Paddle وفقاً لسياسة الاسترداد الخاصة بهم.',
       },
       {
-        q: 'ماذا يحدث إذا تجاوزت حدود المعدل؟',
-        a: 'ستتلقى الطلبات التي تتجاوز حد المعدل ردًا 429 (طلبات كثيرة جداً) مع رأس Retry-After. يمكنك ترقية خطتك في أي وقت للحصول على حدود أعلى، أو اتصل بنا لتكوينات حدود معدل مخصصة.',
+        q: 'ما الفرق بين المجاني وPro؟',
+        a: 'مكتبة rdapify المجانية تمنحك استعلامات RDAP كاملة بلا حدود. Pro يضيف مراقبة النطاقات بالجملة، اكتشاف التغييرات، التحليلات، تكامل Webhooks، والدعم ذي الأولوية.',
       },
       {
         q: 'هل تقدمون خصومات للشركات الناشئة أو المشاريع مفتوحة المصدر؟',

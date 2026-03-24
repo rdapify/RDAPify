@@ -115,14 +115,13 @@ function TermsBodyEn() {
       </ul>
       <p>We reserve the right to suspend or terminate access to the Service, without notice, for any violation of this Acceptable Use Policy.</p>
 
-      <h2 id="rate-limiting">5. Rate Limiting</h2>
-      <p>The Service enforces rate limits to ensure fair use and protect upstream RDAP registry infrastructure. Current rate limits are:</p>
+      <h2 id="rate-limiting">5. Fair Use</h2>
+      <p>The open-source rdapify library (Free tier) has no usage limits. Pro and Team plans include rate limits to protect upstream RDAP registry infrastructure:</p>
       <ul>
-        <li><strong>Free tier:</strong> 60 requests per minute.</li>
         <li><strong>Pro tier:</strong> 600 requests per minute.</li>
         <li><strong>Enterprise tier:</strong> Custom limits as agreed in your Enterprise agreement.</li>
       </ul>
-      <p>Requests exceeding your rate limit will receive a <code>429 Too Many Requests</code> response with a <code>Retry-After</code> header. Persistent or deliberate attempts to exceed rate limits may result in temporary or permanent suspension of access.</p>
+      <p>Requests exceeding your plan's rate limit will receive a <code>429 Too Many Requests</code> response with a <code>Retry-After</code> header.</p>
 
       <h2 id="payment-terms">6. Payment Terms</h2>
       <p>All paid subscriptions are processed through <strong>Paddle.com Market Limited</strong>, which acts as our Merchant of Record. By subscribing to a paid plan, you agree to:</p>
@@ -241,14 +240,13 @@ function TermsBodyAr() {
       </ul>
       <p>نحتفظ بالحق في تعليق أو إنهاء الوصول إلى الخدمة، دون إشعار، لأي انتهاك لسياسة الاستخدام المقبول هذه.</p>
 
-      <h2 id="rate-limiting">٥. تحديد معدل الطلبات</h2>
-      <p>تُطبّق الخدمة حدوداً على معدل الطلبات لضمان الاستخدام العادل وحماية بنية سجلات RDAP الأعلى مستوى. الحدود الحالية هي:</p>
+      <h2 id="rate-limiting">٥. الاستخدام العادل</h2>
+      <p>مكتبة rdapify مفتوحة المصدر (الطبقة المجانية) ليس لها حدود على الاستخدام. تشمل خطط Pro و Team حدوداً على المعدل لحماية بنية سجلات RDAP:</p>
       <ul>
-        <li><strong>الطبقة المجانية:</strong> 60 طلباً في الدقيقة.</li>
         <li><strong>طبقة Pro:</strong> 600 طلب في الدقيقة.</li>
         <li><strong>طبقة Enterprise:</strong> حدود مخصصة وفق اتفاقية المؤسسة.</li>
       </ul>
-      <p>ستتلقى الطلبات التي تتجاوز حد المعدل استجابة <code>429 Too Many Requests</code> مع رأس <code>Retry-After</code>. قد تؤدي المحاولات المستمرة أو المتعمدة لتجاوز حدود المعدل إلى تعليق مؤقت أو دائم للوصول.</p>
+      <p>ستتلقى الطلبات التي تتجاوز حد خطتك استجابة <code>429 Too Many Requests</code> مع رأس <code>Retry-After</code>.</p>
 
       <h2 id="payment-terms">٦. شروط الدفع</h2>
       <p>تُعالَج جميع الاشتراكات المدفوعة عبر <strong>Paddle.com Market Limited</strong>، التي تعمل بوصفها التاجر المعتمد لدينا. بالاشتراك في خطة مدفوعة، توافق على:</p>
