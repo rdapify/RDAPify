@@ -36,7 +36,10 @@ jobs:
       
       - name: Build
         run: npm run build
-      
+
+      - name: Verify version references
+        run: npm run verify:versions
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
