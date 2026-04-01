@@ -54,7 +54,7 @@ describe('UsageTelemetry', () => {
   it('getPayload() returns anonymous data without PII', () => {
     const payload = UsageTelemetry.getPayload();
     expect(payload).toHaveProperty('installId');
-    expect(payload).toHaveProperty('rdapifyVersion', '0.3.1');
+    expect(payload).toHaveProperty('rdapifyVersion', expect.any(String));
     expect(payload).toHaveProperty('platform');
     expect(payload).toHaveProperty('nodeVersion');
     expect(payload).not.toHaveProperty('query');

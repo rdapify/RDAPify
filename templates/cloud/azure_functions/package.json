@@ -1,6 +1,6 @@
 {
   "name": "rdapify-azure-functions",
-  "version": "0.1.0-alpha.4",
+  "version": "1.0.0",
   "description": "RDAPify Azure Functions deployment",
   "main": "index.js",
   "scripts": {

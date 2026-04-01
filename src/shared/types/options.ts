@@ -5,6 +5,7 @@
 
 import type { CacheStrategy, LogLevel } from './index';
 import type { RedisClientLike } from '../../infrastructure/cache/RedisCache';
+import { VERSION } from '../constants/version.constants';
 
 /**
  * Retry backoff strategies
@@ -352,6 +353,25 @@ export interface RDAPClientOptions {
     enabled?: boolean;
     endpoint?: string;
   };
+
+  /**
+   * Per-registry circuit breaker configuration.
+   * Protects against cascading failures when an RDAP registry becomes degraded.
+   * One circuit breaker is maintained per registry origin (e.g. `https://rdap.verisign.com`).
+   * Pass `false` to disable circuit breaking.
+   *
+   * @default {} (enabled with defaults: 5 failures trip the circuit, 30s before half-open retry)
+   */
+  circuitBreaker?: {
+    /** Consecutive failures within `window` that trip the circuit. @default 5 */
+    failureThreshold?: number;
+    /** Consecutive successes in half-open state that close the circuit. @default 1 */
+    successThreshold?: number;
+    /** Milliseconds in open state before a test request is allowed. @default 30_000 */
+    halfOpenTimeout?: number;
+    /** Rolling failure window in milliseconds. @default 60_000 */
+    window?: number;
+  } | false;
 }
 
 /**
@@ -400,7 +420,7 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   debug: {
     enabled: false,
   },
-  userAgent: 'RDAPify/0.1.8 (https://rdapify.com)',
+  userAgent: `RDAPify/${VERSION} (https://rdapify.com)`,
   includeRaw: false,
   followRedirects: true,
   maxRedirects: 5,
@@ -422,5 +442,11 @@ export const DEFAULT_OPTIONS: Required<RDAPClientOptions> = {
   signal: undefined as any,
   usageTelemetry: {
     enabled: false,
+  },
+  circuitBreaker: {
+    failureThreshold: 5,
+    successThreshold: 1,
+    halfOpenTimeout: 30_000,
+    window: 60_000,
   },
 };

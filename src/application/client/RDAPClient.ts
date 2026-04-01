@@ -155,6 +155,7 @@ export class RDAPClient {
         ssrfProtection: this.ssrfProtection,
         http2: this.options.http2,
         signal: this.options.signal,
+        circuitBreaker: this.options.circuitBreaker,
         logRedirect: (fromUrl, toUrl) => {
           this.logger?.warn(`Redirect: ${fromUrl} → ${toUrl}`);
           if (this.debugEnabled && this.debugLogger) {
@@ -840,6 +841,21 @@ export class RDAPClient {
    */
   getDeduplicatorStats() {
     return this.queryDeduplicator.getStats();
+  }
+
+  /**
+   * Returns the current circuit breaker state for each RDAP registry that
+   * has been contacted. Only available when the standard Node.js Fetcher is
+   * used (not Cloudflare Workers / Deno / Bun variants).
+   *
+   * @returns An object mapping registry origins to their circuit state,
+   *          or an empty object if circuit breaking is disabled or unavailable.
+   */
+  getCircuitBreakerStats(): Record<string, { state: string }> {
+    if (this.fetcher instanceof Fetcher) {
+      return this.fetcher.getCircuitBreakerStats();
+    }
+    return {};
   }
 
   /**

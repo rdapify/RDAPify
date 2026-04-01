@@ -5,3 +5,4 @@
 
 export * from './rdap.constants';
 export * from './http.constants';
+export * from './version.constants';

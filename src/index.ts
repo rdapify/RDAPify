@@ -208,7 +208,7 @@ export { UsageTelemetry } from './infrastructure/telemetry/UsageTelemetry';
 /**
  * Current library version
  */
-export const VERSION = '0.3.2';
+export { VERSION } from './shared/constants/version.constants';
 
 // ============================================================================
 // Service Exports (Advanced Usage)
@@ -424,6 +424,7 @@ export { isNativeAvailable } from './infrastructure/native/NativeBackend';
  */
 export { CircuitBreaker, CircuitOpenError } from './infrastructure/http/CircuitBreaker';
 export type { CircuitState, CircuitBreakerOptions } from './infrastructure/http/CircuitBreaker';
+export type { CircuitBreakerStats } from './infrastructure/http/Fetcher';
 
 /**
  * Thrown when a `beforeQuery` middleware hook calls `ctx.abort()`.

@@ -7,6 +7,9 @@ import type { RawRDAPResponse } from '../../shared/types';
 import { NetworkError, TimeoutError, RDAPServerError, RDAPifyError, QueryAbortedError } from '../../shared/errors';
 import type { TimeoutOptions } from '../../shared/types/options';
 import { withTimeout } from '../../shared/utils/helpers';
+import { VERSION } from '../../shared/constants/version.constants';
+import { CircuitBreaker, CircuitOpenError } from './CircuitBreaker';
+import type { CircuitBreakerOptions, CircuitState } from './CircuitBreaker';
 
 import { SSRFProtection } from '../security/SSRFProtection';
 
@@ -26,6 +29,18 @@ export interface FetcherOptions {
   http2?: boolean;
   /** AbortSignal to cancel in-flight requests */
   signal?: AbortSignal;
+  /**
+   * Per-registry circuit breaker configuration.
+   * One circuit breaker is maintained per RDAP registry origin (e.g. `https://rdap.verisign.com`).
+   * Pass `false` to disable circuit breaking.
+   * @default {} (enabled with default thresholds: 5 failures / 30s half-open)
+   */
+  circuitBreaker?: CircuitBreakerOptions | false;
+}
+
+/** Per-registry circuit breaker state snapshot. */
+export interface CircuitBreakerStats {
+  [origin: string]: { state: CircuitState };
 }
 
 /**
@@ -41,6 +56,8 @@ export class Fetcher {
   private readonly logRedirect?: (fromUrl: string, toUrl: string) => void;
   readonly http2: boolean;
   private readonly signal?: AbortSignal;
+  private readonly circuits: Map<string, CircuitBreaker> = new Map();
+  private readonly cbOptions: CircuitBreakerOptions | false;
 
   constructor(options: FetcherOptions = {}) {
     this.timeout = {
@@ -49,7 +66,7 @@ export class Fetcher {
       dns: options.timeout?.dns || 3000,
     };
 
-    this.userAgent = options.userAgent || 'RDAPify/0.1.7 (https://rdapify.com)';
+    this.userAgent = options.userAgent || `RDAPify/${VERSION} (https://rdapify.com)`;
     this.headers = options.headers || {};
     this.followRedirects = options.followRedirects ?? true;
     this.maxRedirects = options.maxRedirects || 5;
@@ -57,10 +74,32 @@ export class Fetcher {
     this.logRedirect = options.logRedirect;
     this.http2 = options.http2 ?? false;
     this.signal = options.signal;
+    // undefined → enabled with defaults; false → disabled; object → custom options
+    this.cbOptions = options.circuitBreaker !== undefined ? options.circuitBreaker : {};
   }
 
   /**
-   * Fetches RDAP data from a URL
+   * Returns the circuit breaker for the given URL's origin, creating it on first use.
+   * Returns `null` when circuit breaking is disabled (`circuitBreaker: false`).
+   */
+  private getCircuit(url: string): CircuitBreaker | null {
+    if (this.cbOptions === false) return null;
+    let origin: string;
+    try {
+      origin = new URL(url).origin;
+    } catch {
+      return null; // malformed URL — let normal error handling deal with it
+    }
+    if (!this.circuits.has(origin)) {
+      this.circuits.set(origin, new CircuitBreaker(this.cbOptions));
+    }
+    return this.circuits.get(origin)!;
+  }
+
+  /**
+   * Fetches RDAP data from a URL.
+   * Requests are guarded by a per-registry circuit breaker unless disabled.
+   * Throws `CircuitOpenError` when the circuit for the target registry is open.
    */
   async fetch(url: string): Promise<RawRDAPResponse> {
     // SSRF protection check
@@ -68,11 +107,15 @@ export class Fetcher {
       await this.ssrfProtection.validateUrl(url);
     }
 
+    const circuit = this.getCircuit(url);
     try {
-      const response = await this.makeRequest(url);
+      const response = circuit
+        ? await circuit.execute(() => this.makeRequest(url))
+        : await this.makeRequest(url);
       return response;
     } catch (error) {
-      if (error instanceof RDAPifyError) {
+      // Re-throw known typed errors (RDAPifyError subclasses and CircuitOpenError) as-is
+      if (error instanceof RDAPifyError || error instanceof CircuitOpenError) {
         throw error;
       }
 
@@ -82,6 +125,18 @@ export class Fetcher {
         { url, originalError: error }
       );
     }
+  }
+
+  /**
+   * Returns circuit breaker state for each RDAP registry origin that has been
+   * contacted at least once. Empty when circuit breaking is disabled.
+   */
+  getCircuitBreakerStats(): CircuitBreakerStats {
+    const stats: CircuitBreakerStats = {};
+    for (const [origin, cb] of this.circuits) {
+      stats[origin] = { state: cb.getState() };
+    }
+    return stats;
   }
 
   /**

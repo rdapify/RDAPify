@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
+import { VERSION } from '../../shared/constants/version.constants';
 
 interface TelemetryConfig {
   installId: string;
@@ -36,7 +37,7 @@ export class UsageTelemetry {
     const cfg = UsageTelemetry.loadConfig();
     return {
       installId: cfg.installId,
-      rdapifyVersion: '0.3.1',
+      rdapifyVersion: VERSION,
       nodeVersion: process.version,
       platform: process.platform,
       queryTypesUsed: cfg.queryTypesUsed,
