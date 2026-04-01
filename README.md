@@ -142,7 +142,7 @@ let client = RdapClient::with_config(ClientConfig {
 Enable the `cli` feature to build the `rdapify` binary:
 
 ```toml
-rdapify = { version = "0.1", features = ["cli"] }
+rdapify = { version = "0.2", features = ["cli"] }
 ```
 
 Or install it directly:

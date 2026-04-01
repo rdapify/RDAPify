@@ -5,33 +5,33 @@ A fast, secure RDAP client for Python — powered by Rust.
 ## Installation
 
 ```bash
-pip install rdapify
+pip install rdapify-py
 ```
 
 ## Usage
 
 ```python
-import rdapify
+import rdapify_py as rdap
 
 # Query a domain
-result = rdapify.domain("example.com")
+result = rdap.domain("example.com")
 print(result["registrar"]["name"])
 print(result["expiration_date"])
 
 # Query an IP address
-ip = rdapify.ip("8.8.8.8")
+ip = rdap.ip("8.8.8.8")
 print(ip["country"])
 
 # Query an ASN
-asn = rdapify.asn("AS15169")
+asn = rdap.asn("AS15169")
 print(asn["name"])
 
 # Query a nameserver
-ns = rdapify.nameserver("ns1.google.com")
+ns = rdap.nameserver("ns1.google.com")
 print(ns["ip_addresses"])
 
 # Query an entity
-entity = rdapify.entity("ARIN-HN-1", "https://rdap.arin.net/registry")
+entity = rdap.entity("ARIN-HN-1", "https://rdap.arin.net/registry")
 print(entity["handle"])
 ```
 
