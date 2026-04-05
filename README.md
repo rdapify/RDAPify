@@ -1,8 +1,17 @@
+> **⚠️ Deprecated — This repository is archived.**
+>
+> The TypeScript library (`rdapify` on npm) is no longer maintained.
+> Future Node.js support is provided via **[`rdapify-nd`](https://www.npmjs.com/package/rdapify-nd)** — a native Rust binding (napi-rs) with no JavaScript overhead.
+>
+> The canonical RDAPify engine is now **[github.com/rdapify/RDAPify](https://github.com/rdapify/RDAPify)** (Rust).
+
+---
+
 <p align="center">
   <img src="website/static/img/logo-512.png" alt="RDAPify" width="80" />
 </p>
-<h1 align="center">RDAPify</h1>
-<p align="center"><strong>Unified, Secure, High-Performance RDAP Client</strong></p>
+<h1 align="center">RDAPify <em>(archived)</em></h1>
+<p align="center"><strong>Unified, Secure, High-Performance RDAP Client — TypeScript (archived)</strong></p>
 
 [![npm version](https://img.shields.io/npm/v/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)
 [![npm downloads](https://img.shields.io/npm/dm/rdapify?style=flat-square)](https://www.npmjs.com/package/rdapify)

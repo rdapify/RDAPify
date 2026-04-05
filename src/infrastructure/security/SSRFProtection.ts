@@ -22,7 +22,9 @@ export class SSRFProtection {
       blockLinkLocal: options.blockLinkLocal ?? true,
       blockedDomains: options.blockedDomains || [],
       allowedDomains: options.allowedDomains || [],
-      dnsRebinding: options.dnsRebinding ?? false,
+      // Enable DNS rebinding protection by default in server (Node.js) environments;
+      // disable in browsers where window is defined and DNS resolution APIs are unavailable.
+      dnsRebinding: options.dnsRebinding ?? (typeof (globalThis as any).window === 'undefined'),
     };
   }
 

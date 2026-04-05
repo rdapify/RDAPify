@@ -23,12 +23,31 @@ export function isPrivateIP(ip: string): boolean {
     // 192.168.0.0/16
     if (parts[0] === 192 && parts[1] === 168) return true;
 
+    // 100.64.0.0/10 (CGN — Carrier-Grade NAT, RFC 6598)
+    const part1Cgn = parts[1];
+    if (parts[0] === 100 && part1Cgn !== undefined && part1Cgn >= 64 && part1Cgn <= 127) return true;
+
+    // 198.18.0.0/15 (Benchmark testing, RFC 2544)
+    const part1Bench = parts[1];
+    if (parts[0] === 198 && part1Bench !== undefined && part1Bench >= 18 && part1Bench <= 19) return true;
+
+    // 0.0.0.0/8 ("This" network, RFC 1122)
+    if (parts[0] === 0) return true;
+
     return false;
   }
 
   // IPv6 private ranges
   if (trimmed.includes(':')) {
     const lower = trimmed.toLowerCase();
+
+    // ::ffff:0:0/96 — IPv4-mapped IPv6 (e.g. ::ffff:10.0.0.1): extract and re-check the IPv4 part
+    if (lower.startsWith('::ffff:')) {
+      const ipv4Part = lower.slice(7); // strip "::ffff:"
+      if (ipv4Part.includes('.')) {
+        return isPrivateIP(ipv4Part);
+      }
+    }
 
     // fc00::/7 (Unique Local Addresses)
     if (lower.startsWith('fc') || lower.startsWith('fd')) return true;
