@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "rdapify-py"
-version = "0.2.1"
-description = "Unified RDAP client for Python, powered by Rust"
+version = "0.2.2"
+description = "⚠️ DEPRECATED — RDAPify is now Rust-first. Future Python support via PyO3 after v1.0. See https://github.com/rdapify/RDAPify"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.8"
@@ -21,7 +21,7 @@ classifiers = [
 
 [project.urls]
 Homepage       = "https://rdapify.com"
-Repository     = "https://github.com/rdapify/rdapify-rs"
+Repository     = "https://github.com/rdapify/RDAPify"
 Documentation  = "https://docs.rdapify.com"
 
 [tool.maturin]

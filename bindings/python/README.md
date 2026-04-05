@@ -1,4 +1,13 @@
-# rdapify
+# rdapify-py
+
+> **⚠️ DEPRECATION NOTICE**
+>
+> This Python package is part of the old RDAPify architecture.
+>
+> RDAPify is now a Rust-first platform.
+> Future Python support will be provided via PyO3 bindings to the Rust core after RDAPify v1.0.
+>
+> Main project: [https://github.com/rdapify/RDAPify](https://github.com/rdapify/RDAPify)
 
 A fast, secure RDAP client for Python — powered by Rust.
 

@@ -854,25 +854,117 @@ dependencies = [
 ]
 
 [[package]]
-name = "rdapify"
-version = "0.2.1"
+name = "rdap-batch"
+version = "0.1.0"
 dependencies = [
- "chrono",
- "dashmap",
- "idna",
+ "rdap-rate-limit",
+ "rdap-types",
+ "rdapify-client",
+ "tokio",
+]
+
+[[package]]
+name = "rdap-bootstrap"
+version = "0.1.0"
+dependencies = [
  "ipnetwork",
+ "rdap-types",
  "reqwest",
  "serde",
  "serde_json",
- "thiserror",
  "tokio",
- "tokio-stream",
+]
+
+[[package]]
+name = "rdap-cache"
+version = "0.1.0"
+dependencies = [
+ "dashmap",
+ "serde_json",
+]
+
+[[package]]
+name = "rdap-core"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "rdap-security",
+ "rdap-types",
+ "reqwest",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "rdap-rate-limit"
+version = "0.1.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
+name = "rdap-security"
+version = "0.1.0"
+dependencies = [
+ "rdap-types",
  "url",
 ]
 
 [[package]]
+name = "rdap-stream"
+version = "0.1.0"
+dependencies = [
+ "rdap-types",
+ "tokio",
+ "tokio-stream",
+]
+
+[[package]]
+name = "rdap-types"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "url",
+]
+
+[[package]]
+name = "rdapify"
+version = "0.3.0"
+dependencies = [
+ "rdap-batch",
+ "rdap-bootstrap",
+ "rdap-cache",
+ "rdap-core",
+ "rdap-rate-limit",
+ "rdap-security",
+ "rdap-stream",
+ "rdap-types",
+ "rdapify-client",
+]
+
+[[package]]
+name = "rdapify-client"
+version = "0.1.0"
+dependencies = [
+ "idna",
+ "rdap-bootstrap",
+ "rdap-cache",
+ "rdap-core",
+ "rdap-security",
+ "rdap-stream",
+ "rdap-types",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+]
+
+[[package]]
 name = "rdapify-python"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "pyo3",
  "rdapify",
