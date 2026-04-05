@@ -17,7 +17,7 @@
 //! ```
 
 use clap::{Parser, Subcommand};
-use rdap_client::RdapClient;
+use rdapify_client::RdapClient;
 
 #[derive(Parser)]
 #[command(

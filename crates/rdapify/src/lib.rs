@@ -28,8 +28,8 @@
 
 // ── Public re-exports from workspace crates ───────────────────────────────────
 
-pub use rdap_client::{ClientConfig, RdapClient};
-pub use rdap_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
+pub use rdapify_client::{ClientConfig, RdapClient};
+pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
 pub use rdap_types::error::{RdapError, Result};
 
 pub use rdap_types::{

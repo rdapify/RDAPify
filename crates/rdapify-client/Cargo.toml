@@ -1,5 +1,5 @@
 [package]
-name = "rdap-client"
+name = "rdapify-client"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -9,7 +9,7 @@ homepage.workspace = true
 description = "High-level RDAP client with bootstrap, caching, and SSRF protection"
 
 [lib]
-name = "rdap_client"
+name = "rdapify_client"
 crate-type = ["rlib"]
 
 [dependencies]

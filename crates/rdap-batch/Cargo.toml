@@ -10,6 +10,6 @@ description = "Batch RDAP query execution with concurrency control"
 
 [dependencies]
 rdap-types      = { path = "../rdap-types", version = "0.1.0" }
-rdap-client     = { path = "../rdap-client", version = "0.1.0" }
+rdapify-client  = { path = "../rdapify-client", version = "0.1.0" }
 rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.1.0" }
 tokio           = { workspace = true }

@@ -6,7 +6,7 @@ members = [
     "crates/rdap-cache",
     "crates/rdap-core",
     "crates/rdap-stream",
-    "crates/rdap-client",
+    "crates/rdapify-client",
     "crates/rdap-rate-limit",
     "crates/rdap-batch",
     "crates/rdap-cli",
