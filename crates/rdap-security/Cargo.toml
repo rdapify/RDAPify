@@ -9,5 +9,5 @@ homepage.workspace = true
 description = "SSRF protection and URL validation for RDAP clients"
 
 [dependencies]
-rdap-types = { path = "../rdap-types" }
+rdap-types = { path = "../rdap-types", version = "0.1.0" }
 url        = { workspace = true }

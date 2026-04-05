@@ -13,12 +13,12 @@ name = "rdap_client"
 crate-type = ["rlib"]
 
 [dependencies]
-rdap-types    = { path = "../rdap-types" }
-rdap-security = { path = "../rdap-security" }
-rdap-bootstrap = { path = "../rdap-bootstrap" }
-rdap-cache    = { path = "../rdap-cache" }
-rdap-core     = { path = "../rdap-core" }
-rdap-stream   = { path = "../rdap-stream" }
+rdap-types    = { path = "../rdap-types", version = "0.1.0" }
+rdap-security = { path = "../rdap-security", version = "0.1.0" }
+rdap-bootstrap = { path = "../rdap-bootstrap", version = "0.1.0" }
+rdap-cache    = { path = "../rdap-cache", version = "0.1.0" }
+rdap-core     = { path = "../rdap-core", version = "0.1.0" }
+rdap-stream   = { path = "../rdap-stream", version = "0.1.0" }
 tokio        = { workspace = true }
 tokio-stream = { workspace = true }
 serde_json   = { workspace = true }

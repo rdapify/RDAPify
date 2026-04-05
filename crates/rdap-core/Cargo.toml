@@ -9,8 +9,8 @@ homepage.workspace = true
 description = "RDAP HTTP client core: fetcher, normalizer, retries"
 
 [dependencies]
-rdap-types    = { path = "../rdap-types" }
-rdap-security = { path = "../rdap-security" }
+rdap-types    = { path = "../rdap-types", version = "0.1.0" }
+rdap-security = { path = "../rdap-security", version = "0.1.0" }
 reqwest       = { workspace = true }
 serde_json    = { workspace = true }
 tokio         = { workspace = true }

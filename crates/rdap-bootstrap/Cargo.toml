@@ -9,7 +9,7 @@ homepage.workspace = true
 description = "IANA RFC 9224 bootstrap server discovery for RDAP"
 
 [dependencies]
-rdap-types = { path = "../rdap-types" }
+rdap-types = { path = "../rdap-types", version = "0.1.0" }
 reqwest    = { workspace = true }
 serde      = { workspace = true }
 serde_json = { workspace = true }
