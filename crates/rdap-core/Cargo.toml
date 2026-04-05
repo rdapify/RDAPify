@@ -1,0 +1,21 @@
+[package]
+name = "rdap-core"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "RDAP HTTP client core: fetcher, normalizer, retries"
+
+[dependencies]
+rdap-types    = { path = "../rdap-types" }
+rdap-security = { path = "../rdap-security" }
+reqwest       = { workspace = true }
+serde_json    = { workspace = true }
+tokio         = { workspace = true }
+chrono        = { workspace = true }
+
+[dev-dependencies]
+mockito    = { workspace = true }
+tokio-test = { workspace = true }

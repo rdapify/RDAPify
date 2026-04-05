@@ -1,0 +1,17 @@
+[package]
+name = "rdap-bootstrap"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "IANA RFC 9224 bootstrap server discovery for RDAP"
+
+[dependencies]
+rdap-types = { path = "../rdap-types" }
+reqwest    = { workspace = true }
+serde      = { workspace = true }
+serde_json = { workspace = true }
+tokio      = { workspace = true }
+ipnetwork  = { workspace = true }

@@ -1,87 +1,56 @@
-[package]
-name = "rdapify"
-version = "0.2.1"
+[workspace]
+members = [
+    "crates/rdap-types",
+    "crates/rdap-security",
+    "crates/rdap-bootstrap",
+    "crates/rdap-cache",
+    "crates/rdap-core",
+    "crates/rdap-stream",
+    "crates/rdap-client",
+    "crates/rdap-rate-limit",
+    "crates/rdap-batch",
+    "crates/rdap-cli",
+    "crates/rdapify",
+]
+resolver = "2"
+
+[workspace.package]
 edition = "2021"
 rust-version = "1.75"
-description = "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls"
 license = "MIT"
-repository = "https://github.com/rdapify/rdapify-rs"
+repository = "https://github.com/rdapify/RDAPify"
 homepage = "https://rdapify.com"
-documentation = "https://docs.rs/rdapify"
-keywords = ["rdap", "whois", "domain", "network", "dns"]
-categories = ["network-programming", "web-programming::http-client"]
-readme = "README.md"
-exclude = ["bindings/", "tests/fixtures/"]
+authors = ["RDAPify Team <dev@rdapify.com>"]
 
-[lib]
-name = "rdapify"
-# rlib = Rust library, cdylib = C-compatible dynamic library for FFI
-crate-type = ["rlib", "cdylib"]
-
-[[bin]]
-name = "rdapify"
-path = "src/bin/rdapify.rs"
-required-features = ["cli"]
-
-[features]
-default = []
-cli = ["dep:clap"]
-
-[dependencies]
+[workspace.dependencies]
 # Async runtime
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
-
-# HTTP client (rustls = pure Rust TLS, no OpenSSL dependency)
-reqwest = { version = "0.12", features = ["json", "rustls-tls", "gzip"], default-features = false }
-
-# Serialization / deserialization
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-
-# Error handling (derive macro for clean error types)
-thiserror = "2"
-
-# IP address parsing & CIDR matching
-ipnetwork = "0.20"
-
-# IDN / Punycode support (RFC 5891)
-idna = "1"
-
-# Async streams (streaming API)
+tokio        = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
 tokio-stream = { version = "0.1", features = ["sync"] }
 
-# Thread-safe concurrent HashMap for cache
-dashmap = "6"
+# HTTP (rustls = pure Rust TLS, no OpenSSL)
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "gzip"], default-features = false }
 
-# Timestamp utilities
-chrono = { version = "0.4", features = ["serde"] }
+# Serialisation
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"
 
-# URL parsing & validation
-url = "2"
+# Error handling
+thiserror = "2"
 
-# CLI (optional feature)
-clap = { version = "4", features = ["derive", "color"], optional = true }
+# Types used across crates
+url        = "2"
+ipnetwork  = "0.20"
+idna       = "1"
+dashmap    = "6"
+chrono     = { version = "0.4", features = ["serde"] }
 
-[dev-dependencies]
+# CLI (only in rdap-cli)
+clap = { version = "4", features = ["derive", "color"] }
+
+# Dev / test
 tokio-test = "0.4"
-mockito = "1"
-criterion = { version = "0.5", features = ["html_reports", "async_tokio"] }
-
-[[bench]]
-name = "cache"
-harness = false
-
-[[bench]]
-name = "ssrf"
-harness = false
-
-[[bench]]
-name = "query"
-harness = false
-
-[[bench]]
-name = "streaming"
-harness = false
+mockito    = "1"
+criterion  = { version = "0.5", features = ["html_reports", "async_tokio"] }
 
 [profile.release]
 opt-level = 3

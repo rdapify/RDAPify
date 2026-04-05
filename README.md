@@ -6,16 +6,16 @@ RDAP (Registration Data Access Protocol) is the modern replacement for WHOIS, de
 
 [![Crates.io](https://img.shields.io/crates/v/rdapify)](https://crates.io/crates/rdapify)
 [![docs.rs](https://img.shields.io/docsrs/rdapify)](https://docs.rs/rdapify)
-[![CI](https://github.com/rdapify/rdapify-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/rdapify/rdapify-rs/actions/workflows/ci.yml)
+[![CI](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml/badge.svg)](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > **rdapify ecosystem**
 > | Library | Language | Package |
 > |---------|----------|---------|
-> | [rdapify-rs](https://github.com/rdapify/rdapify-rs) ← **you are here** | Rust | [`rdapify`](https://crates.io/crates/rdapify) on crates.io |
-> | [RDAPify](https://github.com/rdapify/RDAPify) | TypeScript / Node.js | [`rdapify`](https://www.npmjs.com/package/rdapify) on npm |
+> | [RDAPify](https://github.com/rdapify/RDAPify) ← **you are here** | Rust | [`rdapify`](https://crates.io/crates/rdapify) on crates.io |
 > | [rdapify-nd](https://www.npmjs.com/package/rdapify-nd) | Node.js (Rust native) | [`rdapify-nd`](https://www.npmjs.com/package/rdapify-nd) on npm |
 > | [rdapify-py](https://pypi.org/project/rdapify-py/) | Python (Rust native) | [`rdapify-py`](https://pypi.org/project/rdapify-py/) on PyPI |
+> | [rdapify-TS](https://github.com/rdapify/rdapify-TS) | TypeScript / Node.js (archived) | [`rdapify`](https://www.npmjs.com/package/rdapify) on npm (deprecated) |
 
 ## Features
 
@@ -246,25 +246,6 @@ const e = await entity('ARIN-HN-1', 'https://rdap.arin.net/registry');
 console.log(e.handle); // "ARIN-HN-1"
 ```
 
-**Use with the TypeScript `rdapify` library** for automatic native acceleration:
-
-```bash
-npm install rdapify rdapify-nd
-```
-
-```ts
-import { RDAPClient } from 'rdapify';
-
-// backend: 'auto' (default) uses rdapify-nd if installed, falls back to TypeScript
-const client = new RDAPClient({ backend: 'auto' });
-
-// Or require it — throws at startup if rdapify-nd is not installed
-const client2 = new RDAPClient({ backend: 'native' });
-
-const result = await client.domain('example.com');
-console.log(result.metadata.source); // RDAP server URL that served the response
-```
-
 ---
 
 ### Python — `rdapify-py`
@@ -307,8 +288,11 @@ All five functions are **synchronous** and backed by a `tokio` runtime under the
 
 ## MSRV
 
-Minimum supported Rust version: **1.75**
+Minimum supported Rust version: **1.77**
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+RDAPify is licensed under the MIT License — see [LICENSE](LICENSE).
+
+RDAPify-Pro is commercial software. See [rdapify.com](https://rdapify.com) for pricing.
+RDAPify-Internal is proprietary and not publicly available.

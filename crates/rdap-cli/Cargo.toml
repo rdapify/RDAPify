@@ -1,0 +1,20 @@
+[package]
+name = "rdap-cli"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "RDAP command-line interface"
+
+[[bin]]
+name = "rdapify"
+path = "src/main.rs"
+
+[dependencies]
+rdap-client = { path = "../rdap-client" }
+rdap-types  = { path = "../rdap-types" }
+tokio       = { workspace = true }
+serde_json  = { workspace = true }
+clap        = { workspace = true }

@@ -1,0 +1,52 @@
+[package]
+name = "rdapify"
+version = "0.3.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls"
+keywords = ["rdap", "whois", "domain", "network", "dns"]
+categories = ["network-programming", "web-programming::http-client"]
+readme = "../../README.md"
+documentation = "https://docs.rs/rdapify"
+
+[lib]
+name = "rdapify"
+crate-type = ["rlib"]
+
+[dependencies]
+rdap-types      = { path = "../rdap-types" }
+rdap-security   = { path = "../rdap-security" }
+rdap-bootstrap  = { path = "../rdap-bootstrap" }
+rdap-cache      = { path = "../rdap-cache" }
+rdap-core       = { path = "../rdap-core" }
+rdap-client     = { path = "../rdap-client" }
+rdap-stream     = { path = "../rdap-stream" }
+rdap-batch      = { path = "../rdap-batch" }
+rdap-rate-limit = { path = "../rdap-rate-limit" }
+
+[dev-dependencies]
+tokio      = { workspace = true }
+tokio-test = { workspace = true }
+tokio-stream = { workspace = true }
+mockito    = { workspace = true }
+serde_json = { workspace = true }
+criterion  = { workspace = true }
+
+[[bench]]
+name = "cache"
+harness = false
+
+[[bench]]
+name = "ssrf"
+harness = false
+
+[[bench]]
+name = "query"
+harness = false
+
+[[bench]]
+name = "streaming"
+harness = false

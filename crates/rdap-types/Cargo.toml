@@ -1,0 +1,19 @@
+[package]
+name = "rdap-types"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "RDAP protocol types and error definitions (RFC 9083)"
+keywords = ["rdap", "whois", "domain", "network"]
+categories = ["network-programming"]
+
+[dependencies]
+serde      = { workspace = true }
+serde_json = { workspace = true }
+thiserror  = { workspace = true }
+reqwest    = { workspace = true }
+url        = { workspace = true }
+chrono     = { workspace = true }
