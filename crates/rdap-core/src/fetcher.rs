@@ -7,8 +7,8 @@ use std::time::Duration;
 
 use serde_json::Value;
 
-use rdap_types::error::{RdapError, Result};
 use rdap_security::SsrfGuard;
+use rdap_types::error::{RdapError, Result};
 
 /// Configuration for the HTTP fetcher.
 #[derive(Debug, Clone)]
@@ -171,8 +171,8 @@ fn backoff(attempt: u32, initial: Duration, max: Duration) -> Duration {
 #[cfg(test)]
 mod tests {
     use super::{backoff, is_retryable, Fetcher, FetcherConfig};
-    use rdap_types::error::RdapError;
     use rdap_security::{SsrfConfig, SsrfGuard};
+    use rdap_types::error::RdapError;
     use std::time::Duration;
 
     #[test]

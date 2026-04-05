@@ -239,7 +239,10 @@ impl RdapClient {
             for name in names {
                 let event = match client.domain(&name).await {
                     Ok(r) => DomainEvent::Result(Box::new(r)),
-                    Err(e) => DomainEvent::Error { query: name, error: e },
+                    Err(e) => DomainEvent::Error {
+                        query: name,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     break;
@@ -262,7 +265,10 @@ impl RdapClient {
             for addr in addresses {
                 let event = match client.ip(&addr).await {
                     Ok(r) => IpEvent::Result(Box::new(r)),
-                    Err(e) => IpEvent::Error { query: addr, error: e },
+                    Err(e) => IpEvent::Error {
+                        query: addr,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     break;
@@ -281,7 +287,10 @@ impl RdapClient {
             for asn in asns {
                 let event = match client.asn(&asn).await {
                     Ok(r) => AsnEvent::Result(Box::new(r)),
-                    Err(e) => AsnEvent::Error { query: asn, error: e },
+                    Err(e) => AsnEvent::Error {
+                        query: asn,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     break;
@@ -304,7 +313,10 @@ impl RdapClient {
             for ns in nameservers {
                 let event = match client.nameserver(&ns).await {
                     Ok(r) => NameserverEvent::Result(Box::new(r)),
-                    Err(e) => NameserverEvent::Error { query: ns, error: e },
+                    Err(e) => NameserverEvent::Error {
+                        query: ns,
+                        error: e,
+                    },
                 };
                 if tx.send(event).await.is_err() {
                     break;

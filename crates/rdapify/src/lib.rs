@@ -28,15 +28,14 @@
 
 // ── Public re-exports from workspace crates ───────────────────────────────────
 
-pub use rdapify_client::{ClientConfig, RdapClient};
-pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
 pub use rdap_types::error::{RdapError, Result};
+pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
+pub use rdapify_client::{ClientConfig, RdapClient};
 
 pub use rdap_types::{
-    AsnResponse, AvailabilityResult, DomainResponse, EntityResponse,
-    IpResponse, IpVersion, NameserverIpAddresses, NameserverResponse,
-    RdapEntity, RdapEvent, RdapLink, RdapRemark, RdapRole, RdapStatus,
-    RegistrarSummary, ResponseMeta,
+    AsnResponse, AvailabilityResult, DomainResponse, EntityResponse, IpResponse, IpVersion,
+    NameserverIpAddresses, NameserverResponse, RdapEntity, RdapEvent, RdapLink, RdapRemark,
+    RdapRole, RdapStatus, RegistrarSummary, ResponseMeta,
 };
 
 pub use rdap_cache::{CacheConfig, MemoryCache};

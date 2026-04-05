@@ -1,6 +1,58 @@
-# RDAPify Rust Architecture
+# RDAPify Platform Architecture
 
-## Overview
+## Platform Overview
+
+RDAPify is a **Rust-first RDAP platform** built on an **Open Core model**. All business logic lives in Rust. Language bindings are thin wrappers. RDAPify-Pro is a plugin layer. RDAPify-Internal handles licensing and billing — never RDAP logic.
+
+### Platform Layers
+
+```
+RDAPify (Rust Core Engine — MIT)
+        ↓
+CLI (rdapify-cli)
+        ↓
+RDAPify-Pro (Monitoring · Alerts · History · Webhooks · Analytics — Commercial)
+        ↓
+RDAPify-Cloud (Future SaaS)
+        ↓
+Language Bindings (Node.js · Python · Go · PHP)
+```
+
+**Rules:**
+- All business logic lives in Rust (rdapify-rust workspace).
+- Language bindings are thin FFI/NAPI/PyO3 wrappers — no business logic.
+- RDAPify-Pro extends RDAPify via a plugin interface — never forks or bundles it.
+- RDAPify-Internal (billing/licensing) is a separate operational layer, not part of the engine.
+- Dependency direction: Shared ← Core ← Application ← Infrastructure (no reverse).
+
+---
+
+## GitHub Organization Structure
+
+```
+github.com/rdapify/
+│
+├── RDAPify            (Public  — Rust Engine, CLI — MIT License)
+├── RDAPify-Pro        (Private — Commercial plugin layer)
+├── RDAPify-Internal   (Private — License server, Billing, Admin)
+├── rdapify-TS         (Archived — Legacy TypeScript SDK)
+├── rdapify.github.io  (Public  — Website and Documentation)
+└── .github            (Public  — Org profile)
+```
+
+### Repository Responsibilities
+
+| Repository | Responsibility | License |
+|---|---|---|
+| RDAPify | Rust engine (11 crates), CLI, Node.js + Python bindings | MIT |
+| RDAPify-Pro | Monitoring, alerts, domain history, webhooks, portfolio analytics | Commercial |
+| RDAPify-Internal | License validation server, Paddle billing integration, admin dashboard | Proprietary |
+| rdapify-TS | Archived — read-only, no new features | MIT |
+| rdapify.github.io | Public website, API docs, guides | MIT |
+
+---
+
+## Crate Architecture
 
 RDAPify is a modular, async-first RDAP client built on Tokio and Rust Edition 2021. The architecture emphasizes separation of concerns through an 11-crate workspace, with each crate responsible for a distinct problem domain.
 
@@ -161,7 +213,7 @@ This design allows swapping adapters (e.g., replacing `DashMap` with Redis) with
 
 - **No unsafe code**: `#![forbid(unsafe_code)]` in all crates
 - **Edition**: 2021 (async/await, const generics, stable)
-- **MSRV**: 1.75 (checked by CI)
+- **MSRV**: 1.77 (checked by CI)
 - **Linting**: `cargo clippy --workspace -- -D warnings` passes (or breaks CI)
 - **Formatting**: `cargo fmt --check` enforced
 - **Testing**: unit tests inline, integration tests in `tests/`, live tests marked `#[ignore]`

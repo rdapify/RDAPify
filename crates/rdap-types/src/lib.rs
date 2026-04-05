@@ -4,8 +4,8 @@
 
 #![forbid(unsafe_code)]
 
-pub mod availability;
 pub mod asn;
+pub mod availability;
 pub mod common;
 pub mod domain;
 pub mod entity;

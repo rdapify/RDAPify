@@ -2,8 +2,8 @@
 
 #![forbid(unsafe_code)]
 
-use rdapify_client::RdapClient;
 use rdap_types::{error::Result, AvailabilityResult};
+use rdapify_client::RdapClient;
 
 /// Executes batch RDAP queries with configurable concurrency.
 pub struct BatchExecutor {

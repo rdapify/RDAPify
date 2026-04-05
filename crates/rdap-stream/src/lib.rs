@@ -5,10 +5,7 @@
 
 #![forbid(unsafe_code)]
 
-use rdap_types::{
-    error::RdapError,
-    AsnResponse, DomainResponse, IpResponse, NameserverResponse,
-};
+use rdap_types::{error::RdapError, AsnResponse, DomainResponse, IpResponse, NameserverResponse};
 
 // ── Events ────────────────────────────────────────────────────────────────────
 
@@ -16,40 +13,28 @@ use rdap_types::{
 #[derive(Debug)]
 pub enum DomainEvent {
     Result(Box<DomainResponse>),
-    Error {
-        query: String,
-        error: RdapError,
-    },
+    Error { query: String, error: RdapError },
 }
 
 /// Emitted by `stream_ip` for each queried IP address.
 #[derive(Debug)]
 pub enum IpEvent {
     Result(Box<IpResponse>),
-    Error {
-        query: String,
-        error: RdapError,
-    },
+    Error { query: String, error: RdapError },
 }
 
 /// Emitted by `stream_asn` for each queried ASN.
 #[derive(Debug)]
 pub enum AsnEvent {
     Result(Box<AsnResponse>),
-    Error {
-        query: String,
-        error: RdapError,
-    },
+    Error { query: String, error: RdapError },
 }
 
 /// Emitted by `stream_nameserver` for each queried nameserver.
 #[derive(Debug)]
 pub enum NameserverEvent {
     Result(Box<NameserverResponse>),
-    Error {
-        query: String,
-        error: RdapError,
-    },
+    Error { query: String, error: RdapError },
 }
 
 // ── Configuration ─────────────────────────────────────────────────────────────

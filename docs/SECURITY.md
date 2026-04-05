@@ -2,7 +2,7 @@
 
 ## Overview
 
-RDAPify is designed for production use in environments where RDAP server queries must be strictly controlled and validated. The security model focuses on three concerns: SSRF protection, input validation, and PII handling.
+RDAPify is designed for production use in environments where RDAP server queries must be strictly controlled and validated. The security model focuses on: SSRF protection, input validation, network policy, and PII handling.
 
 ## SSRF Protection
 
@@ -47,9 +47,21 @@ pub struct SsrfConfig {
 
 **Testing**: disable with `SsrfConfig { enabled: false, .. }` only in isolated test environments.
 
-**Custom rules**: add domains to `blocked_domains` for internal registries that should not be accessed from this application. Use `allowed_domains` to whitelist only specific RDAP endpoints (e.g., `allowed_domains: vec!["rdap.arin.net", "rdap.lacnic.net"]`).
+**Custom rules**: add domains to `blocked_domains` for internal registries that should not be accessed from this application. Use `allowed_domains` to allowlist only specific RDAP endpoints (e.g., `allowed_domains: vec!["rdap.arin.net", "rdap.lacnic.net"]`).
 
 The allowlist takes absolute priority: if `allowed_domains` is non-empty, *only* those domains are accepted, regardless of IP blocks.
+
+## Network Policy
+
+RDAPify enforces a strict outbound network policy for all connections:
+
+- **HTTPS only**: All RDAP queries use HTTPS (port 443). Plain HTTP is rejected at the scheme-validation stage.
+- **SSRF guard active by default**: Every URL is validated before the HTTP client opens a connection.
+- **No internal network access**: Private IPv4 (RFC 1918) and IPv6 unique-local ranges are unconditionally blocked.
+- **Bootstrap trust boundary**: IANA bootstrap data is fetched from `data.iana.org` only. Custom server overrides must be explicitly configured.
+- **No redirect to HTTP**: HTTP redirects that downgrade from HTTPS are not followed.
+- **Connection pool limits**: Per-host connection limits (default: 10) prevent inadvertent denial-of-service against RDAP registries.
+- **Timeout enforcement**: Every outbound request has a configurable deadline (default: 10 seconds). Requests that exceed the deadline are cancelled, not retried indefinitely.
 
 ## Input Validation
 
@@ -96,6 +108,40 @@ TLS is implemented via `rustls` (pure Rust) instead of OpenSSL:
 - **Modern**: supports TLS 1.3, hardware acceleration where available
 - **Licensing**: dual Apache 2.0 / MIT, compatible with RDAPify's MIT license
 
+## Webhook Security
+
+RDAPify-Pro supports outbound webhooks for domain event notifications. The following controls apply:
+
+- **URL validation**: Webhook target URLs are validated through the same SSRF guard used for RDAP queries. Private/internal addresses cannot be used as webhook targets.
+- **HTTPS required**: Only HTTPS webhook endpoints are accepted.
+- **Signature verification**: Each webhook delivery is signed with an HMAC-SHA256 signature. Receivers should verify the `X-RDAPify-Signature` header before processing.
+- **Retry policy**: Failed deliveries are retried with exponential backoff (max 5 attempts). After all attempts fail, the event is logged as undelivered.
+- **Secrets storage**: Webhook signing secrets are stored encrypted at rest and are never returned via API after initial creation.
+
+## License Security
+
+License validation for RDAPify-Pro uses Ed25519 cryptographic signatures:
+
+- **Offline-first validation**: License tokens are verified locally using the Ed25519 public key embedded in the binary. No network round-trip is required for standard validation.
+- **Online activation**: Initial license activation contacts the license server to bind the license to a machine fingerprint. The activation token is signed by the signing service.
+- **Tamper detection**: License tokens are structured JWTs signed with Ed25519. Any modification to the payload invalidates the signature.
+- **Key hygiene**: The Ed25519 private key lives exclusively in `RDAPify-Internal/rust-services/signing-service` and is never embedded in any public artifact.
+- **Revocation**: The license server can revoke licenses. Offline tokens respect a maximum 24-hour grace period before requiring re-validation.
+- **No PII in tokens**: License keys encode capability flags and expiry only — never personal data.
+
+## SQLite Security
+
+RDAPify-Pro uses SQLite for local persistence (domain history, monitoring state, cached results):
+
+- **File permissions**: Database file is created with `0600` permissions (owner read/write only).
+- **Default location**: `$XDG_DATA_HOME/rdapify/` on Linux, platform equivalent on macOS/Windows.
+- **No network exposure**: SQLite is strictly local — never exposed over a network socket.
+- **Parameterized queries**: All SQL queries use bound parameters. String interpolation into SQL is forbidden.
+- **WAL mode**: Write-Ahead Logging is enabled for safe concurrent access and crash recovery.
+- **Encryption**: At-rest encryption is not provided by default. For sensitive environments, use filesystem-level encryption (LUKS, FileVault) or SQLCipher.
+- **Migrations**: Schema migrations run at startup via embedded SQL scripts. Migrations are append-only — columns are never dropped from existing tables.
+- **Sensitive fields**: API keys, tokens, and signing secrets are never stored in the SQLite database.
+
 ## PII Awareness
 
 RDAP responses contain Personally Identifiable Information (PII):
@@ -108,7 +154,7 @@ RDAP responses contain Personally Identifiable Information (PII):
 
 Callers using RDAPify must:
 
-1. **Comply with RDAP ToS**: Each RDAP registry (ICANN, ARIN, RIPE, etc.) has Terms of Service restricting use for research, spam detection, security, and other specific purposes. Verify your use case is allowed.
+1. **Comply with RDAP ToS**: Each RDAP registry (ICANN, ARIN, RIPE, etc.) has Terms of Service restricting use to research, spam detection, security, and other specific purposes. Verify your use case is allowed.
 
 2. **Handle PII appropriately**:
    - Do not log full responses to plaintext logs
@@ -116,64 +162,35 @@ Callers using RDAPify must:
    - Store cached responses only for the duration necessary
    - Honor GDPR / CCPA / similar regulation requirements
 
-3. **User-Agent transparency**: RDAPify sends a User-Agent header identifying itself as "rdapify/[version]". Registries may use this to apply rate limits or policy. Do not disguise your client.
+3. **User-Agent transparency**: RDAPify sends a User-Agent header identifying itself as `rdapify/[version]`. Registries may use this to apply rate limits or policy. Do not disguise your client.
 
-4. **Rate limiting**: Respect the registry's rate limits. RDAPify does not enforce global rate limiting (this is left to the application). Implement your own rate limiting in the application layer if required.
+4. **Rate limiting**: Respect registry rate limits. RDAPify does not enforce global rate limiting — implement application-level rate limiting if required.
 
-5. **Caching**: RDAPify caches responses in-memory. Ensure cache TTL is appropriate for your use case (default: no TTL in current implementation; future versions will add configurable TTL).
+5. **Caching**: RDAPify caches responses in-memory. Ensure cache TTL is appropriate for your use case.
 
 ## Error Transparency
 
-RdapError provides detailed information to help debug issues:
+`RdapError` provides detailed information to help debug issues:
 
 ```rust
 pub enum RdapError {
-    InvalidInput(String),           // Input validation failed
-    SsrfBlocked { url, reason },    // SSRF guard blocked the request
-    InsecureScheme { scheme },      // URL is not HTTPS
-    NoServerFound { query },        // No RDAP server for this TLD/IP range
-    BootstrapFetch { resource, source },  // Failed to fetch bootstrap data
-    Network(reqwest::Error),        // DNS, TCP, TLS, or I/O error
-    HttpStatus { status, url },     // RDAP server returned error (404, 500, etc.)
-    Timeout { millis, url },        // Request exceeded timeout threshold
-    ParseError { reason },          // Response JSON invalid
-    MissingObjectClass,             // Response missing required field
-    UnknownObjectClass { class },   // Unknown RDAP object type
-    Cache(String),                  // Internal cache error
-    InvalidUrl { url, source },     // URL parsing failed
+    InvalidInput(String),                       // Input validation failed
+    SsrfBlocked { url, reason },                // SSRF guard blocked the request
+    InsecureScheme { scheme },                  // URL is not HTTPS
+    NoServerFound { query },                    // No RDAP server for this TLD/IP range
+    BootstrapFetch { resource, source },        // Failed to fetch bootstrap data
+    Network(reqwest::Error),                    // DNS, TCP, TLS, or I/O error
+    HttpStatus { status, url },                 // RDAP server returned error (404, 500, etc.)
+    Timeout { millis, url },                    // Request exceeded timeout threshold
+    ParseError { reason },                      // Response JSON invalid
+    MissingObjectClass,                         // Response missing required field
+    UnknownObjectClass { class },               // Unknown RDAP object type
+    Cache(String),                              // Internal cache error
+    InvalidUrl { url, source },                 // URL parsing failed
 }
 ```
 
 Error variants do not expose security-sensitive details (e.g., private IP addresses are not included in error messages).
-
-## Responsible Disclosure
-
-If you discover a security vulnerability in RDAPify (SSRF bypass, unsafe code, cryptographic flaw, etc.):
-
-1. **Do not** open a public GitHub issue
-2. **Do** email security@rdapify.com with:
-   - Description of the vulnerability
-   - Proof of concept (if applicable)
-   - Affected version(s)
-   - Suggested fix (if you have one)
-
-3. **Allow 90 days** for the maintainers to release a patch before public disclosure
-4. **Coordinate with maintainers** on timing and messaging
-
-We will:
-- Acknowledge receipt within 48 hours
-- Provide status updates every 14 days
-- Release a patch in a minor version bump
-- Credit you in release notes (if desired)
-
-## Cryptographic Considerations
-
-RDAPify does not implement cryptographic signing or verification. RDAP responses are transmitted over HTTPS (TLS 1.3), ensuring:
-- Confidentiality: encrypted in transit
-- Integrity: tamper-detected by TLS
-- Authenticity: server certificate validated against system CA bundle
-
-For applications that need signed RDAP data or offline verification, implement separate signature validation above the RDAPify layer.
 
 ## Dependency Security
 
@@ -182,7 +199,6 @@ For applications that need signed RDAP data or offline verification, implement s
 - **No wildcard versions**: Prevents surprise breaking changes
 - **Audit-friendly**: The dependency graph is auditable via `cargo tree`
 
-To audit all dependencies:
 ```bash
 cargo tree --all-features
 ```
@@ -200,8 +216,38 @@ Tests cover:
 - Error handling paths
 - Cache behavior
 
-Run tests with:
 ```bash
 cargo test --workspace
 cargo test -- --ignored  # live tests (requires network)
 ```
+
+## Responsible Disclosure
+
+If you discover a security vulnerability in RDAPify (SSRF bypass, unsafe code, cryptographic flaw, etc.):
+
+1. **Do not** open a public GitHub issue
+2. **Email** security@rdapify.com with:
+   - Description of the vulnerability
+   - Proof of concept (if applicable)
+   - Affected version(s)
+   - Suggested fix (if you have one)
+3. **Allow 90 days** for the maintainers to release a patch before public disclosure
+4. **Coordinate** with maintainers on timing and messaging
+
+We will:
+- Acknowledge receipt within 48 hours
+- Provide status updates every 14 days
+- Release a patch in a minor version bump
+- Credit you in release notes (if desired)
+
+## Security Contact
+
+| | |
+|---|---|
+| **Email** | security@rdapify.com |
+| **Response SLA** | Acknowledgement within 48 hours |
+| **Status updates** | Every 14 days |
+| **Disclosure policy** | 90-day coordinated disclosure |
+| **PGP key** | Available on request via email |
+
+Do not open public GitHub issues for security vulnerabilities.
