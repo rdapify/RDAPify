@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkrdapify_website=globalThis.webpackChunkrdapify_website||[]).push([[1903],{1912(a){a.exports=JSON.parse('{"blogBasePath":"/ar/blog","blogTitle":"RDAPify Blog","authorsListPath":"/ar/blog/authors"}')}}]);

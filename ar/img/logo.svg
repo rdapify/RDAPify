@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" fill="none">
+  <!-- Text: RDAP -->
+  <text x="0" y="32" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="34" font-weight="900" letter-spacing="-1.2" fill="#fafafa">RDAP</text>
+  <!-- Text: ify -->
+  <text x="99" y="32" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="34" font-weight="900" letter-spacing="-1.2" fill="#25c2a0">ify</text>
+  <!-- Underline: dark segment (under RDAP) -->
+  <rect x="0" y="40" width="97" height="3" rx="1.5" fill="#27272a"/>
+  <!-- Underline: teal segment (under ify) -->
+  <rect x="99" y="40" width="50" height="3" rx="1.5" fill="#25c2a0"/>
+</svg>

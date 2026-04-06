@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background -->
+  <rect width="64" height="64" rx="14" fill="#09090b"/>
+  <!-- Text: R -->
+  <text x="12" y="44" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="42" font-weight="900" letter-spacing="-1.5" fill="#fafafa">R</text>
+  <!-- Underline accent -->
+  <rect x="12" y="50" width="16" height="3" rx="1.5" fill="#27272a"/>
+  <rect x="30" y="50" width="22" height="3" rx="1.5" fill="#25c2a0"/>
+</svg>
