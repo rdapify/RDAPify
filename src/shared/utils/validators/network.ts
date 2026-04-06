@@ -9,6 +9,15 @@
 export function isPrivateIP(ip: string): boolean {
   const trimmed = ip.trim();
 
+  // ::ffff:0:0/96 — IPv4-mapped IPv6 (e.g. ::ffff:10.0.0.1): extract and re-check the IPv4 part.
+  // Must be tested before the dot-check because these addresses also contain dots.
+  if (trimmed.toLowerCase().startsWith('::ffff:')) {
+    const ipv4Part = trimmed.slice(7); // strip "::ffff:"
+    if (ipv4Part.includes('.')) {
+      return isPrivateIP(ipv4Part);
+    }
+  }
+
   // IPv4 private ranges
   if (trimmed.includes('.')) {
     const parts = trimmed.split('.').map((p) => parseInt(p, 10));
@@ -40,14 +49,6 @@ export function isPrivateIP(ip: string): boolean {
   // IPv6 private ranges
   if (trimmed.includes(':')) {
     const lower = trimmed.toLowerCase();
-
-    // ::ffff:0:0/96 — IPv4-mapped IPv6 (e.g. ::ffff:10.0.0.1): extract and re-check the IPv4 part
-    if (lower.startsWith('::ffff:')) {
-      const ipv4Part = lower.slice(7); // strip "::ffff:"
-      if (ipv4Part.includes('.')) {
-        return isPrivateIP(ipv4Part);
-      }
-    }
 
     // fc00::/7 (Unique Local Addresses)
     if (lower.startsWith('fc') || lower.startsWith('fd')) return true;

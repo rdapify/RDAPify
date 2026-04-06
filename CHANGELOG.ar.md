@@ -7,6 +7,25 @@
 
 ## [غير مُصدّر]
 
+## [0.4.0] - 2026-04-06
+
+### الأمان
+
+- حماية SSRF محسّنة: عناوين IPv4 المخططة إلى IPv6 (`::ffff:`) يتم حجبها الآن بشكل صحيح بغض النظر عن حالة الأحرف
+- إضافة CGN (RFC 6598, 100.64.0.0/10) إلى قائمة النطاقات الخاصة المحجوبة
+- إضافة اختبارات انحدار لـ IPv4-mapped IPv6 bypass و CGN range
+
+### تم تغييره
+
+- الترخيص تم تغييره من MIT إلى Apache-2.0
+- MSRV (Minimum Supported Rust Version) تم تحديثه إلى 1.77 في rdapify-rust
+
+### التوثيق
+
+- تم تحديث جدول التوافق في README
+- إضافة PERFORMANCE_SPEC.md
+- تحديث التوثيق العربي (README.ar.md) مع تغيير الترخيص
+
 ## [0.3.2] - 2026-03-24
 
 ### تم إصلاحه
@@ -161,7 +180,8 @@
 
 ---
 
-[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/rdapify/RDAPify/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/rdapify/RDAPify/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/rdapify/RDAPify/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/rdapify/RDAPify/compare/v0.2.3...v0.3.0

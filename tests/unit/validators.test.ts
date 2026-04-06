@@ -164,6 +164,38 @@ describe('isPrivateIP', () => {
   it('should detect public IPv6 addresses', () => {
     expect(isPrivateIP('2001:db8::1')).toBe(false);
   });
+
+  it('should detect IPv4-mapped IPv6 private addresses (::ffff: prefix)', () => {
+    // RFC 4291 §2.5.5.2 — these map a private IPv4 into IPv6 space
+    expect(isPrivateIP('::ffff:10.0.0.1')).toBe(true);
+    expect(isPrivateIP('::ffff:172.16.0.1')).toBe(true);
+    expect(isPrivateIP('::ffff:192.168.1.1')).toBe(true);
+    expect(isPrivateIP('::FFFF:10.0.0.1')).toBe(true);
+  });
+
+  it('should detect IPv4-mapped IPv6 public addresses as non-private', () => {
+    expect(isPrivateIP('::ffff:8.8.8.8')).toBe(false);
+    expect(isPrivateIP('::ffff:1.1.1.1')).toBe(false);
+  });
+
+  it('should detect CGN range (100.64.0.0/10, RFC 6598)', () => {
+    expect(isPrivateIP('100.64.0.1')).toBe(true);
+    expect(isPrivateIP('100.127.255.255')).toBe(true);
+    expect(isPrivateIP('100.63.255.255')).toBe(false); // just outside range
+    expect(isPrivateIP('100.128.0.0')).toBe(false);   // just outside range
+  });
+
+  it('should detect benchmark range (198.18.0.0/15, RFC 2544)', () => {
+    expect(isPrivateIP('198.18.0.1')).toBe(true);
+    expect(isPrivateIP('198.19.255.255')).toBe(true);
+    expect(isPrivateIP('198.17.255.255')).toBe(false); // just outside range
+    expect(isPrivateIP('198.20.0.0')).toBe(false);    // just outside range
+  });
+
+  it('should detect 0.0.0.0/8 ("This" network, RFC 1122)', () => {
+    expect(isPrivateIP('0.0.0.0')).toBe(true);
+    expect(isPrivateIP('0.255.255.255')).toBe(true);
+  });
 });
 
 describe('isLocalhost', () => {

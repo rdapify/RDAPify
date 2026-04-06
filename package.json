@@ -1,6 +1,6 @@
 {
   "name": "rdapify",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Unified, secure, high-performance RDAP client with built-in SSRF protection and privacy controls",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -110,7 +110,7 @@
   "author": {
     "name": "RDAPify Contributors"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rdapify/RDAPify.git"

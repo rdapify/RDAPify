@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-06
+
+### Added
+- Modular workspace architecture (11-crate Rust workspace)
+- Feature flags system (`memory-cache`, `stream`, `batch`, `rate-limit`, `sqlite`, `service`)
+- RDAP JSON validation layer
+- Configuration system (`rdapify.toml` + env overrides)
+- Structured logging (JSON/text via `rdap-logging`)
+- Prometheus metrics (`rdap_queries_total`, `rdap_cache_hits_total`, latency histograms)
+- Benchmarks via Criterion (`cache`, `ssrf`, `query`, `streaming`, `batch`, `bootstrap`)
+
+### Security
+- SSRF protection (URL + DNS pre-resolution validation)
+- DNS rebinding protection
+- HTTP redirect chain validation
+- Response size limits
+- `#![forbid(unsafe_code)]` across all crates
+
+### Performance
+- In-memory DashMap cache with TTL
+- Connection reuse across RDAP queries
+- Binary size optimization (LTO, `opt-level = "z"`, strip, `panic = "abort"`)
+
+### Internal
+- MSRV raised to 1.77
+- Build matrix (Ubuntu, macOS, Windows)
+- `rdapify.toml` config file support
+
 ## [0.3.2] - 2026-03-24
 
 ### Fixed
@@ -550,7 +578,8 @@ or `console.warn` (other runtimes) at most once per process lifetime.
 
 ---
 
-[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/rdapify/RDAPify/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/rdapify/RDAPify/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/rdapify/RDAPify/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/rdapify/RDAPify/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/rdapify/RDAPify/compare/v0.2.3...v0.3.0

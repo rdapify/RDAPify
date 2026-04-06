@@ -558,7 +558,7 @@ cat node_modules/rdapify/package.json | grep version
 
 ## 📜 الترخيص
 
-RDAPify مرخصة تحت [MIT License](LICENSE) — حرة للاستخدام الشخصي والتجاري مع قيود بسيطة.
+RDAPify مرخصة تحت [Apache License 2.0](LICENSE) — حرة للاستخدام الشخصي والتجاري مع ضمانات براءات الاختراع الصريحة.
 
 ## 🙏 شكر خاص
 

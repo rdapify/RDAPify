@@ -70,6 +70,15 @@ pnpm add rdapify
 bun add rdapify
 ```
 
+## Compatibility
+
+| rdapify | @rdapify/pro | rdapify-nd | rdapify-py |
+|---------|-------------|------------|------------|
+| 0.4.x   | 0.4.x       | 0.4.x      | 0.4.x      |
+| 0.3.x   | 0.2.x       | 0.1.x      | 0.2.x      |
+
+**MSRV (Rust):** 1.77 — applies to `rdapify-nd`, `rdapify-py`, and `@rdapify/pro`
+
 ## ⚡ Get Started in 30 Seconds
 
 ### Basic Usage
@@ -646,7 +655,7 @@ We're looking for early adopters and beta testers! If you're interested in:
 
 ## 📜 License
 
-RDAPify is licensed under the [MIT License](LICENSE) — free for personal and commercial use with minimal restrictions.
+RDAPify is licensed under the [Apache License 2.0](LICENSE) — free for personal and commercial use with explicit patent grants.
 
 ## 🙏 Acknowledgements
 

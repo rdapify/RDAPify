@@ -12,4 +12,4 @@ Dependency: Shared ← Core ← Application ← Infrastructure (never reverse)
 - Tests: `--runInBand` · 10s timeout · coverage ≥ 80% (branches, functions, lines, statements)
 - Unused vars: prefix `_` · no `console.log` (`.warn`/`.error` allowed)
 - Run `npm run verify:api` after any export change — snapshot: `api-snapshot.json`
-- MIT · never add paid features · never break public API without updating snapshot
+- Apache-2.0 · never add paid features · never break public API without updating snapshot

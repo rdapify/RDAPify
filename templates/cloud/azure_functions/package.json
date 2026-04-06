@@ -9,7 +9,7 @@
     "deploy": "func azure functionapp publish rdapify-function-app"
   },
   "dependencies": {
-    "rdapify": "^0.3.2"
+    "rdapify": "^0.4.0"
   },
   "devDependencies": {
     "azure-functions-core-tools": "^4.0.0"
