@@ -1,5 +1,9 @@
 # Installation
 
+## Version
+
+> **Current stable:** `0.4.0` — [Release Notes](../releases/v0.4.0.md)
+
 ## System requirements
 
 | Runtime | Minimum version | Notes |
@@ -27,9 +31,21 @@ pnpm add rdapify
 bun add rdapify
 ```
 
-## Optional: Rust native backend
+## Rust
 
-For high-throughput scenarios, install `rdapify-nd` alongside `rdapify`. When present, the five core query methods (`domain`, `ip`, `asn`, `nameserver`, `entity`) are executed by a compiled Rust binary rather than the TypeScript pipeline.
+For native Rust projects:
+
+```bash
+cargo add rdapify
+# or specify version:
+cargo add rdapify@0.4.0
+```
+
+See the [Rust documentation](https://crates.io/crates/rdapify) on crates.io.
+
+## Optional: Rust native backend (Node.js)
+
+For high-throughput scenarios on Node.js, install `rdapify-nd` alongside `rdapify`. When present, the five core query methods (`domain`, `ip`, `asn`, `nameserver`, `entity`) are executed by a compiled Rust binary rather than the TypeScript pipeline.
 
 ```bash
 npm install rdapify rdapify-nd

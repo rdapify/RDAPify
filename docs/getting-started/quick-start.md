@@ -237,4 +237,145 @@ client.destroy();
 
 ---
 
+## Batch lookup (v0.4.0)
+
+Process multiple queries in a single call with `batch()`. Requires `@rdapify/pro`.
+
+```typescript
+import { RDAPClient } from 'rdapify';
+
+const client = new RDAPClient();
+
+const results = await client.batch([
+  { type: 'domain', query: 'example.com' },
+  { type: 'domain', query: 'github.com' },
+  { type: 'ip',     query: '1.1.1.1' },
+  { type: 'asn',    query: 'AS13335' },
+]);
+
+for (const result of results) {
+  if (result.status === 'fulfilled') {
+    console.log(result.query, result.value.metadata.source);
+  } else {
+    console.error(result.query, result.reason.message);
+  }
+}
+```
+
+Control concurrency to avoid hammering RDAP servers:
+
+```typescript
+const results = await client.batch(queries, {
+  concurrency: 5,       // max 5 in-flight at once (default: 10)
+  timeout:     8000,    // per-query timeout in ms
+  continueOnError: true // (default) — don't abort the whole batch on one failure
+});
+```
+
+---
+
+## Service mode (v0.4.0)
+
+Run rdapify as a self-hosted HTTP service. Requires the `rdapify-nd` native backend.
+
+```bash
+# Install globally
+npm install -g rdapify-nd
+
+# Start service on port 3000
+rdapify-service --port 3000 --cache-ttl 3600
+
+# Or via Docker (see /docs/guides/docker)
+docker run -p 3000:3000 ghcr.io/rdapify/rdapify:0.4.0
+```
+
+Query via HTTP:
+
+```bash
+# Domain
+curl http://localhost:3000/domain/example.com
+
+# IP
+curl http://localhost:3000/ip/8.8.8.8
+
+# ASN
+curl http://localhost:3000/asn/AS15169
+
+# Batch (POST)
+curl -X POST http://localhost:3000/batch \
+  -H 'Content-Type: application/json' \
+  -d '[{"type":"domain","query":"example.com"},{"type":"ip","query":"1.1.1.1"}]'
+```
+
+---
+
+## Monitoring (v0.4.0)
+
+rdapify exposes a Prometheus-compatible `/metrics` endpoint when running in service mode.
+
+```bash
+curl http://localhost:3000/metrics
+# HELP rdapify_queries_total Total RDAP queries
+# TYPE rdapify_queries_total counter
+rdapify_queries_total{type="domain",status="success"} 1234
+rdapify_queries_total{type="ip",status="success"} 567
+```
+
+From TypeScript, pull metrics programmatically:
+
+```typescript
+const metrics = client.getMetrics();
+console.log(metrics.totalQueries);     // number
+console.log(metrics.cacheHitRate);     // 0.0 – 1.0
+console.log(metrics.averageLatencyMs); // number
+console.log(metrics.errorRate);        // 0.0 – 1.0
+```
+
+See [Prometheus metrics reference](../metrics/prometheus.md) for the full metrics table.
+
+---
+
+## Webhooks (v0.4.0)
+
+Register webhooks to receive notifications for query events. Requires `@rdapify/pro`.
+
+```typescript
+import { RDAPClient } from 'rdapify';
+
+const client = new RDAPClient({
+  webhooks: {
+    onSuccess: {
+      url: 'https://your-domain.example.com/webhooks/rdap-success',
+      headers: { Authorization: 'Bearer YOUR_WEBHOOK_SECRET' },
+    },
+    onError: {
+      url: 'https://your-domain.example.com/webhooks/rdap-error',
+    },
+    onDomainExpiry: {
+      url: 'https://your-domain.example.com/webhooks/expiry-alerts',
+      daysBeforeExpiry: 30,
+    },
+  },
+});
+```
+
+Webhook payloads are signed with HMAC-SHA256. Verify the signature:
+
+```typescript
+import { verifyWebhookSignature } from '@rdapify/pro';
+
+app.post('/webhooks/rdap-success', (req, res) => {
+  const valid = verifyWebhookSignature(
+    req.rawBody,
+    req.headers['x-rdapify-signature'],
+    process.env.WEBHOOK_SECRET,
+  );
+  if (!valid) return res.status(401).send('Invalid signature');
+  // process req.body ...
+  res.sendStatus(200);
+});
+```
+
+---
+
 Next: [API Reference — RDAPClient](../api-reference/client.md)
