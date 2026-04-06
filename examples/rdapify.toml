@@ -1,0 +1,156 @@
+# RDAPify Configuration File
+#
+# Configuration Search Order:
+#   1. --config CLI flag (highest priority)
+#   2. RDAPIFY_CONFIG environment variable
+#   3. ./rdapify.toml (current directory)
+#   4. ~/.rdapify/rdapify.toml (user home)
+#   5. /etc/rdapify/rdapify.toml (system-wide, lowest priority)
+#
+# Environment Variable Overrides:
+#   All settings can be overridden via environment variables using the pattern:
+#   RDAPIFY_<SECTION>_<KEY> (uppercase, underscores for dots)
+#   Examples:
+#     RDAPIFY_RDAP_TIMEOUT=30
+#     RDAPIFY_CACHE_TYPE=postgres
+#     RDAPIFY_CACHE_TTL_SECONDS=7200
+#     RDAPIFY_SQLITE_PATH=/custom/path/cache.db
+#     RDAPIFY_LICENSE_PATH=/custom/path/activation.rdap
+#     RDAPIFY_LOG_LEVEL=debug
+#     RDAPIFY_LOG_FORMAT=text
+#     RDAPIFY_METRICS_PORT=9091
+#     RDAPIFY_SERVER_PORT=8081
+#
+# Note: All values shown below are the defaults. Remove or comment out
+# sections you don't need to change.
+
+# RDAP Protocol Configuration
+[rdap]
+# Timeout for RDAP queries (seconds)
+# Range: 1–60 seconds
+timeout_seconds = 15
+
+# Maximum response size for RDAP queries (MB)
+# Range: 1–20 MB
+max_response_size_mb = 5
+
+# User-Agent header sent with RDAP requests
+# Format: "Product/Version (Comment)"
+user_agent = "RDAPify/0.4.0"
+
+# IANA Bootstrap Cache refresh interval (hours)
+# Controls how often to refresh the IANA bootstrap service URLs
+# Range: 1–720 hours
+bootstrap_refresh_hours = 24
+
+# Cache Configuration
+[cache]
+# Cache backend type
+# Options: "memory" (in-process), "sqlite" (local file), "postgres" (remote database)
+type = "memory"
+
+# Cache entry time-to-live (seconds)
+# Range: 60–86400 seconds (1 minute to 24 hours)
+ttl_seconds = 3600
+
+# Maximum number of entries to store in cache
+# Range: 1–1000000
+max_entries = 100000
+
+# SQLite Cache Configuration (used when cache.type = "sqlite")
+[sqlite]
+# Path to SQLite database file
+# Supports ~ expansion (expands to user home directory)
+# Default: ~/.rdapify/cache.db
+path = "~/.rdapify/cache.db"
+
+# Monitoring Configuration (Pro only)
+# Enables background monitoring of domain RDAP records
+[monitoring]
+# Number of background worker threads for monitoring
+# Range: 1–32
+workers = 4
+
+# Sweep interval for domain checks (seconds)
+# How often to check monitored domains for RDAP updates
+# Range: 60–86400 seconds
+interval_seconds = 300
+
+# Number of domains to check per batch
+# Range: 1–1000
+batch_size = 50
+
+# Webhooks Configuration (Pro only)
+# Enables webhook delivery for RDAP events
+[webhooks]
+# Number of background worker threads for webhook delivery
+# Range: 1–32
+workers = 2
+
+# Timeout for individual webhook deliveries (seconds)
+# Range: 1–60 seconds
+timeout_seconds = 10
+
+# Maximum number of retry attempts for failed webhook deliveries
+# Range: 0–20
+max_retries = 7
+
+# License Configuration (Pro only)
+# Controls activation and licensing for RDAPify Pro
+[license]
+# Path to RDAPify activation file
+# Supports ~ expansion (expands to user home directory)
+# Default: ~/.rdapify/activation.rdap
+path = "~/.rdapify/activation.rdap"
+
+# Grace period for expired licenses (days)
+# If license expires, service continues for this many days before stopping
+# Range: 0–30 days
+grace_days = 7
+
+# Revocation check interval (hours)
+# How often to check if the license has been revoked
+# Range: 1–720 hours
+revocation_check_hours = 24
+
+# Logging Configuration
+[logging]
+# Log level for all output
+# Options: "trace", "debug", "info", "warn", "error"
+# "trace": extremely verbose, includes all internals
+# "debug": detailed diagnostics for troubleshooting
+# "info": standard operational messages (recommended for production)
+# "warn": warnings and errors only
+# "error": errors only (least verbose)
+level = "info"
+
+# Log output format
+# Options: "json" (structured, machine-readable), "text" (human-readable)
+# Use "json" for production deployments with log aggregation
+# Use "text" for development and local debugging
+format = "json"
+
+# Metrics Configuration
+[metrics]
+# Enable Prometheus metrics endpoint
+# Set to false to disable metrics collection
+enabled = true
+
+# Port for Prometheus metrics endpoint
+# Metrics available at: http://<host>:<port>/metrics
+# Range: 1–65535
+port = 9090
+
+# Server Configuration
+[server]
+# Host/IP address to bind to
+# "0.0.0.0" = listen on all network interfaces
+# "127.0.0.1" = localhost only
+# "[::]" = IPv6 all interfaces
+host = "0.0.0.0"
+
+# Port to bind API server to
+# API available at: http://<host>:<port>
+# Range: 1–65535
+# Note: requires elevated privileges on systems for ports < 1024
+port = 8080

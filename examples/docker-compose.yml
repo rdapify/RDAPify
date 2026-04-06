@@ -1,0 +1,177 @@
+# RDAPify Production Stack with Prometheus and Grafana
+#
+# Quick Start:
+#   1. docker compose up -d
+#   2. docker compose ps              (check service status)
+#   3. docker compose logs -f rdapify (tail rdapify logs)
+#
+# Access Points:
+#   - RDAPify API:   http://localhost:8080
+#   - Prometheus UI: http://localhost:9091
+#   - Grafana:       http://localhost:3000 (admin/changeme)
+#
+# Configuration:
+#   - Copy rdapify.toml to ./rdapify.toml in this directory
+#   - Create prometheus.yml with scrape target: http://rdapify:9090/metrics
+#   - Create grafana/dashboards and grafana/provisioning directories
+#   - Replace <GRAFANA_ADMIN_PASSWORD> or use a .env file
+#
+# Stopping:
+#   docker compose down                 (stop all services, keep volumes)
+#   docker compose down -v              (stop all services, delete volumes)
+#
+# View logs:
+#   docker compose logs -f rdapify      (tail rdapify logs)
+#   docker compose logs -f prometheus   (tail prometheus logs)
+#   docker compose logs -f grafana      (tail grafana logs)
+
+version: "3.8"
+
+services:
+  # RDAPify API Server
+  rdapify:
+    image: ghcr.io/rdapify/rdapify:0.4.0
+    container_name: rdapify
+
+    # Port mappings: <host>:<container>
+    ports:
+      - "8080:8080"   # API server
+      - "9090:9090"   # Prometheus metrics
+
+    # Volume mounts: <host_path>:<container_path>:<mode>
+    # :ro = read-only
+    volumes:
+      - ./rdapify.toml:/etc/rdapify/rdapify.toml:ro
+
+    # Environment variables
+    environment:
+      RDAPIFY_LOG_LEVEL: "info"
+      RDAPIFY_LOG_FORMAT: "json"
+      RDAPIFY_SERVER_PORT: "8080"
+      RDAPIFY_METRICS_PORT: "9090"
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Network configuration
+    networks:
+      - rdapify-net
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Prometheus Metrics Storage
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+
+    # Port mapping: expose UI on 9091 to avoid conflict with rdapify metrics on 9090
+    ports:
+      - "9091:9090"
+
+    # Volume mounts
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+    # Prometheus command-line arguments
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-lifecycle"
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Network configuration
+    networks:
+      - rdapify-net
+
+    # Service dependency
+    depends_on:
+      rdapify:
+        condition: service_healthy
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Grafana Dashboard and Visualization
+  grafana:
+    image: grafana/grafana:10.4.3
+    container_name: grafana
+
+    # Port mapping
+    ports:
+      - "3000:3000"
+
+    # Environment variables
+    environment:
+      # Security settings
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "<GRAFANA_ADMIN_PASSWORD>"
+
+      # User signup disabled (set to true to allow self-signup)
+      GF_USERS_ALLOW_SIGN_UP: "false"
+
+      # Default home dashboard
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "/var/lib/grafana/dashboards/rdapify.json"
+
+      # Authentication options (optional)
+      # GF_AUTH_ANONYMOUS_ENABLED: "false"
+      # GF_AUTH_BASIC_ENABLED: "true"
+
+    # Volume mounts
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Network configuration
+    networks:
+      - rdapify-net
+
+    # Service dependency
+    depends_on:
+      - prometheus
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Network definition
+networks:
+  rdapify-net:
+    driver: bridge
+
+# Volume definitions
+volumes:
+  # Prometheus TSDB storage (time-series database)
+  prometheus-data:
+    driver: local
+
+  # Grafana configuration, dashboards, and datasources
+  grafana-data:
+    driver: local
