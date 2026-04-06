@@ -10,4 +10,4 @@ description = "HTTP API service runtime for RDAPify (Axum-based)"
 
 [dependencies]
 rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
-rdapify-client = { path = "../rdapify-client", version = "0.1.0", default-features = false }
+rdapify-client = { path = "../rdapify-client", version = "0.2.0", default-features = false }

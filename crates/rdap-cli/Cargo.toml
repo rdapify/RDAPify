@@ -13,7 +13,7 @@ name = "rdapify"
 path = "src/main.rs"
 
 [dependencies]
-rdapify-client = { path = "../rdapify-client", version = "0.1.0" }
+rdapify-client = { path = "../rdapify-client", version = "0.2.0" }
 rdap-types  = { path = "../rdap-types", version = "0.1.0" }
 tokio       = { workspace = true }
 serde_json  = { workspace = true }
