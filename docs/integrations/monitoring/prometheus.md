@@ -505,7 +505,7 @@ receivers:
   - to: 'security-team@example.com'
     send_resolved: true
   slack_configs:
-  - api_url: 'https://hooks.slack.com/services/T_YOUR_TEAM/B_YOUR_BOT/YOUR_TOKEN'
+  - api_url: 'https://hooks.slack.com/services/YOUR_WORKSPACE/YOUR_CHANNEL/YOUR_WEBHOOK_TOKEN'
     channel: '#security-alerts'
     send_resolved: true
 

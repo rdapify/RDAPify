@@ -209,7 +209,7 @@ main().catch(console.error);
 npx ts-node monitor.ts
 
 # With webhook
-WEBHOOK_URL=https://hooks.slack.com/services/... npx ts-node monitor.ts
+WEBHOOK_URL=https://hooks.slack.com/services/YOUR_WORKSPACE/YOUR_CHANNEL/YOUR_WEBHOOK_TOKEN npx ts-node monitor.ts
 ```
 
 ### Sample Output
