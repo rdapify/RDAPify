@@ -1,0 +1,77 @@
+# Prometheus configuration for the RDAPify monitoring stack.
+#
+# Metric names (all prefixed rdapify_):
+#
+#   Counters
+#     rdapify_queries_total                        Total queries (PrometheusExporter)
+#     rdapify_queries_successful_total             Successful queries
+#     rdapify_queries_failed_total                 Failed queries
+#     rdapify_queries_by_type_total{type}          Per-type breakdown (domain/ip/asn/…)
+#     rdapify_cache_hits_total                     Cache hits
+#     rdapify_errors_by_type_total{error_type}     Errors by error class
+#     rdapify_webhook_deliveries_total{status}     Webhook deliveries (Pro)
+#     rdapify_monitoring_jobs_total{status}        Background monitoring sweeps (Pro)
+#     rdapify_license_validation_failures_total    License check failures (Pro)
+#
+#   Gauges
+#     rdapify_success_rate                   Fraction of successful queries (0–1)
+#     rdapify_cache_hit_rate                 Fraction served from cache (0–1)
+#     rdapify_response_time_avg_ms           Average response time (ms)
+#     rdapify_response_time_min_ms           Minimum response time (ms)
+#     rdapify_response_time_max_ms           Maximum response time (ms)
+#     rdapify_response_time_p50_ms           P50 response time (ms)
+#     rdapify_response_time_p90_ms           P90 response time (ms)
+#     rdapify_response_time_p99_ms           P99 response time (ms)
+#     rdapify_monitoring_jobs_active         Active monitoring jobs right now (Pro)
+
+global:
+  scrape_interval: 15s        # How often Prometheus scrapes each target
+  evaluation_interval: 15s    # How often rules are evaluated
+  scrape_timeout: 10s
+
+  # Attach these labels to all time series scraped by this Prometheus instance
+  external_labels:
+    monitor: rdapify-production
+    environment: production
+
+# ── Alerting ──────────────────────────────────────────────────────────────────
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []  # Add alertmanager:9093 when deploying Alertmanager
+
+# ── Recording rules ───────────────────────────────────────────────────────────
+rule_files: []  # Add rule file paths here, e.g. ["rules/rdapify.yml"]
+
+# ── Scrape configs ────────────────────────────────────────────────────────────
+scrape_configs:
+  # ── RDAPify service ──────────────────────────────────────────────────────────
+  - job_name: rdapify
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - rdapify:9090  # rdapify service metrics endpoint
+        labels:
+          service: rdapify
+          component: core
+
+  # ── RDAPify Pro plugin (if enabled) ─────────────────────────────────────────
+  # Uncomment when @rdapify/pro is deployed alongside the core service.
+  # - job_name: rdapify-pro
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets:
+  #         - rdapify:9090  # Pro metrics share the same endpoint (different metric names)
+  #       labels:
+  #         service: rdapify
+  #         component: pro
+
+  # ── Prometheus self-monitoring ───────────────────────────────────────────────
+  - job_name: prometheus
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - localhost:9090
+        labels:
+          service: prometheus
+          component: monitoring
