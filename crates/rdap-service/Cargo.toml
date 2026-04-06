@@ -1,0 +1,13 @@
+[package]
+name = "rdap-service"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "HTTP API service runtime for RDAPify (Axum-based)"
+
+[dependencies]
+rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
+rdapify-client = { path = "../rdapify-client", version = "0.1.0", default-features = false }

@@ -1,34 +1,187 @@
-//! SSRF (Server-Side Request Forgery) protection for RDAP clients.
+//! Network security gateway for RDAPify.
 //!
-//! Every outbound URL is validated before the HTTP request is issued.
-//! The guard blocks:
+//! **All outbound HTTP requests in RDAPify must go through this crate.**
+//! Direct use of `reqwest` (or any HTTP client) is not permitted in other
+//! crates.
 //!
-//! - Non-HTTPS schemes
-//! - IPv4 loopback (127/8), private (RFC 1918), link-local (169.254/16)
-//! - IPv6 loopback (::1), link-local (fe80::/10), unique-local (fc00::/7)
-//! - Explicitly blocked domain patterns
+//! # Layers of protection
 //!
-//! Allowed domains (allowlist) take priority over all other checks.
+//! | Layer | Module | What it prevents |
+//! |---|---|---|
+//! | URL validation | [`url`] | Bad schemes, credentials, IP literals |
+//! | DNS resolution | [`dns`] | SSRF via hostname → private IP |
+//! | IP classification | [`ip`] | Loopback, private, link-local, unspecified |
+//! | HTTP policy | [`http_policy`] | Timeout, redirect limit, response size |
+//! | Redirect guard | [`redirect`] | SSRF / rebinding across redirect chain |
+//! | Response limits | [`limits`] | Memory exhaustion from large bodies |
+//! | Content-type | [`content_type`] | Non-RDAP responses masquerading as RDAP |
+//!
+//! # Quick start
+//!
+//! ```rust,no_run
+//! use rdap_security::{secure_fetch, HttpSecurityPolicy};
+//! use url::Url;
+//!
+//! # async fn example() -> Result<(), rdap_security::SecurityError> {
+//! let client = reqwest::Client::builder()
+//!     .redirect(reqwest::redirect::Policy::none())
+//!     .build()
+//!     .unwrap();
+//!
+//! let bytes = secure_fetch(
+//!     &client,
+//!     Url::parse("https://rdap.verisign.com/com/v1/domain/EXAMPLE.COM").unwrap(),
+//!     &HttpSecurityPolicy::default(),
+//! )
+//! .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! # Backward-compatible SSRF guard
+//!
+//! The [`SsrfGuard`] / [`SsrfConfig`] types from the original crate are kept
+//! intact for existing callers in `rdap-core`. New code should prefer
+//! [`secure_fetch`].
 
 #![forbid(unsafe_code)]
 
+// ── Public modules ────────────────────────────────────────────────────────────
+
+pub mod content_type;
+pub mod dns;
+pub mod error;
+pub mod http_policy;
+pub mod ip;
+pub mod limits;
+pub mod redirect;
+pub mod url;
+
+// ── Re-exports ────────────────────────────────────────────────────────────────
+
+pub use content_type::validate_rdap_content_type;
+pub use dns::{resolve_host, validate_resolved_ips};
+pub use error::SecurityError;
+pub use http_policy::HttpSecurityPolicy;
+pub use ip::{is_blocked_ip, is_link_local, is_loopback, is_private_ip};
+pub use limits::read_limited;
+pub use redirect::validate_redirect;
+pub use url::validate_url;
+
+// ── secure_fetch ──────────────────────────────────────────────────────────────
+
+/// The primary entry point for all outbound RDAP HTTP requests.
+///
+/// Executes the full security pipeline:
+///
+/// 1. **URL validation** — scheme, credentials, IP-literal host.
+/// 2. **DNS resolution** — hostname → IP addresses.
+/// 3. **IP validation** — blocks private/loopback/link-local results.
+/// 4. **HTTP request** — using the caller-supplied `client`.
+/// 5. **Redirect handling** — each hop is re-validated through steps 1–3.
+/// 6. **Content-Type check** — must be `application/rdap+json` or
+///    `application/json`.
+/// 7. **Response size limit** — stops reading at
+///    `policy.max_response_size`.
+///
+/// # Client requirements
+///
+/// The supplied `client` **must** be built with
+/// [`reqwest::redirect::Policy::none()`] so that redirects are intercepted and
+/// re-validated by this function rather than followed silently.
+///
+/// # Errors
+///
+/// Returns a [`SecurityError`] if any security check fails or a transport
+/// error occurs.
+pub async fn secure_fetch(
+    client: &reqwest::Client,
+    url: ::url::Url,
+    policy: &HttpSecurityPolicy,
+) -> Result<bytes::Bytes, SecurityError> {
+    // 1. Validate the initial URL.
+    url::validate_url(&url)?;
+
+    // 2–3. Resolve and validate DNS for the initial host.
+    if let Some(host) = url.host_str() {
+        let ips = dns::resolve_host(host).await?;
+        dns::validate_resolved_ips(&ips)?;
+    }
+
+    // 4–5. Send the request; follow redirects manually so each hop is checked.
+    let mut current_url = url;
+    let mut redirect_count: usize = 0;
+
+    loop {
+        let response = tokio::time::timeout(
+            policy.timeout,
+            client
+                .get(current_url.as_str())
+                .header(
+                    reqwest::header::ACCEPT,
+                    "application/rdap+json, application/json",
+                )
+                .send(),
+        )
+        .await
+        .map_err(|_| SecurityError::Timeout)?
+        .map_err(SecurityError::Network)?;
+
+        let status = response.status();
+
+        // Follow redirects securely.
+        if status.is_redirection() {
+            if redirect_count >= policy.max_redirects {
+                return Err(SecurityError::TooManyRedirects);
+            }
+
+            let location = response
+                .headers()
+                .get(reqwest::header::LOCATION)
+                .and_then(|v| v.to_str().ok())
+                .ok_or(SecurityError::InvalidHost)?;
+
+            // Resolve relative redirects against the current URL.
+            let next_url = current_url
+                .join(location)
+                .map_err(|_| SecurityError::InvalidHost)?;
+
+            // Re-run full security validation on the redirect target.
+            redirect::validate_redirect(&current_url, &next_url).await?;
+
+            current_url = next_url;
+            redirect_count += 1;
+            continue;
+        }
+
+        // 6. Validate Content-Type.
+        content_type::validate_rdap_content_type(response.headers())?;
+
+        // 7. Read the body with a size cap.
+        return limits::read_limited(response, policy.max_response_size).await;
+    }
+}
+
+// ── Backward-compatible SSRF guard ───────────────────────────────────────────
+//
+// The types below are the original public API consumed by `rdap-core` and all
+// integration tests.  They continue to return `rdap_types::error::RdapError`
+// so existing call-sites compile without changes.
+
+use ::url::{Host, Url as UrlType};
+use rdap_types::error::{RdapError, Result as RdapResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
-
-use url::{Host, Url};
-
-use rdap_types::error::{RdapError, Result};
-
-// ── Configuration ─────────────────────────────────────────────────────────────
 
 /// Configuration for the SSRF guard.
 #[derive(Debug, Clone)]
 pub struct SsrfConfig {
-    /// When `false` all checks are skipped (for testing only — never in production).
+    /// When `false` all checks are skipped (for testing only — never in
+    /// production).
     pub enabled: bool,
-    /// Additional domain suffixes to block (e.g., "internal.corp").
+    /// Additional domain suffixes to block (e.g., `"internal.corp"`).
     pub blocked_domains: Vec<String>,
     /// If non-empty, only these domain suffixes are allowed.
-    /// Takes priority over `blocked_domains` and IP checks.
+    /// Takes priority over `blocked_domains` and all IP checks.
     pub allowed_domains: Vec<String>,
 }
 
@@ -42,9 +195,10 @@ impl Default for SsrfConfig {
     }
 }
 
-// ── Guard ─────────────────────────────────────────────────────────────────────
-
-/// SSRF guard — validates a URL before any network call.
+/// SSRF guard — validates a URL string before any network call.
+///
+/// Prefer [`secure_fetch`] for new code. `SsrfGuard` is kept for backward
+/// compatibility with `rdap-core`.
 #[derive(Debug, Clone)]
 pub struct SsrfGuard {
     config: SsrfConfig,
@@ -65,25 +219,23 @@ impl SsrfGuard {
     ///
     /// Returns `Ok(())` if the URL is safe to fetch, or a [`RdapError`]
     /// explaining why it was blocked.
-    pub fn validate(&self, raw_url: &str) -> Result<()> {
+    pub fn validate(&self, raw_url: &str) -> RdapResult<()> {
         if !self.config.enabled {
             return Ok(());
         }
 
-        // ── Parse URL ────────────────────────────────────────────────────────
-        let url = Url::parse(raw_url).map_err(|e| RdapError::InvalidUrl {
+        let url = UrlType::parse(raw_url).map_err(|e| RdapError::InvalidUrl {
             url: raw_url.to_string(),
             source: e,
         })?;
 
-        // ── Enforce HTTPS ────────────────────────────────────────────────────
         if url.scheme() != "https" {
             return Err(RdapError::InsecureScheme {
                 scheme: url.scheme().to_string(),
             });
         }
 
-        // ── Allowlist (highest priority) ─────────────────────────────────────
+        // Allowlist (highest priority).
         if !self.config.allowed_domains.is_empty() {
             let host_str = url
                 .host_str()
@@ -101,12 +253,9 @@ impl SsrfGuard {
                     reason: format!("host '{host_str}' is not in the allowed-domains list"),
                 });
             }
-
-            // Allowlisted — skip all further checks.
             return Ok(());
         }
 
-        // ── Use typed host to avoid string re-parsing ─────────────────────────
         match url.host() {
             None => {
                 return Err(RdapError::InvalidInput(format!(
@@ -115,7 +264,6 @@ impl SsrfGuard {
             }
 
             Some(Host::Domain(domain)) => {
-                // ── Domain blocklist check ────────────────────────────────────
                 for blocked in &self.config.blocked_domains {
                     let b = blocked.to_lowercase();
                     let d = domain.to_lowercase();
@@ -126,7 +274,6 @@ impl SsrfGuard {
                         });
                     }
                 }
-                // Plain domain names are otherwise allowed.
             }
 
             Some(Host::Ipv4(v4)) => {
@@ -141,9 +288,7 @@ impl SsrfGuard {
         Ok(())
     }
 
-    // ── Private IP checkers ───────────────────────────────────────────────────
-
-    fn check_ipv4(&self, ip: Ipv4Addr, raw_url: &str) -> Result<()> {
+    fn check_ipv4(&self, ip: Ipv4Addr, raw_url: &str) -> RdapResult<()> {
         let reason = if ip.is_loopback() {
             Some("IPv4 loopback address (127/8)")
         } else if ip.is_private() {
@@ -167,17 +312,14 @@ impl SsrfGuard {
         Ok(())
     }
 
-    fn check_ipv6(&self, ip: Ipv6Addr, raw_url: &str) -> Result<()> {
+    fn check_ipv6(&self, ip: Ipv6Addr, raw_url: &str) -> RdapResult<()> {
         let o = ip.octets();
 
         let reason = if ip.is_loopback() {
-            // ::1/128
             Some("IPv6 loopback address (::1)")
         } else if o[0] == 0xfe && (o[1] & 0xc0) == 0x80 {
-            // fe80::/10 — link-local
             Some("IPv6 link-local address (fe80::/10)")
         } else if (o[0] & 0xfe) == 0xfc {
-            // fc00::/7 — unique-local (private)
             Some("IPv6 unique-local address (fc00::/7)")
         } else if ip.is_unspecified() {
             Some("unspecified IPv6 address (::/128)")
@@ -201,7 +343,7 @@ impl Default for SsrfGuard {
     }
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// ── Tests (SsrfGuard — backward-compat) ──────────────────────────────────────
 
 #[cfg(test)]
 mod tests {

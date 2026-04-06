@@ -139,6 +139,7 @@ fn make_client(bootstrap_url: &str, cache: bool) -> RdapClient {
             max_attempts: 1,
             ..Default::default()
         },
+        ..Default::default()
     })
     .expect("client construction failed")
 }

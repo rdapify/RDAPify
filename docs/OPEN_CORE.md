@@ -1,10 +1,10 @@
 # RDAPify Open Core Model
 
-RDAPify is an Open Core product. The core RDAP engine is MIT-licensed and free forever. Commercial features are available in RDAPify-Pro and RDAPify-Cloud.
+RDAPify is an Open Core product. The core RDAP engine is Apache-2.0-licensed and free forever. Commercial features are available in RDAPify-Pro and RDAPify-Cloud.
 
 ## Feature Matrix
 
-| Feature | Open (MIT) | Pro (Commercial) | Cloud (Future SaaS) |
+| Feature | Open (Apache-2.0) | Pro (Commercial) | Cloud (Future SaaS) |
 |---|:---:|:---:|:---:|
 | RDAP domain queries | ✔ | ✔ | ✔ |
 | RDAP IP queries | ✔ | ✔ | ✔ |
@@ -33,9 +33,9 @@ RDAPify is an Open Core product. The core RDAP engine is MIT-licensed and free f
 
 ## Tier Definitions
 
-### Open (MIT)
+### Open (Apache-2.0)
 
-The `RDAPify` engine and CLI are free, open source, and MIT licensed. Any individual or organization can use, modify, and redistribute them without restriction. This tier is permanent — no usage limits, license checks, or feature flags will ever be added to the core engine.
+The `RDAPify` engine and CLI are free, open source, and Apache-2.0 licensed. Any individual or organization can use, modify, and redistribute them without restriction. This tier is permanent — no usage limits, license checks, or feature flags will ever be added to the core engine.
 
 **What it includes:**
 - Full RDAP query engine (domain, IP, ASN, nameserver, entity)
@@ -79,13 +79,13 @@ RDAPify's sustainability model:
 2. **Pro is paid** — funds development of the core engine and the Pro layer.
 3. **Cloud is paid** — funds infrastructure and global distribution.
 
-The core engine will always remain free and MIT licensed. The commercial layers fund its continued development.
+The core engine will always remain free and Apache-2.0 licensed. The commercial layers fund its continued development.
 
 ---
 
 ## What Will Never Move Behind a Paywall
 
-The following features are guaranteed MIT forever:
+The following features are guaranteed Apache-2.0 forever:
 - All RDAP query types (domain, IP, ASN, nameserver, entity)
 - Domain availability checking and batch operations
 - Streaming API
@@ -93,7 +93,7 @@ The following features are guaranteed MIT forever:
 - SSRF protection and all security primitives
 - Node.js and Python language bindings
 
-This is an immutable commitment. The MIT license on the core engine cannot be revoked.
+This is an immutable commitment. The Apache-2.0 license on the core engine cannot be revoked.
 
 ---
 

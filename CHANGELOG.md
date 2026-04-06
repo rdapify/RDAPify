@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-04-06
+
+### Added
+- **11-crate workspace** — `rdap-types`, `rdap-security`, `rdap-bootstrap`, `rdap-core`, `rdapify-client`, `rdap-cache`, `rdap-stream`, `rdap-rate-limit`, `rdap-batch`, `rdap-cli`, `rdapify`
+- **`rdap-config`** — `rdapify.toml` configuration system with env-variable overrides
+- **`rdap-logging`** — structured JSON/text logging
+- **`rdap-service`** — axum HTTP service skeleton (`/health`, `/version`)
+- **`rdap-sqlite`**, **`rdap-postgres`**, **`rdap-mysql`** — storage backend stubs
+- **SQLite hardened persistence** — WAL, integrity checks, schema migrations
+- Feature flags: `memory-cache`, `stream`, `batch`, `rate-limit`, `service`, `sqlite`, `postgres`, `mysql`
+- **rdapify-nd 0.4.0** — Node.js N-API binding updated
+- **rdapify-py 0.4.0** — Python PyO3 binding updated
+
+### Security
+- SSRF protection in `rdap-security` (URL + DNS pre-resolution)
+- DNS rebinding protection
+- HTTP redirect chain validation  
+- Configurable response size limit
+- `#![forbid(unsafe_code)]` on all crates
+
+### Performance
+- DashMap-backed in-memory cache (`rdap-cache`)
+- `opt-level = "z"`, LTO, strip, `panic = "abort"` in release profile
+- Criterion benchmarks: `cache`, `ssrf`, `query`, `streaming`, `batch`, `bootstrap`, `validation`
+
+### Internal
+- MSRV raised to **1.77**
+- Multi-platform CI (Ubuntu, macOS, Windows)
+- `cargo clippy --workspace -- -D warnings` enforced
+
 ## [0.2.1] — 2026-03-23
 
 ### Added

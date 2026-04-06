@@ -2,8 +2,22 @@
 //!
 //! A unified, secure, high-performance RDAP client library for Rust.
 //!
-//! This crate is the public API facade that re-exports all workspace crates
-//! in a single, backward-compatible surface.
+//! This crate is the public API facade that re-exports workspace crates
+//! with configurable feature flags for minimal binary sizes.
+//!
+//! ## Feature flags
+//!
+//! | Feature        | Default | Description                                      |
+//! |----------------|---------|--------------------------------------------------|
+//! | `memory-cache` | ✓       | In-memory DashMap response cache                 |
+//! | `stream`       | ✓       | Async streaming query API (`tokio-stream`)       |
+//! | `batch`        |         | Batch query execution with concurrency control   |
+//! | `rate-limit`   |         | Per-registry and global rate limiting            |
+//! | `sqlite`       |         | SQLite persistence backend                       |
+//! | `postgres`     |         | PostgreSQL persistence backend                   |
+//! | `mysql`        |         | MySQL / MariaDB persistence backend              |
+//! | `service`      |         | HTTP API service runtime (Axum-based)            |
+//! | `full`         |         | Enables: `memory-cache`, `stream`, `batch`, `rate-limit` |
 //!
 //! ## Quick start
 //!
@@ -26,10 +40,9 @@
 
 #![forbid(unsafe_code)]
 
-// ── Public re-exports from workspace crates ───────────────────────────────────
+// ── Core re-exports (always available) ───────────────────────────────────────
 
 pub use rdap_types::error::{RdapError, Result};
-pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
 pub use rdapify_client::{ClientConfig, RdapClient};
 
 pub use rdap_types::{
@@ -38,11 +51,18 @@ pub use rdap_types::{
     RdapRole, RdapStatus, RegistrarSummary, ResponseMeta,
 };
 
-pub use rdap_cache::{CacheConfig, MemoryCache};
 pub use rdap_core::{FetcherConfig, Normalizer};
 pub use rdap_security::{SsrfConfig, SsrfGuard};
 
-// ── Module-level re-exports ───────────────────────────────────────────────────
+// ── Feature-gated flat re-exports ────────────────────────────────────────────
+
+#[cfg(feature = "memory-cache")]
+pub use rdap_cache::{CacheConfig, MemoryCache};
+
+#[cfg(feature = "stream")]
+pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
+
+// ── Always-available modules ──────────────────────────────────────────────────
 
 pub mod error {
     pub use rdap_types::error::*;
@@ -50,10 +70,6 @@ pub mod error {
 
 pub mod bootstrap {
     pub use rdap_bootstrap::Bootstrap;
-}
-
-pub mod cache {
-    pub use rdap_cache::{CacheConfig, MemoryCache};
 }
 
 pub mod http {
@@ -64,10 +80,48 @@ pub mod security {
     pub use rdap_security::{SsrfConfig, SsrfGuard};
 }
 
-pub mod stream {
-    pub use rdap_stream::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
-}
-
 pub mod types {
     pub use rdap_types::*;
 }
+
+// ── Feature-gated modules ─────────────────────────────────────────────────────
+
+#[cfg(feature = "memory-cache")]
+pub mod cache {
+    //! In-memory response cache.
+    pub use rdap_cache::{CacheConfig, MemoryCache};
+}
+
+#[cfg(feature = "stream")]
+pub mod stream {
+    //! Async streaming query events.
+    pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
+}
+
+#[cfg(feature = "batch")]
+pub mod batch {
+    //! Batch query execution with concurrency control.
+    pub use rdap_batch::BatchExecutor;
+}
+
+#[cfg(feature = "rate-limit")]
+pub mod rate_limit {
+    //! Per-registry and global rate limiting.
+    pub use rdap_rate_limit::{RateLimitConfig, RateLimiter};
+}
+
+/// SQLite persistence backend (skeleton — full impl pending).
+#[cfg(feature = "sqlite")]
+pub mod sqlite {}
+
+/// PostgreSQL persistence backend (skeleton — full impl pending).
+#[cfg(feature = "postgres")]
+pub mod postgres {}
+
+/// MySQL / MariaDB persistence backend (skeleton — full impl pending).
+#[cfg(feature = "mysql")]
+pub mod mysql {}
+
+/// HTTP API service runtime (skeleton — full impl pending).
+#[cfg(feature = "service")]
+pub mod service {}

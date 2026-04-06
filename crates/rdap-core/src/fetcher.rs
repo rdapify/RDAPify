@@ -1,14 +1,19 @@
-//! HTTP fetcher — issues RDAP requests and returns raw JSON values.
+//! HTTP fetcher — issues RDAP requests and returns validated JSON values.
 //!
 //! All URLs are validated by the [`SsrfGuard`] before the request is sent.
-//! Retry logic with exponential back-off is built in.
+//! Response bodies are size-limited via [`rdap_security::read_limited`] and
+//! then passed through the [`crate::validation`] layer before any `serde`
+//! deserialization takes place.  Retry logic with exponential back-off is
+//! built in.
 
 use std::time::Duration;
 
 use serde_json::Value;
 
-use rdap_security::SsrfGuard;
+use rdap_security::{read_limited, SecurityError, SsrfGuard};
 use rdap_types::error::{RdapError, Result};
+
+use crate::validation::{validate_rdap_response, RdapValidationLimits};
 
 /// Configuration for the HTTP fetcher.
 #[derive(Debug, Clone)]
@@ -27,6 +32,9 @@ pub struct FetcherConfig {
     pub reuse_connections: bool,
     /// Maximum number of idle keep-alive connections per host.
     pub max_connections_per_host: usize,
+    /// Structural and RDAP-specific limits applied to every response before
+    /// deserialization.  Adjust to tighten or relax validation.
+    pub validation_limits: RdapValidationLimits,
 }
 
 impl Default for FetcherConfig {
@@ -42,6 +50,7 @@ impl Default for FetcherConfig {
             max_backoff: Duration::from_secs(8),
             reuse_connections: true,
             max_connections_per_host: 10,
+            validation_limits: RdapValidationLimits::default(),
         }
     }
 }
@@ -137,12 +146,25 @@ impl Fetcher {
             });
         }
 
-        response
-            .json::<Value>()
+        // ── Step 1: read body with a hard size cap ────────────────────────────
+        // read_limited streams the body in chunks and aborts as soon as the
+        // accumulated size exceeds max_json_size, preventing memory exhaustion.
+        let bytes = read_limited(response, self.config.validation_limits.max_json_size)
             .await
-            .map_err(|e| RdapError::ParseError {
-                reason: e.to_string(),
-            })
+            .map_err(|e| match e {
+                SecurityError::ResponseTooLarge => RdapError::ParseError {
+                    reason: "RDAP response body exceeds the maximum allowed size".to_string(),
+                },
+                SecurityError::Network(inner) => RdapError::Network(inner),
+                other => RdapError::ParseError {
+                    reason: other.to_string(),
+                },
+            })?;
+
+        // ── Step 2: validate structure + RDAP fields, then return the Value ──
+        // Only the Value returned here is ever passed to serde; raw bytes are
+        // never deserialized directly into RDAP structs.
+        validate_rdap_response(&bytes, &self.config.validation_limits).map_err(RdapError::from)
     }
 
     /// Exposes the inner `reqwest::Client` so `Bootstrap` can reuse it.

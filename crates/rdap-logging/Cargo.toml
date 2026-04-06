@@ -1,0 +1,16 @@
+[package]
+name = "rdap-logging"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Structured logging initialisation for RDAPify (tracing + JSON/text)"
+
+[dependencies]
+rdap-config          = { path = "../rdap-config", version = "0.1.0" }
+tracing              = { workspace = true }
+tracing-subscriber   = { workspace = true }
+tracing-appender     = { workspace = true }
+time                 = { workspace = true }

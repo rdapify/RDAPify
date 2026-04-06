@@ -1,4 +1,11 @@
 //! High-level RDAP client with bootstrap, caching, and SSRF protection.
+//!
+//! # Feature flags
+//!
+//! | Feature        | Default | Description                              |
+//! |----------------|---------|------------------------------------------|
+//! | `memory-cache` | ✓       | In-memory response cache (DashMap)       |
+//! | `stream`       | ✓       | Async streaming query API (tokio-stream) |
 
 #![forbid(unsafe_code)]
 
@@ -6,11 +13,8 @@ use std::collections::HashMap;
 use std::net::IpAddr;
 
 use idna::domain_to_ascii;
-use tokio::sync::mpsc;
-use tokio_stream::wrappers::ReceiverStream;
 
 use rdap_bootstrap::Bootstrap;
-use rdap_cache::MemoryCache;
 use rdap_core::{Fetcher, FetcherConfig, Normalizer};
 use rdap_security::{SsrfConfig, SsrfGuard};
 use rdap_types::error::{RdapError, Result};
@@ -18,6 +22,15 @@ use rdap_types::{
     AsnResponse, AvailabilityResult, DomainResponse, EntityResponse, IpResponse, NameserverResponse,
 };
 
+#[cfg(feature = "memory-cache")]
+use rdap_cache::MemoryCache;
+
+#[cfg(feature = "stream")]
+use tokio::sync::mpsc;
+#[cfg(feature = "stream")]
+use tokio_stream::wrappers::ReceiverStream;
+
+#[cfg(feature = "stream")]
 pub use rdap_stream::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
 
 // ── Client configuration ──────────────────────────────────────────────────────
@@ -25,11 +38,13 @@ pub use rdap_stream::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamCon
 /// Configuration for [`RdapClient`].
 #[derive(Debug, Clone)]
 pub struct ClientConfig {
-    /// HTTP fetcher settings (timeout, retries, user-agent).
+    /// HTTP fetcher settings (timeout, retries, user-agent, validation limits).
     pub fetcher: FetcherConfig,
     /// SSRF protection settings.
     pub ssrf: SsrfConfig,
     /// Whether to cache query responses in memory.
+    ///
+    /// Has no effect when the `memory-cache` feature is disabled.
     pub cache: bool,
     /// Bootstrap base URL (defaults to the official IANA endpoint).
     pub bootstrap_url: Option<String>,
@@ -65,6 +80,7 @@ pub struct RdapClient {
     fetcher: Fetcher,
     bootstrap: Bootstrap,
     normalizer: Normalizer,
+    #[cfg(feature = "memory-cache")]
     cache: Option<MemoryCache>,
 }
 
@@ -92,6 +108,7 @@ impl RdapClient {
             bootstrap.set_custom_servers(config.custom_bootstrap_servers);
         }
 
+        #[cfg(feature = "memory-cache")]
         let cache = if config.cache {
             Some(MemoryCache::new())
         } else {
@@ -102,6 +119,7 @@ impl RdapClient {
             fetcher,
             bootstrap,
             normalizer: Normalizer::new(),
+            #[cfg(feature = "memory-cache")]
             cache,
         })
     }
@@ -225,8 +243,9 @@ impl RdapClient {
         output.into_iter().flatten().collect()
     }
 
-    // ── Streaming API ─────────────────────────────────────────────────────────
+    // ── Streaming API (requires `stream` feature) ─────────────────────────────
 
+    #[cfg(feature = "stream")]
     pub fn stream_domain(
         &self,
         names: Vec<String>,
@@ -253,6 +272,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    #[cfg(feature = "stream")]
     pub fn stream_ip(
         &self,
         addresses: Vec<String>,
@@ -279,6 +299,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    #[cfg(feature = "stream")]
     pub fn stream_asn(&self, asns: Vec<String>, config: StreamConfig) -> ReceiverStream<AsnEvent> {
         let (tx, rx) = mpsc::channel(config.buffer_size);
         let client = self.clone();
@@ -301,6 +322,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    #[cfg(feature = "stream")]
     pub fn stream_nameserver(
         &self,
         nameservers: Vec<String>,
@@ -329,20 +351,33 @@ impl RdapClient {
 
     // ── Cache management ──────────────────────────────────────────────────────
 
+    /// Clears the response cache and bootstrap cache.
     pub async fn clear_cache(&self) {
+        #[cfg(feature = "memory-cache")]
         if let Some(cache) = &self.cache {
             cache.clear();
         }
         self.bootstrap.clear_cache().await;
     }
 
+    /// Returns the number of entries in the response cache.
+    ///
+    /// Returns 0 when the `memory-cache` feature is disabled.
     pub fn cache_size(&self) -> usize {
-        self.cache.as_ref().map(|c| c.len()).unwrap_or(0)
+        #[cfg(feature = "memory-cache")]
+        {
+            self.cache.as_ref().map(|c| c.len()).unwrap_or(0)
+        }
+        #[cfg(not(feature = "memory-cache"))]
+        {
+            0
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
     async fn fetch_with_cache(&self, url: &str) -> Result<(serde_json::Value, bool)> {
+        #[cfg(feature = "memory-cache")]
         if let Some(cache) = &self.cache {
             if let Some(cached) = cache.get(url) {
                 return Ok((cached, true));
@@ -351,6 +386,7 @@ impl RdapClient {
 
         let value = self.fetcher.fetch(url).await?;
 
+        #[cfg(feature = "memory-cache")]
         if let Some(cache) = &self.cache {
             cache.set(url.to_string(), value.clone());
         }

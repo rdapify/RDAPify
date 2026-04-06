@@ -10,17 +10,17 @@ RDAPify uses a multi-tier licensing model aligned with its Open Core architectur
 
 | Repository | License | Audience |
 |---|---|---|
-| RDAPify (this repo) | MIT | Developers, researchers, integrators |
+| RDAPify (this repo) | Apache-2.0 | Developers, researchers, integrators |
 | RDAPify-Pro | Commercial | Businesses and power users |
 | RDAPify-Internal | Proprietary | Internal use only — never distributed |
-| rdapify-TS (archived) | MIT | Legacy — no new use |
+| rdapify-TS (archived) | Apache-2.0 | Legacy — no new use |
 | RDAPify-Cloud (future) | SaaS Terms | Hosted service subscribers |
 
 ---
 
-## MIT License (RDAPify Core)
+## Apache License 2.0 (RDAPify Core)
 
-The core engine — all 11 crates in this workspace — is licensed under the **MIT License**.
+The core engine — all 11 crates in this workspace — is licensed under the **Apache License 2.0**.
 
 **Permissions:**
 - Use commercially without restriction
@@ -33,7 +33,7 @@ The core engine — all 11 crates in this workspace — is licensed under the **
 
 **No warranty**: The software is provided "as is". See [LICENSE](../LICENSE) for the full text.
 
-The MIT license on the core engine is **permanent and irrevocable**. It will not be changed to a more restrictive license in any future version.
+The Apache-2.0 license on the core engine is **permanent and irrevocable**. It will not be changed to a more restrictive license in any future version.
 
 ---
 
@@ -81,22 +81,22 @@ When RDAPify-Cloud launches, access will be governed by **SaaS Terms of Service*
 
 ## Dependency Compliance
 
-RDAPify-Pro depends on RDAPify (MIT) as a **peer dependency**. This means:
+RDAPify-Pro depends on RDAPify (Apache-2.0) as a **peer dependency**. This means:
 
-- RDAPify-Pro does not bundle the MIT engine — users must install RDAPify separately
+- RDAPify-Pro does not bundle the Apache-2.0 engine — users must install RDAPify separately
 - The commercial license covers only the Pro plugin layer
-- The MIT engine used alongside Pro remains MIT-licensed and freely usable
+- The Apache-2.0 engine used alongside Pro remains Apache-2.0-licensed and freely usable
 
 This separation ensures that:
-1. Users can always use the MIT engine independently of Pro
-2. The MIT license terms are never contaminated by the commercial layer
-3. Auditors can clearly identify what is MIT and what is commercial
+1. Users can always use the Apache-2.0 engine independently of Pro
+2. The Apache-2.0 license terms are never contaminated by the commercial layer
+3. Auditors can clearly identify what is Apache-2.0 and what is commercial
 
 ---
 
 ## Third-Party Licenses
 
-RDAPify uses the following key dependencies. All are compatible with the MIT license:
+RDAPify uses the following key dependencies. All are compatible with the Apache-2.0 license:
 
 | Crate | License | Purpose |
 |---|---|---|

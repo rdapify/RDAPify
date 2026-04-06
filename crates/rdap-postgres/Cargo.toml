@@ -1,0 +1,12 @@
+[package]
+name = "rdap-postgres"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "PostgreSQL persistence backend for RDAPify (query history, caching)"
+
+[dependencies]
+rdap-types = { path = "../rdap-types", version = "0.1.0" }

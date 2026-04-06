@@ -7,7 +7,7 @@ RDAP (Registration Data Access Protocol) is the modern replacement for WHOIS, de
 [![Crates.io](https://img.shields.io/crates/v/rdapify)](https://crates.io/crates/rdapify)
 [![docs.rs](https://img.shields.io/docsrs/rdapify)](https://docs.rs/rdapify)
 [![CI](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml/badge.svg)](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 > **rdapify ecosystem**
 > | Library | Language | Package |
@@ -34,6 +34,13 @@ RDAP (Registration Data Access Protocol) is the modern replacement for WHOIS, de
 [dependencies]
 rdapify = "0.2"
 ```
+
+## Compatibility
+
+| Crate version | Node binding (`rdapify-nd`) | Python binding (`rdapify-py`) | MSRV |
+|---------------|-----------------------------|-------------------------------|------|
+| 0.4.x         | 0.4.x                       | 0.4.x                         | 1.77 |
+| 0.2.x         | 0.1.x                       | 0.2.x                         | 1.75 |
 
 ## Quick Start
 
@@ -292,7 +299,7 @@ Minimum supported Rust version: **1.77**
 
 ## License
 
-RDAPify is licensed under the MIT License — see [LICENSE](LICENSE).
+RDAPify is licensed under the Apache License 2.0 — see [LICENSE](LICENSE).
 
 RDAPify-Pro is commercial software. See [rdapify.com](https://rdapify.com) for pricing.
 RDAPify-Internal is proprietary and not publicly available.

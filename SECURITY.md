@@ -81,6 +81,28 @@ MSRV is Rust 1.75. Cryptographic primitives (`ring` / `aws-lc-rs`) are kept up t
 
 The Rust SSRF implementation mirrors the TypeScript version exactly: private RFC 1918 ranges, loopback, link-local, multicast, and reserved ranges are blocked before any DNS resolution or outbound connection. Only `https://` and `http://` schemes are permitted.
 
+### RDAP response validation
+
+**All RDAP responses must pass JSON structure validation before deserialization.
+Deserializing untrusted JSON directly into structs is not allowed.**
+
+Every RDAP response passes through `rdap_core::validation::validate_rdap_response` between the HTTP read and any `serde` deserialization.  The validation layer enforces:
+
+| Protection              | Limit (default)          |
+|-------------------------|--------------------------|
+| Raw body size cap       | 5 MiB (`max_json_size`)  |
+| JSON nesting depth      | 10 (`max_recursion_depth`) |
+| Array length            | 1 000 (`max_array_length`) |
+| Object field count      | 200 (`max_object_fields`)  |
+| String value length     | 10 KiB (`max_string_length`) |
+| `entities` array length | 100 (`max_entities`)       |
+| `links` array length    | 100 (`max_links`)          |
+| `events` array length   | 100 (`max_events`)         |
+
+Limits are configurable via `RdapValidationLimits` in `FetcherConfig::validation_limits`.  The body size limit is enforced at the transport layer by `rdap_security::read_limited` **before** any heap allocation for JSON parsing occurs.
+
+This layer protects against memory exhaustion, CPU exhaustion from JSON bombs, deep-recursion attacks, and unexpected RDAP structures that could cause panics or incorrect behavior downstream.
+
 ### Dependency auditing
 
 `cargo audit` runs on every CI push via GitHub Actions. The workflow fails if any dependency has a published advisory. `Cargo.lock` is committed so that reproducible builds and supply-chain auditing are possible.

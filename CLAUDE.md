@@ -49,6 +49,6 @@ Async: Tokio multi-thread · TLS: rustls only (no OpenSSL)
 - Tests: unit inline in modules · integration in `tests/` · live marked `#[ignore]`
 - `cargo clippy --workspace -- -D warnings` must pass before any commit
 - CI: multi-platform (Ubuntu, macOS, Windows) + MSRV job — do not break
-- **MIT** — never add paid features to this repo
+- **Apache-2.0** — never add paid features to this repo
 - **Do not remove backward compatibility** — `rdapify` facade must always compile with old imports
 - Coordinate with `rdapify-pro/` if changing public API (path deps on rdap-types, rdap-client)
