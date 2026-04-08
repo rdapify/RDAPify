@@ -37,7 +37,7 @@ authors = ["RDAPify Team <dev@rdapify.com>"]
 
 [workspace.dependencies]
 # Async runtime
-tokio        = { version = "1", features = ["rt-multi-thread", "macros", "time", "net"] }
+tokio        = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "process"] }
 tokio-stream = { version = "0.1", features = ["sync"] }
 
 # HTTP (rustls = pure Rust TLS, no OpenSSL)
