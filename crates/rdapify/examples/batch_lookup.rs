@@ -28,9 +28,14 @@ async fn main() -> rdapify::error::Result<()> {
         "iana.org".to_string(),
     ];
 
-    println!("Checking {} domains concurrently (limit: 3)...\n", domains.len());
+    println!(
+        "Checking {} domains concurrently (limit: 3)...\n",
+        domains.len()
+    );
 
-    let results = client.domain_available_batch(domains.clone(), Some(3)).await;
+    let results = client
+        .domain_available_batch(domains.clone(), Some(3))
+        .await;
 
     let mut available_count = 0;
     let mut taken_count = 0;
@@ -38,7 +43,11 @@ async fn main() -> rdapify::error::Result<()> {
     for result in &results {
         match result {
             Ok(avail) => {
-                let status = if avail.available { "AVAILABLE" } else { "TAKEN" };
+                let status = if avail.available {
+                    "AVAILABLE"
+                } else {
+                    "TAKEN"
+                };
                 println!("  {} → {}", avail.domain, status);
                 if let Some(expires) = &avail.expires_at {
                     println!("      (expires: {})", expires);
@@ -55,7 +64,10 @@ async fn main() -> rdapify::error::Result<()> {
         }
     }
 
-    println!("\n  Summary: {} available, {} taken", available_count, taken_count);
+    println!(
+        "\n  Summary: {} available, {} taken",
+        available_count, taken_count
+    );
     println!("  Cache size: {} entries\n", client.cache_size());
 
     // ── Streaming domain lookup ────────────────────────────────────────

@@ -1,34 +1,26 @@
 //! HTTP API service runtime for RDAPify.
 //!
-//! # Status
+//! Exposes an Axum-based HTTP server that wraps `rdapify_client::RdapClient`
+//! and provides a production-grade REST API suitable for Docker and Kubernetes.
 //!
-//! **Skeleton** — architectural placeholder.  Full implementation is planned
-//! for a future release.
+//! # Endpoints
 //!
-//! # Architecture (planned)
+//! | Method | Path       | Description                         |
+//! |--------|------------|-------------------------------------|
+//! | GET    | `/health`  | Liveness probe — always 200 if alive |
+//! | GET    | `/ready`   | Readiness probe — 200 when traffic-ready |
+//! | GET    | `/version` | Service name + version as JSON       |
+//! | GET    | `/metrics` | Prometheus text exposition format    |
+//! | POST   | `/rdap`    | Single RDAP lookup (domain/ip/asn/ns)|
+//! | POST   | `/batch`   | Batch domain-availability lookup     |
 //!
-//! When complete, this crate will provide an Axum-based HTTP server that
-//! exposes the RDAP query API over a REST interface:
+//! # Running
 //!
-//! ```text
-//! GET /domain/{name}
-//! GET /ip/{address}
-//! GET /autnum/{asn}
-//! GET /nameserver/{hostname}
-//! GET /entity/{handle}
+//! ```shell
+//! cargo run --bin rdap-service
 //! ```
 //!
-//! The service is **stateless**: it delegates every request to
-//! `rdapify_client::RdapClient` and does not require a database.
-//! Optional persistence (history, caching) can be layered in via
-//! `rdap-sqlite` or `rdap-postgres`.
-//!
-//! # Enabling
-//!
-//! Enable the `service` feature in the `rdapify` facade crate:
-//!
-//! ```toml
-//! rdapify = { version = "0.3", features = ["service"] }
-//! ```
+//! Configuration is loaded from `rdapify.toml` (or env overrides).
+//! See [`rdap_config`] for the full configuration reference.
 
 #![forbid(unsafe_code)]

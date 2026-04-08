@@ -6,7 +6,17 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
-description = "Rate limiting for RDAP queries (per-registry and global)"
+description = "Production-grade rate limiting for RDAP queries (GCRA via governor)"
 
 [dependencies]
-tokio = { workspace = true }
+# GCRA implementation — provides exact wait times, no approximation
+governor  = { version = "0.6", features = ["std"] }
+
+# Lock-free per-host state map (workspace version, avoids double dashmap)
+dashmap   = { workspace = true }
+
+# Async runtime for timer-based waiting
+tokio     = { workspace = true, features = ["time"] }
+
+# Error types
+thiserror = { workspace = true }

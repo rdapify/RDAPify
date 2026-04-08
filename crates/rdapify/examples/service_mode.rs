@@ -72,7 +72,10 @@ async fn main() -> rdapify::error::Result<()> {
         Err(e) => println!("  ✗ Error: {e}"),
     }
 
-    println!("\nCache after first query: {} entries", state.rdap_client.cache_size());
+    println!(
+        "\nCache after first query: {} entries",
+        state.rdap_client.cache_size()
+    );
 
     println!("\nTo build a real HTTP service with Axum:");
     println!("  1. Add  axum = \"0.8\"  to dev-dependencies in crates/rdapify/Cargo.toml");

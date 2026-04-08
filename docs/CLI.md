@@ -1,33 +1,33 @@
 # RDAPify CLI
 
-The `rdapify` command-line tool provides direct access to RDAP queries from the shell. It is part of the main `rdapify` crate and is built with the `cli` feature.
+The `rdapify` command-line tool provides direct access to RDAP queries from the shell.
 
 ## Installation
-
-Install from crates.io:
 
 ```bash
 cargo install rdapify --features cli
 ```
 
-This builds the CLI binary and installs it to `~/.cargo/bin/rdapify`.
-
-Verify installation:
+Pre-built binaries for Linux, macOS, Windows: [GitHub Releases](https://github.com/rdapify/RDAPify/releases/latest)
 
 ```bash
 rdapify --version
 ```
 
-## Output Format
-
-By default, the CLI outputs JSON responses in pretty-printed format (easy to read). Use the `--raw` flag to output compact JSON suitable for parsing by other tools.
+## Output Formats
 
 ```bash
-# Pretty-printed (default)
+# Pretty-printed JSON (default)
 rdapify domain example.com
 
 # Compact JSON (machine-readable)
 rdapify domain example.com --raw
+
+# Human-readable text summary
+rdapify domain example.com -o text
+
+# CSV (useful with --batch)
+rdapify domain example.com -o csv
 ```
 
 All output is UTF-8 encoded. Errors are written to stderr; query results go to stdout.
@@ -155,29 +155,102 @@ echo -e "example.com\ngoogle.com\nexample.net" | \
   jq '.objectClassName'
 ```
 
-### Error Handling
+### batch
 
-Exit codes:
-- `0`: Query succeeded
-- `1`: Error (invalid input, network error, SSRF block, etc.)
-
-Errors are printed to stderr:
+Query multiple domains, IPs, or ASNs from a file or stdin.
 
 ```bash
-rdapify domain invalid!domain.com 2>&1
-# Output: Error: Invalid input: invalid domain name
+# From file
+rdapify batch --file domains.txt
+
+# From stdin
+echo -e "example.com\ngithub.com\nrust-lang.org" | rdapify batch
+
+# With concurrency and CSV output
+rdapify batch --file domains.txt --concurrency 20 -o csv > results.csv
+
+# Options
+--file/-f        Input file (one query per line)
+--concurrency    Number of parallel queries (default: 10)
+--type           Query type: domain, ip, asn (auto-detected if omitted)
 ```
 
-Use this in scripts:
+### completions
+
+Generate shell completion scripts.
 
 ```bash
-if rdapify ip 8.8.8.8 > /tmp/ip_response.json 2>/dev/null; then
-  echo "Query succeeded"
-  cat /tmp/ip_response.json
-else
-  echo "Query failed"
-fi
+rdapify completions bash   >> ~/.bashrc
+rdapify completions zsh    >> ~/.zshrc
+rdapify completions fish   > ~/.config/fish/completions/rdapify.fish
+rdapify completions powershell
 ```
+
+### version
+
+Print version and build information.
+
+```bash
+rdapify version
+# rdapify 0.3.0
+# rustc 1.77.0
+# build: 2026-04-06 (release)
+```
+
+### config
+
+Validate and display effective configuration.
+
+```bash
+# Show effective config (defaults + file + env vars)
+rdapify config show
+
+# Validate a config file
+rdapify config validate --config rdapify.toml
+
+# Show which config file is being used
+rdapify config show --verbose
+```
+
+See [docs/CONFIG.md](CONFIG.md) for the full configuration reference.
+
+## Exit Codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success |
+| `1` | RDAP query error (server error, parse error) |
+| `2` | Network error (timeout, connection refused) |
+| `3` | Security error (SSRF blocked, invalid URL) |
+| `4` | Input error (invalid domain, missing argument) |
+| `5` | Rate limited (upstream server returned 429) |
+
+Use in scripts:
+
+```bash
+rdapify domain example.com > result.json
+case $? in
+  0) echo "Success" ;;
+  1) echo "RDAP error" ;;
+  2) echo "Network error" ;;
+  3) echo "Blocked by security policy" ;;
+  4) echo "Invalid input" ;;
+esac
+```
+
+## Global Flags
+
+| Flag | Short | Description |
+|---|---|---|
+| `--output <format>` | `-o` | Output format: `json` (default), `raw`, `text`, `csv` |
+| `--config <path>` | `-c` | Path to `rdapify.toml` config file |
+| `--raw` | | Compact JSON (alias for `--output raw`) |
+| `--verbose` | `-v` | Show bootstrap resolution, server selection, timing |
+| `-vv` | | Also show HTTP request/response headers |
+| `--no-cache` | | Bypass cache for this query |
+| `--timeout <secs>` | | Per-request timeout (overrides config) |
+| `--help` | `-h` | Show help |
+| `--version` | `-V` | Show version |
 
 ## Response Examples
 

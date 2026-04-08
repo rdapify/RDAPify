@@ -11,11 +11,14 @@
 
 use std::collections::HashMap;
 use std::net::IpAddr;
+use std::sync::Arc;
 
 use idna::domain_to_ascii;
+use url::Url;
 
 use rdap_bootstrap::Bootstrap;
 use rdap_core::{Fetcher, FetcherConfig, Normalizer};
+use rdap_rate_limit::{RateLimitConfig, RateLimitError, RdapRateLimiter};
 use rdap_security::{SsrfConfig, SsrfGuard};
 use rdap_types::error::{RdapError, Result};
 use rdap_types::{
@@ -54,6 +57,10 @@ pub struct ClientConfig {
     pub reuse_connections: bool,
     /// Maximum number of idle keep-alive connections per host.
     pub max_connections_per_host: usize,
+    /// Outbound rate-limit configuration.
+    ///
+    /// Set to `None` to disable rate limiting (not recommended in production).
+    pub rate_limit: Option<RateLimitConfig>,
 }
 
 impl Default for ClientConfig {
@@ -66,6 +73,7 @@ impl Default for ClientConfig {
             custom_bootstrap_servers: HashMap::new(),
             reuse_connections: true,
             max_connections_per_host: 10,
+            rate_limit: Some(RateLimitConfig::default()),
         }
     }
 }
@@ -82,6 +90,8 @@ pub struct RdapClient {
     normalizer: Normalizer,
     #[cfg(feature = "memory-cache")]
     cache: Option<MemoryCache>,
+    /// Outbound rate limiter — applied after cache miss, before HTTP fetch.
+    rate_limiter: Option<Arc<RdapRateLimiter>>,
 }
 
 impl RdapClient {
@@ -115,12 +125,17 @@ impl RdapClient {
             None
         };
 
+        let rate_limiter = config
+            .rate_limit
+            .map(|cfg| Arc::new(RdapRateLimiter::new(cfg)));
+
         Ok(Self {
             fetcher,
             bootstrap,
             normalizer: Normalizer::new(),
             #[cfg(feature = "memory-cache")]
             cache,
+            rate_limiter,
         })
     }
 
@@ -377,6 +392,7 @@ impl RdapClient {
     // ── Private helpers ───────────────────────────────────────────────────────
 
     async fn fetch_with_cache(&self, url: &str) -> Result<(serde_json::Value, bool)> {
+        // ── Cache check (rate limiter NOT applied on cache hits) ──────────────
         #[cfg(feature = "memory-cache")]
         if let Some(cache) = &self.cache {
             if let Some(cached) = cache.get(url) {
@@ -384,6 +400,18 @@ impl RdapClient {
             }
         }
 
+        // ── Rate limit (cache miss only) ──────────────────────────────────────
+        if let Some(limiter) = &self.rate_limiter {
+            let host = extract_host(url)?;
+            limiter.acquire(&host).await.map_err(|e| match e {
+                RateLimitError::Limited(wait) => RdapError::RateLimited {
+                    host,
+                    wait_time: wait,
+                },
+            })?;
+        }
+
+        // ── Live fetch ────────────────────────────────────────────────────────
         let value = self.fetcher.fetch(url).await?;
 
         #[cfg(feature = "memory-cache")]
@@ -399,6 +427,23 @@ impl Default for RdapClient {
     fn default() -> Self {
         Self::new().expect("Default RdapClient construction failed")
     }
+}
+
+// ── Host extraction ───────────────────────────────────────────────────────────
+
+/// Extracts the hostname from an RDAP server URL for rate-limit keying.
+///
+/// For example, `"https://rdap.verisign.com/com/v1/domain/example.com"` →
+/// `"rdap.verisign.com"`.
+fn extract_host(url: &str) -> Result<String> {
+    Url::parse(url)
+        .map_err(|e| RdapError::InvalidUrl {
+            url: url.to_string(),
+            source: e,
+        })?
+        .host_str()
+        .map(String::from)
+        .ok_or_else(|| RdapError::InvalidInput(format!("URL has no host: {url}")))
 }
 
 // ── Domain normalisation ──────────────────────────────────────────────────────

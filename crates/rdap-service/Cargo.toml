@@ -8,6 +8,32 @@ repository.workspace = true
 homepage.workspace = true
 description = "HTTP API service runtime for RDAPify (Axum-based)"
 
+[[bin]]
+name = "rdap-service"
+path = "src/main.rs"
+
 [dependencies]
-rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
-rdapify-client = { path = "../rdapify-client", version = "0.2.0", default-features = false }
+# Internal crates
+rdap-types      = { path = "../rdap-types",      version = "0.1.0" }
+rdap-config     = { path = "../rdap-config",     version = "0.1.0" }
+rdap-logging    = { path = "../rdap-logging",    version = "0.1.0" }
+rdap-batch      = { path = "../rdap-batch",      version = "0.2.0" }
+rdap-core       = { path = "../rdap-core",       version = "0.1.0" }
+rdapify-client  = { path = "../rdapify-client",  version = "0.2.0" }
+
+# Shared workspace deps
+tokio      = { workspace = true, features = ["signal"] }
+serde      = { workspace = true }
+serde_json = { workspace = true }
+tracing    = { workspace = true }
+
+# HTTP service
+axum       = { version = "0.8", features = ["macros"] }
+tower      = "0.5"
+tower-http = { version = "0.6", features = ["trace", "compression-gzip", "timeout", "request-id"] }
+
+# Async utilities
+futures = "0.3"
+
+# Metrics
+prometheus-client = "0.22"

@@ -17,7 +17,10 @@ async fn main() -> rdapify::error::Result<()> {
 
     let domains = vec!["github.com", "google.com", "amazon.com"];
 
-    println!("Querying {} domains and dispatching webhooks...\n", domains.len());
+    println!(
+        "Querying {} domains and dispatching webhooks...\n",
+        domains.len()
+    );
 
     for domain in domains {
         match client.domain(domain).await {

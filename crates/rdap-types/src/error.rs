@@ -3,6 +3,8 @@
 //! All public-facing errors implement `std::error::Error` via `thiserror`.
 //! The [`RdapError`] enum is the single error type returned by every public API.
 
+use std::time::Duration;
+
 use thiserror::Error;
 
 /// The unified error type for all rdapify operations.
@@ -90,6 +92,13 @@ pub enum RdapError {
         #[source]
         source: url::ParseError,
     },
+
+    // ── Rate limiting ─────────────────────────────────────────────────────────
+    /// The outbound RDAP request was rejected by the local rate limiter.
+    ///
+    /// The caller should retry after `wait_time` has elapsed.
+    #[error("Rate limited for {host}: retry after {wait_time:?}")]
+    RateLimited { host: String, wait_time: Duration },
 }
 
 impl RdapError {
@@ -103,6 +112,7 @@ impl RdapError {
             RdapError::NoServerFound { .. } => 404,
             RdapError::HttpStatus { status, .. } => *status,
             RdapError::Timeout { .. } => 408,
+            RdapError::RateLimited { .. } => 429,
             RdapError::Network(_) => 502,
             RdapError::BootstrapFetch { .. } => 502,
             RdapError::ParseError { .. } => 500,
@@ -132,6 +142,11 @@ impl RdapError {
             self,
             RdapError::SsrfBlocked { .. } | RdapError::InsecureScheme { .. }
         )
+    }
+
+    /// Returns `true` if the request was rejected by the local rate limiter.
+    pub fn is_rate_limited(&self) -> bool {
+        matches!(self, RdapError::RateLimited { .. })
     }
 }
 

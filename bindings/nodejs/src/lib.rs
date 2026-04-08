@@ -130,9 +130,7 @@ pub async fn domain_available(name: String) -> napi::Result<serde_json::Value> {
 /// @param names - Array of domain names to check
 /// @returns Array of objects with `name`, `available`, `expiresAt`, and `error` fields
 #[napi]
-pub async fn domain_available_batch(
-    names: Vec<String>,
-) -> napi::Result<Vec<serde_json::Value>> {
+pub async fn domain_available_batch(names: Vec<String>) -> napi::Result<Vec<serde_json::Value>> {
     let client = get_client()?;
     let results = client.domain_available_batch(names.clone(), None).await;
     let output = names

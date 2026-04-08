@@ -1,132 +1,236 @@
-# rdapify
+# RDAPify
 
-A fast, secure, production-ready [RDAP](https://rdap.org) client library for Rust.
+**High-performance RDAP client, CLI, and service engine for production use.**
 
-RDAP (Registration Data Access Protocol) is the modern replacement for WHOIS, defined in [RFC 9083](https://www.rfc-editor.org/rfc/rfc9083) and [RFC 9224](https://www.rfc-editor.org/rfc/rfc9224).
+RDAP (Registration Data Access Protocol) is the modern, structured replacement for WHOIS — defined in [RFC 9083](https://www.rfc-editor.org/rfc/rfc9083) and [RFC 9224](https://www.rfc-editor.org/rfc/rfc9224).
 
 [![Crates.io](https://img.shields.io/crates/v/rdapify)](https://crates.io/crates/rdapify)
 [![docs.rs](https://img.shields.io/docsrs/rdapify)](https://docs.rs/rdapify)
 [![CI](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml/badge.svg)](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![MSRV: 1.77](https://img.shields.io/badge/MSRV-1.77-orange)](https://blog.rust-lang.org/2024/03/21/Rust-1.77.0.html)
 
-> **rdapify ecosystem**
-> | Library | Language | Package |
-> |---------|----------|---------|
-> | [RDAPify](https://github.com/rdapify/RDAPify) ← **you are here** | Rust | [`rdapify`](https://crates.io/crates/rdapify) on crates.io |
-> | [rdapify-nd](https://www.npmjs.com/package/rdapify-nd) | Node.js (Rust native) | [`rdapify-nd`](https://www.npmjs.com/package/rdapify-nd) on npm |
-> | [rdapify-py](https://pypi.org/project/rdapify-py/) | Python (Rust native) | [`rdapify-py`](https://pypi.org/project/rdapify-py/) on PyPI |
-> | [rdapify-TS](https://github.com/rdapify/rdapify-TS) | TypeScript / Node.js (archived) | [`rdapify`](https://www.npmjs.com/package/rdapify) on npm (deprecated) |
+---
+
+## What is RDAPify?
+
+| Mode | Description |
+|---|---|
+| **Library** | Rust crate for embedding RDAP queries in your application |
+| **CLI** | `rdapify` command for shell scripts and one-off lookups |
+| **Service** | `rdapify serve` — HTTP API that exposes RDAP over REST |
+| **Docker** | Container image for zero-config deployment |
+| **Monitoring** | Domain expiry + change alerts via [RDAPify Pro](#open-core) |
+
+Not a SaaS. Not a hosted API. A self-contained engine you run anywhere.
+
+---
 
 ## Features
 
-- **5 query types** — domain, IP, ASN, nameserver, entity
-- **IANA Bootstrap** (RFC 9224) — automatic server discovery, no manual configuration needed
-- **SSRF protection** — blocks requests to private, loopback, and link-local addresses
-- **In-memory cache** — configurable TTL and capacity, lock-free via `DashMap`
-- **IDN support** — accepts Unicode domain names, normalises to Punycode automatically
+- **5 query types** — domain, IP address, ASN, nameserver, entity
+- **Automatic bootstrap** — IANA RFC 9224 server discovery; no manual URL configuration
+- **In-memory cache** — lock-free `DashMap` with configurable TTL; cache hits at ~2 µs
+- **SSRF protection** — blocks private IPs, loopback, link-local, and redirect-based rebinding
 - **Retry with back-off** — exponential back-off on network errors and 5xx/429 responses
-- **Zero OpenSSL** — uses `rustls` (pure Rust TLS)
-- **Async-first** — built on `tokio`
+- **IDN support** — accepts Unicode domain names, normalizes to Punycode automatically
+- **Batch queries** — query hundreds of domains concurrently via `rdap-batch`
+- **Streaming API** — receive query events as they arrive via `rdap-stream`
+- **Prometheus metrics** — 9 metrics at `/metrics` in service mode
+- **Zero OpenSSL** — pure Rust TLS via `rustls`
+- **Async-first** — built on Tokio; no blocking I/O
+
+---
+
+## Quick Start
+
+**30-second start:**
+
+```bash
+cargo install rdapify --features cli
+rdapify domain github.com
+```
+
+Or with Docker:
+
+```bash
+docker run --rm ghcr.io/rdapify/rdapify domain github.com
+```
+
+See [QUICKSTART.md](QUICKSTART.md) for all options (Rust library, Node.js, Python).
+
+---
 
 ## Installation
 
-```toml
-[dependencies]
-rdapify = "0.2"
+### CLI
+
+```bash
+cargo install rdapify --features cli
 ```
 
-## Compatibility
+Pre-built binaries for Linux x86-64/ARM64, macOS Intel/Apple Silicon, Windows x64:
+→ [GitHub Releases](https://github.com/rdapify/RDAPify/releases/latest)
 
-| Crate version | Node binding (`rdapify-nd`) | Python binding (`rdapify-py`) | MSRV |
-|---------------|-----------------------------|-------------------------------|------|
-| 0.4.x         | 0.4.x                       | 0.4.x                         | 1.77 |
-| 0.2.x         | 0.1.x                       | 0.2.x                         | 1.75 |
+### Rust Library
 
-## Quick Start
+```toml
+[dependencies]
+rdapify = "0.3"
+tokio = { version = "1", features = ["full"] }
+```
+
+### Docker
+
+```bash
+docker pull ghcr.io/rdapify/rdapify:latest
+```
+
+### Node.js
+
+```bash
+npm install rdapify-nd
+```
+
+### Python
+
+```bash
+pip install rdapify-py
+```
+
+Full details: [docs/INSTALL.md](docs/INSTALL.md)
+
+---
+
+## CLI Usage
+
+```bash
+# Domain registration data
+rdapify domain example.com
+
+# IP network information
+rdapify ip 8.8.8.8
+rdapify ip 2001:4860:4860::8888
+
+# Autonomous System lookup
+rdapify asn AS15169
+rdapify asn 15169
+
+# Nameserver
+rdapify nameserver ns1.google.com
+
+# Entity (contact / registrar)
+rdapify entity ARIN-HN-1 --server https://rdap.arin.net/registry
+
+# Output formats
+rdapify domain example.com               # Pretty-printed JSON (default)
+rdapify domain example.com --raw         # Compact JSON
+rdapify domain example.com -o text       # Human-readable summary
+rdapify domain example.com -o csv        # CSV (for batch output)
+
+# Batch queries from file
+rdapify batch --file domains.txt --concurrency 10
+
+# Shell completions
+rdapify completions bash >> ~/.bashrc
+```
+
+Exit codes: `0` success · `1` query error · `2` network error · `3` security block · `4` invalid input
+
+Full reference: [docs/CLI.md](docs/CLI.md)
+
+---
+
+## Service Mode
+
+Run RDAPify as an HTTP API that any language can query:
+
+```bash
+rdapify serve
+# Listening on 0.0.0.0:7080
+```
+
+```bash
+curl http://localhost:7080/v1/domain/example.com
+curl http://localhost:7080/v1/ip/8.8.8.8
+curl http://localhost:7080/v1/autnum/15169
+curl http://localhost:7080/v1/nameserver/ns1.google.com
+curl http://localhost:7080/health
+curl http://localhost:7080/metrics   # Prometheus format
+```
+
+Configure via environment variables or `rdapify.toml`:
+
+```bash
+RDAPIFY_PORT=7080 \
+RDAPIFY_CACHE_TTL=300 \
+RDAPIFY_RATE_LIMIT_RPS=60 \
+rdapify serve
+```
+
+Full guide: [docs/PRODUCTION.md](docs/PRODUCTION.md)
+
+---
+
+## Docker
+
+```bash
+# Service mode
+docker run -d -p 7080:7080 \
+  -e RDAPIFY_CACHE_TTL=300 \
+  ghcr.io/rdapify/rdapify serve
+
+# One-shot CLI
+docker run --rm ghcr.io/rdapify/rdapify ip 8.8.8.8
+```
+
+Image: distroless base, < 40 MB, runs as non-root.
+
+Full guide: [docs/DOCKER.md](docs/DOCKER.md)
+
+---
+
+## Rust Library Usage
 
 ```rust
 use rdapify::RdapClient;
 
 #[tokio::main]
 async fn main() -> rdapify::Result<()> {
-    let client = RdapClient::new();
+    let client = RdapClient::new()?;
 
-    // Query a domain
+    // Domain
     let domain = client.domain("example.com").await?;
     println!("Registrar: {:?}", domain.registrar);
     println!("Expires:   {:?}", domain.expiration_date());
 
-    // Query an IP address
+    // IP address (IPv4 and IPv6)
     let ip = client.ip("8.8.8.8").await?;
-    println!("Network: {:?}", ip.name);
-    println!("Country: {:?}", ip.country);
+    println!("Network: {} ({})",
+        ip.name.as_deref().unwrap_or("-"),
+        ip.country.as_deref().unwrap_or("-"));
 
-    // Query an ASN
+    // ASN — both "15169" and "AS15169" accepted
     let asn = client.asn("AS15169").await?;
-    println!("ASN name: {:?}", asn.name);
+    println!("ASN: {:?}", asn.name);
+
+    // Nameserver
+    let ns = client.nameserver("ns1.google.com").await?;
+    println!("IPs: {:?}", ns.ip_addresses);
+
+    // Entity (registrar / contact)
+    let entity = client.entity("ARIN-HN-1", "https://rdap.arin.net/registry").await?;
+    println!("Name: {:?}", entity.name);
 
     Ok(())
 }
 ```
 
-## Usage
-
-### Domain Query
+### Custom configuration
 
 ```rust
-let res = client.domain("rust-lang.org").await?;
-
-println!("{}", res.ldh_name.as_deref().unwrap_or("-"));
-println!("{:?}", res.status);
-println!("{:?}", res.expiration_date());
-
-if let Some(r) = &res.registrar {
-    println!("Registrar: {}", r.name.as_deref().unwrap_or("-"));
-}
-```
-
-### IP Address Query
-
-```rust
-// IPv4
-let res = client.ip("1.1.1.1").await?;
-
-// IPv6
-let res = client.ip("2606:4700::1111").await?;
-
-println!("CIDR:    {:?}", res.cidr);
-println!("Country: {:?}", res.country);
-```
-
-### ASN Query
-
-```rust
-// Both formats accepted
-let res = client.asn("15169").await?;
-let res = client.asn("AS15169").await?;
-
-println!("Name: {:?}", res.name);
-```
-
-### Nameserver Query
-
-```rust
-let res = client.nameserver("ns1.example.com").await?;
-println!("IPs: {:?}", res.ip_addresses);
-```
-
-### Entity Query
-
-```rust
-let res = client.entity("ARIN-CHA-1", "https://rdap.arin.net/registry").await?;
-println!("Name:  {:?}", res.name);
-println!("Roles: {:?}", res.roles);
-```
-
-## Configuration
-
-```rust
-use rdapify::{RdapClient, ClientConfig, FetcherConfig, SsrfConfig};
+use rdapify::{RdapClient, ClientConfig, FetcherConfig};
+use rdap_security::SsrfConfig;
 use std::time::Duration;
 
 let client = RdapClient::with_config(ClientConfig {
@@ -144,162 +248,183 @@ let client = RdapClient::with_config(ClientConfig {
 })?;
 ```
 
-## CLI
+---
 
-Enable the `cli` feature to build the `rdapify` binary:
-
-```toml
-rdapify = { version = "0.2", features = ["cli"] }
-```
-
-Or install it directly:
-
-```bash
-cargo install rdapify --features cli
-```
-
-```bash
-rdapify domain example.com
-rdapify ip 8.8.8.8
-rdapify asn AS15169
-rdapify nameserver ns1.example.com
-rdapify entity ARIN-CHA-1 https://rdap.arin.net/registry
-
-# Machine-readable JSON output
-rdapify domain example.com --raw
-```
-
-## Performance
-
-All figures are measured with `cargo bench` (Criterion) on a Linux x86-64 machine.
-The query benchmarks use a local mock HTTP server (mockito) so results reflect
-pure Rust overhead — no real network latency is included.
-
-### Cache
-
-| Benchmark | Time |
-|-----------|------|
-| Cache hit (DashMap read, fresh TTL) | **~124 ns** |
-| Cache miss (key absent) | **~24 ns** |
-| Cache insert (single write) | **~780 ns** |
-| Cache eviction (insert at max capacity) | **~8.8 µs** |
-| Bulk insert — 100 entries | **~35 µs** |
-| Bulk insert — 1 000 entries | **~444 µs** |
-
-### Query pipeline (mock HTTP server)
-
-| Benchmark | Time | Notes |
-|-----------|------|-------|
-| `domain()` — no cache | **~183 µs** | bootstrap lookup + HTTP fetch + normalise |
-| `domain()` — cache hit | **~2.3 µs** | **~80× faster** than uncached |
-| `ip()` — no cache | **~176 µs** | |
-| `asn()` — no cache | **~176 µs** | |
-
-> Cache brings query latency from **~180 µs → ~2 µs** — an 80× speedup for
-> repeated queries within the TTL window.
-
-### SSRF validation
-
-| Benchmark | Time |
-|-----------|------|
-| Public domain URL (allowed) | **~141 ns** |
-| Public IPv4 URL (allowed) | **~220 ns** |
-| Private IPv4 URL (blocked at RFC-1918) | **~295 ns** |
-| Non-HTTPS scheme (blocked immediately) | **~145 ns** |
-| SSRF disabled (boolean bypass) | **~3 ns** |
-
-Run the benchmarks yourself:
-
-```bash
-cargo bench
-# HTML reports → target/criterion/report/index.html
-```
-
-## Language Bindings
-
-### Node.js — `rdapify-nd`
-
-A prebuilt native binding for Node.js. No compiler required — binaries ship for
-Linux x64, macOS x64/arm64, and Windows x64.
-
-```bash
-npm install rdapify-nd
-```
+## Node.js
 
 ```js
 const { domain, ip, asn, nameserver, entity } = require('rdapify-nd');
 
-// Domain
 const d = await domain('example.com');
-console.log(d.registrar?.name);    // "Example Registrar, Inc."
-console.log(d.ldhName);            // "example.com"
-console.log(d.metadata.timestamp); // "2026-03-21T00:00:00Z"
+console.log(d.registrar?.name);
 
-// IP address
 const i = await ip('8.8.8.8');
-console.log(i.name);    // "GOOGLE"
-console.log(i.country); // "US"
+console.log(`${i.name} (${i.country})`);
 
-// ASN
 const a = await asn('AS15169');
-console.log(a.name); // "GOOGLE"
-
-// Nameserver
-const ns = await nameserver('ns1.google.com');
-console.log(ns.ipAddresses.v4); // ["216.239.32.10"]
-
-// Entity (requires explicit server URL — no global bootstrap for entities)
-const e = await entity('ARIN-HN-1', 'https://rdap.arin.net/registry');
-console.log(e.handle); // "ARIN-HN-1"
+console.log(a.name);
 ```
 
 ---
 
-### Python — `rdapify-py`
-
-A prebuilt native extension for Python 3.8+. Ships as `abi3` wheels for
-Linux x64, macOS x64/arm64, and Windows x64.
-
-```bash
-pip install rdapify-py
-```
+## Python
 
 ```python
 import rdapify_py as rdap
 
-# Domain
 d = rdap.domain("example.com")
-print(d["registrar"]["name"])         # "Example Registrar, Inc."
-print(d["ldhName"])                   # "example.com"
-print(d["meta"]["queried_at"])        # RFC 3339 timestamp
+print(d["registrar"]["name"])
 
-# IP address
 i = rdap.ip("8.8.8.8")
-print(i["name"])     # "GOOGLE"
-print(i["country"])  # "US"
+print(f"{i['name']} ({i['country']})")
 
-# ASN
 a = rdap.asn("AS15169")
-print(a["name"])  # "GOOGLE"
-
-# Nameserver
-ns = rdap.nameserver("ns1.google.com")
-print(ns["ipAddresses"]["v4"])  # ["216.239.32.10"]
-
-# Entity (requires explicit server URL)
-e = rdap.entity("ARIN-HN-1", "https://rdap.arin.net/registry")
-print(e["handle"])  # "ARIN-HN-1"
+print(a["name"])
 ```
 
-All five functions are **synchronous** and backed by a `tokio` runtime under the hood.
+---
 
-## MSRV
+## Performance
 
-Minimum supported Rust version: **1.77**
+Benchmarks run with Criterion on Linux x86-64 using a local mock server (no network latency included).
+
+### Query pipeline
+
+| Benchmark | Latency | Notes |
+|---|---|---|
+| Domain query — **cache hit** | **~2.3 µs** | ~80× faster than uncached |
+| Domain query — no cache | ~183 µs | Bootstrap lookup + HTTP + normalize |
+| IP query — no cache | ~176 µs | |
+| ASN query — no cache | ~176 µs | |
+| Batch 100 domains (c=10) | ~2.1 s | Real network; concurrency = 10 |
+| Batch 1 000 domains (c=50) | ~18 s | Real network; concurrency = 50 |
+| Cold start (bootstrap fetch) | < 10 ms | First query after process start |
+
+### Cache
+
+| Benchmark | Latency |
+|---|---|
+| Cache hit (DashMap read) | **~124 ns** |
+| Cache miss | ~24 ns |
+| Cache insert | ~780 ns |
+| Cache eviction (LRU) | ~8.8 µs |
+| Bulk insert 1 000 entries | ~444 µs |
+
+### SSRF validation
+
+| Benchmark | Latency |
+|---|---|
+| Public HTTPS URL (allowed) | ~141 ns |
+| Private IPv4 URL (blocked) | ~295 ns |
+| Non-HTTPS scheme (blocked) | ~145 ns |
+
+```bash
+cargo bench
+# HTML report → target/criterion/report/index.html
+```
+
+---
+
+## Security
+
+RDAPify includes a multi-layer security model for safe use in server-side applications where user input may control query targets.
+
+| Layer | What it prevents |
+|---|---|
+| URL validation | Non-HTTPS schemes, credentials in URLs |
+| DNS resolution | SSRF via hostname → private IP |
+| IP classification | Loopback, RFC-1918 private, link-local |
+| Redirect guard | SSRF via redirect chain |
+| DNS rebinding | TOCTOU: IP change between resolve and connect |
+| Response size limit | Memory exhaustion (default: 10 MB) |
+| Content-type check | Non-RDAP responses masquerading as RDAP |
+
+SSRF protection is enabled by default. It cannot be bypassed by a user-supplied URL.
+
+Full details: [docs/SECURITY.md](docs/SECURITY.md)
+
+---
+
+## Open Core
+
+| Feature | Open (Apache-2.0) | Pro (Commercial) |
+|---|:---:|:---:|
+| Domain, IP, ASN, NS, Entity queries | ✔ | ✔ |
+| Batch queries | ✔ | ✔ |
+| CLI | ✔ | ✔ |
+| HTTP service | ✔ | ✔ |
+| Docker | ✔ | ✔ |
+| Node.js / Python bindings | ✔ | ✔ |
+| SSRF protection | ✔ | ✔ |
+| Prometheus metrics | ✔ | ✔ |
+| Domain expiry monitoring | — | ✔ |
+| Change detection + alerts | — | ✔ |
+| Webhooks | — | ✔ |
+| Portfolio management | — | ✔ |
+| Analytics dashboard | — | ✔ |
+| Priority support | — | ✔ |
+
+The open core (this repo) is **Apache-2.0 licensed** and will never have usage limits, license checks, or paywalled features.
+
+RDAPify Pro → [rdapify.com](https://rdapify.com)
+
+---
+
+## Ecosystem
+
+| Package | Language | Registry |
+|---|---|---|
+| [RDAPify](https://github.com/rdapify/RDAPify) ← **this repo** | Rust | [crates.io `rdapify`](https://crates.io/crates/rdapify) |
+| [rdapify-nd](https://www.npmjs.com/package/rdapify-nd) | Node.js | [npm `rdapify-nd`](https://www.npmjs.com/package/rdapify-nd) |
+| [rdapify-py](https://pypi.org/project/rdapify-py/) | Python | [PyPI `rdapify-py`](https://pypi.org/project/rdapify-py/) |
+| [@rdapify/pro](https://rdapify.com) | Node.js addon | npm `@rdapify/pro` (private) |
+
+---
+
+## Documentation
+
+| Guide | |
+|---|---|
+| [QUICKSTART.md](QUICKSTART.md) | Get running in 5 minutes |
+| [docs/INSTALL.md](docs/INSTALL.md) | All installation methods |
+| [docs/CLI.md](docs/CLI.md) | Full CLI reference |
+| [docs/CONFIG.md](docs/CONFIG.md) | Configuration file + env vars |
+| [docs/DOCKER.md](docs/DOCKER.md) | Docker and Docker Compose |
+| [docs/PRODUCTION.md](docs/PRODUCTION.md) | systemd, nginx, Kubernetes |
+| [docs/MONITORING.md](docs/MONITORING.md) | Prometheus metrics + Grafana |
+| [docs/SECURITY.md](docs/SECURITY.md) | SSRF protection + security model |
+| [docs/COMPARISON.md](docs/COMPARISON.md) | vs whois, python-rdap, ipwhois, curl |
+| [docs/RUST_API.md](docs/RUST_API.md) | Full Rust API reference |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Crate structure and design |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
+
+---
+
+## Compatibility
+
+| Package version | MSRV | rdapify-nd | rdapify-py |
+|---|---|---|---|
+| 0.3.x | 1.77 | 0.1.3 | 0.2.1 |
+| 0.2.x | 1.75 | 0.1.x | 0.2.x |
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). All changes require:
+
+```bash
+cargo test --workspace
+cargo clippy --workspace -- -D warnings
+cargo fmt --check
+```
+
+---
 
 ## License
 
-RDAPify is licensed under the Apache License 2.0 — see [LICENSE](LICENSE).
+RDAPify is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE).
 
-RDAPify-Pro is commercial software. See [rdapify.com](https://rdapify.com) for pricing.
-RDAPify-Internal is proprietary and not publicly available.
+Free to use, modify, and redistribute for any purpose.
+
+RDAPify Pro is commercial software. See [rdapify.com](https://rdapify.com) for pricing.

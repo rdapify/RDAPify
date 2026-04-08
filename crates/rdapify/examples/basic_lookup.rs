@@ -42,7 +42,10 @@ async fn main() -> rdapify::error::Result<()> {
     println!("Querying iana.org (should be cached if queried recently)...");
     let response2 = client.domain("iana.org").await?;
     println!("  Query: {}", response2.query);
-    println!("  Cached: {} (if true, this was served from the in-memory cache)", response2.meta.cached);
+    println!(
+        "  Cached: {} (if true, this was served from the in-memory cache)",
+        response2.meta.cached
+    );
     println!("  Cache size: {} entries\n", client.cache_size());
 
     // Check domain availability

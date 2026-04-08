@@ -896,7 +896,7 @@ async fn stream_domain_isolates_individual_errors() {
 
 #[tokio::test]
 async fn stream_domain_cancel_mid_stream_does_not_panic() {
-    use rdapify::{DomainEvent, StreamConfig};
+    use rdapify::StreamConfig;
     use tokio_stream::StreamExt;
 
     let mut server = mockito::Server::new_async().await;
@@ -959,4 +959,259 @@ async fn fetcher_config_reuse_connections_default_is_true() {
     let config = FetcherConfig::default();
     assert!(config.reuse_connections);
     assert_eq!(config.max_connections_per_host, 10);
+}
+
+// ── Rate limiting ─────────────────────────────────────────────────────────────
+
+/// Verifies that a tight per-host rate limit (burst=1, rps=1) causes the
+/// second uncached request to the same RDAP host to be delayed.
+///
+/// The assertion threshold is 800 ms — generous enough for slow CI machines
+/// yet unambiguous evidence that the limiter introduced a real delay.
+#[tokio::test]
+async fn rate_limit_slows_rapid_requests() {
+    use rdap_rate_limit::RateLimitConfig;
+    use std::time::{Duration, Instant};
+
+    let mut server = mockito::Server::new_async().await;
+    let base = server.url();
+
+    server
+        .mock("GET", "/dns.json")
+        .with_status(200)
+        .with_header("content-type", "application/json")
+        .with_body(common::dns_bootstrap_json("com", &format!("{base}/rdap")).to_string())
+        .expect_at_least(1)
+        .create_async()
+        .await;
+
+    // Allow unlimited mock hits — the rate limiter will serialise requests,
+    // not the mock server.
+    server
+        .mock("GET", "/rdap/domain/example.com")
+        .with_status(200)
+        .with_header("content-type", "application/rdap+json")
+        .with_body(common::domain_rdap_response("example.com").to_string())
+        .expect_at_least(2)
+        .create_async()
+        .await;
+
+    let client = RdapClient::with_config(ClientConfig {
+        bootstrap_url: Some(base.clone()),
+        // Cache disabled — every call hits the rate limiter.
+        cache: false,
+        ssrf: SsrfConfig {
+            enabled: false,
+            ..Default::default()
+        },
+        fetcher: FetcherConfig {
+            timeout: Duration::from_secs(10),
+            max_attempts: 1,
+            ..Default::default()
+        },
+        // 1 rps, burst 1 → second request must wait ~1 s
+        rate_limit: Some(RateLimitConfig {
+            per_host_rps: 1,
+            per_host_burst: 1,
+            global_rps: None,
+            global_burst: 0,
+        }),
+        ..Default::default()
+    })
+    .expect("client construction failed");
+
+    let start = Instant::now();
+    client
+        .domain("example.com")
+        .await
+        .expect("first call failed");
+    client
+        .domain("example.com")
+        .await
+        .expect("second call failed");
+    let elapsed = start.elapsed();
+
+    assert!(
+        elapsed >= Duration::from_millis(800),
+        "expected rate limiting to delay second call by ≥800 ms, got {elapsed:?}"
+    );
+}
+
+// ── Batch engine (buffer_unordered) ──────────────────────────────────────────
+
+/// Verifies that `BatchExecutor::run_stream` delivers a result for every
+/// query using the `buffer_unordered` streaming engine (rdap-batch v0.2).
+#[tokio::test]
+async fn batch_executor_streams_all_results() {
+    use rdap_batch::{BatchConfig, BatchExecutor, BatchItemResult, BatchQuery};
+    use std::sync::Arc;
+    use tokio_stream::StreamExt;
+
+    let mut server = mockito::Server::new_async().await;
+    let base = server.url();
+    let rdap_base = format!("{base}/rdap");
+
+    server
+        .mock("GET", "/dns.json")
+        .with_status(200)
+        .with_header("content-type", "application/json")
+        .with_body(common::dns_bootstrap_json("com", &format!("{rdap_base}")).to_string())
+        .expect_at_least(1)
+        .create_async()
+        .await;
+
+    // Three domains: two succeed, one is a 404.
+    for domain in &["a.com", "b.com"] {
+        server
+            .mock("GET", format!("/rdap/domain/{domain}").as_str())
+            .with_status(200)
+            .with_header("content-type", "application/rdap+json")
+            .with_body(common::domain_rdap_response(domain).to_string())
+            .create_async()
+            .await;
+    }
+    server
+        .mock("GET", "/rdap/domain/gone.com")
+        .with_status(404)
+        .with_header("content-type", "application/rdap+json")
+        .with_body(r#"{"errorCode":404,"title":"Not Found"}"#)
+        .create_async()
+        .await;
+
+    let client = Arc::new(
+        RdapClient::with_config(ClientConfig {
+            bootstrap_url: Some(base.clone()),
+            cache: false,
+            rate_limit: None,
+            ssrf: SsrfConfig {
+                enabled: false,
+                ..Default::default()
+            },
+            fetcher: FetcherConfig {
+                timeout: Duration::from_secs(5),
+                max_attempts: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .expect("client construction failed"),
+    );
+
+    let executor = BatchExecutor::new(client);
+    let queries = vec![
+        BatchQuery::Domain("a.com".into()),
+        BatchQuery::Domain("b.com".into()),
+        BatchQuery::Domain("gone.com".into()),
+    ];
+    let cfg = BatchConfig {
+        concurrency: 3,
+        ordered: false,
+        buffer: 8,
+    };
+
+    let mut stream = executor.run_stream(queries, cfg);
+    let mut ok = 0usize;
+    let mut err = 0usize;
+    while let Some(item) = stream.next().await {
+        match item {
+            BatchItemResult::Ok(_) => ok += 1,
+            BatchItemResult::Err(_) => err += 1,
+        }
+    }
+
+    assert_eq!(ok, 2, "two domains should succeed");
+    assert_eq!(err, 1, "one 404 should be an error");
+}
+
+/// Verifies ordered batch mode: results arrive in input order and all
+/// complete without panic.
+#[tokio::test]
+async fn batch_executor_ordered_mode() {
+    use rdap_batch::{BatchConfig, BatchExecutor, BatchItemResult, BatchQuery};
+    use std::sync::Arc;
+    use tokio_stream::StreamExt;
+
+    let mut server = mockito::Server::new_async().await;
+    let base = server.url();
+    let rdap_base = format!("{base}/rdap");
+
+    server
+        .mock("GET", "/dns.json")
+        .with_status(200)
+        .with_header("content-type", "application/json")
+        .with_body(common::dns_bootstrap_json("com", &rdap_base).to_string())
+        .expect_at_least(1)
+        .create_async()
+        .await;
+
+    for name in &["x.com", "y.com", "z.com"] {
+        server
+            .mock("GET", format!("/rdap/domain/{name}").as_str())
+            .with_status(200)
+            .with_header("content-type", "application/rdap+json")
+            .with_body(common::domain_rdap_response(name).to_string())
+            .create_async()
+            .await;
+    }
+
+    let client = Arc::new(
+        RdapClient::with_config(ClientConfig {
+            bootstrap_url: Some(base.clone()),
+            cache: false,
+            rate_limit: None,
+            ssrf: SsrfConfig {
+                enabled: false,
+                ..Default::default()
+            },
+            fetcher: FetcherConfig {
+                timeout: Duration::from_secs(5),
+                max_attempts: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .expect("client construction failed"),
+    );
+
+    let executor = BatchExecutor::new(client);
+    let queries = vec![
+        BatchQuery::Domain("x.com".into()),
+        BatchQuery::Domain("y.com".into()),
+        BatchQuery::Domain("z.com".into()),
+    ];
+    let cfg = BatchConfig {
+        concurrency: 2,
+        ordered: true,
+        buffer: 4,
+    };
+
+    let mut stream = executor.run_stream(queries, cfg);
+    let mut count = 0usize;
+    while let Some(item) = stream.next().await {
+        assert!(matches!(item, BatchItemResult::Ok(_)), "all should succeed");
+        count += 1;
+    }
+    assert_eq!(count, 3);
+}
+
+/// Dropping the batch stream mid-flight must not panic.
+#[tokio::test]
+async fn batch_executor_early_cancel_no_panic() {
+    use rdap_batch::{BatchConfig, BatchExecutor, BatchQuery};
+    use std::sync::Arc;
+    use tokio_stream::StreamExt;
+
+    // No mock server needed — cancel before any result arrives.
+    let client = Arc::new(RdapClient::default());
+    let executor = BatchExecutor::new(client);
+
+    let queries: Vec<BatchQuery> = (0..20)
+        .map(|i| BatchQuery::Domain(format!("q{i}.com")))
+        .collect();
+    let mut stream = executor.run_stream(queries, BatchConfig::default());
+
+    // Take one result then drop — the spawned task should shut down cleanly.
+    let _ = stream.next().await;
+    drop(stream);
+    // If we reach here without panic: pass.
 }

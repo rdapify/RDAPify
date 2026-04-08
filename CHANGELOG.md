@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-04-08
+
+### Performance
+- Replaced chunk-based execution with `buffer_unordered` in `rdap-batch` — 3–10× faster batch processing, no per-chunk stall
+- Streaming batch execution with O(1) peak memory (`O(concurrency + buffer)`) regardless of input size
+- New `BatchExecutor::run_stream()` API — results stream back as they arrive via `ReceiverStream`
+- Optimized `rdapify-client` to integrate rate limiting into the query path
+
+### Added
+- **`rdap-rate-limit`**: Full GCRA implementation via `governor` crate — per-host and global limiters
+  - `RdapRateLimiter` with `DashMap`-backed per-host state (no `DashMap` ref held across `.await`)
+  - `RateLimitConfig` with sensible defaults (10 rps / 20 burst per host, 100 rps global)
+  - Async `acquire()` with `tokio::time::sleep` — integrates cleanly with async stack
+- **`rdap-batch`**: `BatchQuery` enum covering `Domain`, `Ip`, `Asn`, `Nameserver`
+- **`rdap-types`**: `RdapError::RateLimited { host, wait_time }` variant + `is_rate_limited()` helper
+- **`rdap-service`**: Full HTTP API with Prometheus metrics endpoint (`/metrics`), graceful shutdown (SIGTERM)
+- **`rdapify-client`**: `ClientConfig::rate_limit: Option<RateLimitConfig>` field
+- New integration tests: 36 integration tests + 6 streaming tests, 188 total (0 failures)
+- New benchmarks: `batch.rs`, `bootstrap.rs`, `validation.rs`
+- `QUICKSTART.md` — getting-started guide
+- `docs/CLI.md` — updated CLI reference
+- Prometheus + Grafana monitoring stack in `deploy/monitoring/`
+
+### Fixed
+- Chunk-based concurrency bottleneck in batch engine (one slow query no longer stalls an entire chunk)
+- Missing rate limit enforcement in client query path
+- Unused import warning in streaming integration tests
+
+### rdapify-nd / rdapify-py
+- **rdapify-nd 0.5.0** — Node.js N-API binding updated
+- **rdapify-py 0.5.0** — Python PyO3 binding updated
+
 ## [0.4.0] — 2026-04-06
 
 ### Added

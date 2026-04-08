@@ -6,7 +6,7 @@
 //! Run with:
 //!     cargo run --example monitoring
 
-use rdapify::{ClientConfig, FetcherConfig, RdapClient, DomainResponse};
+use rdapify::{ClientConfig, DomainResponse, FetcherConfig, RdapClient};
 use std::time::Duration;
 use tokio::time::sleep;
 
@@ -24,11 +24,7 @@ impl From<&DomainResponse> for DomainSnapshot {
         Self {
             nameservers: response.nameservers.clone(),
             registrar: response.registrar.as_ref().and_then(|r| r.name.clone()),
-            status: response
-                .status
-                .iter()
-                .map(|s| format!("{s:?}"))
-                .collect(),
+            status: response.status.iter().map(|s| format!("{s:?}")).collect(),
             expiration: response.expiration_date().map(|s| s.to_string()),
         }
     }
@@ -51,7 +47,10 @@ async fn main() -> rdapify::error::Result<()> {
     let client = RdapClient::with_config(config)?;
     let domain = "example.com";
 
-    println!("Monitoring {} for changes every 2 seconds (3 iterations)...\n", domain);
+    println!(
+        "Monitoring {} for changes every 2 seconds (3 iterations)...\n",
+        domain
+    );
 
     let mut previous_snapshot: Option<DomainSnapshot> = None;
     let mut _poll_count = 0;
