@@ -1,0 +1,32 @@
+[package]
+name = "rdap-metrics"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Prometheus-compatible metrics surface for the rdapify engine."
+
+# When the `enabled` feature is OFF (the default for downstream crates that
+# pull this in unconditionally), every hook function is an `#[inline(always)]`
+# no-op — call sites compile down to nothing under LTO. When `enabled` is ON,
+# hooks call into the `metrics` facade and a Prometheus exporter is provided.
+[features]
+default = []
+enabled = ["dep:metrics", "dep:metrics-exporter-prometheus"]
+
+[dependencies]
+# Optional — only pulled when `enabled` feature is on.
+metrics                     = { workspace = true, optional = true }
+metrics-exporter-prometheus = { workspace = true, optional = true }
+# Always linked — `tracing::info!` etc. compile to a single atomic load when
+# no subscriber is attached, so this is effectively zero-cost in default
+# builds. The sampling helper uses `rand` and the request-id helper uses
+# `uuid` v7. Both are tiny.
+tracing = { workspace = true }
+rand    = { workspace = true }
+uuid    = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

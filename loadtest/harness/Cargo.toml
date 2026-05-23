@@ -1,0 +1,49 @@
+[package]
+name = "rdap-loadtest-harness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Stage E load-test harness — drives the rdapify engine in-process against a mock upstream, measures latency, validates SLO."
+
+[[bin]]
+name = "harness"
+path = "src/main.rs"
+
+# Standalone — keeps load-test infra out of the engine workspace.
+[workspace]
+
+[dependencies]
+# The engine itself, via path. We deliberately exercise the rdapify facade
+# (the public surface a downstream consumer would use) and turn on the
+# `metrics` feature so the harness can scrape rdap_metrics post-run.
+# The rdapify facade pulls in rdap-core and rdapify-client. We add explicit
+# deps on rdap-core and rdap-metrics with the metrics feature on so cargo's
+# feature unification turns on instrumentation across the *entire* build —
+# including the rdap-core that rdapify uses internally. Without these
+# explicit lines, the harness would be measuring the no-op build, which is
+# a misleading benchmark.
+rdapify      = { path = "../../crates/rdapify" }
+rdap-core    = { path = "../../crates/rdap-core",    features = ["metrics"] }
+rdap-cache   = { path = "../../crates/rdap-cache",   features = ["metrics"] }
+rdap-metrics = { path = "../../crates/rdap-metrics", features = ["enabled"] }
+
+# Async runtime
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "signal", "process", "sync"] }
+
+# CLI
+clap  = { version = "4", features = ["derive"] }
+
+# HTTP — only used for the readiness probe against the mock; the engine
+# itself uses its own internal reqwest client.
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+
+# Latency stats — small, dependency-free percentile estimator.
+hdrhistogram = "7"
+
+# Graceful child-process orchestration of the mock upstream.
+nix = { version = "0.27", features = ["signal"] }
+
+[profile.release]
+opt-level = 3
+lto       = "thin"
+debug     = false

@@ -1,6 +1,7 @@
 //! Response normaliser — converts raw RDAP JSON into typed response structs.
 
 use chrono::Utc;
+use serde::Deserialize;
 use serde_json::Value;
 
 use rdap_types::{
@@ -31,6 +32,7 @@ impl Normalizer {
     ) -> Result<DomainResponse> {
         let meta = make_meta(source, cached);
         let obj = require_object(&raw)?;
+        check_object_class(obj, "domain")?;
 
         let entities = parse_entities(obj.get("entities"));
         let events = parse_events(obj.get("events"));
@@ -54,7 +56,7 @@ impl Normalizer {
 
         Ok(DomainResponse {
             query: query.to_string(),
-            ldh_name: string_field(obj, "ldhName"),
+            ldh_name: string_field(obj, "ldhName").map(|s| s.to_lowercase()),
             unicode_name: string_field(obj, "unicodeName"),
             handle: string_field(obj, "handle"),
             status: parse_status(obj.get("status")),
@@ -71,6 +73,7 @@ impl Normalizer {
     pub fn ip(&self, query: &str, raw: Value, source: &str, cached: bool) -> Result<IpResponse> {
         let meta = make_meta(source, cached);
         let obj = require_object(&raw)?;
+        check_object_class(obj, "ip network")?;
 
         let ip_version = obj
             .get("ipVersion")
@@ -102,6 +105,7 @@ impl Normalizer {
     pub fn asn(&self, query: u32, raw: Value, source: &str, cached: bool) -> Result<AsnResponse> {
         let meta = make_meta(source, cached);
         let obj = require_object(&raw)?;
+        check_object_class(obj, "autnum")?;
 
         Ok(AsnResponse {
             query,
@@ -135,6 +139,7 @@ impl Normalizer {
     ) -> Result<NameserverResponse> {
         let meta = make_meta(source, cached);
         let obj = require_object(&raw)?;
+        check_object_class(obj, "nameserver")?;
 
         let ip_addresses = {
             let ip_obj = obj.get("ipAddresses").and_then(|v| v.as_object());
@@ -184,6 +189,7 @@ impl Normalizer {
     ) -> Result<EntityResponse> {
         let meta = make_meta(source, cached);
         let obj = require_object(&raw)?;
+        check_object_class(obj, "entity")?;
 
         let roles = obj
             .get("roles")
@@ -226,6 +232,23 @@ fn require_object(value: &Value) -> Result<&serde_json::Map<String, Value>> {
     })
 }
 
+/// Validates that `objectClassName` in `obj` matches the `expected` value.
+///
+/// Returns `Err(MissingObjectClass)` when the field is absent, and
+/// `Err(UnknownObjectClass)` when it is present but unexpected.
+fn check_object_class(
+    obj: &serde_json::Map<String, serde_json::Value>,
+    expected: &str,
+) -> Result<()> {
+    match obj.get("objectClassName").and_then(|v| v.as_str()) {
+        None => Err(RdapError::MissingObjectClass),
+        Some(class) if class == expected => Ok(()),
+        Some(class) => Err(RdapError::UnknownObjectClass {
+            class: class.to_string(),
+        }),
+    }
+}
+
 fn string_field(obj: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
     obj.get(key).and_then(|v| v.as_str()).map(str::to_string)
 }
@@ -235,7 +258,7 @@ fn parse_status(value: Option<&Value>) -> Vec<RdapStatus> {
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| serde_json::from_value::<RdapStatus>(v.clone()).ok())
+                .filter_map(|v| RdapStatus::deserialize(v).ok())
                 .collect()
         })
         .unwrap_or_default()
@@ -246,7 +269,7 @@ fn parse_events(value: Option<&Value>) -> Vec<RdapEvent> {
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| serde_json::from_value::<RdapEvent>(v.clone()).ok())
+                .filter_map(|v| RdapEvent::deserialize(v).ok())
                 .collect()
         })
         .unwrap_or_default()
@@ -257,7 +280,7 @@ fn parse_links(value: Option<&Value>) -> Vec<RdapLink> {
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| serde_json::from_value::<RdapLink>(v.clone()).ok())
+                .filter_map(|v| RdapLink::deserialize(v).ok())
                 .collect()
         })
         .unwrap_or_default()
@@ -268,7 +291,7 @@ fn parse_remarks(value: Option<&Value>) -> Vec<RdapRemark> {
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| serde_json::from_value::<RdapRemark>(v.clone()).ok())
+                .filter_map(|v| RdapRemark::deserialize(v).ok())
                 .collect()
         })
         .unwrap_or_default()
@@ -279,7 +302,7 @@ fn parse_entities(value: Option<&Value>) -> Vec<RdapEntity> {
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| serde_json::from_value::<RdapEntity>(v.clone()).ok())
+                .filter_map(|v| RdapEntity::deserialize(v).ok())
                 .collect()
         })
         .unwrap_or_default()
@@ -337,6 +360,7 @@ mod tests {
     #[test]
     fn domain_basic_fields() {
         let raw = json!({
+            "objectClassName": "domain",
             "ldhName": "EXAMPLE.COM",
             "unicodeName": "example.com",
             "handle": "DOMAIN-HANDLE-1",
@@ -351,7 +375,7 @@ mod tests {
             .unwrap();
 
         assert_eq!(res.query, "example.com");
-        assert_eq!(res.ldh_name.as_deref(), Some("EXAMPLE.COM"));
+        assert_eq!(res.ldh_name.as_deref(), Some("example.com"));
         assert!(res.is_active());
         assert_eq!(res.nameservers, vec!["ns1.example.com", "ns2.example.com"]);
     }
@@ -359,6 +383,7 @@ mod tests {
     #[test]
     fn ip_basic_v4_fields() {
         let raw = json!({
+            "objectClassName": "ip network",
             "handle": "NET-192-0-2-0-1",
             "startAddress": "192.0.2.0",
             "ipVersion": "v4",
@@ -375,6 +400,7 @@ mod tests {
     #[test]
     fn asn_basic_fields() {
         let raw = json!({
+            "objectClassName": "autnum",
             "handle": "AS15169",
             "startAutnum": 15169,
             "name": "GOOGLE",
@@ -391,6 +417,7 @@ mod tests {
     #[test]
     fn nameserver_basic_fields() {
         let raw = json!({
+            "objectClassName": "nameserver",
             "ldhName": "NS1.EXAMPLE.COM",
             "ipAddresses": {
                 "v4": ["192.0.2.1"],

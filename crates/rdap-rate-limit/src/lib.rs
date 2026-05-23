@@ -183,6 +183,10 @@ impl PerHostLimiter {
     /// The DashMap guard is **dropped immediately** when this function returns —
     /// the caller can safely `.await` on the returned `Arc`.
     fn get_or_create(&self, host: &str) -> Arc<DirectLimiter> {
+        // Fast path: borrow lookup avoids String allocation for known hosts.
+        if let Some(entry) = self.map.get(host) {
+            return entry.clone();
+        }
         self.map
             .entry(host.to_string())
             .or_insert_with(|| Arc::new(GovernorLimiter::direct(self.quota)))
@@ -196,6 +200,11 @@ impl PerHostLimiter {
             match check(&limiter) {
                 Ok(()) => return Ok(()),
                 Err(RateLimitError::Limited(wait)) => {
+                    tracing::debug!(
+                        event = "rate_limit_wait",
+                        host = host,
+                        wait_ms = wait.as_millis() as u64,
+                    );
                     tokio::time::sleep(wait).await;
                 }
             }

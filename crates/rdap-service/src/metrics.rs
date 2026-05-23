@@ -25,9 +25,23 @@ pub struct Metrics {
     pub cache_hits_total: Counter<u64, AtomicU64>,
     /// Responses fetched live (cache miss).
     pub cache_misses_total: Counter<u64, AtomicU64>,
-    // rate_limit_blocked_total: will be added when rdap-rate-limit moves out of skeleton phase
+    /// RDAP queries that timed out before receiving a response.
+    pub rdap_errors_timeout_total: Counter<u64, AtomicU64>,
+    /// RDAP queries blocked by the local rate limiter.
+    pub rdap_errors_rate_limited_total: Counter<u64, AtomicU64>,
+    /// RDAP queries that received an HTTP error response (4xx/5xx).
+    pub rdap_errors_http_total: Counter<u64, AtomicU64>,
+    /// Responses served from cache that had exceeded their primary TTL
+    /// (stale-while-revalidate hits).
+    pub rdap_cache_stale_total: Counter<u64, AtomicU64>,
+    /// Responses short-circuited by the negative cache (404 cached).
+    pub rdap_cache_negative_total: Counter<u64, AtomicU64>,
     /// Batch jobs submitted to the `/batch` endpoint.
     pub batch_jobs_total: Counter<u64, AtomicU64>,
+    /// Batch job processing duration in seconds.
+    pub rdap_batch_duration_seconds: Histogram,
+    /// Distribution of batch job sizes (number of queries per job).
+    pub rdap_batch_size: Histogram,
 }
 
 impl Metrics {
@@ -40,7 +54,16 @@ impl Metrics {
         let rdap_requests_total: Counter<u64, AtomicU64> = Default::default();
         let cache_hits_total: Counter<u64, AtomicU64> = Default::default();
         let cache_misses_total: Counter<u64, AtomicU64> = Default::default();
+        let rdap_errors_timeout_total: Counter<u64, AtomicU64> = Default::default();
+        let rdap_errors_rate_limited_total: Counter<u64, AtomicU64> = Default::default();
+        let rdap_errors_http_total: Counter<u64, AtomicU64> = Default::default();
+        let rdap_cache_stale_total: Counter<u64, AtomicU64> = Default::default();
+        let rdap_cache_negative_total: Counter<u64, AtomicU64> = Default::default();
         let batch_jobs_total: Counter<u64, AtomicU64> = Default::default();
+        // Batch duration: 0.1s → ~25s (9 exponential steps, factor 2)
+        let rdap_batch_duration_seconds = Histogram::new(exponential_buckets(0.1, 2.0, 9));
+        // Batch size distribution: 1 → 100 items
+        let rdap_batch_size = Histogram::new([1.0, 5.0, 10.0, 25.0, 50.0, 100.0].into_iter());
 
         registry.register(
             "http_requests_total",
@@ -52,6 +75,14 @@ impl Metrics {
             "HTTP request duration in seconds",
             http_request_duration_seconds.clone(),
         );
+        // When the `metrics` cargo feature is on, the engine's
+        // `rdap-metrics` registry already emits `rdap_requests_total`
+        // (with `type` and `status` labels). Skipping registration here
+        // avoids a duplicate metric definition in the rendered text — the
+        // engine's series is the authoritative one. The local counter
+        // field stays in the struct so existing callers continue to
+        // compile (they just no-op into a counter that's never scraped).
+        #[cfg(not(feature = "metrics"))]
         registry.register(
             "rdap_requests_total",
             "Total RDAP queries dispatched to upstream registries",
@@ -68,9 +99,44 @@ impl Metrics {
             cache_misses_total.clone(),
         );
         registry.register(
+            "rdap_errors_timeout_total",
+            "RDAP queries that timed out before receiving a response",
+            rdap_errors_timeout_total.clone(),
+        );
+        registry.register(
+            "rdap_errors_rate_limited_total",
+            "RDAP queries blocked by the local rate limiter",
+            rdap_errors_rate_limited_total.clone(),
+        );
+        registry.register(
+            "rdap_errors_http_total",
+            "RDAP queries that received an HTTP error response (4xx/5xx)",
+            rdap_errors_http_total.clone(),
+        );
+        registry.register(
+            "rdap_cache_stale_total",
+            "Responses served from cache that had exceeded their primary TTL (SWR hits)",
+            rdap_cache_stale_total.clone(),
+        );
+        registry.register(
+            "rdap_cache_negative_total",
+            "Responses short-circuited by the negative cache (404 cached)",
+            rdap_cache_negative_total.clone(),
+        );
+        registry.register(
             "batch_jobs_total",
             "Batch jobs submitted to the /batch endpoint",
             batch_jobs_total.clone(),
+        );
+        registry.register(
+            "rdap_batch_duration_seconds",
+            "Batch job processing duration in seconds",
+            rdap_batch_duration_seconds.clone(),
+        );
+        registry.register(
+            "rdap_batch_size",
+            "Distribution of batch job sizes (number of queries per job)",
+            rdap_batch_size.clone(),
         );
 
         Self {
@@ -80,7 +146,14 @@ impl Metrics {
             rdap_requests_total,
             cache_hits_total,
             cache_misses_total,
+            rdap_errors_timeout_total,
+            rdap_errors_rate_limited_total,
+            rdap_errors_http_total,
+            rdap_cache_stale_total,
+            rdap_cache_negative_total,
             batch_jobs_total,
+            rdap_batch_duration_seconds,
+            rdap_batch_size,
         }
     }
 

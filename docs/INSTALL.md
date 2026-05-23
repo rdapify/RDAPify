@@ -57,7 +57,7 @@ Add to `Cargo.toml`:
 
 ```toml
 [dependencies]
-rdapify = "0.3"
+rdapify = "0.4"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -74,10 +74,10 @@ tokio = { version = "1", features = ["full"] }
 
 ```toml
 # All features
-rdapify = { version = "0.3", features = ["service", "sqlite"] }
+rdapify = { version = "0.4", features = ["service", "sqlite"] }
 
 # Minimal (no persistence)
-rdapify = { version = "0.3", default-features = true }
+rdapify = { version = "0.4", default-features = true }
 ```
 
 ---

@@ -12,19 +12,22 @@ For the TypeScript npm package `rdapify`, see [rdapify/SECURITY.md](https://gith
 
 | Version | Supported         | Notes                                              |
 | ------- | ----------------- | -------------------------------------------------- |
-| 0.2.x   | ✅ Active support | Current stable — all fixes applied here first      |
-| 0.1.x   | ❌ End of life    | No further updates; upgrade to 0.2.x               |
+| 0.5.0   | ✅ Active support | Latest — pending public release (source ready)     |
+| 0.4.x   | ✅ Active support | Current stable — all fixes applied here first      |
+| 0.3.x   | ❌ End of life    | No further updates; upgrade to 0.4.x               |
+| 0.2.x   | ❌ End of life    | No further updates; upgrade to 0.4.x               |
+| 0.1.x   | ❌ End of life    | No further updates; upgrade to 0.4.x               |
 
 ### Bindings
 
-| Binding      | Current version | Supported         |
-| ------------ | --------------- | ----------------- |
-| `rdapify-nd` | 0.1.3           | ✅ Active support |
-| `rdapify-py` | 0.2.1           | ✅ Active support |
+| Binding      | Current version   | Supported         |
+| ------------ | ----------------- | ----------------- |
+| `rdapify-nd` | 0.4.0 / 0.5.0 ⏳ | ✅ Active support |
+| `rdapify-py` | 0.4.0 / 0.5.0 ⏳ | ✅ Active support |
 
 Bindings are versioned independently. The binding version tracks the core release it was compiled against. Only the latest binding version is supported.
 
-**Support policy (pre-1.0):** The current minor version receives full support. Fixes are not backported to `0.1.x`. Starting with v1.0.0, an LTS policy will be defined.
+**Support policy (pre-1.0):** The current minor version receives full support. Fixes are not backported to older versions. Starting with v1.0.0, an LTS policy will be defined.
 
 ---
 

@@ -143,7 +143,7 @@ spec:
         fsGroup: 65532
       containers:
         - name: rdapify
-          image: ghcr.io/rdapify/rdapify:0.3.0
+          image: ghcr.io/rdapify/rdapify:0.4.0
           ports:
             - containerPort: 7080
           env:

@@ -8,6 +8,17 @@ repository.workspace = true
 homepage.workspace = true
 description = "In-memory response cache for RDAP clients"
 
+[features]
+# Default off — pay zero overhead unless explicitly turned on.
+default = []
+metrics = ["rdap-metrics/enabled"]
+
 [dependencies]
-dashmap    = { workspace = true }
-serde_json = { workspace = true }
+# Always linked. Hooks compile to inline no-ops unless `metrics` is enabled.
+rdap-metrics = { path = "../rdap-metrics", version = "0.1.0" }
+dashmap      = { workspace = true }
+serde_json   = { workspace = true }
+tokio        = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }

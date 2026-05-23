@@ -17,15 +17,18 @@ use crate::error::SecurityError;
 ///   already exceeds `max_size`, or if the streamed body grows beyond it.
 /// * [`SecurityError::Network`] — for any transport error while reading chunks.
 pub async fn read_limited(response: Response, max_size: usize) -> Result<Bytes, SecurityError> {
+    let content_length = response.content_length();
+
     // Fast-path: reject immediately if Content-Length already exceeds the limit.
-    if let Some(len) = response.content_length() {
+    if let Some(len) = content_length {
         if len as usize > max_size {
             return Err(SecurityError::ResponseTooLarge);
         }
     }
 
-    // Stream body in chunks, accumulating into a single buffer.
-    let mut buf: Vec<u8> = Vec::new();
+    // Pre-allocate using Content-Length hint to avoid repeated reallocations.
+    let capacity = content_length.map(|len| len as usize).unwrap_or(0);
+    let mut buf: Vec<u8> = Vec::with_capacity(capacity);
     let mut stream = response;
 
     while let Some(chunk) = stream.chunk().await.map_err(SecurityError::Network)? {

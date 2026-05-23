@@ -1,6 +1,6 @@
 [package]
 name = "rdapify"
-version = "0.5.0"
+version = "0.6.11"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -51,6 +51,15 @@ mysql    = ["dep:rdap-mysql"]
 # ── Service runtime ───────────────────────────────────────────────────────────
 service = ["dep:rdap-service"]
 
+# ── Observability (Stage D · D1 + Stage F · F4) ──────────────────────────────
+# Off by default; enables the Prometheus exporter on the engine's hot path.
+metrics = [
+    "dep:rdap-metrics",
+    "rdap-metrics/enabled",
+    "rdap-core/metrics",
+    "rdap-cache?/metrics",
+]
+
 # ── Pro / enterprise placeholders (Open Core; no code gated here) ─────────────
 monitoring = []
 webhooks   = []
@@ -69,7 +78,7 @@ rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
 rdap-security  = { path = "../rdap-security",  version = "0.1.0" }
 rdap-bootstrap = { path = "../rdap-bootstrap", version = "0.1.0" }
 rdap-core      = { path = "../rdap-core",      version = "0.1.0" }
-rdapify-client = { path = "../rdapify-client", version = "0.2.0", default-features = false }
+rdapify-client = { path = "../rdapify-client", version = "0.3.2", default-features = false }
 
 # Optional modules
 rdap-cache      = { path = "../rdap-cache",      version = "0.1.0", optional = true }
@@ -84,16 +93,25 @@ rdap-mysql    = { path = "../rdap-mysql",    version = "0.1.0", optional = true 
 # Optional service runtime
 rdap-service  = { path = "../rdap-service",  version = "0.1.0", optional = true }
 
+# Optional observability (only pulled by the `metrics` feature).
+rdap-metrics  = { path = "../rdap-metrics",  version = "0.1.0", optional = true }
+
 [dev-dependencies]
 rdap-core       = { path = "../rdap-core",       version = "0.1.0" }
+rdap-cache      = { path = "../rdap-cache",      version = "0.1.0" }
 rdap-batch      = { path = "../rdap-batch",      version = "0.2.0" }
 rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.1.0" }
 tokio           = { workspace = true }
 tokio-test      = { workspace = true }
 tokio-stream    = { workspace = true }
 mockito         = { workspace = true }
+serde           = { workspace = true }
 serde_json      = { workspace = true }
 criterion       = { workspace = true }
+proptest        = { workspace = true }
+wiremock        = { workspace = true }
+insta           = { workspace = true }
+futures         = { workspace = true }
 
 # ── Benchmark targets ─────────────────────────────────────────────────────────
 

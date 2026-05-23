@@ -1,0 +1,43 @@
+[package]
+name = "rdapify-fuzz"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# Marks this package as a cargo-fuzz target collection.
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+serde_json    = "1"
+
+# Point at workspace crates via relative paths.
+rdap-core     = { path = "../crates/rdap-core" }
+rdap-types    = { path = "../crates/rdap-types" }
+rdapify       = { path = "../crates/rdapify", default-features = false, features = ["memory-cache"] }
+rdap-security = { path = "../crates/rdap-security" }
+
+# ── Fuzz targets ──────────────────────────────────────────────────────────────
+
+[[bin]]
+name = "rdap_parser"
+path = "fuzz_targets/rdap_parser.rs"
+test = false
+doc  = false
+
+[[bin]]
+name = "validation"
+path = "fuzz_targets/validation.rs"
+test = false
+doc  = false
+
+[[bin]]
+name = "input_normalization"
+path = "fuzz_targets/input_normalization.rs"
+test = false
+doc  = false
+
+# Isolate this package from the parent workspace so `cargo build --workspace`
+# at the repo root does not pull in libfuzzer-sys (nightly-only).
+[workspace]

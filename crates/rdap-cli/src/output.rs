@@ -222,9 +222,8 @@ fn extract_registrar(v: &serde_json::Value) -> String {
     };
     for entity in entities {
         let roles = entity.get("roles").and_then(|v| v.as_array());
-        let is_registrar = roles.is_some_and(|r| {
-            r.iter().any(|role| role.as_str() == Some("registrar"))
-        });
+        let is_registrar =
+            roles.is_some_and(|r| r.iter().any(|role| role.as_str() == Some("registrar")));
         if is_registrar {
             // Try vcardArray first, then handle
             if let Some(name) = vcard_fn(entity).or_else(|| {

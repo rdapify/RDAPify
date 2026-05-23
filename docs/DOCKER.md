@@ -151,7 +151,7 @@ docker run --rm rdapify:local domain github.com
 ```bash
 # Liveness: is the service running?
 curl http://localhost:7080/health
-# {"status":"ok","version":"0.3.0"}
+# {"status":"ok","version":"0.4.0"}
 
 # Readiness: is bootstrap data loaded?
 curl http://localhost:7080/ready

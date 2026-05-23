@@ -1,6 +1,6 @@
 [package]
 name = "rdapify-client"
-version = "0.2.0"
+version = "0.3.2"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -24,6 +24,15 @@ memory-cache = ["dep:rdap-cache"]
 # Async streaming query API
 stream = ["dep:rdap-stream", "dep:tokio-stream"]
 
+# Stage D · D2 — turn on the `metrics` feature in rdap-core / rdap-cache /
+# rdap-metrics. With this feature off, every observability call site is a
+# zero-cost no-op.
+metrics = [
+    "rdap-core/metrics",
+    "rdap-metrics/enabled",
+    "rdap-cache?/metrics",
+]
+
 # ── Dependencies ──────────────────────────────────────────────────────────────
 
 [dependencies]
@@ -33,12 +42,20 @@ rdap-security   = { path = "../rdap-security",   version = "0.1.0" }
 rdap-bootstrap  = { path = "../rdap-bootstrap",  version = "0.1.0" }
 rdap-core       = { path = "../rdap-core",       version = "0.1.0" }
 rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.1.0" }
+# Always linked. With `enabled` off (the default) every observability call
+# site is an inline no-op; with `enabled` on, we open spans + emit metrics.
+rdap-metrics    = { path = "../rdap-metrics",    version = "0.1.0" }
 tokio           = { workspace = true }
 serde_json      = { workspace = true }
 idna            = { workspace = true }
 url             = { workspace = true }
+tracing         = { workspace = true }
 
 # Optional modules
 rdap-cache   = { path = "../rdap-cache",  version = "0.1.0", optional = true }
 rdap-stream  = { path = "../rdap-stream", version = "0.1.0", optional = true }
 tokio-stream = { workspace = true, optional = true }
+
+[dev-dependencies]
+mockito = { workspace = true }
+tokio   = { workspace = true }

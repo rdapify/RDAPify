@@ -1,0 +1,275 @@
+#!/usr/bin/env bash
+#
+# RDAPify — TUNING_REPORT §B draft generator (v0.6.10).
+#
+# Reads:
+#   - classification_candidates.json (output of tools/classify_alerts.sh).
+#     v0.6.10 expects the **envelope** shape:
+#       { "generated_at": ..., "window": ..., "alerts": [ ... ] }
+#     This is NOT backward-compatible with v0.6.9's top-level array.
+#     A v0.6.9 file fed to this script will fail validation; re-run
+#     classify_alerts.sh to regenerate the candidates.
+#
+# Emits:
+#   - A markdown draft of TUNING_REPORT.md §B with values prefixed
+#     `suggested_tp:` / `suggested_fp:` etc. — the operator copies
+#     *confirmed* values into TUNING_REPORT.md §B by hand after review.
+#
+# IMPORTANT — DOES NOT WRITE TO TUNING_REPORT.md
+#   This script writes to stdout (or to the file specified by OUT). It
+#   never opens TUNING_REPORT.md for writing. The operator's editor
+#   does that, after CLASSIFICATION_REVIEW.md validation.
+#
+# USAGE
+#   CANDIDATES=classification_candidates.json \
+#     tools/build_tuning_report.sh > B_draft.md
+#
+#   # Or with explicit out-file:
+#   CANDIDATES=classification_candidates.json \
+#     OUT=tuning-data-2026-05-01/B_draft.md \
+#     tools/build_tuning_report.sh
+#
+# ENVIRONMENT
+#   CANDIDATES  (required)  Path to classification_candidates.json.
+#   OUT         (optional)  Output file path. If unset, writes to stdout.
+#
+# DEPENDENCIES
+#   bash 4+, grep, sed, awk, tr. No jq required.
+
+set -euo pipefail
+
+if [[ -z "${CANDIDATES:-}" ]]; then
+    echo "error: CANDIDATES env var is required (e.g. CANDIDATES=classification_candidates.json)" >&2
+    exit 64
+fi
+if [[ ! -f "$CANDIDATES" ]]; then
+    echo "error: CANDIDATES file not found: $CANDIDATES" >&2
+    exit 64
+fi
+
+# ── Detect format version ────────────────────────────────────────────────────
+#
+# v0.6.10 envelope must contain `"generated_at"` at the top level. If it
+# starts with `[`, the file is in v0.6.9 format — refuse loudly so the
+# operator regenerates instead of getting a silently-malformed draft.
+COMPACT=$(tr -d '\n\r' < "$CANDIDATES")
+trimmed="$(echo "$COMPACT" | sed 's/^[[:space:]]*//')"
+case "${trimmed:0:1}" in
+    \{)
+        : # ok — v0.6.10 envelope
+        ;;
+    \[)
+        cat >&2 <<EOF
+error: CANDIDATES='$CANDIDATES' looks like the v0.6.9 array format.
+       v0.6.10 build_tuning_report.sh requires the envelope shape
+       (top-level object with generated_at + window + alerts).
+       Migration: re-run tools/classify_alerts.sh to regenerate.
+EOF
+        exit 65
+        ;;
+    *)
+        echo "error: CANDIDATES='$CANDIDATES' is not valid JSON (does not start with { or [)" >&2
+        exit 65
+        ;;
+esac
+
+# ── Extract envelope metadata ────────────────────────────────────────────────
+
+GENERATED_AT=$(echo "$COMPACT" \
+    | grep -oE '"generated_at":[[:space:]]*"[^"]*"' \
+    | head -1 \
+    | sed -E 's/^"[^"]*":[[:space:]]*"//;s/"$//')
+
+WINDOW_DISPLAY=$(echo "$COMPACT" \
+    | grep -oE '"window":[[:space:]]*"[^"]*"' \
+    | head -1 \
+    | sed -E 's/^"[^"]*":[[:space:]]*"//;s/"$//')
+
+if [[ -z "$GENERATED_AT" || -z "$WINDOW_DISPLAY" ]]; then
+    echo "error: envelope is missing generated_at or window — file is malformed" >&2
+    exit 65
+fi
+
+# Extract the inner alerts array body (between `"alerts": [` and the
+# closing `]}` of the document).
+ALERTS_BODY=$(echo "$COMPACT" \
+    | sed -E 's/^.*"alerts":[[:space:]]*\[//' \
+    | sed -E 's/\][[:space:]]*\}[[:space:]]*$//')
+
+# ── JSON parsing helpers (no jq) ────────────────────────────────────────────
+
+split_objects() {
+    # Input: $ALERTS_BODY (alerts-array body without the surrounding [ ]).
+    # Output: one record per line, each beginning with `{` and ending with `}`.
+    echo "$ALERTS_BODY" | sed 's/},  *{/}\n{/g; s/},{/}\n{/g'
+}
+
+field_str() {
+    local block="$1" key="$2"
+    echo "$block" \
+      | grep -oE "\"$key\":[[:space:]]*\"[^\"]*\"" \
+      | head -1 \
+      | sed -E 's/^"[^"]*":[[:space:]]*"//;s/"$//'
+}
+
+field_num() {
+    local block="$1" key="$2"
+    echo "$block" \
+      | grep -oE "\"$key\":[[:space:]]*[0-9]+" \
+      | head -1 \
+      | sed -E 's/^"[^"]*":[[:space:]]*//'
+}
+
+field_nested_num() {
+    local block="$1" outer="$2" inner="$3"
+    local sub
+    sub=$(echo "$block" \
+          | grep -oE "\"$outer\":[[:space:]]*\\{[^}]*\\}" \
+          | head -1)
+    [[ -z "$sub" ]] && { echo "0"; return; }
+    echo "$sub" \
+      | grep -oE "\"$inner\":[[:space:]]*[0-9]+" \
+      | head -1 \
+      | sed -E 's/^"[^"]*":[[:space:]]*//'
+}
+
+# ── Markdown output ──────────────────────────────────────────────────────────
+
+emit() {
+    if [[ -n "${OUT:-}" ]]; then
+        cat >> "$OUT"
+    else
+        cat
+    fi
+}
+
+if [[ -n "${OUT:-}" ]]; then
+    : > "$OUT"
+fi
+
+emit <<MD
+<!-- ───────────────────────────────────────────────────────────────────────
+     RDAPify — TUNING_REPORT.md §B DRAFT (suggestion-only · v0.6.10 format)
+
+     This file is GENERATED by tools/build_tuning_report.sh from
+     classification_candidates.json. It is **not** TUNING_REPORT.md
+     and must not be confused with it.
+
+     Every numeric cell carries an explicit \`suggested_tp:\` /
+     \`suggested_fp:\` / \`suggested_uncertain:\` prefix because no
+     script may produce final §B values per the v0.6.10 spec
+     (CLASSIFICATION_REVIEW.md describes the human review).
+
+     Provenance (must match \`classification_candidates.json\` envelope):
+       generated_at : $GENERATED_AT
+       window       : $WINDOW_DISPLAY
+
+     To use this draft:
+       1. Read CLASSIFICATION_REVIEW.md.
+       2. For each row below, validate the suggested counts against
+          ops/incidents.md and your own incident knowledge.
+       3. Open TUNING_REPORT.md and copy *confirmed* numeric values
+          into §B (drop the \`suggested_*:\` prefixes). Leave the
+          \`proposed_change\` column blank until §E reasoning is
+          complete.
+       4. Discard this draft once §B is filled. It is not part of
+          the report — it is scaffolding.
+
+     Every value here can be wrong. Trust ops/incidents.md, not this.
+     ────────────────────────────────────────────────────────────── -->
+
+# §B Alert evaluation — DRAFT
+
+> **Generated**: $GENERATED_AT
+> **Window**: $WINDOW_DISPLAY
+> **Source**: \`classification_candidates.json\` (v0.6.10 envelope format)
+> **Status**: SUGGESTION-ONLY — values must be confirmed by the
+>             operator per \`docs/observability/CLASSIFICATION_REVIEW.md\`
+>             before being written to TUNING_REPORT.md §B.
+
+| alert_name | fires | TP suggestion | FP suggestion | uncertain suggestion | confidence | evidence |
+|---|---|---|---|---|---|---|
+MD
+
+# ── Build table rows ────────────────────────────────────────────────────────
+
+split_objects | while IFS= read -r block; do
+    [[ -z "$block" ]] && continue
+    [[ "${block:0:1}" != "{" ]] && block="{$block"
+
+    alert=$(field_str "$block" "alert")
+    fires=$(field_num "$block" "fires")
+    tp=$(field_nested_num "$block" "candidates" "true_positive")
+    fp=$(field_nested_num "$block" "candidates" "false_positive")
+    unc=$(field_nested_num "$block" "candidates" "uncertain")
+    conf=$(field_str "$block" "confidence")
+
+    ev_array=$(echo "$block" | grep -oE '"evidence":[[:space:]]*\[[^]]*\]' | head -1)
+    ev_text=$(echo "$ev_array" \
+              | sed 's/"evidence":[[:space:]]*\[//;s/\]$//;s/","/, /g;s/^"//;s/"$//' \
+              | head -c 80)
+
+    [[ -z "$alert" ]] && continue
+
+    emit <<EOF
+| \`$alert\` | $fires | suggested_tp: $tp | suggested_fp: $fp | suggested_uncertain: $unc | $conf | $ev_text |
+EOF
+done
+
+emit <<'MD'
+
+---
+
+## Operator review checklist (mandatory before promoting to §B)
+
+For each row above:
+
+- [ ] I reviewed the matching `ops/incidents.md` entries for this alert.
+- [ ] The `suggested_tp` count matches the operator-curated
+      `Real?: yes` rows for this alert.
+- [ ] The `suggested_fp` count matches the operator-curated
+      `Real?: no` rows.
+- [ ] The `suggested_uncertain` count corresponds to fires that have
+      no matching incidents.md entry, OR have `Real?: partial` /
+      blank classifications. **Do not promote uncertain → TP/FP
+      without adding a real incidents.md entry first.**
+- [ ] The `confidence` label aligns with my own assessment:
+        - `high`   = every fire is classified by an incidents.md row
+        - `medium` = some fires classified, some uncertain
+        - `low`    = no operator classifications at all (suspect; review)
+- [ ] The `evidence` references are real (incident timestamps map to
+      actual `ops/incidents.md` headings; metric hints are within
+      expected ranges).
+- [ ] I have **not** copied the `suggested_*:` prefixes into
+      TUNING_REPORT.
+
+After all boxes are ticked: copy confirmed numeric values into
+TUNING_REPORT.md §B (drop the `suggested_*:` prefixes). Discard
+this draft. The original `classification_candidates.json` file —
+including its `generated_at` / `window` envelope — should be archived
+alongside the report's other §F artefacts.
+
+---
+
+## What this draft deliberately does NOT include
+
+- **`incidents_caught` and `total_incidents` columns**. Recall is
+  computed by counting distinct *incidents* — TUNING_REPORT.md §B
+  defines this — not by counting alert fires. The mapping from
+  fires-to-incidents requires human judgment (see
+  `ALERT_CLASSIFICATION.md` §4.5 "Multiple alerts fire for the
+  same minute"). The script cannot compute this; the operator must.
+- **The `proposed_change` column**. By design, only §E ledger
+  entries with stakeholder review may justify a proposed change.
+  The §B `proposed_change` column always starts empty.
+- **Suggested threshold values**. This is the assisted-classification
+  release; threshold *changes* belong to a future tuning release
+  (Path A in TUNING_WORKFLOW.md §6) and require explicit operator
+  reasoning per CALIBRATION.md §7.
+
+---
+
+_Generated by tools/build_tuning_report.sh — v0.6.10._
+_Suggestion-only. Not authoritative. Not a substitute for
+TUNING_REPORT.md._
+MD

@@ -39,6 +39,7 @@ fn error_code(err: &RdapError) -> &'static str {
         RdapError::Timeout { .. } => "timeout",
         RdapError::Network(_) | RdapError::BootstrapFetch { .. } => "upstream_error",
         RdapError::RateLimited { .. } => "rate_limited",
+        RdapError::CircuitOpen { .. } => "upstream_unavailable",
         RdapError::ParseError { .. }
         | RdapError::MissingObjectClass
         | RdapError::UnknownObjectClass { .. }

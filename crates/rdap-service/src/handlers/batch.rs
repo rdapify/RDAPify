@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use std::time::Instant;
 
 use axum::{extract::State, http::StatusCode, Json};
 use futures::StreamExt;
@@ -53,8 +54,13 @@ pub async fn batch_lookup(
         ))));
     }
 
+    let batch_start = Instant::now();
     state.metrics.http_requests_total.inc();
     state.metrics.batch_jobs_total.inc();
+    state
+        .metrics
+        .rdap_batch_size
+        .observe(req.queries.len() as f64);
 
     let concurrency = req.concurrency.map(|c| c.min(50)).unwrap_or(10);
 
@@ -102,10 +108,16 @@ pub async fn batch_lookup(
         items.push(item);
     }
 
+    state
+        .metrics
+        .rdap_batch_duration_seconds
+        .observe(batch_start.elapsed().as_secs_f64());
+
     tracing::info!(
         event = "batch_lookup",
         count = items.len(),
         errors = items.iter().filter(|i| i.error.is_some()).count(),
+        duration_ms = batch_start.elapsed().as_millis() as u64,
     );
 
     Ok((StatusCode::OK, Json(items)))

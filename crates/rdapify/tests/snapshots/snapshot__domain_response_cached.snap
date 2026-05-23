@@ -1,0 +1,83 @@
+---
+source: crates/rdapify/tests/snapshot.rs
+assertion_line: 59
+expression: stable_value(&resp)
+---
+{
+  "entities": [
+    {
+      "handle": "292",
+      "links": [
+        {
+          "href": "https://www.test-registrar.com",
+          "rel": "self",
+          "type": "text/html"
+        }
+      ],
+      "roles": [
+        "registrar"
+      ],
+      "vcardArray": [
+        "vcard",
+        [
+          [
+            "version",
+            {},
+            "text",
+            "4.0"
+          ],
+          [
+            "fn",
+            {},
+            "text",
+            "Test Registrar Inc."
+          ]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "1995-08-14T04:00:00Z"
+    },
+    {
+      "eventAction": "expiration",
+      "eventDate": "2025-08-13T04:00:00Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2023-08-14T07:01:14Z"
+    }
+  ],
+  "handle": "2138514_DOMAIN_COM-VRSN",
+  "ldhName": "cached.com",
+  "links": [
+    {
+      "href": "https://rdap.verisign.com/com/v1/domain/example.com",
+      "rel": "self",
+      "type": "application/rdap+json"
+    }
+  ],
+  "meta": {
+    "cached": true,
+    "queried_at": "[timestamp]",
+    "source": "rdap.verisign.com/com/v1"
+  },
+  "nameservers": [
+    "ns1.example.com",
+    "ns2.example.com"
+  ],
+  "query": "cached.com",
+  "registrar": {
+    "handle": "292",
+    "name": "Test Registrar Inc.",
+    "url": "https://www.test-registrar.com"
+  },
+  "status": [
+    "client delete prohibited",
+    "client transfer prohibited",
+    "active"
+  ],
+  "unicodeName": "cached.com"
+}

@@ -7,6 +7,65 @@
 
 ## [غير مُصدّر]
 
+## [0.5.0] — 2026-04-08
+
+### الأداء
+- استبدال التنفيذ القائم على chunks بـ `buffer_unordered` في `rdap-batch` — معالجة batch أسرع 3–10×
+- تنفيذ batch streaming مع ذاكرة O(1) بغض النظر عن حجم المدخلات
+- واجهة `BatchExecutor::run_stream()` الجديدة — النتائج تصل فور توفرها عبر `ReceiverStream`
+- تحسين `rdapify-client` لدمج rate limiting في مسار الاستعلام
+
+### مضاف
+- **`rdap-rate-limit`**: تطبيق GCRA الكامل عبر `governor` — محدودات لكل مضيف وعالمية
+  - `RdapRateLimiter` مع حالة `DashMap` لكل مضيف
+  - `RateLimitConfig` بإعدادات افتراضية معقولة (10 req/s / 20 burst لكل مضيف، 100 req/s عالمي)
+- **`rdap-batch`**: تعداد `BatchQuery` يشمل `Domain` و `Ip` و `Asn` و `Nameserver`
+- **`rdap-types`**: متغير `RdapError::RateLimited { host, wait_time }` + دالة `is_rate_limited()`
+- **`rdap-service`**: واجهة HTTP كاملة مع نقطة نهاية Prometheus (`/metrics`)، إيقاف تشغيل سلس
+- **`rdapify-client`**: حقل `ClientConfig::rate_limit: Option<RateLimitConfig>`
+- 188 اختبار إجمالي (36 اختبار تكامل جديد + 6 اختبارات streaming)
+- معايير جديدة: `batch.rs` و `bootstrap.rs` و `validation.rs`
+- `QUICKSTART.md` — دليل البدء السريع
+- `docs/CLI.md` — مرجع CLI محدث
+- مكدس مراقبة Prometheus + Grafana في `deploy/monitoring/`
+
+### تم إصلاحه
+- اختناق تزامن chunk في محرك batch (لم تعد الاستعلامات البطيئة تعطل chunk كاملاً)
+- غياب فرض rate limit في مسار استعلام العميل
+
+### rdapify-nd / rdapify-py
+- **rdapify-nd 0.5.0** — تحديث ربط Node.js N-API
+- **rdapify-py 0.5.0** — تحديث ربط Python PyO3
+
+## [0.4.0] — 2026-04-06
+
+### مضاف
+- **مساحة عمل 11-crate** — `rdap-types` و `rdap-security` و `rdap-bootstrap` و `rdap-core` و `rdapify-client` و `rdap-cache` و `rdap-stream` و `rdap-rate-limit` و `rdap-batch` و `rdap-cli` و `rdapify`
+- **`rdap-config`** — نظام تكوين `rdapify.toml` مع تجاوزات متغيرات البيئة
+- **`rdap-logging`** — تسجيل JSON/نص منظم
+- **`rdap-service`** — هيكل خدمة HTTP عبر axum (`/health` و `/version`)
+- علامات الميزات: `memory-cache` و `stream` و `batch` و `rate-limit` و `service` و `sqlite`
+- **ثبات SQLite المُقوّى** — WAL، فحوصات السلامة، ترحيل المخطط
+- **rdapify-nd 0.4.0** — تحديث ربط Node.js N-API
+- **rdapify-py 0.4.0** — تحديث ربط Python PyO3
+
+### الأمان
+- حماية SSRF في `rdap-security` (التحقق من URL + pre-resolution DNS)
+- حماية من DNS rebinding
+- التحقق من سلسلة إعادة التوجيه HTTP
+- حد حجم الاستجابة القابل للتكوين
+- `#![forbid(unsafe_code)]` على جميع crates
+
+### الأداء
+- ذاكرة مؤقتة DashMap مع TTL (`rdap-cache`)
+- `opt-level = "z"` و LTO و strip و `panic = "abort"` في إصدار الإنتاج
+- معايير Criterion: `cache` و `ssrf` و `query` و `streaming` و `batch` و `bootstrap`
+
+### داخلي
+- رفع MSRV إلى **1.77**
+- CI متعدد المنصات (Ubuntu، macOS، Windows)
+- فرض `cargo clippy --workspace -- -D warnings`
+
 ## [0.2.1] — 2026-03-23
 
 ### مضاف
@@ -69,7 +128,9 @@
 
 ---
 
-[Unreleased]: https://github.com/rdapify/rdapify-rs/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/rdapify/rdapify-rs/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/rdapify/rdapify-rs/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/rdapify/rdapify-rs/compare/v0.2.1...v0.4.0
 [0.2.1]: https://github.com/rdapify/rdapify-rs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/rdapify/rdapify-rs/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/rdapify/rdapify-rs/compare/v0.1.2...v0.1.3

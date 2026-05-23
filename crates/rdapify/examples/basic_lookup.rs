@@ -50,14 +50,11 @@ async fn main() -> rdapify::error::Result<()> {
 
     // Check domain availability
     println!("Checking domain availability...");
-    match client.domain_available("example.com").await? {
-        avail => {
-            println!("  Domain: {}", avail.domain);
-            println!("  Available: {}", avail.available);
-            if let Some(expires) = avail.expires_at {
-                println!("  Expires: {}", expires);
-            }
-        }
+    let avail = client.domain_available("example.com").await?;
+    println!("  Domain: {}", avail.domain);
+    println!("  Available: {}", avail.available);
+    if let Some(expires) = avail.expires_at {
+        println!("  Expires: {expires}");
     }
 
     println!("\nExample completed successfully!");

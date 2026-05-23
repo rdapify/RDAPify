@@ -48,9 +48,10 @@ scrape_configs:
   # ── RDAPify service ──────────────────────────────────────────────────────────
   - job_name: rdapify
     metrics_path: /metrics
+    scrape_interval: 5s     # tighter scrape so rehearsals see data quickly
     static_configs:
       - targets:
-          - rdapify:9090  # rdapify service metrics endpoint
+          - rdapify:8080  # rdap-service exposes API + /metrics on the same port
         labels:
           service: rdapify
           component: core

@@ -89,7 +89,7 @@ impl std::str::FromStr for LogFormat {
 ///
 /// ```toml
 /// [rdap]
-/// timeout_seconds = 15
+/// timeout_seconds = 5
 /// max_response_size_mb = 5
 /// user_agent = "RDAPify/0.x"
 /// bootstrap_refresh_hours = 24
@@ -97,7 +97,8 @@ impl std::str::FromStr for LogFormat {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(default)]
 pub struct RdapConfig {
-    /// Request timeout in seconds. Range: 1–60.
+    /// Request timeout in seconds. Range: 1–30 (Stage F · F1 — see
+    /// `rdap-core::MAX_TIMEOUT`).
     pub timeout_seconds: u64,
     /// Maximum allowed RDAP response size in MiB. Range: 1–20.
     pub max_response_size_mb: u64,
@@ -110,7 +111,11 @@ pub struct RdapConfig {
 impl Default for RdapConfig {
     fn default() -> Self {
         Self {
-            timeout_seconds: 15,
+            // Stage F · F1 — production-safe default (was 15 s pre-1.0).
+            // Aligned with `rdap-core::DEFAULT_TIMEOUT`. Operators with
+            // very slow upstreams should raise this knowingly; the
+            // validator caps it at 30 s.
+            timeout_seconds: 5,
             max_response_size_mb: 5,
             user_agent: "RDAPify/0.x".to_string(),
             bootstrap_refresh_hours: 24,
@@ -281,12 +286,15 @@ impl Default for LoggingConfig {
     }
 }
 
-/// Prometheus-compatible metrics endpoint configuration.
+/// Prometheus-compatible metrics endpoint configuration (Stage D · D1).
 ///
 /// ```toml
 /// [metrics]
 /// enabled = true
 /// port = 9090
+/// slow_request_threshold_ms = 500
+/// top_n_origins = 50
+/// histogram_buckets = [0.001, 0.005, 0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
 /// ```
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(default)]
@@ -295,6 +303,19 @@ pub struct MetricsConfig {
     pub enabled: bool,
     /// Port to bind the metrics HTTP server. Range: 1–65535.
     pub port: u16,
+    /// Threshold above which a request is counted as slow and logged once.
+    /// Default 500 ms — chosen to align with the `p95 ≤ 300 ms` SLO target
+    /// while leaving headroom for a quiet warning band.
+    pub slow_request_threshold_ms: u64,
+    /// Cap on the number of distinct origins exposed as labels on
+    /// `rdap_circuit_breaker_state` and `rdap_circuit_breaker_open_total`.
+    /// The breaker registry itself is bounded at 1024 origins; this is a
+    /// further export-side cap to keep Prometheus series count sane.
+    pub top_n_origins: u32,
+    /// Histogram bucket boundaries (seconds) for `rdap_latency_seconds` and
+    /// `rdap_retry_after_seconds`. `None` uses the engine default
+    /// (`rdap-metrics::default_buckets`).
+    pub histogram_buckets: Option<Vec<f64>>,
 }
 
 impl Default for MetricsConfig {
@@ -302,6 +323,9 @@ impl Default for MetricsConfig {
         Self {
             enabled: true,
             port: 9090,
+            slow_request_threshold_ms: 500,
+            top_n_origins: 50,
+            histogram_buckets: None,
         }
     }
 }

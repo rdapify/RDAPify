@@ -1,0 +1,9 @@
+# Stage E load-test build + report artefacts.
+# Keep the source under git; the binaries and run logs are reproducible.
+mock-upstream/target/
+mock-upstream/Cargo.lock
+harness/target/
+harness/Cargo.lock
+reports/*.txt
+reports/*.json
+!reports/.gitkeep

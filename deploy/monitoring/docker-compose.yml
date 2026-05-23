@@ -19,25 +19,29 @@ services:
 
   # ── RDAPify ────────────────────────────────────────────────────────────────
   rdapify:
-    image: ghcr.io/rdapify/rdapify:0.4.0
+    # Build from source with the `metrics` cargo feature on so the
+    # canonical engine `rdap_*` series are exposed at /metrics. The
+    # Dockerfile lives next to this compose file. Workspace context is
+    # the repo root (../..).
+    build:
+      context: ../..
+      dockerfile: deploy/monitoring/Dockerfile
+      args:
+        FEATURES: metrics
     container_name: rdapify
     restart: unless-stopped
     ports:
-      - "8080:8080"   # HTTP API
-      - "9090:9090"   # Prometheus metrics endpoint
-    volumes:
-      - ./rdapify.toml:/etc/rdapify/rdapify.toml:ro
+      - "8080:8080"   # HTTP API + /metrics on the same port
     environment:
       RDAPIFY_LOG_LEVEL: info
       RDAPIFY_LOG_FORMAT: json
       RDAPIFY_SERVER_PORT: "8080"
-      RDAPIFY_METRICS_PORT: "9090"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 30s
     networks:
       - rdapify-net
     logging:

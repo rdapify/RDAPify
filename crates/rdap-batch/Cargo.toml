@@ -10,7 +10,7 @@ description = "High-performance batch RDAP query engine with streaming and const
 
 [dependencies]
 rdap-types      = { path = "../rdap-types",      version = "0.1.0" }
-rdapify-client  = { path = "../rdapify-client",  version = "0.2.0" }
+rdapify-client  = { path = "../rdapify-client",  version = "0.3.2" }
 tokio           = { workspace = true }
 tokio-stream    = { workspace = true }
 futures         = "0.3"

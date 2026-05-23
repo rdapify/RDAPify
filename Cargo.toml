@@ -10,6 +10,7 @@ members = [
     "crates/rdapify-client",
     # ── Optional modules ──────────────────────────────────────────────────────
     "crates/rdap-cache",
+    "crates/rdap-metrics",
     "crates/rdap-stream",
     "crates/rdap-rate-limit",
     "crates/rdap-batch",
@@ -25,6 +26,12 @@ members = [
     # ── Language bindings ─────────────────────────────────────────────────────
     "bindings/nodejs",
 ]
+# Stage E load-test infra lives under `loadtest/` as standalone projects so
+# they don't slow down `cargo test --workspace` and can pin their own deps.
+exclude = [
+    "loadtest/mock-upstream",
+    "loadtest/harness",
+]
 resolver = "2"
 
 [workspace.package]
@@ -37,11 +44,11 @@ authors = ["RDAPify Team <dev@rdapify.com>"]
 
 [workspace.dependencies]
 # Async runtime
-tokio        = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "process"] }
+tokio        = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "process", "sync"] }
 tokio-stream = { version = "0.1", features = ["sync"] }
 
 # HTTP (rustls = pure Rust TLS, no OpenSSL)
-reqwest = { version = "0.12", features = ["json", "rustls-tls", "gzip", "brotli", "http2"], default-features = false }
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "gzip", "brotli", "http2", "stream"], default-features = false }
 
 # Serialisation
 serde      = { version = "1", features = ["derive"] }
@@ -66,6 +73,11 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "fmt",
 tracing-appender   = "0.2"
 time               = { version = "0.3", features = ["formatting", "macros"] }
 
+# Metrics (Stage D — Observability)
+metrics                     = "0.23"
+metrics-exporter-prometheus = { version = "0.15", default-features = false }
+uuid                        = { version = "1", features = ["v7"] }
+
 # CLI (only in rdap-cli)
 clap = { version = "4", features = ["derive", "color"] }
 
@@ -73,6 +85,24 @@ clap = { version = "4", features = ["derive", "color"] }
 tokio-test = "0.4"
 mockito    = "1"
 bytes      = "1"
+
+# Async utilities
+futures = "0.3"
+
+# Property-based testing
+proptest = "1"
+
+# Network simulation
+wiremock = "0.6"
+
+# Snapshot testing
+insta = { version = "1", features = ["json", "redactions"] }
+
+# Bounded cache (LRU + TTL)
+moka = { version = "0.12", features = ["sync"] }
+
+# Random number generation (jitter)
+rand = "0.8"
 
 # Dev / test
 criterion  = { version = "0.5", features = ["html_reports", "async_tokio"] }

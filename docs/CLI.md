@@ -192,7 +192,7 @@ Print version and build information.
 
 ```bash
 rdapify version
-# rdapify 0.3.0
+# rdapify 0.4.0
 # rustc 1.77.0
 # build: 2026-04-06 (release)
 ```

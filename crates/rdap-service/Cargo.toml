@@ -12,6 +12,22 @@ description = "HTTP API service runtime for RDAPify (Axum-based)"
 name = "rdap-service"
 path = "src/main.rs"
 
+# ── Feature flags ─────────────────────────────────────────────────────────────
+#
+# `metrics` (off by default) — wires the canonical engine metrics surface
+# from `rdap-metrics` into this service. When enabled:
+#   1. `install_recorder()` is called at startup.
+#   2. Engine hooks in `rdap-core` / `rdapify-client` emit `rdap_*` series.
+#   3. `/metrics` appends the engine render to the local registry text.
+# When off, `/metrics` exposes only the local prometheus-client registry.
+[features]
+default = []
+metrics = [
+    "dep:rdap-metrics",
+    "rdap-metrics/enabled",
+    "rdapify-client/metrics",
+]
+
 [dependencies]
 # Internal crates
 rdap-types      = { path = "../rdap-types",      version = "0.1.0" }
@@ -19,7 +35,8 @@ rdap-config     = { path = "../rdap-config",     version = "0.1.0" }
 rdap-logging    = { path = "../rdap-logging",    version = "0.1.0" }
 rdap-batch      = { path = "../rdap-batch",      version = "0.2.0" }
 rdap-core       = { path = "../rdap-core",       version = "0.1.0" }
-rdapify-client  = { path = "../rdapify-client",  version = "0.2.0" }
+rdapify-client  = { path = "../rdapify-client",  version = "0.3.2" }
+rdap-metrics    = { path = "../rdap-metrics",    version = "0.1.0", optional = true }
 
 # Shared workspace deps
 tokio      = { workspace = true, features = ["signal"] }

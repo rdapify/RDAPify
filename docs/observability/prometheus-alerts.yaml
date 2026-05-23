@@ -1,0 +1,428 @@
+# RDAPify — Prometheus alert rules
+#
+# Pairs with `docs/observability/grafana-dashboard.json`, the metric
+# reference in `docs/observability/METRICS.md`, and the runbooks in
+# `docs/observability/runbooks/`.
+#
+# Design rules (Stage F · v0.6.3 / v0.6.4):
+#   - alerts must be ACTIONABLE — every annotation says what the
+#     operator should do, not just what's broken; every alert links a
+#     runbook
+#   - alerts must be LOW-NOISE — `for:` windows are sized to ride out
+#     normal noise; thresholds chosen above steady-state noise floor;
+#     SLO burn-rate alerts use the Google SRE multi-window
+#     multi-burn-rate (MWMBR) pattern so single-window spikes don't
+#     page
+#   - NO high-cardinality labels — `origin`, `type`, `class` are
+#     bounded; `request_id` and similar identifiers must NEVER appear
+#     in alert queries
+#   - PromQL uses `rate()` / `increase()` / `histogram_quantile()`
+#     over time windows; instantaneous gauge alerts are reserved for
+#     genuinely instantaneous signals (e.g. inflight saturation)
+#
+# Tier model:
+#   severity=critical → page on-call immediately
+#   severity=warning  → notify the team (Slack / email)
+#   severity=info     → log only / daily digest
+#
+# SLO budget targets (from docs/SLO.md):
+#   error budget   = 1 % of requests / 30 d  → burn-rate baseline 0.01
+#   latency budget = 5 % of requests above p95 SLO (300 ms) / 30 d
+#                    → burn-rate baseline 0.05
+#
+# Runbook URLs point to docs/observability/runbooks/*.md inside the
+# repo. Override at deploy time by replacing `${RUNBOOK_BASE}` with
+# your own URL prefix (we publish a default below using the public
+# repository URL).
+#
+# Replace `${TEAM}` with your paging team identifier before deploying.
+
+groups:
+  # ── Critical (page on-call) ────────────────────────────────────────────
+
+  - name: rdapify.critical
+    interval: 30s
+    rules:
+      - alert: RdapifyHighErrorRate
+        expr: |
+          (
+              sum(rate(rdap_errors_total[5m]))
+            / clamp_min(sum(rate(rdap_requests_total[5m])), 1)
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: rdapify
+          team: ${TEAM}
+        annotations:
+          summary: "rdapify error rate above 5 % for 5 m"
+          description: |
+            The 5-minute rolling error rate is {{ $value | humanizePercentage }} —
+            the SLO ceiling is 1 % steady-state. Five-times-SLO sustained for
+            5 m is paging-grade. Check `rdap_errors_total{class}` for the
+            dominant class:
+              - circuit_open  → upstream is unreachable (see breaker alerts)
+              - rate_limited  → engine is hitting upstream 429s
+              - internal      → an engine-internal failure path is active
+                                (bootstrap / cache backend) — investigate
+                                logs at `event=rdap_*`.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/high-error-rate.md
+
+      - alert: RdapifyBreakerOpenSurge
+        expr: |
+          sum by (origin) (rate(rdap_circuit_breaker_open_seconds_total[5m])) > 30
+        for: 5m
+        labels:
+          severity: critical
+          service: rdapify
+          team: ${TEAM}
+        annotations:
+          summary: "Circuit breaker has been Open more than 30 s/s on origin {{ $labels.origin }}"
+          description: |
+            `rate(rdap_circuit_breaker_open_seconds_total[5m])` reading
+            {{ $value | humanize }} s/s for origin {{ $labels.origin }}.
+            > 30 means more than half of wall-clock is spent in Open.
+            The breaker is doing its job — but the upstream is sustained-
+            failing. Coordinate with the upstream registry operator;
+            consider lowering the breaker `failure_threshold` if outages
+            are too noisy.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/breaker-open-surge.md
+
+      - alert: RdapifyInflightSaturation
+        # Inflight is bounded by the global concurrency_limit (default 256).
+        # `>= 0.95 * limit` = the engine is pinned at the cap; new requests
+        # queue until a permit frees. Critical because every queued request
+        # adds to user-visible p95 latency.
+        expr: |
+          rdap_inflight_requests >= 240
+        for: 3m
+        labels:
+          severity: critical
+          service: rdapify
+          team: ${TEAM}
+        annotations:
+          summary: "Engine inflight at >= 240 of 256 cap for 3 m"
+          description: |
+            The global upstream-concurrency semaphore is saturated.
+            Either upstream is slow (latency-bound) or the engine cap
+            is too low (capacity-bound). Confirm via the
+            `rdap_semaphore_wait_seconds{kind=global}` p95 panel —
+            elevated wait = capacity-bound, raise `concurrency_limit`.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/inflight-saturation.md
+
+      # ── SLO burn-rate (Google SRE multi-window multi-burn-rate) ────────
+      #
+      # Why two windows: a single-window burn-rate alert false-fires on
+      # short spikes. MWMBR requires both a fast and a slow window to
+      # cross the threshold simultaneously, which produces high
+      # signal-to-noise.
+      #
+      # Error budget = 1 % over 30 d. Burn-rate threshold 14.4 = the
+      # rate at which the budget exhausts in 30 d / 14.4 ≈ 50 hours,
+      # but anchored against a 5 m / 1 h window pair this catches
+      # acute incidents that would burn the budget within ~2 hours.
+
+      - alert: RdapifyErrorBudgetFastBurn
+        expr: |
+          (
+            (sum(rate(rdap_errors_total[5m]))
+              / clamp_min(sum(rate(rdap_requests_total[5m])), 1)) > (14.4 * 0.01)
+          )
+          and
+          (
+            (sum(rate(rdap_errors_total[1h]))
+              / clamp_min(sum(rate(rdap_requests_total[1h])), 1)) > (14.4 * 0.01)
+          )
+        for: 2m
+        labels:
+          severity: critical
+          service: rdapify
+          team: ${TEAM}
+          slo: error_budget
+          burn_window: fast
+        annotations:
+          summary: "Error budget burning at 14.4× over 5 m and 1 h"
+          description: |
+            Multi-window multi-burn-rate: at this rate the 30-day
+            error budget exhausts in ~2 hours. Fires only when both
+            the 5-minute AND 1-hour windows agree, suppressing
+            single-spike false positives. Treat as a partner alert
+            to RdapifyHighErrorRate.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/error-budget-fast-burn.md
+
+      # Latency budget = 5 % of requests above the p95 SLO (300 ms)
+      # over 30 d. The 14.4× threshold catches acute latency
+      # degradation that would burn the budget within ~2 hours.
+
+      - alert: RdapifyLatencyBudgetFastBurn
+        expr: |
+          (
+            (
+              1 - (
+                sum(rate(rdap_latency_seconds_bucket{le="0.3"}[5m]))
+                / clamp_min(sum(rate(rdap_latency_seconds_count[5m])), 1)
+              )
+            ) > (14.4 * 0.05)
+          )
+          and
+          (
+            (
+              1 - (
+                sum(rate(rdap_latency_seconds_bucket{le="0.3"}[1h]))
+                / clamp_min(sum(rate(rdap_latency_seconds_count[1h])), 1)
+              )
+            ) > (14.4 * 0.05)
+          )
+        for: 2m
+        labels:
+          severity: critical
+          service: rdapify
+          team: ${TEAM}
+          slo: latency_budget
+          burn_window: fast
+        annotations:
+          summary: "Latency budget burning at 14.4× over 5 m and 1 h"
+          description: |
+            More than 72 % of requests are exceeding the 300 ms p95
+            SLO across both the 5-minute and 1-hour windows. At this
+            rate the 30-day latency budget exhausts in ~2 hours.
+            Investigate alongside any RdapifySemaphoreWaitElevated /
+            RdapifyP95LatencyAboveSlo signals.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/latency-budget-fast-burn.md
+
+  # ── Warning (notify team) ──────────────────────────────────────────────
+
+  - name: rdapify.warning
+    interval: 1m
+    rules:
+      # Slow-burn variants of the SLO alerts. Threshold 6× / windows
+      # 30 m + 6 h. At this rate the budget exhausts in ~5 days —
+      # business-hours-actionable, not paging.
+
+      - alert: RdapifyErrorBudgetSlowBurn
+        expr: |
+          (
+            (sum(rate(rdap_errors_total[30m]))
+              / clamp_min(sum(rate(rdap_requests_total[30m])), 1)) > (6 * 0.01)
+          )
+          and
+          (
+            (sum(rate(rdap_errors_total[6h]))
+              / clamp_min(sum(rate(rdap_requests_total[6h])), 1)) > (6 * 0.01)
+          )
+        for: 15m
+        labels:
+          severity: warning
+          service: rdapify
+          slo: error_budget
+          burn_window: slow
+        annotations:
+          summary: "Error budget burning at 6× over 30 m and 6 h"
+          description: |
+            Sustained error rate above 6 % over both 30-minute and
+            6-hour windows. At this rate the 30-day error budget
+            exhausts in ~5 days. Look for a chronic issue (one
+            registry consistently failing, persistent rate limiting,
+            an engine bug producing rare `internal` errors).
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/error-budget-slow-burn.md
+
+      - alert: RdapifyLatencyBudgetSlowBurn
+        expr: |
+          (
+            (
+              1 - (
+                sum(rate(rdap_latency_seconds_bucket{le="0.3"}[30m]))
+                / clamp_min(sum(rate(rdap_latency_seconds_count[30m])), 1)
+              )
+            ) > (6 * 0.05)
+          )
+          and
+          (
+            (
+              1 - (
+                sum(rate(rdap_latency_seconds_bucket{le="0.3"}[6h]))
+                / clamp_min(sum(rate(rdap_latency_seconds_count[6h])), 1)
+              )
+            ) > (6 * 0.05)
+          )
+        for: 15m
+        labels:
+          severity: warning
+          service: rdapify
+          slo: latency_budget
+          burn_window: slow
+        annotations:
+          summary: "Latency budget burning at 6× over 30 m and 6 h"
+          description: |
+            More than 30 % of requests are exceeding the 300 ms SLO
+            across both windows. At this rate the 30-day latency
+            budget exhausts in ~5 days. Look at p95 by query type,
+            cache hit ratio, and global semaphore wait.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/latency-budget-slow-burn.md
+
+      - alert: RdapifySemaphoreWaitElevated
+        # 100 ms p95 global semaphore wait sustained for 10 m means the
+        # global cap is meaningfully constraining throughput. Not paging-
+        # grade; team should re-evaluate the cap during business hours.
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(rdap_semaphore_wait_seconds_bucket{kind="global"}[5m]))
+          ) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          service: rdapify
+        annotations:
+          summary: "Global semaphore wait p95 > 100 ms for 10 m"
+          description: |
+            The engine is queueing on the global concurrency cap. Current
+            p95 wait: {{ $value | humanizeDuration }}. Consider raising
+            `concurrency_limit` (default 256, ceiling 4096) or lowering
+            upstream pressure.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/semaphore-wait.md
+
+      - alert: RdapifyRetrySpike
+        # 3× the recent 1-hour baseline indicates an upstream blip.
+        # `clamp_min` on the denominator avoids a divide-by-zero when
+        # there's no retry traffic.
+        expr: |
+          sum(rate(rdap_retry_total[5m]))
+            >
+          3 * clamp_min(sum(avg_over_time(rate(rdap_retry_total[5m])[1h:5m])), 0.01)
+        for: 10m
+        labels:
+          severity: warning
+          service: rdapify
+        annotations:
+          summary: "Retry rate is 3× the 1-hour baseline"
+          description: |
+            `rate(rdap_retry_total[5m])` is {{ $value | humanize }} req/s,
+            three times the trailing-hour average. Check
+            `rdap_retry_total{class}` for the dominant class.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/retry-spike.md
+
+      - alert: RdapifyCacheHitRatioLow
+        # Below 50 % hit ratio under sustained traffic = something is
+        # wrong with cache configuration or workload pattern. Note we
+        # gate on a minimum request rate so a quiet engine doesn't
+        # alert (low request count gives noisy ratios).
+        expr: |
+          (
+              sum(rate(rdap_cache_hits_total[15m]))
+            / clamp_min(sum(rate(rdap_cache_hits_total[15m])) + sum(rate(rdap_cache_misses_total[15m])), 1)
+          ) < 0.5
+          and
+          sum(rate(rdap_requests_total[15m])) > 1
+        for: 30m
+        labels:
+          severity: warning
+          service: rdapify
+        annotations:
+          summary: "Cache hit ratio < 50 % for 30 m"
+          description: |
+            Hit ratio {{ $value | humanizePercentage }} sustained.
+            Operational target is > 70 % under steady production load.
+            Possible causes: cache TTL too short, eviction pressure
+            (check `rdap_cache_evictions_total`), or workload
+            cardinality higher than `cache.max_entries` (default 1 000).
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/cache-hit-low.md
+
+      - alert: RdapifyBreakerFlapping
+        # 3+ closed↔open transitions per minute = breaker is flapping.
+        # The label is bounded (3 transition variants we care about).
+        expr: |
+          sum(increase(rdap_circuit_breaker_transitions_total{from="closed",to="open"}[5m]))
+            +
+          sum(increase(rdap_circuit_breaker_transitions_total{from="half_open",to="open"}[5m]))
+          >= 15
+        for: 5m
+        labels:
+          severity: warning
+          service: rdapify
+        annotations:
+          summary: "Circuit breaker has flapped >= 15 times in 5 m"
+          description: |
+            Sum of closed→open + half_open→open transitions in 5 m is
+            {{ $value | humanize }}. The upstream is intermittently
+            broken — every cooldown ends with another failure. Consider
+            extending the cooldown or escalating to the upstream
+            registry operator.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/breaker-flapping.md
+
+      - alert: RdapifyP95LatencyAboveSlo
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(rdap_latency_seconds_bucket[5m]))
+          ) > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          service: rdapify
+        annotations:
+          summary: "p95 latency > 300 ms (SLO ceiling) for 10 m"
+          description: |
+            p95 latency is {{ $value | humanizeDuration }} sustained.
+            Stage E SLO target is 300 ms. Check semaphore wait and
+            upstream health; if p95 climbs while wait stays low, the
+            upstream is the bottleneck.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/p95-slo.md
+
+  # ── Info (log only / daily digest) ─────────────────────────────────────
+
+  - name: rdapify.info
+    interval: 1m
+    rules:
+      - alert: RdapifySlowRequestRising
+        expr: |
+          rate(rdap_slow_requests_total[5m]) > 1
+        for: 15m
+        labels:
+          severity: info
+          service: rdapify
+        annotations:
+          summary: "Slow request rate > 1/s for 15 m"
+          description: |
+            More than one request per second is exceeding the
+            slow-request threshold (default 500 ms). Not paging-grade
+            on its own; surface in the daily digest. If sustained
+            alongside semaphore wait climbing, escalate.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/slow-rising.md
+
+      - alert: RdapifySingleBreakerOpen
+        # One origin in Open state is normal background noise — registries
+        # do go down. Surface for context, do not page.
+        expr: |
+          rdap_circuit_breaker_state == 1
+        for: 5m
+        labels:
+          severity: info
+          service: rdapify
+        annotations:
+          summary: "Breaker open on origin {{ $labels.origin }}"
+          description: |
+            The breaker for {{ $labels.origin }} has been Open for at least
+            5 m. Engine continues serving cached responses for that origin
+            and fails fast on cache misses. No action required unless this
+            persists past the cooldown × multiple HalfOpen probe cycles
+            (see RdapifyBreakerFlapping for that case).
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/breaker-open-info.md
+
+      - alert: RdapifyCacheCapacityPressure
+        expr: |
+          rdap_cache_entries_current >= 950
+          and
+          rate(rdap_cache_evictions_total[5m]) > 0.1
+        for: 30m
+        labels:
+          severity: info
+          service: rdapify
+        annotations:
+          summary: "Cache near capacity with active eviction"
+          description: |
+            `rdap_cache_entries_current` ≈ {{ $value | humanize }} entries,
+            close to the configured cap (default 1 000), and evictions
+            are non-zero. Working set is at the cap. Consider raising
+            `cache.max_entries` if hit ratio is also dropping.
+          runbook_url: https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/cache-pressure.md

@@ -1,0 +1,10 @@
+---
+source: crates/rdapify/tests/snapshot.rs
+assertion_line: 148
+expression: status_strs
+---
+[
+    "active",
+    "client delete prohibited",
+    "client transfer prohibited",
+]

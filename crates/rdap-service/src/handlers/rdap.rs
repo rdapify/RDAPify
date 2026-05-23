@@ -1,7 +1,10 @@
 use std::time::Instant;
 
 use axum::{extract::State, Json};
-use rdap_types::{AsnResponse, DomainResponse, IpResponse, NameserverResponse};
+use rdap_types::{
+    error::RdapError,
+    {AsnResponse, DomainResponse, IpResponse, NameserverResponse},
+};
 use serde::{Deserialize, Serialize};
 
 use crate::{error::ServiceError, state::AppState};
@@ -48,17 +51,48 @@ pub async fn rdap_lookup(
     state.metrics.http_requests_total.inc();
     state.metrics.rdap_requests_total.inc();
 
-    let response = match req.kind.as_str() {
-        "domain" => RdapResponse::Domain(state.client.domain(&req.query).await?),
-        "ip" => RdapResponse::Ip(state.client.ip(&req.query).await?),
-        "asn" => RdapResponse::Asn(state.client.asn(&req.query).await?),
-        "nameserver" => RdapResponse::Nameserver(state.client.nameserver(&req.query).await?),
+    let result: Result<RdapResponse, RdapError> = match req.kind.as_str() {
+        "domain" => state
+            .client
+            .domain(&req.query)
+            .await
+            .map(RdapResponse::Domain),
+        "ip" => state.client.ip(&req.query).await.map(RdapResponse::Ip),
+        "asn" => state.client.asn(&req.query).await.map(RdapResponse::Asn),
+        "nameserver" => state
+            .client
+            .nameserver(&req.query)
+            .await
+            .map(RdapResponse::Nameserver),
         other => {
-            return Err(ServiceError::from(
-                rdap_types::error::RdapError::InvalidInput(format!(
-                    "Unknown query kind '{other}'. Expected: domain, ip, asn, nameserver"
-                )),
-            ))
+            return Err(ServiceError::from(RdapError::InvalidInput(format!(
+                "Unknown query kind '{other}'. Expected: domain, ip, asn, nameserver"
+            ))))
+        }
+    };
+
+    let response = match result {
+        Ok(r) => r,
+        Err(e) => {
+            match &e {
+                RdapError::Timeout { .. } => {
+                    state.metrics.rdap_errors_timeout_total.inc();
+                }
+                RdapError::RateLimited { .. } => {
+                    state.metrics.rdap_errors_rate_limited_total.inc();
+                }
+                RdapError::HttpStatus { .. } | RdapError::Network(_) => {
+                    state.metrics.rdap_errors_http_total.inc();
+                }
+                _ => {}
+            }
+            tracing::warn!(
+                event = "rdap_error",
+                kind = %req.kind,
+                query = %req.query,
+                error = %e,
+            );
+            return Err(ServiceError::from(e));
         }
     };
 

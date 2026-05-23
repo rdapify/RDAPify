@@ -1,0 +1,175 @@
+# RDAPify — Prometheus alert rule tests (T8)
+#
+# Run with:
+#   ./tools/promtool test rules \
+#     docs/observability/alert-tests/t8_rules_test.yaml
+#
+# These tests use synthetic input series to verify that the alert
+# rules in `prometheus-alerts.yaml` fire and resolve as documented.
+#
+# Test data is *adjusted* to match the alert formulas exactly. The
+# alert thresholds, `for:` windows, and PromQL queries themselves
+# are NOT changed — per the T8 rule "Only fix test data or
+# expectations".
+#
+# Adjustments from the user's draft, with reasons:
+#   - Test 1: replaced `rdap_requests_total{status="error"}` with
+#     `rdap_errors_total{class=...}` because the alert formula reads
+#     from `rdap_errors_total`, not the `status="error"` partition
+#     of `rdap_requests_total`.
+#   - Test 1: extended series + added a quiet phase so the alert
+#     resolves at the expected eval_time.
+#   - Test 2: changed `0+260x10` → `260+0x10` (constant gauge value)
+#     so `rdap_inflight_requests` actually stays at 260, not 0,260,520,…
+#   - Test 3: added the missing `from="half_open",to="open"` series
+#     (constant 0) because the alert SUMs both transition kinds and
+#     PromQL `sum(...) + <empty>` returns no result.
+#   - Test 4: changed `class="5xx"` → `class="http_5xx"` to match
+#     the documented label set in METRICS.md (no effect on the alert,
+#     which sums across all classes).
+#   - Test 4: extended `eval_time` past the `for: 10m` window.
+
+rule_files:
+  - ../prometheus-alerts.yaml
+
+evaluation_interval: 1m
+
+tests:
+  # ── TEST 1 — High error rate fires after 5m at 10% rate, resolves
+  #            once the error counter stops incrementing. ─────────────
+  - name: high_error_rate_fires_then_resolves
+    interval: 1m
+    input_series:
+      # 100 successful requests/min for the entire 25-min window.
+      - series: 'rdap_requests_total{type="domain",status="success"}'
+        values: '0+100x25'
+      # Errors increment at 10/min for the first 10m, then freeze.
+      # 10/min vs 100/min ⇒ 10 % error rate during the spike,
+      # 0 once the counter stops incrementing.
+      - series: 'rdap_errors_total{class="network"}'
+        values: '0+10x10 100+0x15'
+    alert_rule_test:
+      # Condition crosses 5 % at t≈5m (rate=0.167/s over [0,5]); the
+      # alert fires after the 5m `for:` ⇒ firing at t=10m.
+      # Annotations must match exactly under promtool 3.x; templated
+      # `humanizePercentage` resolves to `10%` at this eval_time.
+      - eval_time: 10m
+        alertname: RdapifyHighErrorRate
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: rdapify
+              team: ${TEAM}
+            exp_annotations:
+              summary: "rdapify error rate above 5 % for 5 m"
+              runbook_url: "https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/high-error-rate.md"
+              description: |
+                The 5-minute rolling error rate is 10% —
+                the SLO ceiling is 1 % steady-state. Five-times-SLO sustained for
+                5 m is paging-grade. Check `rdap_errors_total{class}` for the
+                dominant class:
+                  - circuit_open  → upstream is unreachable (see breaker alerts)
+                  - rate_limited  → engine is hitting upstream 429s
+                  - internal      → an engine-internal failure path is active
+                                    (bootstrap / cache backend) — investigate
+                                    logs at `event=rdap_*`.
+      # Errors stop at t=10m. By t=20m, the trailing 5-min rate is 0,
+      # the condition is false, and the alert has resolved.
+      - eval_time: 20m
+        alertname: RdapifyHighErrorRate
+        exp_alerts: []
+
+  # ── TEST 2 — Inflight saturation fires after 3m at value=260 ──────
+  - name: inflight_saturation_fires
+    interval: 1m
+    input_series:
+      # Constant 260 (above the 240 alert threshold) for 11 samples.
+      - series: 'rdap_inflight_requests'
+        values: '260+0x10'
+    alert_rule_test:
+      # `for: 3m` ⇒ alert fires at t=3m+ once the condition has held.
+      # Picking t=5m to be comfortably past the for-window.
+      - eval_time: 5m
+        alertname: RdapifyInflightSaturation
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: rdapify
+              team: ${TEAM}
+            exp_annotations:
+              summary: "Engine inflight at >= 240 of 256 cap for 3 m"
+              runbook_url: "https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/inflight-saturation.md"
+              description: |
+                The global upstream-concurrency semaphore is saturated.
+                Either upstream is slow (latency-bound) or the engine cap
+                is too low (capacity-bound). Confirm via the
+                `rdap_semaphore_wait_seconds{kind=global}` p95 panel —
+                elevated wait = capacity-bound, raise `concurrency_limit`.
+
+  # ── TEST 3 — Breaker flapping fires after 5m at 25 transitions/5m ─
+  - name: breaker_flapping_fires
+    interval: 1m
+    input_series:
+      # closed→open counter incrementing at 5/min for 11 samples.
+      - series: 'rdap_circuit_breaker_transitions_total{from="closed",to="open",origin="https://rdap.test:443"}'
+        values: '0+5x10'
+      # half_open→open zero throughout (alert sums BOTH; missing
+      # series would make `sum(...) + sum(...)` return no data).
+      - series: 'rdap_circuit_breaker_transitions_total{from="half_open",to="open",origin="https://rdap.test:443"}'
+        values: '0+0x10'
+    alert_rule_test:
+      # increase[5m] = 25 starting at t=5m. After 5m `for:` ⇒ fires at t=10m.
+      - eval_time: 10m
+        alertname: RdapifyBreakerFlapping
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              service: rdapify
+            exp_annotations:
+              summary: "Circuit breaker has flapped >= 15 times in 5 m"
+              runbook_url: "https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/breaker-flapping.md"
+              description: |
+                Sum of closed→open + half_open→open transitions in 5 m is
+                25. The upstream is intermittently
+                broken — every cooldown ends with another failure. Consider
+                extending the cooldown or escalating to the upstream
+                registry operator.
+
+  # ── TEST 4 — Retry spike fires after 10m at decisive >> 3× margin ─
+  - name: retry_spike_fires
+    interval: 1m
+    input_series:
+      # Phase 1 (t=0..t=60): 60 minutes of low rate (1/min) — this
+      # populates the trailing-1h avg with a stable low baseline.
+      # Phase 2 (t=61..t=76): 15 minutes at a dramatic spike rate
+      # (10000/min increment).
+      #
+      # Design constraint: the alert's denominator
+      # `avg_over_time(rate[5m])[1h:5m]` *includes the spike's own
+      # samples*. Once the spike has been running long enough that
+      # its samples dominate the 13-sample 1h-avg, the avg catches
+      # up to the spike and the 3× ratio collapses. To keep the
+      # ratio comfortably above 3× across the entire `for: 10m`
+      # window, the spike must be much larger than 3× — a single
+      # spike sample at rate R contributes R/13 to the avg, so for
+      # the ratio to stay > 3, we need spike >> 3 × (spike/13 + …).
+      # 10000/min absorbs this margin trivially.
+      - series: 'rdap_retry_total{class="http_5xx"}'
+        values: '0+1x60 60+10000x15'
+    alert_rule_test:
+      # Spike begins at t=60m. Condition becomes TRUE within 1-2 min.
+      # With `for: 10m`, the alert fires at t≈72m. Picking t=75m
+      # to be past the for-window.
+      - eval_time: 75m
+        alertname: RdapifyRetrySpike
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              service: rdapify
+            exp_annotations:
+              summary: "Retry rate is 3× the 1-hour baseline"
+              runbook_url: "https://github.com/rdapify/RDAPify/blob/main/rdapify-rust/docs/observability/runbooks/retry-spike.md"
+              description: |
+                `rate(rdap_retry_total[5m])` is 166.7 req/s,
+                three times the trailing-hour average. Check
+                `rdap_retry_total{class}` for the dominant class.

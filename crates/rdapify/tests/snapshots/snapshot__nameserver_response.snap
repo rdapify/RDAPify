@@ -1,0 +1,34 @@
+---
+source: crates/rdapify/tests/snapshot.rs
+assertion_line: 98
+expression: stable_value(&resp)
+---
+{
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "1993-09-30T04:00:00Z"
+    }
+  ],
+  "handle": "2138514-NS",
+  "ipAddresses": {
+    "v4": [
+      "8.8.8.8",
+      "8.8.4.4"
+    ],
+    "v6": [
+      "2001:4860:4860::8888"
+    ]
+  },
+  "ldhName": "ns1.example.com",
+  "meta": {
+    "cached": false,
+    "queried_at": "[timestamp]",
+    "source": "rdap.verisign.com/com/v1"
+  },
+  "query": "ns1.example.com",
+  "status": [
+    "active"
+  ],
+  "unicodeName": "ns1.example.com"
+}

@@ -8,15 +8,35 @@ repository.workspace = true
 homepage.workspace = true
 description = "RDAP HTTP client core: fetcher, normalizer, retries"
 
+[features]
+# Default off — paying zero overhead is the baseline. Enable to wire the
+# fetcher and circuit breaker into the Prometheus exporter.
+default = []
+metrics = ["rdap-metrics/enabled"]
+
 [dependencies]
 rdap-types    = { path = "../rdap-types", version = "0.1.0" }
 rdap-security = { path = "../rdap-security", version = "0.1.0" }
+# Always linked. With `enabled` off (the default), every hook is an inline
+# no-op that the compiler elides under release + LTO.
+rdap-metrics  = { path = "../rdap-metrics", version = "0.1.0" }
 reqwest       = { workspace = true }
+serde         = { workspace = true }
 serde_json    = { workspace = true }
+tracing       = { workspace = true }
 thiserror     = { workspace = true }
 tokio         = { workspace = true }
 chrono        = { workspace = true }
+url           = { workspace = true }
+moka          = { workspace = true }
+rand          = { workspace = true }
+# v0.6.1 · Task 1 — per-host concurrency uses a small concurrent map of
+# Arc<Semaphore> values keyed by Origin. DashMap is already a transitive
+# dep via rdap-cache; pinning it directly keeps the rdap-core dep graph
+# explicit.
+dashmap       = { workspace = true }
 
 [dev-dependencies]
-mockito    = { workspace = true }
-tokio-test = { workspace = true }
+mockito             = { workspace = true }
+tokio-test          = { workspace = true }
+tracing-subscriber  = { workspace = true }

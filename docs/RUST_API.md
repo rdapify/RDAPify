@@ -675,7 +675,7 @@ RDAPify is published on crates.io. Add to `Cargo.toml`:
 
 ```toml
 [dependencies]
-rdapify = "0.3"
+rdapify = "0.4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 serde_json = "1"  # for manual response inspection (optional)
 ```

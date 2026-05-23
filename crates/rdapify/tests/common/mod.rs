@@ -1,5 +1,7 @@
 //! Shared test utilities: mock server helpers.
 
+#![allow(dead_code)]
+
 use serde_json::{json, Value};
 
 // ── IANA Bootstrap fixtures ───────────────────────────────────────────────────

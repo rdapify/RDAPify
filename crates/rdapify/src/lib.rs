@@ -57,7 +57,7 @@ pub use rdap_security::{SsrfConfig, SsrfGuard};
 // ── Feature-gated flat re-exports ────────────────────────────────────────────
 
 #[cfg(feature = "memory-cache")]
-pub use rdap_cache::{CacheConfig, MemoryCache};
+pub use rdap_cache::{CacheConfig, CacheStats, CacheStatus, MemoryCache};
 
 #[cfg(feature = "stream")]
 pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
@@ -107,21 +107,45 @@ pub mod batch {
 #[cfg(feature = "rate-limit")]
 pub mod rate_limit {
     //! Per-registry and global rate limiting.
-    pub use rdap_rate_limit::{RateLimitConfig, RateLimiter};
+    //!
+    //! [`RdapRateLimiter`] is the engine's outbound rate-limit gate; wire
+    //! it into [`crate::ClientConfig::rate_limit`] via [`RateLimitConfig`].
+    pub use rdap_rate_limit::{RateLimitConfig, RdapRateLimiter};
 }
 
-/// SQLite persistence backend (skeleton — full impl pending).
+/// Prometheus-compatible metrics surface (Stage D · D1).
+///
+/// Off by default; enable the `metrics` feature to install a process-wide
+/// Prometheus recorder and instrument the engine's hot paths. With the
+/// feature off the engine pays zero overhead — every hook compiles to an
+/// inline no-op.
+#[cfg(feature = "metrics")]
+pub mod metrics {
+    pub use rdap_metrics::{
+        default_buckets, fresh_request_id, hooks, install_recorder, redact, render,
+        resolve_verbose, sampling, should_sample, types, CacheOutcome, CircuitGaugeValue,
+        MetricsError, MetricsHandle, QueryType, RecorderConfig, RequestStatus,
+    };
+}
+
+// The four backend modules below are namespace placeholders reserved for
+// the persistence and service runtimes shipped in separate crates
+// (`rdap-sqlite`, `rdap-postgres`, `rdap-mysql`, `rdap-service`). The
+// public path is stable from v1.0 onward; the contents will land in a
+// future minor release without changing these module paths.
+
+/// SQLite persistence backend — reserved namespace (impl in `rdap-sqlite`).
 #[cfg(feature = "sqlite")]
 pub mod sqlite {}
 
-/// PostgreSQL persistence backend (skeleton — full impl pending).
+/// PostgreSQL persistence backend — reserved namespace (impl in `rdap-postgres`).
 #[cfg(feature = "postgres")]
 pub mod postgres {}
 
-/// MySQL / MariaDB persistence backend (skeleton — full impl pending).
+/// MySQL / MariaDB persistence backend — reserved namespace (impl in `rdap-mysql`).
 #[cfg(feature = "mysql")]
 pub mod mysql {}
 
-/// HTTP API service runtime (skeleton — full impl pending).
+/// HTTP API service runtime — reserved namespace (impl in `rdap-service`).
 #[cfg(feature = "service")]
 pub mod service {}

@@ -1,0 +1,58 @@
+---
+source: crates/rdapify/tests/snapshot.rs
+assertion_line: 72
+expression: stable_value(&resp)
+---
+{
+  "country": "US",
+  "endAddress": "8.8.8.255",
+  "entities": [
+    {
+      "handle": "GOOGL-ARIN",
+      "roles": [
+        "registrant"
+      ],
+      "vcardArray": [
+        "vcard",
+        [
+          [
+            "version",
+            {},
+            "text",
+            "4.0"
+          ],
+          [
+            "fn",
+            {},
+            "text",
+            "Google LLC"
+          ]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "1992-12-01T00:00:00Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2014-03-14T00:00:00Z"
+    }
+  ],
+  "handle": "NET-8-8-8-0-1",
+  "ipVersion": "v4",
+  "meta": {
+    "cached": false,
+    "queried_at": "[timestamp]",
+    "source": "rdap.arin.net/registry"
+  },
+  "name": "LVLT-GOOGL-8-8-8",
+  "query": "8.8.8.8",
+  "startAddress": "8.8.8.0",
+  "status": [
+    "active"
+  ],
+  "type": "DIRECT ALLOCATION"
+}

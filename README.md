@@ -76,7 +76,7 @@ Pre-built binaries for Linux x86-64/ARM64, macOS Intel/Apple Silicon, Windows x6
 
 ```toml
 [dependencies]
-rdapify = "0.3"
+rdapify = "0.5"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -392,6 +392,7 @@ RDAPify Pro → [rdapify.com](https://rdapify.com)
 | [docs/DOCKER.md](docs/DOCKER.md) | Docker and Docker Compose |
 | [docs/PRODUCTION.md](docs/PRODUCTION.md) | systemd, nginx, Kubernetes |
 | [docs/MONITORING.md](docs/MONITORING.md) | Prometheus metrics + Grafana |
+| [docs/observability/OBSERVATION_WINDOW.md](docs/observability/OBSERVATION_WINDOW.md) | How to run a real observation window before tuning thresholds (operator runbook + freeze rules) |
 | [docs/SECURITY.md](docs/SECURITY.md) | SSRF protection + security model |
 | [docs/COMPARISON.md](docs/COMPARISON.md) | vs whois, python-rdap, ipwhois, curl |
 | [docs/RUST_API.md](docs/RUST_API.md) | Full Rust API reference |
@@ -404,6 +405,8 @@ RDAPify Pro → [rdapify.com](https://rdapify.com)
 
 | Package version | MSRV | rdapify-nd | rdapify-py |
 |---|---|---|---|
+| 0.5.0 ⏳ | 1.77 | 0.5.0 | 0.5.0 |
+| 0.4.x | 1.77 | 0.4.0 | 0.4.0 |
 | 0.3.x | 1.77 | 0.1.3 | 0.2.1 |
 | 0.2.x | 1.75 | 0.1.x | 0.2.x |
 

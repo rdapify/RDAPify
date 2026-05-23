@@ -48,3 +48,21 @@ criterion/
 
 # Fuzzing
 fuzz/target/
+
+# Tooling — promtool is fetched on demand by tools/get_promtool.sh,
+# never committed (binary is ~189 MB, exceeds GitHub's 100 MB limit
+# anyway). Tarballs and extracted prometheus-* directories are also
+# transient artefacts of the fetch.
+tools/promtool
+tools/prometheus-*.tar.gz
+tools/prometheus-*/
+
+# Tuning-data extraction outputs (operator runs, never committed —
+# may contain redactable production data).
+tuning-data-*/
+classification_candidates.json
+classification_candidates.rehearsal.json
+B_draft.md
+B_draft.rehearsal.md
+*.rehearsal.md
+*.rehearsal.json

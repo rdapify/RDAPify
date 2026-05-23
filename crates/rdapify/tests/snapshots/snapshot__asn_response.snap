@@ -1,0 +1,53 @@
+---
+source: crates/rdapify/tests/snapshot.rs
+assertion_line: 85
+expression: stable_value(&resp)
+---
+{
+  "country": "US",
+  "endAutnum": 15169,
+  "entities": [
+    {
+      "handle": "GOOGL-ARIN",
+      "roles": [
+        "registrant"
+      ],
+      "vcardArray": [
+        "vcard",
+        [
+          [
+            "version",
+            {},
+            "text",
+            "4.0"
+          ],
+          [
+            "fn",
+            {},
+            "text",
+            "Google LLC"
+          ]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "eventAction": "registration",
+      "eventDate": "2000-03-30T00:00:00Z"
+    }
+  ],
+  "handle": "AS15169",
+  "meta": {
+    "cached": false,
+    "queried_at": "[timestamp]",
+    "source": "rdap.arin.net/registry"
+  },
+  "name": "GOOGLE",
+  "query": 15169,
+  "startAutnum": 15169,
+  "status": [
+    "active"
+  ],
+  "type": "DIRECT ALLOCATION"
+}
