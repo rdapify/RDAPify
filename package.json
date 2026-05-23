@@ -78,7 +78,9 @@
     "prepack": "npm run build",
     "prepare": "husky install",
     "playground": "npm run build && cd playground && npm install && npm start",
-    "playground:dev": "npm run build && cd playground && npm install && npm run dev"
+    "playground:dev": "npm run build && cd playground && npm install && npm run dev",
+    "load-test": "node benchmarks/load-test/index.js",
+    "load-test:quick": "node benchmarks/load-test/index.js --users 100 --concurrency 20"
   },
   "keywords": [
     "rdap",

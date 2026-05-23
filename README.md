@@ -415,18 +415,21 @@ RDAPify is an open source project. Get help or contribute:
 
 ## 🚧 Project Status
 
-**Current Release**: v0.3.0 (Alpha)
+**Current Release**: v0.4.0
 
-### 🎉 What's New in v0.3.0
+### 🎉 What's New in v0.4.0
 
-**Streaming, Monitoring & Runtime Maturity**
-- ✅ **Streaming Batch API**: `client.streamBatch(queries[])` — `AsyncIterable<QueryResult>` with back-pressure (no overflow at 1000+ queries)
-- ✅ **Prometheus Exporter**: `PrometheusExporter` class with `createHttpHandler()` for metrics scraping
-- ✅ **Grafana Dashboard**: Built-in `RDAPIFY_GRAFANA_DASHBOARD` JSON template — import directly into Grafana
-- ✅ **OpenTelemetry Traces**: `TelemetryExporter` + `ClientConfig.telemetry.endpoint` for distributed tracing
-- ✅ **Multi-region Bootstrap**: `ClientConfig.bootstrap.regions: ['us', 'eu', 'ap']` — auto-selects nearest IANA mirror
-- ✅ **Deprecation Engine**: `deprecated()` utility — runtime warning via `process.emitWarning`, emitted once per code path
-- ✅ **BrowserFetcher**: Full browser-compatible fetcher for proxy-based browser environments
+**Stability, Validation & Native Backend Maturity**
+- ✅ **RDAP JSON Validation**: strict validation layer — malformed registry responses are caught before normalization
+- ✅ **Enhanced Prometheus Metrics**: `rdap_queries_total`, `rdap_cache_hits_total`, full latency histograms with p50/p95/p99
+- ✅ **Criterion Benchmarks**: `cache`, `ssrf`, `query`, `streaming`, `batch`, `bootstrap` — performance regressions caught in CI
+- ✅ **Native Backend v0.4**: `rdapify-nd` updated to 11-crate Rust workspace — 3–10× faster batch, GCRA rate limiting, streaming `ReceiverStream`
+- ✅ **Post-Launch Analysis**: built-in weekly metrics → decision pipeline (see `benchmarks/load-test/`)
+- ✅ **1114 tests**: expanded test suite covering all edge cases; 80%+ branch coverage maintained
+
+**Previous: v0.3.0 — Streaming, Monitoring & Runtime Maturity**
+- ✅ Streaming Batch API (`streamBatch`), Prometheus Exporter, Grafana Dashboard, OpenTelemetry Traces
+- ✅ Multi-region Bootstrap, BrowserFetcher, Deprecation Engine
 
 ### v0.2.3 — Framework Integrations
 
@@ -468,7 +471,7 @@ RDAPify is an open source project. Get help or contribute:
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### ✅ Full Feature Set (v0.3.0)
+### ✅ Full Feature Set (v0.4.0)
 
 - ✅ **RDAP Client**: Domain, IP, ASN, Nameserver, and Entity queries with automatic IANA bootstrap discovery
 - ✅ **Domain Availability**: `client.checkAvailability()` + `client.checkAvailabilityBatch()` via RDAP
@@ -505,7 +508,7 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 - ✅ **Multi-runtime**: Node.js 20+, Bun (`BunFetcher`), Deno (`DenoFetcher`), Cloudflare Workers (`CloudflareWorkersFetcher`), Browser (`BrowserFetcher`)
 - ✅ **Deprecation Engine**: runtime warnings via `process.emitWarning`, once per code path
 - ✅ **TypeScript Strict**: Full type definitions with strict mode
-- ✅ **Test Coverage**: 1066+ tests (unit + integration + security), 90.4% branch coverage
+- ✅ **Test Coverage**: 1114+ tests (unit + integration + security), 80%+ branch coverage
 
 ### 🔜 Coming in v1.0.0-rc.1
 

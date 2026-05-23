@@ -1,8 +1,13 @@
-# RDAPify Performance Specification
+# RDAPify Performance Specification (TypeScript)
+
+> **Scope:** This file covers the TypeScript package (`rdapify` on npm).
+> **Canonical engine spec:** [`rdapify-rust/docs/PERFORMANCE_SPEC.md`](../../../rdapify-rust/docs/PERFORMANCE_SPEC.md) — Rust is the reference implementation; the Node bindings (`rdapify-nd`) inherit its targets.
+> **Updated:** 2026-05-01
 
 ## 1. Purpose
 
-This document defines the performance targets and performance budget for RDAPify.
+This document defines the performance targets and performance budget for the
+TypeScript distribution of RDAPify.
 
 It establishes:
 
@@ -90,14 +95,19 @@ These targets assume:
 
 | Resource          | Target             |
 | ----------------- | ------------------ |
-| Idle RAM          | < 30 MB            |
+| Idle RAM          | < 30 MB (Node)     |
 | RAM under load    | < 150 MB           |
 | CPU usage         | Low (I/O bound)    |
-| Binary size       | < 10 MB            |
-| Docker image size | < 50 MB            |
+| Bundle size (ESM) | ≤ 600 KB           |
+| Bundle size (CJS) | ≤ 600 KB           |
+| Tree-shakeable    | Yes (`"sideEffects": false`) |
+| Docker image size | ≤ 50 MB            |
 | SQLite database   | < 2 GB recommended |
 
 RDAPify is I/O bound, not CPU bound. CPU usage should remain low even under concurrency. Memory growth under load is expected but must not exceed 150 MB for typical workloads. SQLite databases approaching 2 GB should trigger a cache eviction or pruning review.
+
+For native-engine size targets (Rust binary, WASM core, distroless Docker),
+see the canonical [Rust performance spec](../../../rdapify-rust/docs/PERFORMANCE_SPEC.md#2-binary-size-targets).
 
 ---
 
