@@ -35,9 +35,21 @@ fn metrics_endpoint_includes_canonical_rdap_series() {
 
     // Drive a tiny mix of hook calls so the registry has non-empty
     // series. Each helper call below maps to one `metrics::*!` call.
-    h::record_request(QueryType::Domain, RequestStatus::Success, Duration::from_millis(40));
-    h::record_request(QueryType::Domain, RequestStatus::Success, Duration::from_millis(55));
-    h::record_request(QueryType::Ip, RequestStatus::Success, Duration::from_millis(20));
+    h::record_request(
+        QueryType::Domain,
+        RequestStatus::Success,
+        Duration::from_millis(40),
+    );
+    h::record_request(
+        QueryType::Domain,
+        RequestStatus::Success,
+        Duration::from_millis(55),
+    );
+    h::record_request(
+        QueryType::Ip,
+        RequestStatus::Success,
+        Duration::from_millis(20),
+    );
     h::record_cache(CacheOutcome::Fresh);
     h::record_cache(CacheOutcome::Miss);
     h::inflight_inc();

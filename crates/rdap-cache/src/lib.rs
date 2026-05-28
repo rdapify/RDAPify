@@ -605,7 +605,10 @@ mod tests {
         // Drive 50× the cap as distinct keys. Every insert beyond CAP
         // forces an eviction.
         for i in 0..N {
-            cache.set(format!("k{i}"), json!({"i": i, "name": "high-cardinality-test"}));
+            cache.set(
+                format!("k{i}"),
+                json!({"i": i, "name": "high-cardinality-test"}),
+            );
         }
 
         let final_rss = read_rss_bytes().expect("final rss read failed");

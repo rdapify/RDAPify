@@ -259,7 +259,9 @@ impl FetcherConfig {
                 Ok(n) => {
                     self.per_host_concurrency_limit = if n == 0 { None } else { Some(n) };
                 }
-                Err(_) => warn_invalid_env_once("RDAP_PER_HOST_CONCURRENCY", &s, "usize (0 ⇒ disable)"),
+                Err(_) => {
+                    warn_invalid_env_once("RDAP_PER_HOST_CONCURRENCY", &s, "usize (0 ⇒ disable)")
+                }
             }
         }
         if let Ok(s) = std::env::var("RDAP_TRACE_SAMPLE_RATE") {
@@ -301,7 +303,8 @@ impl FetcherConfig {
         }
         if self.max_attempts == 0 {
             return Err(RdapError::InvalidInput(
-                "FetcherConfig.max_attempts must be at least 1 (a 0 would never call upstream)".to_string(),
+                "FetcherConfig.max_attempts must be at least 1 (a 0 would never call upstream)"
+                    .to_string(),
             ));
         }
         if self.max_attempts > MAX_ATTEMPTS_CEILING {
@@ -523,10 +526,9 @@ impl Fetcher {
         // v0.6.1 · Task 1 — only allocate the per-host registry if the
         // operator opted in. `None` is the cheap path; the hot-path
         // acquire below short-circuits without touching the DashMap.
-        let per_host =
-            config
-                .per_host_concurrency_limit
-                .map(|_| Arc::new(DashMap::with_capacity(64)));
+        let per_host = config
+            .per_host_concurrency_limit
+            .map(|_| Arc::new(DashMap::with_capacity(64)));
 
         Ok(Self {
             client,
@@ -1971,7 +1973,10 @@ mod tests {
             observed_peak <= per_host_cap as i64,
             "per-host cap {per_host_cap} exceeded — peak in-flight was {observed_peak}"
         );
-        assert!(observed_peak >= 1, "expected nonzero peak, got {observed_peak}");
+        assert!(
+            observed_peak >= 1,
+            "expected nonzero peak, got {observed_peak}"
+        );
     }
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -2294,11 +2299,15 @@ mod tests {
 
         // First-attempt cluster sanity — they all started within a small
         // window after the barrier release.
-        let first_spread = first_attempts.last().unwrap()
+        let first_spread = first_attempts
+            .last()
+            .unwrap()
             .duration_since(*first_attempts.first().unwrap());
 
         // Retry-attempt spread — the test's main assertion.
-        let retry_spread = retry_attempts.last().unwrap()
+        let retry_spread = retry_attempts
+            .last()
+            .unwrap()
             .duration_since(*retry_attempts.first().unwrap());
         let min_required_spread = initial_backoff / 4;
         assert!(
@@ -2501,10 +2510,7 @@ mod tests {
 
         let sem = fetcher.concurrency_limit();
         let baseline = sem.available_permits();
-        assert_eq!(
-            baseline, cap,
-            "expected baseline available_permits == cap"
-        );
+        assert_eq!(baseline, cap, "expected baseline available_permits == cap");
 
         let url = format!("{}/rdap/x", server.url());
         let n = 32usize;

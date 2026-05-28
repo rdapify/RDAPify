@@ -146,20 +146,14 @@ async fn negative_cache_dedups_repeated_nxdomain() {
     // First call — populates negative cache.
     let first = client.domain("missing.test").await;
     assert!(
-        matches!(
-            first,
-            Err(RdapError::HttpStatus { status: 404, .. })
-        ),
+        matches!(first, Err(RdapError::HttpStatus { status: 404, .. })),
         "first call should be 404, got: {first:?}"
     );
 
     // Second call — must hit the negative cache and not contact upstream.
     let second = client.domain("missing.test").await;
     assert!(
-        matches!(
-            second,
-            Err(RdapError::HttpStatus { status: 404, .. })
-        ),
+        matches!(second, Err(RdapError::HttpStatus { status: 404, .. })),
         "second call should be 404 from negative cache, got: {second:?}"
     );
 
