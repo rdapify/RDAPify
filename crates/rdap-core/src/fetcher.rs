@@ -30,7 +30,7 @@ use reqwest::header::{CACHE_CONTROL, RETRY_AFTER};
 use serde_json::Value;
 use tokio::sync::Semaphore;
 
-use rdap_security::{read_limited, SecurityError, SsrfGuard};
+use rdap_security::{read_limited, secure_request, HttpSecurityPolicy, SecurityError, SsrfGuard};
 use rdap_types::error::{RdapError, Result};
 
 use crate::circuit_breaker::{CircuitBreakerRegistry, Origin};
@@ -259,7 +259,9 @@ impl FetcherConfig {
                 Ok(n) => {
                     self.per_host_concurrency_limit = if n == 0 { None } else { Some(n) };
                 }
-                Err(_) => warn_invalid_env_once("RDAP_PER_HOST_CONCURRENCY", &s, "usize (0 ⇒ disable)"),
+                Err(_) => {
+                    warn_invalid_env_once("RDAP_PER_HOST_CONCURRENCY", &s, "usize (0 ⇒ disable)")
+                }
             }
         }
         if let Ok(s) = std::env::var("RDAP_TRACE_SAMPLE_RATE") {
@@ -301,7 +303,8 @@ impl FetcherConfig {
         }
         if self.max_attempts == 0 {
             return Err(RdapError::InvalidInput(
-                "FetcherConfig.max_attempts must be at least 1 (a 0 would never call upstream)".to_string(),
+                "FetcherConfig.max_attempts must be at least 1 (a 0 would never call upstream)"
+                    .to_string(),
             ));
         }
         if self.max_attempts > MAX_ATTEMPTS_CEILING {
@@ -458,6 +461,12 @@ pub struct Fetcher {
     /// once at construction so the env-var dispatch isn't on the hot path.
     /// (Stage D · D6.)
     verbose_trace: bool,
+    /// Security policy handed to [`rdap_security::secure_request`] on every
+    /// fetch. Built once at construction from the fetcher config (timeout) and
+    /// the security defaults (redirect cap). The body-size cap in the policy is
+    /// unused on this path: the fetcher reads the body itself via
+    /// `read_limited` with `validation_limits.max_json_size`.
+    egress_policy: HttpSecurityPolicy,
 }
 
 impl Fetcher {
@@ -512,6 +521,12 @@ impl Fetcher {
             .gzip(true)
             .tcp_keepalive(tcp_keepalive)
             .pool_max_idle_per_host(config.max_connections_per_host)
+            // SSRF: redirects are NOT followed by reqwest. Every hop is
+            // intercepted and re-validated (URL + DNS + IP) by
+            // `rdap_security::secure_request`. A self-following client would
+            // bypass per-hop revalidation and re-open the redirect-to-internal
+            // SSRF hole this fetcher is required to close.
+            .redirect(reqwest::redirect::Policy::none())
             .build()
             .map_err(RdapError::Network)?;
 
@@ -523,10 +538,18 @@ impl Fetcher {
         // v0.6.1 · Task 1 — only allocate the per-host registry if the
         // operator opted in. `None` is the cheap path; the hot-path
         // acquire below short-circuits without touching the DashMap.
-        let per_host =
-            config
-                .per_host_concurrency_limit
-                .map(|_| Arc::new(DashMap::with_capacity(64)));
+        let per_host = config
+            .per_host_concurrency_limit
+            .map(|_| Arc::new(DashMap::with_capacity(64)));
+
+        // The security pipeline applies its own per-request timeout; align it
+        // with the fetcher's so the two layers agree. `max_redirects` keeps
+        // the audited default; `max_response_size` is unused here because the
+        // fetcher reads the body itself with its own size cap.
+        let egress_policy = HttpSecurityPolicy {
+            timeout: config.timeout,
+            ..HttpSecurityPolicy::default()
+        };
 
         Ok(Self {
             client,
@@ -536,6 +559,7 @@ impl Fetcher {
             concurrency,
             per_host,
             verbose_trace,
+            egress_policy,
         })
     }
 
@@ -930,26 +954,15 @@ impl Fetcher {
     }
 
     async fn do_fetch_with_headers(&self, url: &str) -> AttemptResult {
-        let response = match self
-            .client
-            .get(url)
-            .header("Accept", "application/rdap+json, application/json")
-            .send()
-            .await
-        {
+        let response = match self.send_validated(url).await {
             Ok(r) => r,
-            Err(e) => {
-                let error = if e.is_timeout() {
-                    RdapError::Timeout {
-                        millis: self.config.timeout.as_millis() as u64,
-                        url: url.to_string(),
-                    }
-                } else {
-                    RdapError::Network(e)
-                };
+            Err(error) => {
                 return AttemptResult::Err {
                     error,
-                    retry_after: None, // no headers — connection failed
+                    // No response headers were obtained (connection failed,
+                    // timed out, or was blocked before/at a hop), so there is
+                    // no Retry-After to honour.
+                    retry_after: None,
                 };
             }
         };
@@ -1010,9 +1023,124 @@ impl Fetcher {
         }
     }
 
+    /// Issues a single HTTP request and returns the final, fully validated
+    /// response, or a mapped [`RdapError`] on transport / security failure.
+    ///
+    /// When SSRF protection is enabled (production), egress is routed through
+    /// [`rdap_security::secure_request`], the single audited primitive that
+    /// validates the URL, resolves and checks DNS against the blocked-IP set
+    /// *before* connecting, and re-validates every redirect hop. The fetcher's
+    /// `reqwest::Client` is built with `redirect::Policy::none()` so this
+    /// per-hop revalidation is never bypassed.
+    ///
+    /// When the guard is disabled (`SsrfConfig::enabled == false`, a test-only
+    /// configuration that targets `http://127.0.0.1` mock servers), the
+    /// request is sent directly. This branch is unreachable in production: the
+    /// default `SsrfGuard` is enabled, and the synchronous `ssrf.validate`
+    /// gate in `fetch_with_cache_hint` already rejects non-HTTPS and
+    /// IP-literal hosts before we get here.
+    async fn send_validated(&self, url: &str) -> Result<reqwest::Response> {
+        if self.ssrf.is_enabled() {
+            let parsed = ::url::Url::parse(url).map_err(|source| RdapError::InvalidUrl {
+                url: url.to_string(),
+                source,
+            })?;
+            return secure_request(&self.client, parsed, &self.egress_policy)
+                .await
+                .map_err(|e| map_security_error(e, url, self.egress_policy.timeout));
+        }
+
+        // Test-only direct path (SSRF guard disabled). The Accept header is
+        // applied here to mirror `secure_request`'s behaviour exactly.
+        self.client
+            .get(url)
+            .header("Accept", "application/rdap+json, application/json")
+            .send()
+            .await
+            .map_err(|e| {
+                if e.is_timeout() {
+                    RdapError::Timeout {
+                        millis: self.config.timeout.as_millis() as u64,
+                        url: url.to_string(),
+                    }
+                } else {
+                    RdapError::Network(e)
+                }
+            })
+    }
+
     /// Exposes the inner `reqwest::Client` so `Bootstrap` can reuse it.
+    ///
+    /// The returned client is configured with `redirect::Policy::none()`;
+    /// any consumer that reuses it for outbound RDAP traffic must drive the
+    /// validated redirect loop via [`rdap_security::secure_request`] rather
+    /// than relying on automatic redirect following.
     pub fn reqwest_client(&self) -> reqwest::Client {
         self.client.clone()
+    }
+}
+
+/// Maps a [`SecurityError`] from the audited egress pipeline into the public
+/// [`RdapError`] taxonomy.
+///
+/// Security violations (bad scheme, blocked/private/loopback/link-local IP,
+/// DNS rebinding, too many redirects, invalid host) collapse into
+/// [`RdapError::SsrfBlocked`] / [`RdapError::InsecureScheme`] — the existing
+/// SSRF-class variants — so the fetcher's behaviour and the
+/// `RdapError::is_ssrf_blocked` predicate stay consistent with the
+/// synchronous `SsrfGuard` path.
+///
+/// Transport errors map to their existing equivalents: [`SecurityError::Timeout`]
+/// → [`RdapError::Timeout`] and [`SecurityError::Network`] →
+/// [`RdapError::Network`]. The `Display` text of `SecurityError` is generic
+/// and never embeds a raw `reqwest` error string or an HTTP status, so no
+/// transport detail leaks into the SSRF-class messages.
+fn map_security_error(err: SecurityError, url: &str, timeout: Duration) -> RdapError {
+    let reason = err.to_string();
+    match err {
+        // Scheme violation maps to the dedicated insecure-scheme variant so
+        // callers that branch on it (and the existing test asserting
+        // `InsecureScheme` for `http://`) keep working.
+        SecurityError::InvalidScheme => RdapError::InsecureScheme {
+            scheme: ::url::Url::parse(url)
+                .map(|u| u.scheme().to_string())
+                .unwrap_or_else(|_| "non-https".to_string()),
+        },
+
+        // All IP / host / DNS-rebinding / redirect-limit violations are SSRF
+        // blocks. The `reason` is the security layer's generic message — no
+        // transport detail, no status code.
+        SecurityError::BlockedIp
+        | SecurityError::PrivateIp
+        | SecurityError::LoopbackIp
+        | SecurityError::LinkLocalIp
+        | SecurityError::InvalidHost
+        | SecurityError::CredentialsInUrl
+        | SecurityError::DnsResolutionFailed(_)
+        | SecurityError::DnsRebindingDetected
+        | SecurityError::TooManyRedirects => RdapError::SsrfBlocked {
+            url: url.to_string(),
+            reason,
+        },
+
+        // Transport-class — preserve existing retry/breaker semantics. Report
+        // the configured egress timeout (not 0) so logs and callers see the
+        // real deadline that elapsed.
+        SecurityError::Timeout => RdapError::Timeout {
+            millis: timeout.as_millis() as u64,
+            url: url.to_string(),
+        },
+        SecurityError::Network(inner) => RdapError::Network(inner),
+
+        // These variants are produced only by `secure_fetch`'s body/content
+        // handling, never by `secure_request` (which returns the unread
+        // response). Map defensively without leaking detail.
+        SecurityError::ResponseTooLarge => RdapError::ParseError {
+            reason: "RDAP response body exceeds the maximum allowed size".to_string(),
+        },
+        SecurityError::InvalidContentType => RdapError::ParseError {
+            reason: "RDAP response has an invalid or missing Content-Type".to_string(),
+        },
     }
 }
 
@@ -1156,11 +1284,12 @@ fn parse_cache_control(headers: &reqwest::header::HeaderMap) -> Option<Duration>
 #[cfg(test)]
 mod tests {
     use super::{
-        backoff, is_breaker_failure, parse_cache_control, parse_retry_after, retry_limit, Fetcher,
-        FetcherConfig, DEFAULT_TIMEOUT, MAX_ATTEMPTS_CEILING, MAX_CONCURRENCY_LIMIT, MAX_TIMEOUT,
+        backoff, is_breaker_failure, map_security_error, parse_cache_control, parse_retry_after,
+        retry_limit, Fetcher, FetcherConfig, DEFAULT_TIMEOUT, MAX_ATTEMPTS_CEILING,
+        MAX_CONCURRENCY_LIMIT, MAX_TIMEOUT,
     };
     use crate::circuit_breaker::CircuitState;
-    use rdap_security::{SsrfConfig, SsrfGuard};
+    use rdap_security::{SecurityError, SsrfConfig, SsrfGuard};
     use rdap_types::error::RdapError;
     use std::sync::Arc;
     use std::time::Duration;
@@ -1490,6 +1619,78 @@ mod tests {
         let fetcher = Fetcher::new(ssrf).unwrap();
         let err = fetcher.fetch("http://example.com/rdap").await.unwrap_err();
         assert!(matches!(err, RdapError::InsecureScheme { .. }));
+    }
+
+    // ── SSRF egress error taxonomy ────────────────────────────────────────
+    //
+    // The validated egress pipeline (`secure_request`) returns `SecurityError`;
+    // `map_security_error` collapses those into the public `RdapError` taxonomy.
+    // These tests lock that mapping AND the invariant that no transport-layer
+    // detail (HTTP status, raw reqwest text) leaks into SSRF-class errors. The
+    // per-hop *validation* logic itself is covered by `rdap-security`'s
+    // `redirect`/`url`/`dns` unit tests; the loopback-bound mock server cannot
+    // exercise it here (the guard would block 127.0.0.1), so we verify the
+    // boundary mapping instead.
+
+    const SAMPLE_URL: &str = "https://rdap.example.com/domain/foo.example";
+
+    #[test]
+    fn security_ip_and_redirect_violations_map_to_ssrf_blocked() {
+        let blocked = [
+            SecurityError::BlockedIp,
+            SecurityError::PrivateIp,
+            SecurityError::LoopbackIp,
+            SecurityError::LinkLocalIp,
+            SecurityError::InvalidHost,
+            SecurityError::CredentialsInUrl,
+            SecurityError::DnsRebindingDetected,
+            SecurityError::TooManyRedirects,
+            SecurityError::DnsResolutionFailed("simulated".to_string()),
+        ];
+        for sec in blocked {
+            let mapped = map_security_error(sec, SAMPLE_URL, Duration::from_secs(7));
+            assert!(
+                mapped.is_ssrf_blocked(),
+                "expected SSRF-class error, got {mapped:?}"
+            );
+            assert!(matches!(mapped, RdapError::SsrfBlocked { .. }));
+            // No transport-layer detail must leak into the message.
+            let msg = mapped.to_string();
+            assert!(!msg.contains("404"), "status code leaked: {msg}");
+            assert!(!msg.contains("reqwest"), "transport detail leaked: {msg}");
+        }
+    }
+
+    #[test]
+    fn security_invalid_scheme_maps_to_insecure_scheme() {
+        let mapped = map_security_error(
+            SecurityError::InvalidScheme,
+            "http://rdap.example.com/x",
+            Duration::from_secs(7),
+        );
+        assert!(matches!(mapped, RdapError::InsecureScheme { .. }));
+        assert!(mapped.is_ssrf_blocked());
+    }
+
+    #[test]
+    fn security_timeout_maps_to_timeout_with_configured_millis() {
+        let mapped = map_security_error(SecurityError::Timeout, SAMPLE_URL, Duration::from_secs(7));
+        // The mapped error must report the real configured deadline, not 0.
+        assert!(matches!(mapped, RdapError::Timeout { millis: 7000, .. }));
+    }
+
+    #[test]
+    fn security_body_violations_map_to_parse_error_not_ssrf() {
+        // `secure_request` never returns these (it leaves the body unread), but
+        // the mapping must be total and must not misclassify them as SSRF.
+        for sec in [
+            SecurityError::ResponseTooLarge,
+            SecurityError::InvalidContentType,
+        ] {
+            let mapped = map_security_error(sec, SAMPLE_URL, Duration::from_secs(7));
+            assert!(matches!(mapped, RdapError::ParseError { .. }));
+            assert!(!mapped.is_ssrf_blocked());
+        }
     }
 
     fn disabled_ssrf_fetcher() -> Fetcher {
@@ -1898,9 +2099,11 @@ mod tests {
     fn env_overrides_unset_leaves_caller_value() {
         let _g = env_test_lock();
         clear_env();
-        let mut cfg = FetcherConfig::default();
-        cfg.timeout = Duration::from_secs(11);
-        cfg.max_attempts = 7;
+        let cfg = FetcherConfig {
+            timeout: Duration::from_secs(11),
+            max_attempts: 7,
+            ..Default::default()
+        };
         let cfg = cfg.with_env_overrides();
         // Without the env vars set, the caller's explicit values stand.
         assert_eq!(cfg.timeout, Duration::from_secs(11));
@@ -1971,7 +2174,10 @@ mod tests {
             observed_peak <= per_host_cap as i64,
             "per-host cap {per_host_cap} exceeded — peak in-flight was {observed_peak}"
         );
-        assert!(observed_peak >= 1, "expected nonzero peak, got {observed_peak}");
+        assert!(
+            observed_peak >= 1,
+            "expected nonzero peak, got {observed_peak}"
+        );
     }
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -2294,11 +2500,15 @@ mod tests {
 
         // First-attempt cluster sanity — they all started within a small
         // window after the barrier release.
-        let first_spread = first_attempts.last().unwrap()
+        let first_spread = first_attempts
+            .last()
+            .unwrap()
             .duration_since(*first_attempts.first().unwrap());
 
         // Retry-attempt spread — the test's main assertion.
-        let retry_spread = retry_attempts.last().unwrap()
+        let retry_spread = retry_attempts
+            .last()
+            .unwrap()
             .duration_since(*retry_attempts.first().unwrap());
         let min_required_spread = initial_backoff / 4;
         assert!(
@@ -2501,10 +2711,7 @@ mod tests {
 
         let sem = fetcher.concurrency_limit();
         let baseline = sem.available_permits();
-        assert_eq!(
-            baseline, cap,
-            "expected baseline available_permits == cap"
-        );
+        assert_eq!(baseline, cap, "expected baseline available_permits == cap");
 
         let url = format!("{}/rdap/x", server.url());
         let n = 32usize;

@@ -99,10 +99,70 @@ pub async fn secure_fetch(
     url: ::url::Url,
     policy: &HttpSecurityPolicy,
 ) -> Result<bytes::Bytes, SecurityError> {
+    // Steps 1–5 (URL/DNS/IP validation + validated redirect loop) live in
+    // `secure_request`, the single audited egress primitive. `secure_fetch`
+    // is now a thin wrapper that adds the RDAP-specific post-processing
+    // (Content-Type check + size-capped body read) on top of the final,
+    // already-validated response.
+    let response = secure_request(client, url, policy).await?;
+
+    // 6. Validate Content-Type.
+    content_type::validate_rdap_content_type(response.headers())?;
+
+    // 7. Read the body with a size cap.
+    limits::read_limited(response, policy.max_response_size).await
+}
+
+/// Drives the audited SSRF egress pipeline and returns the final, fully
+/// validated [`reqwest::Response`] — leaving all body / status / header
+/// post-processing to the caller.
+///
+/// This is the single place in the workspace that performs the validated
+/// redirect loop. It is the egress primitive that `rdap-core`'s `Fetcher`
+/// builds on so that it keeps its own status-code, `Retry-After`,
+/// `Cache-Control`, body-size-cap, retry, and circuit-breaker handling while
+/// every hop is still re-validated here.
+///
+/// Pipeline (identical to [`secure_fetch`] steps 1–5):
+///
+/// 1. **URL validation** — scheme, credentials, IP-literal host.
+/// 2. **DNS resolution** — hostname → IP addresses.
+/// 3. **IP validation** — blocks private/loopback/link-local results.
+/// 4. **HTTP request** — using the caller-supplied `client`.
+/// 5. **Redirect handling** — each hop is re-validated through
+///    [`redirect::validate_redirect`] (URL + DNS + IP).
+///
+/// Unlike [`secure_fetch`], this function does **not** check `Content-Type`
+/// or read/limit the body; the returned response body is still unread.
+///
+/// # Client requirements
+///
+/// The supplied `client` **must** be built with
+/// [`reqwest::redirect::Policy::none()`] so redirects are intercepted and
+/// re-validated here rather than followed silently. A `client` that follows
+/// redirects on its own would bypass the per-hop SSRF revalidation.
+///
+/// # Errors
+///
+/// Returns a [`SecurityError`] if any security check fails or a transport
+/// error occurs.
+pub async fn secure_request(
+    client: &reqwest::Client,
+    url: ::url::Url,
+    policy: &HttpSecurityPolicy,
+) -> Result<reqwest::Response, SecurityError> {
     // 1. Validate the initial URL.
     url::validate_url(&url)?;
 
     // 2–3. Resolve and validate DNS for the initial host.
+    //
+    // Perf note: reqwest re-resolves the host on connect, so this is a second
+    // DNS lookup on the cold path. We accept it deliberately: validating the
+    // resolved IPs *before* the connect is what closes the
+    // hostname-→-private-IP SSRF hole, and the lookup is dominated by the TLS
+    // handshake that follows. A shared resolver cache would collapse the two
+    // lookups but is out of scope here (no new deps; system resolver caches
+    // at the OS level anyway).
     if let Some(host) = url.host_str() {
         let ips = dns::resolve_host(host).await?;
         dns::validate_resolved_ips(&ips)?;
@@ -154,11 +214,8 @@ pub async fn secure_fetch(
             continue;
         }
 
-        // 6. Validate Content-Type.
-        content_type::validate_rdap_content_type(response.headers())?;
-
-        // 7. Read the body with a size cap.
-        return limits::read_limited(response, policy.max_response_size).await;
+        // Hand the final, validated response back to the caller untouched.
+        return Ok(response);
     }
 }
 
@@ -213,6 +270,19 @@ impl SsrfGuard {
     /// Creates a guard with a custom configuration.
     pub fn with_config(config: SsrfConfig) -> Self {
         Self { config }
+    }
+
+    /// Returns `true` when SSRF protection is active.
+    ///
+    /// When `false` (test-only configuration), the guard's [`validate`] is a
+    /// no-op; callers such as `rdap-core`'s `Fetcher` use this to decide
+    /// whether to route egress through the audited [`secure_request`] pipeline
+    /// (production) or fall back to a direct, unvalidated request (tests that
+    /// deliberately target `http://127.0.0.1` mock servers).
+    ///
+    /// [`validate`]: SsrfGuard::validate
+    pub fn is_enabled(&self) -> bool {
+        self.config.enabled
     }
 
     /// Validates a URL string.
