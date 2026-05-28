@@ -30,7 +30,9 @@ use reqwest::header::{CACHE_CONTROL, RETRY_AFTER};
 use serde_json::Value;
 use tokio::sync::Semaphore;
 
-use rdap_security::{read_limited, secure_request, HttpSecurityPolicy, SecurityError, SsrfGuard};
+use rdap_security::{
+    read_limited, secure_request, HttpSecurityPolicy, SecureResolver, SecurityError, SsrfGuard,
+};
 use rdap_types::error::{RdapError, Result};
 
 use crate::circuit_breaker::{CircuitBreakerRegistry, Origin};
@@ -527,6 +529,19 @@ impl Fetcher {
             // bypass per-hop revalidation and re-open the redirect-to-internal
             // SSRF hole this fetcher is required to close.
             .redirect(reqwest::redirect::Policy::none())
+            // SSRF (DNS rebinding): resolve through `SecureResolver` so the
+            // addresses reqwest actually connects to are the *same* validated
+            // set — there is no second, unvalidated resolution between our
+            // pre-check and the TCP connect. This is the TOCTOU-closing gate.
+            .dns_resolver(Arc::new(SecureResolver::new()))
+            // SSRF (proxy bypass): ignore ambient HTTP(S)_PROXY/ALL_PROXY env.
+            // reqwest defaults to auto system-proxy; with a proxy configured,
+            // HTTPS requests tunnel via CONNECT and the *proxy* resolves the
+            // target host — bypassing `SecureResolver` and the IP validation
+            // entirely. RDAP egress must connect directly so every target IP
+            // passes the guard. A deliberate egress proxy would need its own
+            // validated trust boundary; not supported here.
+            .no_proxy()
             .build()
             .map_err(RdapError::Network)?;
 
@@ -1693,6 +1708,12 @@ mod tests {
         }
     }
 
+    // NOTE: even with the SSRF guard disabled, the client is still built with
+    // `SecureResolver`. Tests using this fetcher MUST target IP-literal URLs
+    // (e.g. mockito's `http://127.0.0.1:PORT`) — reqwest bypasses the custom
+    // resolver for IP literals. A hostname URL (e.g. `http://localhost:PORT`)
+    // would be rejected by `SecureResolver` and fail with a loopback error
+    // rather than the assertion under test.
     fn disabled_ssrf_fetcher() -> Fetcher {
         let ssrf = SsrfGuard::with_config(SsrfConfig {
             enabled: false,

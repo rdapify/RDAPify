@@ -44,8 +44,15 @@ pub enum SecurityError {
     #[error("DNS resolution failed: {0}")]
     DnsResolutionFailed(String),
 
-    /// The remote IP changed after the TCP connection was established,
-    /// indicating a DNS rebinding attack.
+    /// Reserved for an explicit DNS-rebinding signal.
+    ///
+    /// Note: rebinding is *prevented* (not detected after the fact) by
+    /// [`crate::SecureResolver`], which validates the exact addresses reqwest
+    /// connects to. This variant is retained for API stability and for callers
+    /// that may surface a rebinding-specific message; the audited egress path
+    /// never needs to construct it because a blocked address fails at
+    /// resolution as [`SecurityError::PrivateIp`] / [`SecurityError::LoopbackIp`]
+    /// / [`SecurityError::LinkLocalIp`] / [`SecurityError::BlockedIp`].
     #[error("DNS rebinding detected: the remote IP changed after connection")]
     DnsRebindingDetected,
 

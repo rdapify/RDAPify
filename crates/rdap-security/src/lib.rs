@@ -55,6 +55,7 @@ pub mod http_policy;
 pub mod ip;
 pub mod limits;
 pub mod redirect;
+pub mod resolver;
 pub mod url;
 
 // ── Re-exports ────────────────────────────────────────────────────────────────
@@ -66,6 +67,7 @@ pub use http_policy::HttpSecurityPolicy;
 pub use ip::{is_blocked_ip, is_link_local, is_loopback, is_private_ip};
 pub use limits::read_limited;
 pub use redirect::validate_redirect;
+pub use resolver::SecureResolver;
 pub use url::validate_url;
 
 // ── secure_fetch ──────────────────────────────────────────────────────────────
@@ -156,13 +158,14 @@ pub async fn secure_request(
 
     // 2–3. Resolve and validate DNS for the initial host.
     //
-    // Perf note: reqwest re-resolves the host on connect, so this is a second
-    // DNS lookup on the cold path. We accept it deliberately: validating the
-    // resolved IPs *before* the connect is what closes the
-    // hostname-→-private-IP SSRF hole, and the lookup is dominated by the TLS
-    // handshake that follows. A shared resolver cache would collapse the two
-    // lookups but is out of scope here (no new deps; system resolver caches
-    // at the OS level anyway).
+    // This is an early, fail-fast check that returns a clear `SecurityError`
+    // before a request is built. It is NOT the TOCTOU-closing gate on its own:
+    // reqwest re-resolves the host at connect time. The actual rebinding
+    // defense is [`crate::SecureResolver`], which the caller's `reqwest::Client`
+    // must be built with — it validates the addresses reqwest *actually*
+    // connects to, so there is no unvalidated second resolution. This pre-check
+    // therefore costs one extra (OS-cached) lookup on the cold path, accepted
+    // for the clearer error; it is dominated by the TLS handshake that follows.
     if let Some(host) = url.host_str() {
         let ips = dns::resolve_host(host).await?;
         dns::validate_resolved_ips(&ips)?;
