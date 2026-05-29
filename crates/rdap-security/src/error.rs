@@ -31,8 +31,14 @@ pub enum SecurityError {
     #[error("Only HTTPS is allowed; got a different scheme")]
     InvalidScheme,
 
-    /// The URL has no valid host, or the host is `localhost`.
-    #[error("URL has an invalid or missing host")]
+    /// The URL has no valid host, or the host is otherwise disallowed (e.g.
+    /// `localhost`).
+    ///
+    /// The message is deliberately generic: it states only that the request
+    /// violated the workspace security egress policy, without echoing the
+    /// offending host or revealing which internal rule matched — that detail
+    /// would leak inner network topology to an untrusted caller.
+    #[error("Request blocked by the workspace security egress policy: invalid or disallowed host")]
     InvalidHost,
 
     /// The URL contains embedded credentials (username and/or password).

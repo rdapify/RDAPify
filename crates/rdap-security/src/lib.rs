@@ -153,6 +153,19 @@ pub async fn secure_request(
     url: ::url::Url,
     policy: &HttpSecurityPolicy,
 ) -> Result<reqwest::Response, SecurityError> {
+    // 0. Scheme policy — fail-fast before *any* network lookup.
+    //
+    // When `policy.require_https` is set (the default), a non-HTTPS scheme is
+    // rejected here, before DNS resolution or any connection is attempted, so a
+    // disallowed scheme can never trigger an outbound lookup. `validate_url`
+    // (step 1) also enforces HTTPS as an unconditional baseline — including on
+    // every redirect hop — but this guard is the configurable, policy-driven
+    // front door that makes `require_https` an enforced constraint rather than
+    // dead configuration.
+    if policy.require_https && url.scheme() != "https" {
+        return Err(SecurityError::InvalidScheme);
+    }
+
     // 1. Validate the initial URL.
     url::validate_url(&url)?;
 
@@ -368,6 +381,8 @@ impl SsrfGuard {
     }
 
     fn check_ipv4(&self, ip: Ipv4Addr, raw_url: &str) -> RdapResult<()> {
+        // CGNAT / test-net classification is shared with the `ip` module so the
+        // two validators can never diverge (see `crate::ip::is_special_use`).
         let reason = if ip.is_loopback() {
             Some("IPv4 loopback address (127/8)")
         } else if ip.is_private() {
@@ -378,6 +393,10 @@ impl SsrfGuard {
             Some("IPv4 broadcast address")
         } else if ip.is_unspecified() {
             Some("unspecified IPv4 address (0.0.0.0/8)")
+        } else if crate::ip::is_cgnat_v4(ip) {
+            Some("carrier-grade NAT address (100.64/10, RFC 6598)")
+        } else if crate::ip::is_test_net_v4(ip) {
+            Some("test/documentation address (RFC 5737)")
         } else {
             None
         };
@@ -400,6 +419,8 @@ impl SsrfGuard {
             Some("IPv6 link-local address (fe80::/10)")
         } else if (o[0] & 0xfe) == 0xfc {
             Some("IPv6 unique-local address (fc00::/7)")
+        } else if crate::ip::is_nat64_v6(ip) {
+            Some("NAT64 prefix (64:ff9b::/96 RFC 6052 or 64:ff9b:1::/48 RFC 8215)")
         } else if ip.is_unspecified() {
             Some("unspecified IPv6 address (::/128)")
         } else {
@@ -501,6 +522,52 @@ mod tests {
     }
 
     #[test]
+    fn blocks_cgnat_and_test_nets() {
+        let guard = SsrfGuard::new();
+        for url in [
+            "https://100.64.0.1/",
+            "https://100.127.255.255/",
+            "https://192.0.2.1/",
+            "https://198.51.100.1/",
+            "https://203.0.113.1/",
+        ] {
+            assert!(
+                guard.validate(url).unwrap_err().is_ssrf_blocked(),
+                "{url} must be blocked"
+            );
+        }
+    }
+
+    #[test]
+    fn blocks_nat64_prefix() {
+        let guard = SsrfGuard::new();
+        for url in [
+            "https://[64:ff9b::1]/",
+            "https://[64:ff9b::808:808]/",
+            "https://[64:ff9b:1::1]/",
+        ] {
+            assert!(
+                guard.validate(url).unwrap_err().is_ssrf_blocked(),
+                "{url} must be blocked"
+            );
+        }
+    }
+
+    #[test]
+    fn allows_neighbours_of_special_use_ranges() {
+        // Boundary check: addresses just outside the new ranges stay routable.
+        let guard = SsrfGuard::new();
+        for url in [
+            "https://100.63.255.255/",
+            "https://100.128.0.1/",
+            "https://192.0.3.1/",
+            "https://[64:ff9c::1]/",
+        ] {
+            assert!(guard.validate(url).is_ok(), "{url} must be allowed");
+        }
+    }
+
+    #[test]
     fn allowlist_overrides_blocklist() {
         let guard = SsrfGuard::with_config(SsrfConfig {
             enabled: true,
@@ -530,5 +597,59 @@ mod tests {
             ..Default::default()
         });
         assert!(guard.validate("http://127.0.0.1/").is_ok());
+    }
+}
+
+// ── Tests (require_https enforcement) ─────────────────────────────────────────
+
+#[cfg(test)]
+mod require_https_tests {
+    use super::*;
+    use ::url::Url;
+
+    fn no_redirect_client() -> reqwest::Client {
+        reqwest::Client::builder()
+            .redirect(reqwest::redirect::Policy::none())
+            .build()
+            .expect("client builds")
+    }
+
+    /// The default policy must require HTTPS.
+    #[test]
+    fn default_policy_requires_https() {
+        assert!(HttpSecurityPolicy::default().require_https);
+    }
+
+    /// With `require_https` enabled (the default), a non-HTTPS URL must be
+    /// rejected *before* any network lookup is triggered. We aim at a
+    /// guaranteed-unresolvable `.invalid` host (RFC 6761): a
+    /// `DnsResolutionFailed`/`Network`/`Timeout` error would prove the scheme
+    /// guard ran too late, whereas `InvalidScheme` proves it fired first.
+    #[tokio::test]
+    async fn require_https_rejects_http_before_network_lookup() {
+        let policy = HttpSecurityPolicy::default();
+        let url = Url::parse("http://this-host-does-not-resolve.invalid/rdap").unwrap();
+
+        let err = secure_request(&no_redirect_client(), url, &policy)
+            .await
+            .expect_err("http must be rejected when require_https is set");
+
+        assert!(
+            matches!(err, SecurityError::InvalidScheme),
+            "expected InvalidScheme (fail-fast, no lookup), got {err:?}"
+        );
+    }
+
+    /// `secure_fetch` shares the same fail-fast guard via `secure_request`.
+    #[tokio::test]
+    async fn secure_fetch_rejects_http_when_https_required() {
+        let policy = HttpSecurityPolicy::default();
+        let url = Url::parse("http://this-host-does-not-resolve.invalid/rdap").unwrap();
+
+        let err = secure_fetch(&no_redirect_client(), url, &policy)
+            .await
+            .expect_err("http must be rejected when require_https is set");
+
+        assert!(matches!(err, SecurityError::InvalidScheme), "got {err:?}");
     }
 }
