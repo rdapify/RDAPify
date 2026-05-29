@@ -13,7 +13,7 @@ rdapify/
 │   ├── rdap-cache/        → In-memory cache (DashMap)
 │   ├── rdap-core/         → HTTP fetcher + response normalizer
 │   ├── rdap-stream/       → Async query stream events
-│   ├── rdap-client/       → Main RdapClient (5 query types)
+│   ├── rdapify-client/    → Main RdapClient (5 query types)
 │   ├── rdap-rate-limit/   → Rate limiting (phase 0 skeleton)
 │   ├── rdap-batch/        → Batch domain operations
 │   ├── rdap-cli/          → Command-line binary
@@ -51,4 +51,4 @@ Async: Tokio multi-thread · TLS: rustls only (no OpenSSL)
 - CI: multi-platform (Ubuntu, macOS, Windows) + MSRV job — do not break
 - **Apache-2.0** — never add paid features to this repo
 - **Do not remove backward compatibility** — `rdapify` facade must always compile with old imports
-- Coordinate with `rdapify-pro/` if changing public API (path deps on rdap-types, rdap-client)
+- Coordinate with `rdapify-pro/` if changing public API (path deps on rdap-types, rdapify-client)
