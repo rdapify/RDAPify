@@ -68,10 +68,8 @@ pub fn validate_json_structure(
                     }
                 }
             }
-            Value::String(s) => {
-                if s.len() > limits.max_string_length {
-                    return Err(ValidationError::StringTooLong);
-                }
+            Value::String(s) if s.len() > limits.max_string_length => {
+                return Err(ValidationError::StringTooLong);
             }
             // Null, Bool, Number: no size constraints
             _ => {}
