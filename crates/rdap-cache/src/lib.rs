@@ -1,14 +1,16 @@
 //! In-memory response cache with TTL expiry and stale-while-revalidate support.
 //!
-//! Uses [`DashMap`] for lock-free concurrent reads.
-//! Entries are evicted lazily (on read) and eagerly (on `evict_expired()`).
+//! Backed by [`moka`](https://docs.rs/moka)'s concurrent cache: bounded
+//! capacity with TinyLFU eviction (O(1) amortized — no linear scan) and
+//! per-entry expiry. The single-flight refresh registry still uses [`DashMap`].
 //!
 //! # Freshness model
 //!
 //! Each entry has two deadlines:
 //! - **TTL** (`inserted_at + ttl`): fresh window — returned as `Fresh`.
 //! - **Stale deadline** (`inserted_at + ttl + stale_ttl`): stale window — returned as `Stale`.
-//! - Beyond the stale deadline the entry is evicted on the next read.
+//! - Beyond the stale deadline moka expires the entry (its [`Expiry`] impl
+//!   reports `ttl + stale_ttl` as the total time-to-live), so lookups miss.
 
 #![forbid(unsafe_code)]
 
@@ -17,6 +19,8 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use dashmap::DashMap;
+use moka::sync::Cache;
+use moka::Expiry;
 use rdap_metrics::hooks as metrics_hooks;
 use rdap_metrics::types::CacheOutcome;
 use serde_json::Value;
@@ -56,8 +60,37 @@ impl Entry {
         age > self.ttl && age <= self.ttl + self.stale_ttl
     }
 
-    fn is_fully_expired(&self) -> bool {
-        self.age() > self.ttl + self.stale_ttl
+    /// Total time the entry should live in the store: the fresh window plus
+    /// the stale window. moka expires (and drops) the entry after this.
+    fn total_ttl(&self) -> Duration {
+        self.ttl + self.stale_ttl
+    }
+}
+
+/// Per-entry expiry policy for the moka store: each entry lives for
+/// `ttl + stale_ttl` (negative entries have `stale_ttl == 0`, so they expire
+/// at `ttl`). The fresh-vs-stale split within that window is computed by
+/// [`MemoryCache::get_status`] from the entry's own timestamps.
+struct EntryExpiry;
+
+impl Expiry<String, Arc<Entry>> for EntryExpiry {
+    fn expire_after_create(
+        &self,
+        _key: &String,
+        value: &Arc<Entry>,
+        _created_at: Instant,
+    ) -> Option<Duration> {
+        Some(value.total_ttl())
+    }
+
+    fn expire_after_update(
+        &self,
+        _key: &String,
+        value: &Arc<Entry>,
+        _updated_at: Instant,
+        _duration_until_expiry: Option<Duration>,
+    ) -> Option<Duration> {
+        Some(value.total_ttl())
     }
 }
 
@@ -117,7 +150,9 @@ impl Default for CacheConfig {
 ///
 /// Cache keys are the full query URL strings.
 pub struct MemoryCache {
-    store: Arc<DashMap<String, Entry>>,
+    /// moka concurrent cache. Cloning `MemoryCache` clones this handle, which
+    /// shares the same underlying store (moka is internally reference-counted).
+    store: Cache<String, Arc<Entry>>,
     config: CacheConfig,
     hits: Arc<AtomicU64>,
     misses: Arc<AtomicU64>,
@@ -150,7 +185,7 @@ pub const MAX_INFLIGHT_REFRESHES: usize = 4_096;
 impl Clone for MemoryCache {
     fn clone(&self) -> Self {
         Self {
-            store: Arc::clone(&self.store),
+            store: self.store.clone(),
             config: self.config.clone(),
             hits: Arc::clone(&self.hits),
             misses: Arc::clone(&self.misses),
@@ -198,7 +233,7 @@ impl std::fmt::Debug for RefreshGuard {
 impl std::fmt::Debug for MemoryCache {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("MemoryCache")
-            .field("len", &self.store.len())
+            .field("len", &self.store.entry_count())
             .field("config", &self.config)
             .finish()
     }
@@ -212,8 +247,19 @@ impl MemoryCache {
 
     /// Creates a cache with custom configuration.
     pub fn with_config(config: CacheConfig) -> Self {
+        // moka enforces the entry bound via TinyLFU eviction (O(1) amortized),
+        // replacing the old O(n) `evict_oldest` scan. The eviction listener
+        // fires on every removal (capacity, expiry, or explicit invalidation),
+        // so the eviction metric stays accurate without manual bookkeeping.
+        let store = Cache::builder()
+            .max_capacity(config.max_entries as u64)
+            .expire_after(EntryExpiry)
+            .eviction_listener(|_key, _value, _cause| {
+                metrics_hooks::record_cache_eviction();
+            })
+            .build();
         Self {
-            store: Arc::new(DashMap::new()),
+            store,
             config,
             hits: Arc::new(AtomicU64::new(0)),
             misses: Arc::new(AtomicU64::new(0)),
@@ -238,22 +284,14 @@ impl MemoryCache {
 
     /// Retrieves the full freshness status for `key`.
     pub fn get_status(&self, key: &str) -> CacheStatus {
+        // moka already drops entries past their total TTL (`ttl + stale_ttl`),
+        // so a returned entry is always within the fresh-or-stale window. The
+        // `else`/defensive branches below cover only clock-skew edge cases.
         let Some(entry) = self.store.get(key) else {
             self.misses.fetch_add(1, Ordering::Relaxed);
             metrics_hooks::record_cache(CacheOutcome::Miss);
             return CacheStatus::Miss;
         };
-
-        if entry.is_fully_expired() {
-            drop(entry);
-            self.store.remove(key);
-            // v0.6.1 · Task 3 — read-path eviction of a fully-expired entry.
-            metrics_hooks::record_cache_eviction();
-            metrics_hooks::set_cache_entries_current(self.store.len());
-            self.misses.fetch_add(1, Ordering::Relaxed);
-            metrics_hooks::record_cache(CacheOutcome::Miss);
-            return CacheStatus::Miss;
-        }
 
         match &entry.value {
             CacheValue::Negative => {
@@ -262,11 +300,9 @@ impl MemoryCache {
                     metrics_hooks::record_cache(CacheOutcome::Negative);
                     CacheStatus::Negative
                 } else {
-                    // Expired negative entry — evict and miss
-                    drop(entry);
-                    self.store.remove(key);
-                    metrics_hooks::record_cache_eviction();
-                    metrics_hooks::set_cache_entries_current(self.store.len());
+                    // Expired negative entry — invalidate and miss. (The
+                    // eviction listener records the removal.)
+                    self.store.invalidate(key);
                     self.misses.fetch_add(1, Ordering::Relaxed);
                     metrics_hooks::record_cache(CacheOutcome::Miss);
                     CacheStatus::Miss
@@ -282,11 +318,8 @@ impl MemoryCache {
                     metrics_hooks::record_cache(CacheOutcome::Stale);
                     CacheStatus::Stale(value.clone())
                 } else {
-                    // Fully expired (shouldn't reach here due to earlier check, but be safe)
-                    drop(entry);
-                    self.store.remove(key);
-                    metrics_hooks::record_cache_eviction();
-                    metrics_hooks::set_cache_entries_current(self.store.len());
+                    // Past the stale window (clock skew vs moka's expiry).
+                    self.store.invalidate(key);
                     self.misses.fetch_add(1, Ordering::Relaxed);
                     metrics_hooks::record_cache(CacheOutcome::Miss);
                     CacheStatus::Miss
@@ -304,44 +337,40 @@ impl MemoryCache {
     ///
     /// The stale window is computed as 20% of `ttl`, clamped to [30s, 120s].
     pub fn set_with_ttl(&self, key: String, value: Value, ttl: Duration) {
-        if self.store.len() >= self.config.max_entries {
-            self.evict_oldest();
-        }
-
         let stale_ttl = (ttl / 5)
             .max(Duration::from_secs(30))
             .min(Duration::from_secs(120));
 
+        // moka enforces `max_entries` via TinyLFU eviction — no manual cap
+        // check / O(n) scan needed.
         self.store.insert(
             key,
-            Entry {
+            Arc::new(Entry {
                 value: CacheValue::Hit(value),
                 inserted_at: Instant::now(),
                 ttl,
                 stale_ttl,
-            },
+            }),
         );
-        // v0.6.1 · Task 3 — track current resident entry count.
-        metrics_hooks::set_cache_entries_current(self.store.len());
+        // v0.6.1 · Task 3 — track current resident entry count (approximate;
+        // exact after pending maintenance, which `len()` forces).
+        metrics_hooks::set_cache_entries_current(self.store.entry_count() as usize);
     }
 
     /// Records a negative (404) cache entry for `key` with the given TTL.
     ///
     /// Subsequent lookups return [`CacheStatus::Negative`] until `ttl` expires.
     pub fn set_negative(&self, key: String, ttl: Duration) {
-        if self.store.len() >= self.config.max_entries {
-            self.evict_oldest();
-        }
         self.store.insert(
             key,
-            Entry {
+            Arc::new(Entry {
                 value: CacheValue::Negative,
                 inserted_at: Instant::now(),
                 ttl,
                 stale_ttl: Duration::ZERO,
-            },
+            }),
         );
-        metrics_hooks::set_cache_entries_current(self.store.len());
+        metrics_hooks::set_cache_entries_current(self.store.entry_count() as usize);
     }
 
     /// Returns a snapshot of cache event counters.
@@ -443,56 +472,36 @@ impl MemoryCache {
 
     /// Removes all entries from the cache.
     pub fn clear(&self) {
-        let before = self.store.len();
-        self.store.clear();
-        // v0.6.1 · Task 3 — `clear()` is a bulk eviction; record each
-        // dropped entry so the rate-of-evictions counter doesn't have a
-        // blind spot when an operator calls `clear()` for ops reasons.
-        for _ in 0..before {
-            metrics_hooks::record_cache_eviction();
-        }
+        // Invalidate all, then drain pending maintenance so the removals (and
+        // their per-entry eviction-listener callbacks) are applied now and
+        // `entry_count` reflects the empty cache immediately.
+        self.store.invalidate_all();
+        self.store.run_pending_tasks();
         metrics_hooks::set_cache_entries_current(0);
     }
 
     /// Returns the number of entries currently in the cache.
+    ///
+    /// Forces moka's pending maintenance so the count reflects all completed
+    /// inserts and evictions (moka's eviction is otherwise amortized).
     pub fn len(&self) -> usize {
-        self.store.len()
+        self.store.run_pending_tasks();
+        self.store.entry_count() as usize
     }
 
     /// Returns `true` if the cache is empty.
     pub fn is_empty(&self) -> bool {
-        self.store.is_empty()
+        self.len() == 0
     }
 
-    /// Removes all fully-expired entries (past TTL + stale window).
+    /// Forces eviction of entries that have passed their total TTL.
+    ///
+    /// moka expires entries lazily per the [`EntryExpiry`] policy; this drains
+    /// the pending-maintenance queue so expired entries are removed now (and
+    /// the eviction listener fires for each).
     pub fn evict_expired(&self) {
-        let before = self.store.len();
-        self.store.retain(|_, entry| !entry.is_fully_expired());
-        let removed = before.saturating_sub(self.store.len());
-        // v0.6.1 · Task 3 — count each fully-expired entry as one
-        // eviction. Single counter increment per evicted entry rather
-        // than per call so dashboards can rate() over time.
-        for _ in 0..removed {
-            metrics_hooks::record_cache_eviction();
-        }
-        metrics_hooks::set_cache_entries_current(self.store.len());
-    }
-
-    fn evict_oldest(&self) {
-        let oldest_key = self
-            .store
-            .iter()
-            .min_by_key(|entry| entry.value().inserted_at)
-            .map(|entry| entry.key().clone());
-
-        if let Some(key) = oldest_key {
-            self.store.remove(&key);
-            // v0.6.1 · Task 3 — fired on every oldest-by-inserted_at
-            // eviction (called when `set_with_ttl` / `set_negative`
-            // hit the `max_entries` cap).
-            metrics_hooks::record_cache_eviction();
-            metrics_hooks::set_cache_entries_current(self.store.len());
-        }
+        self.store.run_pending_tasks();
+        metrics_hooks::set_cache_entries_current(self.store.entry_count() as usize);
     }
 }
 
@@ -548,18 +557,24 @@ mod tests {
     }
 
     #[test]
-    fn max_entries_evicts_oldest() {
+    fn max_entries_enforces_capacity() {
+        // moka evicts via TinyLFU (frequency-aware), not strict insertion
+        // order, so we assert the capacity *invariant* rather than which
+        // specific key is dropped (the old DashMap path evicted the oldest).
         let cache = MemoryCache::with_config(CacheConfig {
             ttl: Duration::from_secs(60),
-            max_entries: 2,
+            max_entries: 50,
         });
 
-        cache.set("a".to_string(), json!(1));
-        cache.set("b".to_string(), json!(2));
-        cache.set("c".to_string(), json!(3));
+        for i in 0..500 {
+            cache.set(format!("k{i}"), json!(i));
+        }
 
-        assert_eq!(cache.len(), 2);
-        assert!(cache.get("a").is_none());
+        assert!(
+            cache.len() <= 50,
+            "cache exceeded max_entries: len={}",
+            cache.len()
+        );
     }
 
     /// Read resident-set-size in bytes from `/proc/self/statm` (Linux only).

@@ -16,6 +16,10 @@ metrics = ["rdap-metrics/enabled"]
 [dependencies]
 # Always linked. Hooks compile to inline no-ops unless `metrics` is enabled.
 rdap-metrics = { path = "../rdap-metrics", version = "0.1.0" }
+# moka: concurrent cache engine (TinyLFU eviction + per-entry expiry). Already
+# linked elsewhere in the workspace (rdap-core), so it adds no new dep weight.
+moka         = { workspace = true }
+# dashmap still backs the single-flight refresh registry (`in_flight`).
 dashmap      = { workspace = true }
 serde_json   = { workspace = true }
 tokio        = { workspace = true }
