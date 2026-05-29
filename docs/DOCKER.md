@@ -1,193 +1,202 @@
 # RDAPify — Docker
 
-Run RDAPify as a container for consistent, isolated deployment.
+Run RDAPify as a standalone, hardened RDAP REST API microservice. The image
+ships the `rdap-service` binary (Axum HTTP server) and nothing else.
+
+The canonical build assets live at the repo root:
+[`Dockerfile`](../Dockerfile), [`docker-compose.yml`](../docker-compose.yml),
+[`.dockerignore`](../.dockerignore).
 
 ---
 
 ## Quick Start
 
 ```bash
-# One-shot query
-docker run --rm ghcr.io/rdapify/rdapify domain github.com
+# Build the image (fully static musl binary on a distroless base)
+docker build -t rdapify-core:local .
 
-# Run as HTTP service on port 7080
-docker run -d -p 7080:7080 --name rdapify ghcr.io/rdapify/rdapify serve
+# Run the service (binds 0.0.0.0:8080 inside the container)
+docker run -d --name rdapify-core -p 8080:8080 rdapify-core:local
 
-# Query the service
-curl http://localhost:7080/v1/domain/example.com
-curl http://localhost:7080/health
+# Query it
+curl http://localhost:8080/health
+# {"status":"ok"}
+
+curl -X POST http://localhost:8080/rdap \
+  -H 'content-type: application/json' \
+  -d '{"kind":"domain","query":"example.com"}'
+```
+
+Or with Compose:
+
+```bash
+docker compose up -d --build
+docker compose logs -f rdapify-core
 ```
 
 ---
 
 ## Image Details
 
-| Tag | Base | Size | Notes |
-|---|---|---|---|
-| `latest` | distroless/cc-debian12:nonroot | < 40 MB | Production recommended |
-| `0.3.x` | distroless/cc-debian12:nonroot | < 40 MB | Pinned version |
-| `debug` | debian:12-slim | ~120 MB | Includes shell for debugging |
+| Property | Value |
+|---|---|
+| Runtime base | `gcr.io/distroless/static-debian12:nonroot` |
+| Binary | `rdap-service`, statically linked (`x86_64-unknown-linux-musl`) |
+| Size | **~13 MB** (CI gate: ≤ 15 MB — see [PERFORMANCE_SPEC.md](PERFORMANCE_SPEC.md#2-binary-size-targets)) |
+| User | `nonroot` (UID 65532) — no shell, no package manager, no libc |
+| TLS | rustls + `ring`; CA roots bundled via `webpki-roots` (no system cert store needed) |
+| Platform | `linux/amd64` (arm64 requires adding the `aarch64-unknown-linux-musl` target) |
 
-Images run as a non-root user (`nonroot:nonroot`, UID 65532) by default.
+Because TLS roots are compiled into the binary and there is no dynamic linkage,
+the image needs no `ca-certificates` package and runs on the minimal
+`distroless/static` base.
 
-Platform support: `linux/amd64`, `linux/arm64`.
+---
+
+## REST API
+
+All endpoints are served on the **single** listener (port `8080`). There is no
+separate metrics port.
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/rdap` | RDAP lookup — body `{"kind":"domain","query":"example.com"}` (`kind`: `domain` \| `ip` \| `asn` \| `nameserver`) |
+| `POST` | `/batch` | Batch lookup |
+| `GET` | `/health` | Liveness → `{"status":"ok"}` |
+| `GET` | `/ready` | Readiness → `200` (or `503` if not ready); no body |
+| `GET` | `/version` | Service name, version, and active config |
+| `GET` | `/metrics` | Prometheus text exposition (no authentication) |
+
+```bash
+curl http://localhost:8080/version
+# {"name":"rdap-service","version":"0.7.0","config":{"cache_enabled":true,"server_port":8080,"timeout_seconds":5}}
+```
 
 ---
 
 ## Running as a Service
 
-### Single container
+### Single container (hardened)
 
 ```bash
 docker run -d \
-  --name rdapify \
-  -p 7080:7080 \
-  -e RDAPIFY_CACHE_TTL=300 \
-  -e RDAPIFY_RATE_LIMIT_RPS=60 \
-  -e LOG_LEVEL=info \
-  -e LOG_FORMAT=json \
+  --name rdapify-core \
+  -p 8080:8080 \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt no-new-privileges:true \
+  --tmpfs /tmp:size=16m \
+  -e RDAPIFY_LOG_LEVEL=info \
+  -e RDAPIFY_LOG_FORMAT=json \
+  -e RDAPIFY_RDAP_TIMEOUT=5 \
   --restart unless-stopped \
-  ghcr.io/rdapify/rdapify serve
+  rdapify-core:local
 ```
 
 ### Docker Compose
 
-```yaml
-# docker-compose.yml
-version: "3.9"
-
-services:
-  rdapify:
-    image: ghcr.io/rdapify/rdapify:latest
-    command: serve
-    ports:
-      - "7080:7080"
-    environment:
-      LOG_LEVEL: info
-      LOG_FORMAT: json
-      RDAPIFY_CACHE_TTL: "300"
-      RDAPIFY_CACHE_SIZE: "1000"
-      RDAPIFY_TIMEOUT: "10"
-      RDAPIFY_RATE_LIMIT_RPS: "60"
-      RDAPIFY_RATE_LIMIT_BURST: "10"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:7080/health || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    restart: unless-stopped
-
-  # Optional: Prometheus scraper
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - rdapify
-```
+See [`docker-compose.yml`](../docker-compose.yml) at the repo root, which already
+wires the `rdapify-core` service with the `--read-only` / `--cap-drop=ALL` /
+`no-new-privileges` hardening and `restart: unless-stopped`.
 
 ```bash
-docker compose up -d
-docker compose logs -f rdapify
-```
-
----
-
-## Building Locally
-
-```dockerfile
-# Dockerfile
-FROM rust:1.77-slim AS builder
-
-WORKDIR /build
-
-COPY Cargo.toml Cargo.lock ./
-COPY crates/ crates/
-
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/build/target \
-    cargo build --release --bin rdapify-service
-
-FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
-
-COPY --from=builder /build/target/release/rdapify-service /usr/local/bin/rdapify-service
-
-EXPOSE 7080
-
-USER nonroot:nonroot
-
-ENTRYPOINT ["/usr/local/bin/rdapify-service"]
-```
-
-```bash
-docker build -t rdapify:local .
-docker run --rm rdapify:local domain github.com
+docker compose up -d --build
 ```
 
 ---
 
 ## Environment Variables
 
+These are the variables the `rdap-service` binary actually honors
+(`rdap-config/src/env.rs`). There is **no** `RUST_LOG` and **no** `RDAPIFY_HOST`.
+
 | Variable | Default | Description |
 |---|---|---|
-| `RDAPIFY_HOST` | `0.0.0.0` | Bind address |
-| `RDAPIFY_PORT` | `7080` | Bind port |
-| `RDAPIFY_CACHE_TTL` | `300` | Cache TTL (seconds) |
-| `RDAPIFY_CACHE_SIZE` | `1000` | Max cache entries |
-| `RDAPIFY_TIMEOUT` | `10` | HTTP request timeout (seconds) |
-| `RDAPIFY_RATE_LIMIT_RPS` | `60` | Requests per second per IP |
-| `RDAPIFY_RATE_LIMIT_BURST` | `10` | Burst capacity |
-| `METRICS_TOKEN` | _(none)_ | Bearer token for `/metrics` endpoint |
-| `LOG_LEVEL` | `info` | Tracing filter (`error`/`warn`/`info`/`debug`/`trace`) |
-| `LOG_FORMAT` | `json` | Log format (`json` or `pretty`) |
+| `RDAPIFY_LOG_LEVEL` | `info` | Log level (`error`/`warn`/`info`/`debug`/`trace`) |
+| `RDAPIFY_LOG_FORMAT` | `json` | Log format (`json` or `pretty`) |
+| `RDAPIFY_SERVER_PORT` | `8080` | TCP port to listen on |
+| `RDAPIFY_RDAP_TIMEOUT` | `5` | Upstream RDAP fetch timeout (seconds) |
+| `RDAPIFY_CACHE_TYPE` | `memory` | Cache backend: `memory` \| `sqlite` \| `postgres` |
+| `RDAPIFY_SQLITE_PATH` | _(none)_ | SQLite cache path (when `RDAPIFY_CACHE_TYPE=sqlite`) |
+| `RDAPIFY_LICENSE_PATH` | _(none)_ | License file path (Pro) |
+
+Notes:
+
+- **Bind address** defaults to `0.0.0.0` and is *not* env-overridable — change it
+  only via a mounted `rdapify.toml` (`[server] host = ...`).
+- **Cache TTL / size** (`3600 s` / `100000` entries) are *not* env-tunable —
+  set `[cache] ttl_seconds` / `[cache] max_entries` in a mounted `rdapify.toml`.
+- `RDAPIFY_METRICS_PORT` is parsed by the config layer but **not used** by
+  `rdap-service` (it serves `/metrics` on the main listener).
+
+To tune cache or bind address, mount a config file:
+
+```bash
+docker run ... -v ./rdapify.toml:/etc/rdapify/rdapify.toml:ro rdapify-core:local
+```
 
 ---
 
 ## Health Checks
 
-```bash
-# Liveness: is the service running?
-curl http://localhost:7080/health
-# {"status":"ok","version":"0.4.0"}
+The image is **distroless** — it has no shell and no `curl`/`wget`, so an
+in-container Docker `HEALTHCHECK` cannot run. Use **orchestrator-level HTTP
+probes** against `/health` and `/ready` instead.
 
-# Readiness: is bootstrap data loaded?
-curl http://localhost:7080/ready
-# {"status":"ready"} or HTTP 503 if bootstrap not yet loaded
-```
+Kubernetes example:
 
-Kubernetes probe example:
 ```yaml
 livenessProbe:
   httpGet:
     path: /health
-    port: 7080
+    port: 8080
   initialDelaySeconds: 5
   periodSeconds: 30
 
 readinessProbe:
   httpGet:
     path: /ready
-    port: 7080
+    port: 8080
   initialDelaySeconds: 10
   periodSeconds: 10
 ```
+
+For a Compose healthcheck you would need a sidecar or a debug image variant that
+includes a probe tool; the production distroless image intentionally does not.
 
 ---
 
 ## Prometheus Metrics
 
 ```bash
-# Metrics endpoint (returns Prometheus text format)
-curl http://localhost:7080/metrics
-
-# With auth token
-curl -H "Authorization: Bearer $METRICS_TOKEN" http://localhost:7080/metrics
+curl http://localhost:8080/metrics
 ```
 
-See [MONITORING.md](MONITORING.md) for the full Grafana dashboard and alerting setup.
+Returns Prometheus text exposition (e.g. `http_requests_total`,
+`http_request_duration_seconds`). The endpoint is **unauthenticated** — restrict
+it with a network policy / ingress rule in production rather than exposing it
+publicly. See [MONITORING.md](MONITORING.md) for the Grafana dashboard.
+
+---
+
+## Building Locally
+
+The repo-root [`Dockerfile`](../Dockerfile) is a two-stage build:
+
+1. **Builder** — `rust:1.88-slim-bookworm` + `musl-tools`, compiles
+   `rdap-service` for `x86_64-unknown-linux-musl` (fully static). The release
+   profile already strips symbols and enables LTO + `opt-level="z"`.
+2. **Runtime** — `gcr.io/distroless/static-debian12:nonroot`, just the binary.
+
+```bash
+docker build -t rdapify-core:local .
+docker run --rm -p 8080:8080 rdapify-core:local
+```
+
+> The build toolchain is pinned to `1.88` because the resolved dependency tree
+> contains edition-2024 manifests and high-MSRV crates (`getrandom` 1.85,
+> `napi-build` 1.88 for the Node binding member). The project's own crates target
+> a lower MSRV; the toolchain floor is dictated by third-party dependencies.
 
 ---
 
@@ -200,14 +209,18 @@ See [MONITORING.md](MONITORING.md) for the full Grafana dashboard and alerting s
 | Disk | none | none |
 | Network | Outbound HTTPS (443) | Outbound HTTPS (443) |
 
-Memory usage scales with cache size: ~2 KB per entry. 1000 entries ≈ 2 MB of cache.
+Memory scales with cache size (~2 KB per entry; 100k entries ≈ 200 MB worst case
+— tune `[cache] max_entries`).
 
 ---
 
 ## Security Notes
 
-- The container runs as `nonroot` (UID 65532) — no `sudo`, no `setuid` binaries
-- The distroless image has no shell, no package manager, no `curl`
-- SSRF protection is enabled by default — the service cannot be used to probe internal networks
-- Rate limiting protects against abuse
-- The `/metrics` endpoint should be protected by `METRICS_TOKEN` or network policy in production
+- Runs as `nonroot` (UID 65532) — no `sudo`, no `setuid` binaries.
+- Distroless base: no shell, no package manager, no `curl` — minimal pivot
+  surface even under RCE.
+- SSRF protection is enabled by default via `rdap-security::secure_fetch`
+  (7-layer guard) — the service cannot be used to probe internal networks.
+- Recommended runtime flags (already in `docker-compose.yml`):
+  `--read-only --cap-drop=ALL --security-opt no-new-privileges:true`.
+- `/metrics` is unauthenticated — protect it at the network layer.

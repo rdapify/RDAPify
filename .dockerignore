@@ -1,0 +1,50 @@
+# Keep the build context small and deterministic.
+# Only the workspace manifests + crate sources are needed by the Dockerfile.
+
+# Rust build artifacts (rebuilt inside the container)
+/target
+**/*.rs.bk
+
+# Git metadata
+.git
+.gitignore
+.github
+
+# Language bindings:
+#   - bindings/nodejs IS a workspace member, so cargo must read its manifest +
+#     source to load the workspace graph (even for `-p rdap-service`). Keep the
+#     source but drop its heavy build artifacts.
+#   - bindings/python and bindings/go are NOT workspace members — exclude fully.
+bindings/python/
+bindings/go/
+bindings/nodejs/node_modules/
+bindings/nodejs/target/
+bindings/nodejs/dist/
+bindings/nodejs/*.node
+bindings/nodejs/Cargo.lock
+bindings/nodejs/package-lock.json
+
+# Docs, ops, load tests, tuning data, examples — not needed to compile the service
+docs/
+ops/
+loadtest/
+benches/
+fuzz/
+examples/
+scripts/
+tools/
+deploy/
+tuning-data-*/
+*.md
+*.rehearsal.*
+classification_candidates.*
+
+# Local Docker assets (avoid recursive context churn)
+docker-compose.yml
+.dockerignore
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store

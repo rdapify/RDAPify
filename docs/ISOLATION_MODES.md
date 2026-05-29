@@ -162,7 +162,7 @@ docker run --rm \
 | Filesystem | `--read-only` rootfs; only `/tmp` and explicit volumes writable |
 | Capabilities | `--cap-drop=ALL` (no `CAP_NET_RAW`, no `CAP_SYS_*`) |
 | User | nonroot UID, no shell, no package manager in image |
-| Image size | ≤ 15 MB total (distroless `cc-debian12:nonroot` + static binary) |
+| Image size | ≤ 15 MB total (distroless `static-debian12:nonroot` + static musl binary; achieved ~13 MB) |
 | Attack surface | No `apt`, no `bash`, no `curl` — even if RCE, attacker has nothing to pivot to |
 
 ### When to use

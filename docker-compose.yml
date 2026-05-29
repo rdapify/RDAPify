@@ -1,0 +1,69 @@
+# RDAPify — standalone RDAP REST API microservice
+#
+#   docker compose build          # build the image locally
+#   docker compose up -d          # start the service
+#   docker compose logs -f        # tail logs
+#   docker compose down           # stop & remove
+#
+# REST API (all on port 8080):
+#   POST /rdap   {"kind":"domain","query":"example.com"}   kind: domain|ip|asn|nameserver
+#   POST /batch  [ ... ]                                   batch lookup
+#   GET  /health  liveness     GET /ready    readiness
+#   GET  /version build info   GET /metrics  Prometheus text
+
+services:
+  rdapify-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rdapify-core:local
+    container_name: rdapify-core
+
+    # <host>:<container>. rdap-service listens on 8080 inside the container.
+    ports:
+      - "8080:8080"
+
+    environment:
+      # Logging — RDAPIFY_LOG_LEVEL is authoritative (rdap-config/src/env.rs).
+      # RUST_LOG is kept for tracing-subscriber compatibility / operator habit.
+      RDAPIFY_LOG_LEVEL: "info"
+      RDAPIFY_LOG_FORMAT: "json"
+      RUST_LOG: "info"
+
+      # Server bind. Host already defaults to 0.0.0.0; only the port is
+      # env-overridable. Keep this aligned with the published port above.
+      RDAPIFY_SERVER_PORT: "8080"
+
+      # RDAP fetch timeout in seconds (production-safe default is 5).
+      RDAPIFY_RDAP_TIMEOUT: "5"
+
+      # Cache backend: "memory" (default, in-process) | "sqlite" | "postgres".
+      # TTL (3600s) and max entries (100000) are not env-tunable — mount an
+      # rdapify.toml ([cache] ttl_seconds / max_entries) to change them.
+      RDAPIFY_CACHE_TYPE: "memory"
+
+    restart: unless-stopped
+
+    # ── Hardening (ISOLATION_MODES.md Mode 3: --read-only + --cap-drop=ALL) ──
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Read-only rootfs: give the process a small writable scratch area.
+    tmpfs:
+      - /tmp:size=16m
+
+    # NOTE: no Docker HEALTHCHECK — the distroless/static image has no shell and
+    # no curl/wget, so an in-container probe cannot run. Use orchestrator-level
+    # HTTP probes against GET /health and GET /ready instead (see README/DOCKER.md).
+
+    # Optional: mount a TOML for advanced cache / rate-limit tuning.
+    # volumes:
+    #   - ./rdapify.toml:/etc/rdapify/rdapify.toml:ro
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
