@@ -8,7 +8,7 @@ RDAP (Registration Data Access Protocol) is the modern, structured replacement f
 [![docs.rs](https://img.shields.io/docsrs/rdapify)](https://docs.rs/rdapify)
 [![CI](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml/badge.svg)](https://github.com/rdapify/RDAPify/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![MSRV: 1.85](https://img.shields.io/badge/MSRV-1.85-orange)](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0.html)
+[![MSRV: 1.88](https://img.shields.io/badge/MSRV-1.88-orange)](https://blog.rust-lang.org/2025/06/26/Rust-1.88.0.html)
 
 ---
 

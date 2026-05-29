@@ -15,10 +15,9 @@
 ###############################################################################
 # Stage 1 — Builder
 ###############################################################################
-# NOTE: the resolved dependency tree contains edition-2024 crate manifests and
-# high-MSRV deps (getrandom 1.85; napi-build 1.88 for the bindings/nodejs member),
-# so the build toolchain must be >= 1.88 even though the project's own crates
-# target the lower documented MSRV. See docs/DOCKER.md "Building Locally".
+# NOTE: workspace MSRV is 1.88. The floor is set by deps in the resolved tree:
+# time 0.3.47 (security fix RUSTSEC-2026-0009), napi-build 1.88 (bindings/nodejs
+# member), and edition-2024 manifests. See docs/DOCKER.md "Building Locally".
 FROM rust:1.88-slim-bookworm AS builder
 
 # musl cross toolchain — `ring` compiles its C/asm with musl-gcc.
