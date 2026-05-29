@@ -25,7 +25,7 @@ jobs:
         include:
           # Also run on MSRV (minimum supported Rust version)
           - os: ubuntu-latest
-            rust: "1.75"
+            rust: "1.88"
 
     # MSRV job is allowed to fail due to transient crates.io network issues
     # on older cargo versions; core test matrix (stable) is authoritative.

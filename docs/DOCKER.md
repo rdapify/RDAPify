@@ -193,10 +193,10 @@ docker build -t rdapify-core:local .
 docker run --rm -p 8080:8080 rdapify-core:local
 ```
 
-> The build toolchain is pinned to `1.88` because the resolved dependency tree
-> contains edition-2024 manifests and high-MSRV crates (`getrandom` 1.85,
-> `napi-build` 1.88 for the Node binding member). The project's own crates target
-> a lower MSRV; the toolchain floor is dictated by third-party dependencies.
+> The build toolchain is pinned to `1.88`, which matches the workspace MSRV.
+> The floor is dictated by dependencies in the resolved tree: `time` 0.3.47
+> (security fix RUSTSEC-2026-0009), `napi-build` 1.88 (Node binding member), and
+> edition-2024 manifests.
 
 ---
 

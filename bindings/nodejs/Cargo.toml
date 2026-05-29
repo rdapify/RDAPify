@@ -7,6 +7,12 @@ license = "Apache-2.0"
 
 [lib]
 crate-type = ["cdylib"]
+# napi symbols (napi_*) are resolved by the Node runtime at load time, so the
+# Rust unit-test harness cannot link this crate (fails on macOS and under
+# tarpaulin, which disables dead-code elimination). The binding is exercised via
+# `napi build` + Node tests in CI, not `cargo test`.
+test = false
+doctest = false
 
 [dependencies]
 # Core library

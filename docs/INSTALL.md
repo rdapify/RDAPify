@@ -12,7 +12,7 @@ All installation methods for the CLI, library, and service.
 cargo install rdapify --features cli
 ```
 
-Installs `rdapify` to `~/.cargo/bin/`. Requires Rust 1.85+.
+Installs `rdapify` to `~/.cargo/bin/`. Requires Rust 1.88+.
 
 ### Pre-built binaries
 
@@ -141,7 +141,7 @@ cargo build --release --bin rdapify-service
 cargo test --workspace
 ```
 
-MSRV: **Rust 1.85**. Uses `rustls` (no OpenSSL dependency).
+MSRV: **Rust 1.88**. Uses `rustls` (no OpenSSL dependency).
 
 ---
 
