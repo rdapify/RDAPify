@@ -187,6 +187,8 @@ impl RdapClient {
         let mut fetcher_config = config.fetcher;
         fetcher_config.reuse_connections = config.reuse_connections;
         fetcher_config.max_connections_per_host = config.max_connections_per_host;
+        // Bootstrap egress should use the same deadline as the fetcher.
+        let egress_timeout = fetcher_config.timeout;
         let fetcher = Fetcher::with_config(ssrf, fetcher_config)?;
         let reqwest_client = fetcher.reqwest_client();
 
@@ -195,6 +197,7 @@ impl RdapClient {
             None => Bootstrap::new(reqwest_client),
         };
         bootstrap.set_secure_egress(ssrf_enabled);
+        bootstrap.set_egress_timeout(egress_timeout);
 
         if !config.custom_bootstrap_servers.is_empty() {
             bootstrap.set_custom_servers(config.custom_bootstrap_servers);

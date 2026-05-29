@@ -239,6 +239,15 @@ impl Bootstrap {
         self.secure_egress = enabled;
     }
 
+    /// Overrides the egress timeout used by [`secure_request`].
+    ///
+    /// Defaults to the [`HttpSecurityPolicy`] default; the client threads its
+    /// configured fetcher timeout here so bootstrap downloads and the primary
+    /// fetch hot path use the same deadline.
+    pub fn set_egress_timeout(&mut self, timeout: Duration) {
+        self.egress_policy.timeout = timeout;
+    }
+
     /// Registers custom TLD → RDAP server URL overrides.
     pub fn set_custom_servers(&mut self, servers: HashMap<String, String>) {
         let mut guard = self.custom_servers.write().expect("lock poisoned");
@@ -570,6 +579,7 @@ fn parse_asn_range(pattern: &str) -> Option<(u32, u32)> {
 /// [`RdapError`] taxonomy without leaking transport detail. SSRF-class
 /// violations collapse to [`RdapError::SsrfBlocked`].
 fn map_security_error(err: SecurityError, url: &str, timeout: Duration) -> RdapError {
+    let reason = err.to_string();
     match err {
         SecurityError::InvalidScheme => RdapError::InsecureScheme {
             scheme: url::Url::parse(url)
@@ -583,10 +593,26 @@ fn map_security_error(err: SecurityError, url: &str, timeout: Duration) -> RdapE
         },
         // All IP / host / DNS / redirect violations are SSRF blocks. The
         // message is the security layer's generic text — no transport detail.
-        other => RdapError::SsrfBlocked {
+        // Exhaustive (no wildcard) so a new SecurityError variant fails the
+        // build here rather than silently collapsing to SsrfBlocked.
+        SecurityError::BlockedIp
+        | SecurityError::PrivateIp
+        | SecurityError::LoopbackIp
+        | SecurityError::LinkLocalIp
+        | SecurityError::InvalidHost
+        | SecurityError::CredentialsInUrl
+        | SecurityError::DnsResolutionFailed(_)
+        | SecurityError::DnsRebindingDetected
+        | SecurityError::TooManyRedirects => RdapError::SsrfBlocked {
             url: url.to_string(),
-            reason: other.to_string(),
+            reason,
         },
+        // Body/content variants are only produced by `secure_fetch`'s body
+        // handling, never by `secure_request` (which returns an unread
+        // response); map defensively without leaking transport detail.
+        SecurityError::ResponseTooLarge | SecurityError::InvalidContentType => {
+            RdapError::ParseError { reason }
+        }
     }
 }
 
