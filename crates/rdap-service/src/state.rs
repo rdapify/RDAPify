@@ -38,7 +38,9 @@ impl AppState {
         };
 
         let prev_stale = self.last_cache_stale.swap(stats.stale, Ordering::Relaxed);
-        let prev_negative = self.last_cache_negative.swap(stats.negative, Ordering::Relaxed);
+        let prev_negative = self
+            .last_cache_negative
+            .swap(stats.negative, Ordering::Relaxed);
 
         let stale_delta = stats.stale.saturating_sub(prev_stale);
         let negative_delta = stats.negative.saturating_sub(prev_negative);

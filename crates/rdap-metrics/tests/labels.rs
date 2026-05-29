@@ -80,9 +80,7 @@ fn inflight_origin_gauge_increments_decrements_per_label() {
     //   2. inc(B) → A still 2, B is 1 (per-label isolation)
     //   3. dec(A) dec(A) dec(B) → both back to 0 (no leak)
     fn read_origin_gauge(out: &str, origin: &str) -> Option<f64> {
-        let prefix = format!(
-            "rdap_per_origin_inflight{{origin=\"{origin}\"}} "
-        );
+        let prefix = format!("rdap_per_origin_inflight{{origin=\"{origin}\"}} ");
         out.lines().find_map(|l| {
             l.strip_prefix(&prefix)
                 .and_then(|v| v.trim().parse::<f64>().ok())
@@ -114,10 +112,7 @@ fn inflight_origin_gauge_increments_decrements_per_label() {
     let v_a2 = read_origin_gauge(&h.render(), origin_a).unwrap();
     let v_b = read_origin_gauge(&h.render(), origin_b)
         .expect("rdap_per_origin_inflight{origin=B} not rendered");
-    assert!(
-        (v_a2 - (base_a + 2.0)).abs() < 1e-9,
-        "A leaked to B's inc"
-    );
+    assert!((v_a2 - (base_a + 2.0)).abs() < 1e-9, "A leaked to B's inc");
     assert!(
         (v_b - (base_b + 1.0)).abs() < 1e-9,
         "B should be baseline+1, got {v_b}"

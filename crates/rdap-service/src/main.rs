@@ -41,19 +41,18 @@ async fn main() {
     //        Engine hooks are wired through `metrics::counter!` etc., which
     //        require the global recorder to be present at the first call.
     #[cfg(feature = "metrics")]
-    let engine_metrics = match rdap_metrics::install_recorder(
-        &rdap_metrics::RecorderConfig::default(),
-    ) {
-        Ok(handle) => Arc::new(handle),
-        Err(e) => {
-            tracing::error!(
-                event = "startup_failed",
-                error = %e,
-                reason = "rdap_metrics::install_recorder failed",
-            );
-            std::process::exit(1);
-        }
-    };
+    let engine_metrics =
+        match rdap_metrics::install_recorder(&rdap_metrics::RecorderConfig::default()) {
+            Ok(handle) => Arc::new(handle),
+            Err(e) => {
+                tracing::error!(
+                    event = "startup_failed",
+                    error = %e,
+                    reason = "rdap_metrics::install_recorder failed",
+                );
+                std::process::exit(1);
+            }
+        };
 
     // ── 3. Build RDAP client ───────────────────────────────────────────────────
     let client_config = ClientConfig {

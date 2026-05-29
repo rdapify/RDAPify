@@ -8,8 +8,8 @@
 #![forbid(unsafe_code)]
 
 use std::collections::HashMap;
-use std::sync::{Arc, RwLock as StdRwLock};
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, RwLock as StdRwLock};
 use std::time::{Duration, Instant};
 
 use dashmap::DashMap;
@@ -219,9 +219,7 @@ impl Bootstrap {
                     v.insert(Arc::clone(&notify));
                     Claim::Leader(notify)
                 }
-                dashmap::mapref::entry::Entry::Occupied(o) => {
-                    Claim::Follower(Arc::clone(o.get()))
-                }
+                dashmap::mapref::entry::Entry::Occupied(o) => Claim::Follower(Arc::clone(o.get())),
             }
         };
 
@@ -250,10 +248,7 @@ impl Bootstrap {
     }
 
     /// Reads the in-memory cache and returns the entries if fresh, else `None`.
-    async fn read_cache_if_fresh(
-        &self,
-        resource: &'static str,
-    ) -> Option<Vec<(String, String)>> {
+    async fn read_cache_if_fresh(&self, resource: &'static str) -> Option<Vec<(String, String)>> {
         let cache = self.cache.read().await;
         let entry = cache.get(resource)?;
         if entry.is_expired(self.ttl) {
@@ -263,10 +258,7 @@ impl Bootstrap {
     }
 
     /// Fetches fresh entries from IANA and writes them to the cache.
-    async fn fetch_and_cache(
-        &self,
-        resource: &'static str,
-    ) -> Result<Vec<(String, String)>> {
+    async fn fetch_and_cache(&self, resource: &'static str) -> Result<Vec<(String, String)>> {
         let entries = self.fetch_entries(resource).await?;
         let mut cache = self.cache.write().await;
         cache.insert(
@@ -300,9 +292,10 @@ impl Bootstrap {
         // upstream cannot OOM us by streaming a multi-gigabyte body.
         let body = read_capped_bytes(response, MAX_BOOTSTRAP_BODY_BYTES).await?;
 
-        let file: BootstrapFile = serde_json::from_slice(&body).map_err(|e| RdapError::ParseError {
-            reason: e.to_string(),
-        })?;
+        let file: BootstrapFile =
+            serde_json::from_slice(&body).map_err(|e| RdapError::ParseError {
+                reason: e.to_string(),
+            })?;
 
         let entries = file
             .services
@@ -351,10 +344,7 @@ enum Claim {
 /// The cap is checked across streamed chunks; a very large body is rejected
 /// after the first chunk that pushes the total over the limit, so we never
 /// hold more than `cap + chunk_size` bytes in memory.
-async fn read_capped_bytes(
-    response: reqwest::Response,
-    cap: usize,
-) -> Result<Vec<u8>> {
+async fn read_capped_bytes(response: reqwest::Response, cap: usize) -> Result<Vec<u8>> {
     use futures::StreamExt;
 
     let mut total: Vec<u8> = Vec::with_capacity(8 * 1024);

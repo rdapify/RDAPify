@@ -268,7 +268,8 @@ async fn cache_entries_current_gauge_renders_once_set() {
     rdap_metrics::hooks::set_cache_entries_current(42);
     let out = handle().render();
     assert!(
-        out.lines().any(|l| l.starts_with("rdap_cache_entries_current ")),
+        out.lines()
+            .any(|l| l.starts_with("rdap_cache_entries_current ")),
         "expected rdap_cache_entries_current gauge value in:\n{out}"
     );
     assert!(
@@ -330,8 +331,7 @@ async fn semaphore_wait_seconds_histogram_records_global_kind() {
     let count_line = out
         .lines()
         .find(|l| {
-            l.starts_with("rdap_semaphore_wait_seconds_count{")
-                && l.contains(r#"kind="global""#)
+            l.starts_with("rdap_semaphore_wait_seconds_count{") && l.contains(r#"kind="global""#)
         })
         .expect("rdap_semaphore_wait_seconds_count{kind=global} line missing");
     let v: u64 = count_line
@@ -408,8 +408,9 @@ async fn breaker_open_seconds_total_increments_after_cooldown_elapses() {
         ..Default::default()
     });
     // Custom breaker registry with a 1-second cooldown so the test is fast.
-    let breakers =
-        rdap_core::CircuitBreakerRegistry::with_config(/* threshold */ 5, /* cooldown_ms */ 1_000);
+    let breakers = rdap_core::CircuitBreakerRegistry::with_config(
+        /* threshold */ 5, /* cooldown_ms */ 1_000,
+    );
     let f = rdap_core::Fetcher::with_config_and_breakers(
         ssrf,
         rdap_core::FetcherConfig {
@@ -430,9 +431,9 @@ async fn breaker_open_seconds_total_increments_after_cooldown_elapses() {
     // Sleep through the cooldown so the next call transitions Open→HalfOpen.
     tokio::time::sleep(std::time::Duration::from_millis(1_100)).await;
     let _ = f.fetch(&url).await; // triggers the transition
-    // The transition emits add_breaker_open_duration. With a 1.0–1.1 s
-    // window and `as_secs()` truncation, we expect the counter to climb
-    // by >= 1 (the increment is skipped when secs == 0).
+                                 // The transition emits add_breaker_open_duration. With a 1.0–1.1 s
+                                 // window and `as_secs()` truncation, we expect the counter to climb
+                                 // by >= 1 (the increment is skipped when secs == 0).
     let out = handle().render();
     let line = out.lines().find(|l| {
         l.starts_with("rdap_circuit_breaker_open_seconds_total{") && l.contains("origin=")
@@ -486,7 +487,10 @@ async fn retry_delay_seconds_histogram_records_on_5xx_retry() {
         .unwrap()
         .parse()
         .unwrap();
-    assert!(v >= 1, "expected ≥1 sample in retry_delay histogram, got {v}");
+    assert!(
+        v >= 1,
+        "expected ≥1 sample in retry_delay histogram, got {v}"
+    );
 }
 
 // ── v0.6.11 — per-origin inflight gauge: balanced inc/dec on every exit path

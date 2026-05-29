@@ -296,9 +296,9 @@ impl RdapClient {
                 .as_ref()
                 .trim_start_matches("AS")
                 .trim_start_matches("as");
-            let asn_num: u32 = asn_str.parse().map_err(|_| {
-                RdapError::InvalidInput(format!("Invalid ASN: {}", asn.as_ref()))
-            })?;
+            let asn_num: u32 = asn_str
+                .parse()
+                .map_err(|_| RdapError::InvalidInput(format!("Invalid ASN: {}", asn.as_ref())))?;
 
             let key = cache_key(QueryKind::Asn, &asn_num.to_string());
             let server = self.bootstrap.for_asn(asn_num).await?;
@@ -913,28 +913,19 @@ mod normalise_domain_tests {
         // "пример" (Russian for "example") → xn--e1afmkfd
         // Whether the resulting domain is registered is irrelevant to this
         // test — we are validating the transformation itself.
-        assert_eq!(
-            normalise_domain("пример.com").unwrap(),
-            "xn--e1afmkfd.com"
-        );
+        assert_eq!(normalise_domain("пример.com").unwrap(), "xn--e1afmkfd.com");
     }
 
     #[test]
     fn idn_german_umlaut_to_punycode() {
         // "bücher" (German for "books") → xn--bcher-kva
-        assert_eq!(
-            normalise_domain("bücher.de").unwrap(),
-            "xn--bcher-kva.de"
-        );
+        assert_eq!(normalise_domain("bücher.de").unwrap(), "xn--bcher-kva.de");
     }
 
     #[test]
     fn idn_japanese_to_punycode() {
         // "日本" (Japanese for "Japan") → xn--wgv71a
-        assert_eq!(
-            normalise_domain("日本.jp").unwrap(),
-            "xn--wgv71a.jp"
-        );
+        assert_eq!(normalise_domain("日本.jp").unwrap(), "xn--wgv71a.jp");
     }
 
     #[test]
