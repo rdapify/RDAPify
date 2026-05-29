@@ -210,7 +210,7 @@ Targets were validated on:
 | CPU       | x86-64, 4+ cores            |
 | RAM       | 8 GB+                       |
 | OS        | Linux 6.x (amd64)           |
-| Rust      | stable ≥ 1.75 (MSRV)        |
+| Rust      | stable ≥ 1.85 (MSRV)        |
 | Network   | Measured on 1 Gbps link      |
 
 Performance on other platforms (macOS, Windows, ARM) may differ by ±20%.

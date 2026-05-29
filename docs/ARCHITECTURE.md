@@ -213,7 +213,7 @@ This design allows swapping adapters (e.g., replacing `DashMap` with Redis) with
 
 - **No unsafe code**: `#![forbid(unsafe_code)]` in all crates
 - **Edition**: 2021 (async/await, const generics, stable)
-- **MSRV**: 1.77 (checked by CI)
+- **MSRV**: 1.85 (checked by CI)
 - **Linting**: `cargo clippy --workspace -- -D warnings` passes (or breaks CI)
 - **Formatting**: `cargo fmt --check` enforced
 - **Testing**: unit tests inline, integration tests in `tests/`, live tests marked `#[ignore]`

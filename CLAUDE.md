@@ -43,7 +43,7 @@ Async: Tokio multi-thread · TLS: rustls only (no OpenSSL)
 ## Invariants
 
 - `#![forbid(unsafe_code)]` — no unsafe Rust ever
-- Edition 2021 · MSRV 1.77 · no OpenSSL (rustls only)
+- Edition 2021 · MSRV 1.85 · no OpenSSL (rustls only)
 - All workspace crates use shared `[workspace.dependencies]`
 - Path deps: none (all deps pinned in workspace)
 - Tests: unit inline in modules · integration in `tests/` · live marked `#[ignore]`
