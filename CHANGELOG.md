@@ -41,6 +41,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bootstrap egress hardened.** IANA bootstrap downloads (including custom
   mirror URLs) now flow through the same `secure_request` pipeline as the
   primary fetch path — identical DNS-IP checks and redirect re-validation.
+- **IP blocklist expanded (low-severity perimeter sweep).** `is_blocked_ip` and
+  the `SsrfGuard` now also reject CGNAT `100.64.0.0/10` (RFC 6598), the NAT64
+  prefixes `64:ff9b::/96` (RFC 6052) and `64:ff9b:1::/48` (RFC 8215), and the
+  TEST-NET / documentation ranges `192.0.2.0/24`, `198.51.100.0/24`,
+  `203.0.113.0/24` (RFC 5737). The `require_https` policy is now enforced
+  fail-fast before any DNS lookup, and blocked-host errors were made generic to
+  avoid leaking internal network topology.
 
 ### ⚡ Performance & Caching
 
