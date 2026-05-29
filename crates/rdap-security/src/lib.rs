@@ -354,7 +354,13 @@ impl SsrfGuard {
             }
 
             Some(Host::Ipv6(v6)) => {
-                self.check_ipv6(v6, raw_url)?;
+                // Normalize IPv4-mapped IPv6 literals (`[::ffff:a.b.c.d]`) so
+                // the IPv4 rules apply — otherwise e.g. `[::ffff:192.168.1.1]`
+                // would slip past the IPv6-only checks (SSRF-F2).
+                match v6.to_ipv4_mapped() {
+                    Some(v4) => self.check_ipv4(v4, raw_url)?,
+                    None => self.check_ipv6(v6, raw_url)?,
+                }
             }
         }
 
@@ -445,6 +451,21 @@ mod tests {
             .is_ssrf_blocked());
         assert!(guard
             .validate("https://[::1]/")
+            .unwrap_err()
+            .is_ssrf_blocked());
+    }
+
+    #[test]
+    fn blocks_ipv4_mapped_ipv6_literal() {
+        // SSRF-F2: `[::ffff:a.b.c.d]` literals must be normalized to the IPv4
+        // rules instead of slipping past the IPv6-only checks.
+        let guard = SsrfGuard::new();
+        assert!(guard
+            .validate("https://[::ffff:192.168.1.1]/")
+            .unwrap_err()
+            .is_ssrf_blocked());
+        assert!(guard
+            .validate("https://[::ffff:127.0.0.1]/")
             .unwrap_err()
             .is_ssrf_blocked());
     }

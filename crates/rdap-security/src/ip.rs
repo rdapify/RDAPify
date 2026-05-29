@@ -18,6 +18,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 /// * Broadcast — 255.255.255.255
 #[inline]
 pub fn is_blocked_ip(ip: IpAddr) -> bool {
+    let ip = canonicalize(ip);
     is_loopback(ip)
         || is_private_ip(ip)
         || is_link_local(ip)
@@ -28,7 +29,7 @@ pub fn is_blocked_ip(ip: IpAddr) -> bool {
 /// Returns `true` for RFC 1918 IPv4 addresses and IPv6 unique-local (fc00::/7).
 #[inline]
 pub fn is_private_ip(ip: IpAddr) -> bool {
-    match ip {
+    match canonicalize(ip) {
         IpAddr::V4(v4) => is_private_v4(v4),
         IpAddr::V6(v6) => is_unique_local_v6(v6),
     }
@@ -37,20 +38,40 @@ pub fn is_private_ip(ip: IpAddr) -> bool {
 /// Returns `true` for loopback addresses (127.0.0.0/8 for IPv4, ::1 for IPv6).
 #[inline]
 pub fn is_loopback(ip: IpAddr) -> bool {
-    ip.is_loopback()
+    canonicalize(ip).is_loopback()
 }
 
 /// Returns `true` for link-local addresses (169.254/16 for IPv4, fe80::/10 for
 /// IPv6).
 #[inline]
 pub fn is_link_local(ip: IpAddr) -> bool {
-    match ip {
+    match canonicalize(ip) {
         IpAddr::V4(v4) => v4.is_link_local(),
         IpAddr::V6(v6) => is_link_local_v6(v6),
     }
 }
 
 // ── Private helpers ───────────────────────────────────────────────────────────
+
+/// Normalizes an IPv4-mapped IPv6 address (`::ffff:a.b.c.d`) to its canonical
+/// IPv4 form so the IPv4 rules apply. All other addresses pass through
+/// unchanged.
+///
+/// Without this, an address such as `::ffff:192.168.1.1` is classified as a
+/// generic (allowed) IPv6 address and slips past the RFC 1918 / loopback /
+/// link-local checks — a real SSRF bypass when a host resolves to a mapped
+/// address. Applied at the entry of every public classifier so all callers
+/// (`validate_resolved_ips`, `SecureResolver`, the URL validator) are covered.
+#[inline]
+fn canonicalize(ip: IpAddr) -> IpAddr {
+    match ip {
+        IpAddr::V6(v6) => match v6.to_ipv4_mapped() {
+            Some(v4) => IpAddr::V4(v4),
+            None => IpAddr::V6(v6),
+        },
+        v4 => v4,
+    }
+}
 
 #[inline]
 fn is_unspecified(ip: IpAddr) -> bool {
@@ -154,5 +175,47 @@ mod tests {
         assert!(!is_blocked_ip(
             "2606:4700:4700::1111".parse::<IpAddr>().unwrap()
         ));
+    }
+
+    // ── IPv4-mapped IPv6 normalization (SSRF-F2) ───────────────────────────────
+
+    #[test]
+    fn ipv4_mapped_private_is_blocked() {
+        // `::ffff:a.b.c.d` must be normalized so the IPv4 RFC 1918 rules apply.
+        for addr in ["::ffff:10.0.0.1", "::ffff:192.168.1.1", "::ffff:172.16.0.1"] {
+            let ip = addr.parse::<IpAddr>().unwrap();
+            // Guard: must still be an IPv6 value (testing the mapped path, not
+            // a parser auto-conversion to IPv4).
+            assert!(ip.is_ipv6(), "{addr} should parse as IPv6");
+            assert!(is_blocked_ip(ip), "{addr} (mapped private) must be blocked");
+            assert!(is_private_ip(ip), "{addr} must classify as private");
+        }
+    }
+
+    #[test]
+    fn ipv4_mapped_loopback_and_metadata_is_blocked() {
+        let loopback = "::ffff:127.0.0.1".parse::<IpAddr>().unwrap();
+        assert!(loopback.is_ipv6());
+        assert!(is_blocked_ip(loopback));
+        assert!(is_loopback(loopback), "mapped 127.0.0.1 must be loopback");
+
+        // Cloud-metadata endpoint reached via a mapped link-local address.
+        let metadata = "::ffff:169.254.169.254".parse::<IpAddr>().unwrap();
+        assert!(is_blocked_ip(metadata));
+        assert!(
+            is_link_local(metadata),
+            "mapped 169.254/16 must be link-local"
+        );
+    }
+
+    #[test]
+    fn ipv4_mapped_public_is_still_allowed() {
+        // Normalization must not over-block legitimate public addresses.
+        for addr in ["::ffff:8.8.8.8", "::ffff:1.1.1.1"] {
+            assert!(
+                !is_blocked_ip(addr.parse::<IpAddr>().unwrap()),
+                "{addr} (mapped public) must be allowed"
+            );
+        }
     }
 }
