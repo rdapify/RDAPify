@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] — Unreleased — Security maintenance
+
+> Post-`0.7.0` security maintenance: Dependabot/RustSec remediation, the MSRV
+> bump those patches require, and the hardened container deployment. No public
+> API changes.
+
+### 📦 Containerized Deployment
+
+- **Hardened distroless container.** A multi-stage `Dockerfile` and
+  `docker-compose.yml` ship `rdap-service` as a standalone RDAP REST API
+  microservice (ISOLATION_MODES Mode 3). The runtime is a fully static
+  `x86_64-unknown-linux-musl` binary on `gcr.io/distroless/static-debian12:nonroot`
+  — no shell, no libc, runs as UID 65532 — at **~13 MiB** (within the ≤ 15 MiB
+  image budget). TLS roots are bundled via `webpki-roots`, so the image needs no
+  system cert store. Compose applies `--read-only`, `--cap-drop=ALL`, and
+  `no-new-privileges`, with `restart: unless-stopped`.
+- **Deployment docs corrected.** `docs/DOCKER.md` was rewritten to the real REST
+  surface (`POST /rdap`, `POST /batch`; `GET /health`, `/ready`, `/version`,
+  `/metrics` on a single `8080` listener), the actual `RDAPIFY_*` env vars, and
+  orchestrator HTTP health probes (the distroless image has no in-container
+  `curl`). `examples/docker-compose.yml` reconciled to match.
+
+### 🔧 Toolchain & Dependency Security
+
+- **MSRV raised to 1.88.** The resolved dependency tree — notably `time` 0.3.47
+  (see below), `napi-build` (Node binding member), and edition-2024 manifests —
+  requires rustc ≥ 1.88. The documented MSRV is updated to match across
+  `Cargo.toml`, the README badge, `INSTALL.md`, `ARCHITECTURE.md`, and
+  `PERFORMANCE_SPEC.md`.
+- **Dependabot remediation (workspace lock now reports 0 vulnerabilities).**
+  - `rustls-webpki` 0.103.10 → 0.103.13 — fixes a reachable panic in CRL parsing
+    (RUSTSEC-2026-0104, **High**) and two certificate name-constraint bypasses
+    (RUSTSEC-2026-0098, RUSTSEC-2026-0099).
+  - `time` 0.3.36 → 0.3.47 — fixes a stack-exhaustion denial of service
+    (RUSTSEC-2026-0009).
+  - `rand` 0.9.2 → 0.9.4 and `fastrand` 2.4.0 → 2.4.1 — clear the `rand::rng()`
+    unsoundness notice and a yanked transitive version.
+  - Remaining `number_prefix` unmaintained notice (transitive via `indicatif`)
+    has no upstream fix and is tracked as an accepted low-risk advisory.
+
 ## [0.7.0] — 2026-05-29 — Performance & Security Baseline
 
 > **The consolidated pre-1.0 hardening release.** A full SSRF perimeter
@@ -115,40 +155,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Closes redirect-chain SSRF, DNS-rebinding TOCTOU, proxy-bypass, bootstrap
   egress bypass, and IPv4-mapped IPv6 filter evasion. All four areas reviewed
   by security-auditor and rust-reviewer prior to merge.
-
-### 📦 Containerized Deployment
-
-- **Hardened distroless container.** A multi-stage `Dockerfile` and
-  `docker-compose.yml` ship `rdap-service` as a standalone RDAP REST API
-  microservice (ISOLATION_MODES Mode 3). The runtime is a fully static
-  `x86_64-unknown-linux-musl` binary on `gcr.io/distroless/static-debian12:nonroot`
-  — no shell, no libc, runs as UID 65532 — at **~13 MiB** (within the ≤ 15 MiB
-  image budget). TLS roots are bundled via `webpki-roots`, so the image needs no
-  system cert store. Compose applies `--read-only`, `--cap-drop=ALL`, and
-  `no-new-privileges`, with `restart: unless-stopped`.
-- **Deployment docs corrected.** `docs/DOCKER.md` was rewritten to the real REST
-  surface (`POST /rdap`, `POST /batch`; `GET /health`, `/ready`, `/version`,
-  `/metrics` on a single `8080` listener), the actual `RDAPIFY_*` env vars, and
-  orchestrator HTTP health probes (the distroless image has no in-container
-  `curl`). `examples/docker-compose.yml` reconciled to match.
-
-### 🔧 Toolchain & Dependency Security
-
-- **MSRV raised to 1.88.** The resolved dependency tree — notably `time` 0.3.47
-  (see below), `napi-build` (Node binding member), and edition-2024 manifests —
-  requires rustc ≥ 1.88. The documented MSRV is updated to match across
-  `Cargo.toml`, the README badge, `INSTALL.md`, `ARCHITECTURE.md`, and
-  `PERFORMANCE_SPEC.md`.
-- **Dependabot remediation (workspace lock now reports 0 vulnerabilities).**
-  - `rustls-webpki` 0.103.10 → 0.103.13 — fixes a reachable panic in CRL parsing
-    (RUSTSEC-2026-0104, **High**) and two certificate name-constraint bypasses
-    (RUSTSEC-2026-0098, RUSTSEC-2026-0099).
-  - `time` 0.3.36 → 0.3.47 — fixes a stack-exhaustion denial of service
-    (RUSTSEC-2026-0009).
-  - `rand` 0.9.2 → 0.9.4 and `fastrand` 2.4.0 → 2.4.1 — clear the `rand::rng()`
-    unsoundness notice and a yanked transitive version.
-  - Remaining `number_prefix` unmaintained notice (transitive via `indicatif`)
-    has no upstream fix and is tracked as an accepted low-risk advisory.
 
 ## [0.6.11] — 2026-05-01 — Per-origin inflight gauge (observability completeness)
 
