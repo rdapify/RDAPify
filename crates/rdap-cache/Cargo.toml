@@ -1,6 +1,6 @@
 [package]
 name = "rdap-cache"
-version = "0.1.0"
+version = "0.7.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -15,7 +15,7 @@ metrics = ["rdap-metrics/enabled"]
 
 [dependencies]
 # Always linked. Hooks compile to inline no-ops unless `metrics` is enabled.
-rdap-metrics = { path = "../rdap-metrics", version = "0.1.0" }
+rdap-metrics = { path = "../rdap-metrics", version = "0.7.0" }
 # moka: concurrent cache engine (TinyLFU eviction + per-entry expiry). Already
 # linked elsewhere in the workspace (rdap-core), so it adds no new dep weight.
 moka         = { workspace = true }

@@ -7,6 +7,108 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-05-29 — Performance & Security Baseline
+
+> **The consolidated pre-1.0 hardening release.** A full SSRF perimeter
+> closure, a TinyLFU cache engine with intelligent TTL policy, protocol-correct
+> ccSLD resolution, and a 3.4k-LOC tech-debt purge — shipped as a single
+> reviewed, reproducible baseline. Stripped `rdapify` CLI: **3.48 MiB**
+> (under the 4 MiB budget). **405 tests passing**, `clippy --all-targets` and
+> `fmt` clean. Every security change was independently reviewed
+> (security-auditor + rust-reviewer) before merge.
+>
+> No breaking changes to existing public APIs — all additions are additive.
+
+### 🔒 Security Hardening
+
+- **Audited egress on the hot path.** The core fetcher now routes every
+  outbound request through `rdap_security::secure_request` — URL + DNS-resolved
+  IP validation before connect, `redirect::Policy::none()`, and per-hop
+  re-validation of the entire redirect chain. Closes the redirect-to-internal
+  SSRF gap where the previous client auto-followed up to 10 unvalidated hops.
+- **DNS connect-time pinning (rebinding TOCTOU closed).** A new `SecureResolver`
+  (`reqwest::dns::Resolve`) validates the *exact* addresses reqwest connects to,
+  rejecting the whole resolution if any IP is blocked. There is no longer an
+  unvalidated second DNS lookup between the security check and the TCP connect.
+  The egress client also sets `.no_proxy()` to prevent an ambient
+  `HTTPS_PROXY`/`ALL_PROXY` from tunnelling around the resolver.
+- **IPv4-mapped IPv6 normalization.** Addresses such as `::ffff:192.168.1.1`
+  and `::ffff:169.254.169.254` are now canonicalized to their IPv4 form before
+  classification, at every entry point (`is_blocked_ip` / `is_private_ip` /
+  `is_loopback` / `is_link_local`) and in the `SsrfGuard` URL-literal path —
+  closing a filter-bypass for loopback / RFC 1918 / link-local / metadata
+  targets reached via a mapped address.
+- **Bootstrap egress hardened.** IANA bootstrap downloads (including custom
+  mirror URLs) now flow through the same `secure_request` pipeline as the
+  primary fetch path — identical DNS-IP checks and redirect re-validation.
+
+### ⚡ Performance & Caching
+
+- **Moka cache engine.** The response cache's hand-rolled `DashMap` store with
+  an `O(n)` `evict_oldest` scan (quadratic degradation under write pressure) is
+  replaced by `moka`'s concurrent cache: bounded capacity with **TinyLFU
+  eviction (O(1) amortized)** and per-entry expiry. Values are `Arc`-wrapped to
+  avoid per-hit entry copies. moka was already linked (via the circuit breaker),
+  so the engine swap adds negligible binary weight.
+- **Intelligent `CachePolicy`.** A formal TTL policy now governs caching:
+  - Honors an upstream `Cache-Control: max-age` but **clamps it into a safe
+    range** — a new **minimum floor** stops a hostile/misconfigured origin from
+    forcing cache-busting (`max-age=0`/`1`) that would hammer upstreams; a
+    maximum ceiling caps over-long pinning.
+  - Falls back to **per-query-type defaults** when no usable hint is present:
+    domains 1 h · IPs/ASNs 24 h · nameservers 6 h · entities 1 h.
+  - Negative (404) caching at a 10-minute TTL to absorb repeated misses.
+
+### 🏛️ Architecture & Hygiene
+
+- **RFC 7484 ccSLD longest-match.** Bootstrap lookups now implement the
+  RFC 7484 §3.2 longest matching label-suffix rule against an **O(1)
+  `HashMap` index** built at parse time (Arc-shared — no per-query clones),
+  replacing the previous single-label `extract_tld` + linear scan. Complex
+  ccSLDs (`example.co.uk`, `sub.domain.com.sa`) now resolve to the correct
+  IANA-published authority without misses.
+- **Public Suffix List validation (opt-in).** Input hygiene against the PSL
+  (reject bare public suffixes) is available behind a new **off-by-default
+  `psl-validation` feature** — keeping the embedded PSL (~250 KB) out of the
+  default binary to respect the size budget.
+- **3,442 LOC of tech-debt purged.** The obsolete pre-modularization root
+  `/src/` tree (a non-compiled orphan that duplicated logic now owned by the
+  domain crates) was permanently removed — 22 files eliminating divergence risk.
+- **Workspace cleanliness.** Full `cargo fmt` pass and a `clippy --all-targets`
+  cleanup; the entire workspace is now warning-free under `-D warnings`.
+
+### 📦 Release Engineering & Metrics
+
+| Metric | Value |
+|---|---|
+| `rdapify` CLI (stripped release) | **3,650,440 B — 3.48 MiB** (✅ < 4 MiB budget) |
+| Tests | **405 passing**, 18 ignored (network/soak), 0 failed |
+| Lint / format | `clippy --all-targets --workspace -D warnings` clean · `fmt --check` clean |
+| Release profile | `lto = true` · `codegen-units = 1` · `strip = true` · `panic = "abort"` · `opt-level = "z"` |
+
+### Added
+
+- `rdap_security::secure_request` and `SecureResolver` (public, additive).
+- `rdap_cache::CachePolicy` (re-exported from the `rdapify` facade).
+- `Bootstrap::set_egress_timeout` / `set_secure_egress`.
+- `psl-validation` feature on `rdap-bootstrap` (off by default).
+
+### Changed
+
+- `rdap-cache` `MemoryCache` is now backed by `moka` (public API unchanged).
+- Bootstrap server selection uses RFC 7484 longest-match over an O(1) index.
+- Unified all workspace crate versions to `0.7.0`.
+
+### Removed
+
+- The orphan root `/src/` tree (22 files, 3,442 lines of dead code).
+
+### Security
+
+- Closes redirect-chain SSRF, DNS-rebinding TOCTOU, proxy-bypass, bootstrap
+  egress bypass, and IPv4-mapped IPv6 filter evasion. All four areas reviewed
+  by security-auditor and rust-reviewer prior to merge.
+
 ## [0.6.11] — 2026-05-01 — Per-origin inflight gauge (observability completeness)
 
 > **Adds per-origin inflight gauge; intentional exception to the
@@ -103,15 +205,22 @@ All 387 existing tests continue to pass.
 - `bindings/{nodejs,python}` 0.6.10 → 0.6.11
 - `rdapify-client` **unchanged** at 0.3.2 (no source-code change)
 
-## [v0.7.0] — Not started (no data cycle) — 2026-05-14
+### Note on v0.6.x tuning cycle — no-data, superseded by the 0.7.0 baseline release (2026-05-14)
 
-> **No release shipped.** This is a placeholder entry recording that
+> **Historical note (superseded).** The `v0.7.0` version number was
+> originally reserved for a data-driven-tuning milestone that **never
+> shipped** (the observation cycle below produced no data). That number
+> is now claimed by the **0.7.0 Performance & Security Baseline release
+> above**; this note is retained for audit continuity. The tuning cycle
+> kept everything at 0.6.10 — it was not a release.
+>
+> **No release shipped.** This entry records that
 > the v0.7.0 data-driven-tuning gate **was not met** in the
 > 2026-05-01 → 2026-05-14 observation cycle. No version bump, no
 > threshold changes, no SLO changes, no engine changes. State on
 > disk is byte-identical to the end of v0.6.10.
 
-### What this entry records
+#### What this entry records
 
 - The **RDAPify v0.6.10 pipeline is implemented and ready** —
   end-to-end smoke tests pass; envelope-format
@@ -132,7 +241,7 @@ All 387 existing tests continue to pass.
   no tuning was performed, no classification was attempted, no
   decision is recorded for any alert.
 
-### What did not change
+#### What did not change
 
 - No alert thresholds, severities, or `for:` windows.
 - No SLO targets.
@@ -143,7 +252,7 @@ All 387 existing tests continue to pass.
 - No version bumps in any Cargo.toml. The engine remains at
   `0.6.10`.
 
-### Audit evidence preserved
+#### Audit evidence preserved
 
 - `tuning-data-2026-05-01/MANIFEST.txt` — records the failed
   extraction invocation (recorded `prom_url`, `window`, timestamp).
@@ -154,7 +263,7 @@ All 387 existing tests continue to pass.
 - All 15 runbook `## Feedback log` sections — unchanged; 0
   populated rows.
 
-### Next-attempt prerequisites
+#### Next-attempt prerequisites
 
 - Prometheus endpoint reachable from the host running the pipeline
   (DNS, VPN, auth, TLS).
@@ -163,7 +272,7 @@ All 387 existing tests continue to pass.
 - Pin a fresh `WINDOW_START` / `WINDOW_END` for the new attempt;
   do not reuse the dates from this null cycle.
 
-### Constraint compliance
+#### Constraint compliance
 
 - **NO data fabrication** — every TUNING_REPORT cell that would
   describe production observations remains empty.

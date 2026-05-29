@@ -1,6 +1,6 @@
 [package]
 name = "rdap-cli"
-version = "0.6.11"
+version = "0.7.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -13,9 +13,9 @@ name = "rdapify"
 path = "src/main.rs"
 
 [dependencies]
-rdapify-client = { path = "../rdapify-client", version = "0.3.2" }
-rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
-rdap-batch     = { path = "../rdap-batch",     version = "0.2.0" }
+rdapify-client = { path = "../rdapify-client", version = "0.7.0" }
+rdap-types     = { path = "../rdap-types", version = "0.7.0" }
+rdap-batch     = { path = "../rdap-batch", version = "0.7.0" }
 tokio          = { workspace = true }
 tokio-stream   = { workspace = true }
 serde_json     = { workspace = true }

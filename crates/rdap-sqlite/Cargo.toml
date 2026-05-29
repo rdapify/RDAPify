@@ -1,6 +1,6 @@
 [package]
 name = "rdap-sqlite"
-version = "0.1.0"
+version = "0.7.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -9,4 +9,4 @@ homepage.workspace = true
 description = "SQLite persistence backend for RDAPify (query history, caching)"
 
 [dependencies]
-rdap-types = { path = "../rdap-types", version = "0.1.0" }
+rdap-types = { path = "../rdap-types", version = "0.7.0" }

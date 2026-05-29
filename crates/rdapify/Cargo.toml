@@ -1,6 +1,6 @@
 [package]
 name = "rdapify"
-version = "0.6.11"
+version = "0.7.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -74,33 +74,33 @@ full = ["memory-cache", "stream", "batch", "rate-limit"]
 
 [dependencies]
 # Core — always compiled (no database, no web framework)
-rdap-types     = { path = "../rdap-types",     version = "0.1.0" }
-rdap-security  = { path = "../rdap-security",  version = "0.1.0" }
-rdap-bootstrap = { path = "../rdap-bootstrap", version = "0.1.0" }
-rdap-core      = { path = "../rdap-core",      version = "0.1.0" }
-rdapify-client = { path = "../rdapify-client", version = "0.3.2", default-features = false }
+rdap-types     = { path = "../rdap-types", version = "0.7.0" }
+rdap-security  = { path = "../rdap-security", version = "0.7.0" }
+rdap-bootstrap = { path = "../rdap-bootstrap", version = "0.7.0" }
+rdap-core      = { path = "../rdap-core", version = "0.7.0" }
+rdapify-client = { path = "../rdapify-client", version = "0.7.0", default-features = false }
 
 # Optional modules
-rdap-cache      = { path = "../rdap-cache",      version = "0.1.0", optional = true }
-rdap-batch      = { path = "../rdap-batch",      version = "0.2.0", optional = true }
-rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.1.0", optional = true }
+rdap-cache      = { path = "../rdap-cache", version = "0.7.0", optional = true }
+rdap-batch      = { path = "../rdap-batch", version = "0.7.0", optional = true }
+rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.7.0", optional = true }
 
 # Optional storage backends
-rdap-sqlite   = { path = "../rdap-sqlite",   version = "0.1.0", optional = true }
-rdap-postgres = { path = "../rdap-postgres", version = "0.1.0", optional = true }
-rdap-mysql    = { path = "../rdap-mysql",    version = "0.1.0", optional = true }
+rdap-sqlite   = { path = "../rdap-sqlite", version = "0.7.0", optional = true }
+rdap-postgres = { path = "../rdap-postgres", version = "0.7.0", optional = true }
+rdap-mysql    = { path = "../rdap-mysql", version = "0.7.0", optional = true }
 
 # Optional service runtime
-rdap-service  = { path = "../rdap-service",  version = "0.1.0", optional = true }
+rdap-service  = { path = "../rdap-service", version = "0.7.0", optional = true }
 
 # Optional observability (only pulled by the `metrics` feature).
-rdap-metrics  = { path = "../rdap-metrics",  version = "0.1.0", optional = true }
+rdap-metrics  = { path = "../rdap-metrics", version = "0.7.0", optional = true }
 
 [dev-dependencies]
-rdap-core       = { path = "../rdap-core",       version = "0.1.0" }
-rdap-cache      = { path = "../rdap-cache",      version = "0.1.0" }
-rdap-batch      = { path = "../rdap-batch",      version = "0.2.0" }
-rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.1.0" }
+rdap-core       = { path = "../rdap-core", version = "0.7.0" }
+rdap-cache      = { path = "../rdap-cache", version = "0.7.0" }
+rdap-batch      = { path = "../rdap-batch", version = "0.7.0" }
+rdap-rate-limit = { path = "../rdap-rate-limit", version = "0.7.0" }
 tokio           = { workspace = true }
 tokio-test      = { workspace = true }
 tokio-stream    = { workspace = true }

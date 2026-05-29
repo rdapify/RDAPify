@@ -2061,7 +2061,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-batch"
-version = "0.2.0"
+version = "0.7.0"
 dependencies = [
  "futures",
  "mockito",
@@ -2076,7 +2076,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-bootstrap"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "addr",
  "bytes",
@@ -2095,7 +2095,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-cache"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "dashmap 6.1.0",
  "moka",
@@ -2106,7 +2106,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-cli"
-version = "0.6.11"
+version = "0.7.0"
 dependencies = [
  "clap",
  "clap_complete",
@@ -2124,7 +2124,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-config"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "serde",
  "tempfile",
@@ -2134,7 +2134,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-core"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "chrono",
  "dashmap 6.1.0",
@@ -2157,7 +2157,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-logging"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "rdap-config",
  "time",
@@ -2168,7 +2168,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-metrics"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "metrics",
  "metrics-exporter-prometheus",
@@ -2180,21 +2180,21 @@ dependencies = [
 
 [[package]]
 name = "rdap-mysql"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "rdap-types",
 ]
 
 [[package]]
 name = "rdap-postgres"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "rdap-types",
 ]
 
 [[package]]
 name = "rdap-rate-limit"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "dashmap 6.1.0",
  "governor",
@@ -2205,7 +2205,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-security"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "bytes",
  "rdap-types",
@@ -2217,7 +2217,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-service"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "axum",
  "futures",
@@ -2239,14 +2239,14 @@ dependencies = [
 
 [[package]]
 name = "rdap-sqlite"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "rdap-types",
 ]
 
 [[package]]
 name = "rdap-stream"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "rdap-types",
  "tokio",
@@ -2255,7 +2255,7 @@ dependencies = [
 
 [[package]]
 name = "rdap-types"
-version = "0.1.0"
+version = "0.7.0"
 dependencies = [
  "chrono",
  "reqwest",
@@ -2267,7 +2267,7 @@ dependencies = [
 
 [[package]]
 name = "rdapify"
-version = "0.6.11"
+version = "0.7.0"
 dependencies = [
  "criterion",
  "futures",
@@ -2297,7 +2297,7 @@ dependencies = [
 
 [[package]]
 name = "rdapify-client"
-version = "0.3.2"
+version = "0.7.0"
 dependencies = [
  "idna",
  "mockito",
@@ -2318,7 +2318,7 @@ dependencies = [
 
 [[package]]
 name = "rdapify-node"
-version = "0.6.11"
+version = "0.7.0"
 dependencies = [
  "napi",
  "napi-build",
