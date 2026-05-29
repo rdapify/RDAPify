@@ -1055,7 +1055,7 @@ async fn batch_executor_streams_all_results() {
         .mock("GET", "/dns.json")
         .with_status(200)
         .with_header("content-type", "application/json")
-        .with_body(common::dns_bootstrap_json("com", &format!("{rdap_base}")).to_string())
+        .with_body(common::dns_bootstrap_json("com", &rdap_base).to_string())
         .expect_at_least(1)
         .create_async()
         .await;

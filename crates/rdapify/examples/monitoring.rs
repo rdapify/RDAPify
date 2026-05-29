@@ -133,5 +133,5 @@ fn dispatch_webhook_json(domain: &str, snapshot: &DomainSnapshot) {
     });
 
     println!("  [webhook] POST https://your-domain.example.com/webhooks/rdap");
-    println!("            {}", payload.to_string());
+    println!("            {payload}");
 }

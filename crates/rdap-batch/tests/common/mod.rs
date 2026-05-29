@@ -1,4 +1,8 @@
 //! Shared helpers for rdap-batch integration tests.
+//!
+//! Not every integration-test binary uses every helper, so individual fns may
+//! be unused in a given compilation target.
+#![allow(dead_code)]
 
 use mockito::ServerGuard;
 use rdap_batch::{BatchConfig, BatchExecutor};

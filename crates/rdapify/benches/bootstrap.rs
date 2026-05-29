@@ -306,7 +306,7 @@ fn bench_bootstrap_custom_server_override(c: &mut Criterion) {
             .await;
 
         let mut custom = HashMap::new();
-        custom.insert("com".to_string(), format!("{base}"));
+        custom.insert("com".to_string(), base.to_string());
 
         let client = RdapClient::with_config(ClientConfig {
             cache: false,

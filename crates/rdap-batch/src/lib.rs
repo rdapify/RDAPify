@@ -480,7 +480,8 @@ mod tests {
     #[test]
     fn zero_concurrency_clamped_to_one() {
         // concurrency.max(1) in run_stream ensures we never pass 0 to buffered()
-        let clamped = 0_usize.max(1);
+        let concurrency: usize = 0;
+        let clamped = concurrency.max(1);
         assert_eq!(clamped, 1);
     }
 }
