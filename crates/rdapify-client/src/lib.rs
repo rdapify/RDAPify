@@ -179,6 +179,10 @@ impl RdapClient {
 
     /// Creates a client with custom configuration.
     pub fn with_config(config: ClientConfig) -> Result<Self> {
+        // Capture the SSRF posture before the config is consumed: the bootstrap
+        // downloader must route through the same audited egress pipeline as the
+        // fetcher, and be disabled together with the guard in test harnesses.
+        let ssrf_enabled = config.ssrf.enabled;
         let ssrf = SsrfGuard::with_config(config.ssrf);
         let mut fetcher_config = config.fetcher;
         fetcher_config.reuse_connections = config.reuse_connections;
@@ -190,6 +194,7 @@ impl RdapClient {
             Some(url) => Bootstrap::with_base_url(url, reqwest_client),
             None => Bootstrap::new(reqwest_client),
         };
+        bootstrap.set_secure_egress(ssrf_enabled);
 
         if !config.custom_bootstrap_servers.is_empty() {
             bootstrap.set_custom_servers(config.custom_bootstrap_servers);

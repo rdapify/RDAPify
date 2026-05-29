@@ -1,13 +1,32 @@
 //! IANA Bootstrap service discovery.
 //!
-//! Implements RFC 9224 — the client fetches IANA bootstrap files to locate
-//! the authoritative RDAP server for a given query.
+//! Implements RFC 9224 / RFC 7484 — the client fetches IANA bootstrap files to
+//! locate the authoritative RDAP server for a given query.
+//!
+//! ## Lookup model
+//!
+//! At parse time each bootstrap file is turned into an O(1) lookup structure
+//! ([`ResourceData`]). DNS uses a `HashMap` keyed by the **exact labels IANA
+//! publishes** (root-zone TLDs, and any multi-label keys a registry may add),
+//! and lookups use the RFC 7484 §3.2 *longest matching label-suffix* rule. So
+//! `example.co.uk` resolves to whichever key IANA actually publishes — `co.uk`
+//! if present, otherwise the registered TLD `uk` — without ever missing a
+//! ccSLD. (Note: IANA keys are root-zone TLDs, **not** Public-Suffix-List
+//! suffixes; the optional `psl-validation` feature is used only for *input*
+//! hygiene, never for server selection.)
+//!
+//! ## Egress
+//!
+//! All bootstrap downloads go through [`rdap_security::secure_request`] — the
+//! same audited SSRF pipeline as the primary fetch hot path (DNS-resolved IP
+//! validation + per-hop redirect re-validation). See [`Bootstrap::new`].
 //!
 //! Bootstrap files are cached in memory with a 24-hour TTL.
 
 #![forbid(unsafe_code)]
 
 use std::collections::HashMap;
+use std::net::IpAddr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, RwLock as StdRwLock};
 use std::time::{Duration, Instant};
@@ -17,6 +36,7 @@ use ipnetwork::IpNetwork;
 use serde::Deserialize;
 use tokio::sync::{Notify, RwLock};
 
+use rdap_security::{secure_request, HttpSecurityPolicy, SecurityError};
 use rdap_types::error::{RdapError, Result};
 
 /// Hard cap on bootstrap response size. IANA bootstrap files are well
@@ -35,12 +55,89 @@ struct BootstrapFile {
     services: Vec<(Vec<String>, Vec<String>)>,
 }
 
+// ── Parsed, lookup-ready resource data ───────────────────────────────────────
+
+/// A bootstrap file parsed into the structure best suited to its query type.
+///
+/// Built once at fetch/parse time and shared via `Arc`, so repeated lookups
+/// never re-parse or clone the underlying data.
+#[derive(Debug)]
+enum ResourceData {
+    /// DNS: O(1) index keyed by the exact labels IANA publishes (root-zone
+    /// TLDs and any multi-label keys), mapping to the candidate server URLs.
+    /// Queried by RFC 7484 longest-suffix match.
+    Dns(HashMap<String, Vec<String>>),
+    /// IPv4 / IPv6: CIDR network → server, matched by containment.
+    Ip(Vec<(IpNetwork, String)>),
+    /// ASN: inclusive `[start, end]` range → server.
+    Asn(Vec<(u32, u32, String)>),
+}
+
+impl ResourceData {
+    /// Parses a bootstrap file into the lookup structure for `resource`
+    /// (`"dns"`, `"ipv4"`, `"ipv6"`, or `"asn"`).
+    fn parse(resource: &str, file: BootstrapFile) -> Self {
+        match resource {
+            "dns" => {
+                let mut index: HashMap<String, Vec<String>> = HashMap::new();
+                for (patterns, servers) in file.services {
+                    let servers: Vec<String> = servers
+                        .into_iter()
+                        .map(|s| s.trim_end_matches('/').to_string())
+                        .filter(|s| !s.is_empty())
+                        .collect();
+                    if servers.is_empty() {
+                        continue;
+                    }
+                    for pattern in patterns {
+                        index
+                            .entry(pattern.to_lowercase())
+                            .or_default()
+                            .extend(servers.iter().cloned());
+                    }
+                }
+                ResourceData::Dns(index)
+            }
+            "asn" => {
+                let mut ranges = Vec::new();
+                for (patterns, servers) in file.services {
+                    let Some(server) = first_server(servers) else {
+                        continue;
+                    };
+                    for pattern in patterns {
+                        if let Some((start, end)) = parse_asn_range(&pattern) {
+                            ranges.push((start, end, server.clone()));
+                        }
+                    }
+                }
+                ResourceData::Asn(ranges)
+            }
+            // "ipv4" / "ipv6"
+            _ => {
+                let mut nets = Vec::new();
+                for (patterns, servers) in file.services {
+                    let Some(server) = first_server(servers) else {
+                        continue;
+                    };
+                    for pattern in patterns {
+                        if let Ok(network) = pattern.parse::<IpNetwork>() {
+                            nets.push((network, server.clone()));
+                        }
+                    }
+                }
+                ResourceData::Ip(nets)
+            }
+        }
+    }
+}
+
 // ── Internal cache entry ──────────────────────────────────────────────────────
 
 #[derive(Debug)]
 struct CacheEntry {
-    /// Parsed entries: `(pattern, first_server_url)`.
-    entries: Vec<(String, String)>,
+    /// Parsed, lookup-ready data. `Arc` so `get_resource` hands out cheap
+    /// clones instead of deep-copying the index on every query.
+    data: Arc<ResourceData>,
     fetched_at: Instant,
 }
 
@@ -70,14 +167,22 @@ pub struct Bootstrap {
     base_url: String,
     client: reqwest::Client,
     ttl: Duration,
+    /// Security policy for [`secure_request`] (timeout, redirect cap). The
+    /// body size is capped separately by [`read_capped_bytes`].
+    egress_policy: HttpSecurityPolicy,
+    /// When `true` (production default) every download is routed through the
+    /// audited [`secure_request`] pipeline. Disabled only in tests that target
+    /// loopback mock servers, which `secure_request` would (correctly) reject.
+    secure_egress: bool,
     cache: Arc<RwLock<HashMap<&'static str, CacheEntry>>>,
-    /// Custom TLD → server URL overrides; consulted before IANA lookup.
+    /// Custom TLD → server URL overrides; consulted (by longest-match) before
+    /// the IANA index.
     custom_servers: Arc<StdRwLock<HashMap<String, String>>>,
     /// Single-flight registry — one Notify per resource currently being
     /// refreshed. Insertion is atomic via DashMap's entry API.
     ///
     /// Naturally bounded: the only keys ever inserted are the four
-    /// hardcoded `&'static str` values that [`Bootstrap::get_entries`] is
+    /// hardcoded `&'static str` values that [`Bootstrap::get_resource`] is
     /// called with (`"dns"`, `"ipv4"`, `"ipv6"`, `"asn"`). Maximum size: 4.
     /// No size cap is needed.
     in_flight: Arc<DashMap<&'static str, Arc<Notify>>>,
@@ -88,24 +193,28 @@ pub struct Bootstrap {
 
 impl Bootstrap {
     /// Creates a new resolver using the official IANA bootstrap endpoint.
+    ///
+    /// The supplied `client` **must** be built with
+    /// [`reqwest::redirect::Policy::none()`] and the SSRF-validating resolver
+    /// (as produced by `rdap-core`'s `Fetcher`), because downloads are routed
+    /// through [`secure_request`], which drives the redirect loop itself.
     pub fn new(client: reqwest::Client) -> Self {
-        Self {
-            base_url: "https://data.iana.org/rdap".to_string(),
-            client,
-            ttl: Duration::from_secs(86_400),
-            cache: Arc::new(RwLock::new(HashMap::new())),
-            custom_servers: Arc::new(StdRwLock::new(HashMap::new())),
-            in_flight: Arc::new(DashMap::new()),
-            refresh_dedup_total: Arc::new(AtomicU64::new(0)),
-        }
+        Self::build("https://data.iana.org/rdap".to_string(), client)
     }
 
-    /// Creates a resolver with a custom base URL (useful for testing).
+    /// Creates a resolver with a custom base URL (e.g. an internal IANA
+    /// mirror). The URL is still subject to the full SSRF egress pipeline.
     pub fn with_base_url(base_url: impl Into<String>, client: reqwest::Client) -> Self {
+        Self::build(base_url.into().trim_end_matches('/').to_string(), client)
+    }
+
+    fn build(base_url: String, client: reqwest::Client) -> Self {
         Self {
-            base_url: base_url.into().trim_end_matches('/').to_string(),
+            base_url,
             client,
             ttl: Duration::from_secs(86_400),
+            egress_policy: HttpSecurityPolicy::default(),
+            secure_egress: true,
             cache: Arc::new(RwLock::new(HashMap::new())),
             custom_servers: Arc::new(StdRwLock::new(HashMap::new())),
             in_flight: Arc::new(DashMap::new()),
@@ -119,6 +228,17 @@ impl Bootstrap {
         self.refresh_dedup_total.load(Ordering::Relaxed)
     }
 
+    /// Enables or disables routing downloads through the audited SSRF egress
+    /// pipeline ([`secure_request`]).
+    ///
+    /// Mirrors the client's SSRF guard: production keeps this enabled (the
+    /// default); test harnesses that disable SSRF to reach loopback mock
+    /// servers must disable it here too, since [`secure_request`] rejects
+    /// non-HTTPS / loopback targets by design.
+    pub fn set_secure_egress(&mut self, enabled: bool) {
+        self.secure_egress = enabled;
+    }
+
     /// Registers custom TLD → RDAP server URL overrides.
     pub fn set_custom_servers(&mut self, servers: HashMap<String, String>) {
         let mut guard = self.custom_servers.write().expect("lock poisoned");
@@ -130,70 +250,70 @@ impl Bootstrap {
 
     // ── Public API ────────────────────────────────────────────────────────────
 
-    /// Returns the RDAP server base URL for a domain (by TLD).
+    /// Returns the RDAP server base URL for a domain.
+    ///
+    /// Uses the RFC 7484 longest matching label-suffix rule against the IANA
+    /// DNS index (and any custom overrides, which take priority). So
+    /// `example.co.uk` matches the most specific published key.
     pub async fn for_domain(&self, domain: &str) -> Result<String> {
-        let tld = extract_tld(domain)?;
-        let tld_lower = tld.to_lowercase();
+        let normalized = normalize_domain_input(domain)?;
 
+        // Custom overrides take priority (longest-match over custom keys).
         {
             let custom = self.custom_servers.read().expect("lock poisoned");
-            if let Some(server) = custom.get(&tld_lower) {
+            if let Some(server) = longest_suffix(&custom, &normalized) {
                 return Ok(server.clone());
             }
         }
 
-        let entries = self.get_entries("dns").await?;
-
-        entries
-            .iter()
-            .find(|(pattern, _)| pattern.to_lowercase() == tld_lower)
-            .map(|(_, server)| server.clone())
-            .ok_or_else(|| RdapError::NoServerFound {
-                query: domain.to_string(),
-            })
+        let data = self.get_resource("dns").await?;
+        match &*data {
+            ResourceData::Dns(index) => longest_suffix(index, &normalized)
+                .and_then(|servers| servers.first())
+                .cloned()
+                .ok_or_else(|| RdapError::NoServerFound {
+                    query: domain.to_string(),
+                }),
+            // get_resource("dns") always yields Dns; defensive, never hit.
+            _ => Err(RdapError::ParseError {
+                reason: "bootstrap 'dns' resource produced a non-DNS index".to_string(),
+            }),
+        }
     }
 
     /// Returns the RDAP server base URL for an IPv4 address.
     pub async fn for_ipv4(&self, ip: &str) -> Result<String> {
-        let addr: std::net::IpAddr = ip
+        let addr: IpAddr = ip
             .parse()
             .map_err(|_| RdapError::InvalidInput(format!("Invalid IPv4 address: {ip}")))?;
-
-        let entries = self.get_entries("ipv4").await?;
-        self.match_ip_entries(&entries, addr, ip)
+        let data = self.get_resource("ipv4").await?;
+        self.match_ip(&data, addr, ip)
     }
 
     /// Returns the RDAP server base URL for an IPv6 address.
     pub async fn for_ipv6(&self, ip: &str) -> Result<String> {
-        let addr: std::net::IpAddr = ip
+        let addr: IpAddr = ip
             .parse()
             .map_err(|_| RdapError::InvalidInput(format!("Invalid IPv6 address: {ip}")))?;
-
-        let entries = self.get_entries("ipv6").await?;
-        self.match_ip_entries(&entries, addr, ip)
+        let data = self.get_resource("ipv6").await?;
+        self.match_ip(&data, addr, ip)
     }
 
     /// Returns the RDAP server base URL for an ASN.
     pub async fn for_asn(&self, asn: u32) -> Result<String> {
-        let entries = self.get_entries("asn").await?;
-
-        for (pattern, server) in &entries {
-            if let Some((start, end)) = pattern.split_once('-') {
-                let start: u32 = start.parse().unwrap_or(u32::MAX);
-                let end: u32 = end.parse().unwrap_or(0);
-                if asn >= start && asn <= end {
-                    return Ok(server.clone());
-                }
-            } else if let Ok(n) = pattern.parse::<u32>() {
-                if asn == n {
-                    return Ok(server.clone());
-                }
-            }
+        let data = self.get_resource("asn").await?;
+        match &*data {
+            ResourceData::Asn(ranges) => ranges
+                .iter()
+                .find(|(start, end, _)| asn >= *start && asn <= *end)
+                .map(|(_, _, server)| server.clone())
+                .ok_or_else(|| RdapError::NoServerFound {
+                    query: format!("AS{asn}"),
+                }),
+            _ => Err(RdapError::ParseError {
+                reason: "bootstrap 'asn' resource produced a non-ASN index".to_string(),
+            }),
         }
-
-        Err(RdapError::NoServerFound {
-            query: format!("AS{asn}"),
-        })
     }
 
     /// Clears the in-memory bootstrap cache.
@@ -203,10 +323,25 @@ impl Bootstrap {
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
-    async fn get_entries(&self, resource: &'static str) -> Result<Vec<(String, String)>> {
+    fn match_ip(&self, data: &ResourceData, addr: IpAddr, original: &str) -> Result<String> {
+        match data {
+            ResourceData::Ip(nets) => nets
+                .iter()
+                .find(|(network, _)| network.contains(addr))
+                .map(|(_, server)| server.clone())
+                .ok_or_else(|| RdapError::NoServerFound {
+                    query: original.to_string(),
+                }),
+            _ => Err(RdapError::ParseError {
+                reason: "bootstrap IP resource produced a non-IP index".to_string(),
+            }),
+        }
+    }
+
+    async fn get_resource(&self, resource: &'static str) -> Result<Arc<ResourceData>> {
         // ── Fast path: fresh cache hit, no lock contention ────────────────
-        if let Some(entries) = self.read_cache_if_fresh(resource).await {
-            return Ok(entries);
+        if let Some(data) = self.read_cache_if_fresh(resource).await {
+            return Ok(data);
         }
 
         // ── Single-flight: atomically claim the refresh slot or join the
@@ -236,8 +371,8 @@ impl Bootstrap {
                 self.refresh_dedup_total.fetch_add(1, Ordering::Relaxed);
                 notify.notified().await;
                 // Leader is done — re-read the cache.
-                if let Some(entries) = self.read_cache_if_fresh(resource).await {
-                    return Ok(entries);
+                if let Some(data) = self.read_cache_if_fresh(resource).await {
+                    return Ok(data);
                 }
                 // Leader's fetch failed (or cache TTL is too short). Fall
                 // back to a direct fetch so we don't cascade the failure
@@ -247,44 +382,58 @@ impl Bootstrap {
         }
     }
 
-    /// Reads the in-memory cache and returns the entries if fresh, else `None`.
-    async fn read_cache_if_fresh(&self, resource: &'static str) -> Option<Vec<(String, String)>> {
+    /// Reads the in-memory cache and returns the data if fresh, else `None`.
+    async fn read_cache_if_fresh(&self, resource: &'static str) -> Option<Arc<ResourceData>> {
         let cache = self.cache.read().await;
         let entry = cache.get(resource)?;
         if entry.is_expired(self.ttl) {
             return None;
         }
-        Some(entry.entries.clone())
+        Some(Arc::clone(&entry.data))
     }
 
-    /// Fetches fresh entries from IANA and writes them to the cache.
-    async fn fetch_and_cache(&self, resource: &'static str) -> Result<Vec<(String, String)>> {
-        let entries = self.fetch_entries(resource).await?;
+    /// Fetches fresh data from IANA and writes it to the cache.
+    async fn fetch_and_cache(&self, resource: &'static str) -> Result<Arc<ResourceData>> {
+        let data = Arc::new(self.fetch_resource(resource).await?);
         let mut cache = self.cache.write().await;
         cache.insert(
             resource,
             CacheEntry {
-                entries: entries.clone(),
+                data: Arc::clone(&data),
                 fetched_at: Instant::now(),
             },
         );
-        Ok(entries)
+        Ok(data)
     }
 
-    async fn fetch_entries(&self, resource: &str) -> Result<Vec<(String, String)>> {
-        let url = format!("{}/{}.json", self.base_url, resource);
+    async fn fetch_resource(&self, resource: &str) -> Result<ResourceData> {
+        let url_str = format!("{}/{}.json", self.base_url, resource);
 
-        let response = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(RdapError::Network)?;
+        // SSRF-F3: route bootstrap egress through the audited security
+        // pipeline — identical DNS-resolved IP checks and per-hop redirect
+        // re-validation as the primary fetch hot path.
+        let response = if self.secure_egress {
+            let url = url::Url::parse(&url_str).map_err(|source| RdapError::InvalidUrl {
+                url: url_str.clone(),
+                source,
+            })?;
+            secure_request(&self.client, url, &self.egress_policy)
+                .await
+                .map_err(|e| map_security_error(e, &url_str, self.egress_policy.timeout))?
+        } else {
+            // Test-only direct path (loopback mock servers, which the security
+            // pipeline rejects by design). Never taken in production.
+            self.client
+                .get(&url_str)
+                .send()
+                .await
+                .map_err(RdapError::Network)?
+        };
 
         if !response.status().is_success() {
             return Err(RdapError::HttpStatus {
                 status: response.status().as_u16(),
-                url,
+                url: url_str,
             });
         }
 
@@ -297,36 +446,7 @@ impl Bootstrap {
                 reason: e.to_string(),
             })?;
 
-        let entries = file
-            .services
-            .into_iter()
-            .filter_map(|(patterns, servers)| {
-                let server = servers.into_iter().next()?;
-                let server = server.trim_end_matches('/').to_string();
-                Some(patterns.into_iter().map(move |p| (p, server.clone())))
-            })
-            .flatten()
-            .collect();
-
-        Ok(entries)
-    }
-
-    fn match_ip_entries(
-        &self,
-        entries: &[(String, String)],
-        addr: std::net::IpAddr,
-        original: &str,
-    ) -> Result<String> {
-        for (pattern, server) in entries {
-            if let Ok(network) = pattern.parse::<IpNetwork>() {
-                if network.contains(addr) {
-                    return Ok(server.clone());
-                }
-            }
-        }
-        Err(RdapError::NoServerFound {
-            query: original.to_string(),
-        })
+        Ok(ResourceData::parse(resource, file))
     }
 }
 
@@ -371,23 +491,102 @@ async fn read_capped_bytes(response: reqwest::Response, cap: usize) -> Result<Ve
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
 
-fn extract_tld(domain: &str) -> Result<String> {
+/// RFC 7484 §3.2 longest matching label-suffix lookup.
+///
+/// Tries the full name first, then drops leading labels one at a time, so the
+/// first hit is the longest matching suffix present in `map`. Keys in `map`
+/// are expected to be lowercased.
+///
+/// `a.b.c` is probed as `a.b.c`, then `b.c`, then `c`.
+fn longest_suffix<'a, V>(map: &'a HashMap<String, V>, domain: &str) -> Option<&'a V> {
     let domain = domain.trim_end_matches('.').to_lowercase();
-
     if domain.is_empty() {
+        return None;
+    }
+    let labels: Vec<&str> = domain.split('.').collect();
+    (0..labels.len()).find_map(|start| map.get(&labels[start..].join(".")))
+}
+
+/// Normalizes and validates a domain query before lookup.
+///
+/// Always: trims a trailing root dot, lowercases, and rejects empty input.
+///
+/// With the `psl-validation` feature: additionally validates the input against
+/// the Public Suffix List, rejecting bare public suffixes (e.g. `co.uk` with no
+/// registrable label). PSL is used **only** for input hygiene here — never for
+/// IANA server selection, which is keyed by root-zone TLDs, not PSL suffixes.
+fn normalize_domain_input(domain: &str) -> Result<String> {
+    let normalized = domain.trim().trim_end_matches('.').to_lowercase();
+    if normalized.is_empty() {
         return Err(RdapError::InvalidInput(
             "Domain name must not be empty".to_string(),
         ));
     }
 
-    let parts: Vec<&str> = domain.split('.').collect();
+    #[cfg(feature = "psl-validation")]
+    psl_validate(&normalized)?;
 
-    match parts.len() {
-        0 => Err(RdapError::InvalidInput(
-            "Domain name must not be empty".to_string(),
-        )),
-        1 => Ok(parts[0].to_string()),
-        _ => Ok(parts.last().unwrap().to_string()),
+    Ok(normalized)
+}
+
+/// Public-Suffix-List input validation (feature-gated).
+///
+/// Rejects inputs that are themselves a public suffix (no registrable label),
+/// and structurally invalid domains, before they reach the lookup engine.
+/// IDNA / punycode conversion is performed upstream by the client; this is a
+/// final sanity gate.
+#[cfg(feature = "psl-validation")]
+fn psl_validate(domain: &str) -> Result<()> {
+    let parsed = addr::parse_domain_name(domain)
+        .map_err(|e| RdapError::InvalidInput(format!("Invalid domain '{domain}': {e}")))?;
+    if parsed.root().is_none() {
+        return Err(RdapError::InvalidInput(format!(
+            "'{domain}' is a public suffix, not a registrable domain"
+        )));
+    }
+    Ok(())
+}
+
+/// First non-empty server URL (trailing slash trimmed) from a service entry.
+fn first_server(servers: Vec<String>) -> Option<String> {
+    servers
+        .into_iter()
+        .map(|s| s.trim_end_matches('/').to_string())
+        .find(|s| !s.is_empty())
+}
+
+/// Parses an ASN bootstrap pattern: either `"N"` or `"START-END"`.
+fn parse_asn_range(pattern: &str) -> Option<(u32, u32)> {
+    match pattern.split_once('-') {
+        Some((start, end)) => Some((start.trim().parse().ok()?, end.trim().parse().ok()?)),
+        None => {
+            let n = pattern.trim().parse().ok()?;
+            Some((n, n))
+        }
+    }
+}
+
+/// Maps a [`SecurityError`] from the egress pipeline into the public
+/// [`RdapError`] taxonomy without leaking transport detail. SSRF-class
+/// violations collapse to [`RdapError::SsrfBlocked`].
+fn map_security_error(err: SecurityError, url: &str, timeout: Duration) -> RdapError {
+    match err {
+        SecurityError::InvalidScheme => RdapError::InsecureScheme {
+            scheme: url::Url::parse(url)
+                .map(|u| u.scheme().to_string())
+                .unwrap_or_else(|_| "non-https".to_string()),
+        },
+        SecurityError::Network(inner) => RdapError::Network(inner),
+        SecurityError::Timeout => RdapError::Timeout {
+            millis: timeout.as_millis() as u64,
+            url: url.to_string(),
+        },
+        // All IP / host / DNS / redirect violations are SSRF blocks. The
+        // message is the security layer's generic text — no transport detail.
+        other => RdapError::SsrfBlocked {
+            url: url.to_string(),
+            reason: other.to_string(),
+        },
     }
 }
 
@@ -397,31 +596,84 @@ fn extract_tld(domain: &str) -> Result<String> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn extracts_simple_tld() {
-        assert_eq!(extract_tld("example.com").unwrap(), "com");
-        assert_eq!(extract_tld("google.org").unwrap(), "org");
+    /// Builds a bootstrap pointed at a loopback mock server. SSRF egress is
+    /// disabled because `secure_request` rejects non-HTTPS / loopback targets
+    /// by design (see `Bootstrap::secure_egress`).
+    fn mock_bootstrap(base_url: &str) -> Bootstrap {
+        let mut b = Bootstrap::with_base_url(base_url, reqwest::Client::new());
+        b.secure_egress = false;
+        b
+    }
+
+    // ── RFC 7484 longest-match (unit, no network) ──────────────────────────
+
+    fn dns_index() -> HashMap<String, Vec<String>> {
+        let mut m: HashMap<String, Vec<String>> = HashMap::new();
+        m.insert("com".into(), vec!["https://rdap.verisign.example/".into()]);
+        m.insert("net".into(), vec!["https://rdap.verisign.example/".into()]);
+        m.insert("uk".into(), vec!["https://rdap.nominet.example/".into()]);
+        // A multi-label key: exercises true longest-match precedence.
+        m.insert("co.uk".into(), vec!["https://rdap.couk.example/".into()]);
+        m.insert("sa".into(), vec!["https://rdap.nic-sa.example/".into()]);
+        m
     }
 
     #[test]
-    fn extracts_from_subdomain() {
-        assert_eq!(extract_tld("www.example.com").unwrap(), "com");
-        assert_eq!(extract_tld("deep.sub.example.net").unwrap(), "net");
+    fn longest_match_simple_tld() {
+        let idx = dns_index();
+        assert_eq!(
+            longest_suffix(&idx, "example.com").unwrap()[0],
+            "https://rdap.verisign.example/"
+        );
+        assert_eq!(
+            longest_suffix(&idx, "host.sub.net").unwrap()[0],
+            "https://rdap.verisign.example/"
+        );
     }
 
     #[test]
-    fn handles_single_label() {
-        assert_eq!(extract_tld("com").unwrap(), "com");
+    fn longest_match_prefers_more_specific_ccsld() {
+        let idx = dns_index();
+        // `co.uk` (longer) must win over `uk` for example.co.uk.
+        assert_eq!(
+            longest_suffix(&idx, "example.co.uk").unwrap()[0],
+            "https://rdap.couk.example/"
+        );
+        // A plain `.uk` registration falls back to the `uk` key.
+        assert_eq!(
+            longest_suffix(&idx, "example.uk").unwrap()[0],
+            "https://rdap.nominet.example/"
+        );
     }
 
     #[test]
-    fn rejects_empty() {
-        assert!(extract_tld("").is_err());
+    fn longest_match_falls_back_to_root_tld() {
+        let idx = dns_index();
+        // `com.sa` is not a published key, so `sub.domain.com.sa` matches the
+        // registered TLD `sa` (longest suffix actually present).
+        assert_eq!(
+            longest_suffix(&idx, "sub.domain.com.sa").unwrap()[0],
+            "https://rdap.nic-sa.example/"
+        );
     }
 
-    // ── B2.4 — Single-flight refresh ──────────────────────────────────────
+    #[test]
+    fn longest_match_unknown_tld_is_none() {
+        let idx = dns_index();
+        assert!(longest_suffix(&idx, "host.invalidtld").is_none());
+        assert!(longest_suffix(&idx, "").is_none());
+    }
 
-    /// A bootstrap file matching the IANA RFC 9224 schema.
+    #[test]
+    fn parse_asn_range_handles_single_and_range() {
+        assert_eq!(parse_asn_range("15169"), Some((15169, 15169)));
+        assert_eq!(parse_asn_range("64496-64511"), Some((64496, 64511)));
+        assert_eq!(parse_asn_range("not-a-number"), None);
+    }
+
+    // ── End-to-end longest-match through the fetch/parse/cache pipeline ─────
+
+    /// A DNS bootstrap file with both single- and multi-label keys.
     fn dns_bootstrap_body() -> &'static str {
         r#"{
             "version": "1.0",
@@ -429,10 +681,78 @@ mod tests {
             "description": "test",
             "services": [
                 [["com", "net"], ["https://rdap.verisign.example/"]],
+                [["uk"], ["https://rdap.nominet.example/"]],
+                [["co.uk"], ["https://rdap.couk.example/"]],
+                [["sa"], ["https://rdap.nic-sa.example/"]],
                 [["org"], ["https://rdap.publicinterestregistry.example/"]]
             ]
         }"#
     }
+
+    async fn dns_server() -> (mockito::ServerGuard, mockito::Mock) {
+        let mut server = mockito::Server::new_async().await;
+        let mock = server
+            .mock("GET", "/dns.json")
+            .with_status(200)
+            .with_header("content-type", "application/json")
+            .with_body(dns_bootstrap_body())
+            .create_async()
+            .await;
+        (server, mock)
+    }
+
+    #[tokio::test]
+    async fn for_domain_matches_ccslds_via_longest_match() {
+        let (server, _mock) = dns_server().await;
+        let b = mock_bootstrap(&server.url());
+
+        assert_eq!(
+            b.for_domain("example.com").await.unwrap(),
+            "https://rdap.verisign.example"
+        );
+        assert_eq!(
+            b.for_domain("host.net").await.unwrap(),
+            "https://rdap.verisign.example"
+        );
+        // ccSLD: longest match `co.uk` wins over `uk`.
+        assert_eq!(
+            b.for_domain("example.co.uk").await.unwrap(),
+            "https://rdap.couk.example"
+        );
+        // Plain `.uk`.
+        assert_eq!(
+            b.for_domain("bbc.uk").await.unwrap(),
+            "https://rdap.nominet.example"
+        );
+        // `.com.sa` not published → matches root TLD `sa`.
+        assert_eq!(
+            b.for_domain("sub.domain.com.sa").await.unwrap(),
+            "https://rdap.nic-sa.example"
+        );
+    }
+
+    #[tokio::test]
+    async fn for_domain_unknown_tld_returns_no_server() {
+        let (server, _mock) = dns_server().await;
+        let b = mock_bootstrap(&server.url());
+        let err = b.for_domain("host.nonexistenttld").await.unwrap_err();
+        assert!(matches!(err, RdapError::NoServerFound { .. }));
+    }
+
+    #[tokio::test]
+    async fn custom_servers_override_iana() {
+        let (server, _mock) = dns_server().await;
+        let mut b = mock_bootstrap(&server.url());
+        let mut custom = HashMap::new();
+        custom.insert("com".to_string(), "https://custom.example/rdap".to_string());
+        b.set_custom_servers(custom);
+        assert_eq!(
+            b.for_domain("example.com").await.unwrap(),
+            "https://custom.example/rdap"
+        );
+    }
+
+    // ── B2.4 — Single-flight refresh ──────────────────────────────────────
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
     async fn one_hundred_concurrent_first_loads_produce_one_iana_fetch() {
@@ -454,10 +774,7 @@ mod tests {
             .create_async()
             .await;
 
-        let bootstrap = Arc::new(Bootstrap::with_base_url(
-            server.url(),
-            reqwest::Client::new(),
-        ));
+        let bootstrap = Arc::new(mock_bootstrap(&server.url()));
 
         // 100 concurrent for_domain lookups — same TLD, same resource.
         let n = 100usize;
@@ -495,7 +812,7 @@ mod tests {
             .create_async()
             .await;
 
-        let bootstrap = Bootstrap::with_base_url(server.url(), reqwest::Client::new());
+        let bootstrap = mock_bootstrap(&server.url());
 
         let _ = bootstrap.for_domain("example.com").await.unwrap();
         let _ = bootstrap.for_domain("other.com").await.unwrap();
@@ -519,7 +836,7 @@ mod tests {
             .create_async()
             .await;
 
-        let bootstrap = Bootstrap::with_base_url(server.url(), reqwest::Client::new());
+        let bootstrap = mock_bootstrap(&server.url());
         let err = bootstrap.for_domain("example.com").await.unwrap_err();
         let msg = format!("{err}");
         assert!(
@@ -530,7 +847,7 @@ mod tests {
 
     #[tokio::test]
     async fn leader_fetch_failure_releases_slot_for_followers() {
-        // First N requests get 500; later requests should still be able to
+        // First request gets 500; later requests should still be able to
         // succeed (the failed leader did not permanently block the slot).
         let mut server = mockito::Server::new_async().await;
         let _bad = server
@@ -548,7 +865,7 @@ mod tests {
             .create_async()
             .await;
 
-        let bootstrap = Bootstrap::with_base_url(server.url(), reqwest::Client::new());
+        let bootstrap = mock_bootstrap(&server.url());
 
         // First call: hits the 500.
         let first = bootstrap.for_domain("example.com").await;
@@ -557,5 +874,36 @@ mod tests {
         // Second call: slot must be free; fetches the good response.
         let second = bootstrap.for_domain("example.com").await;
         assert!(second.is_ok(), "second call must succeed: {second:?}");
+    }
+
+    // ── PSL input validation (feature-gated) ───────────────────────────────
+
+    #[cfg(feature = "psl-validation")]
+    #[test]
+    fn psl_rejects_bare_public_suffix() {
+        // A bare public suffix has no registrable label and must be rejected
+        // before it reaches the lookup engine.
+        assert!(normalize_domain_input("co.uk").is_err());
+        assert!(normalize_domain_input("com").is_err());
+    }
+
+    #[cfg(feature = "psl-validation")]
+    #[test]
+    fn psl_accepts_registrable_domain() {
+        assert_eq!(
+            normalize_domain_input("example.co.uk").unwrap(),
+            "example.co.uk"
+        );
+        assert_eq!(
+            normalize_domain_input("example.com").unwrap(),
+            "example.com"
+        );
+    }
+
+    #[cfg(not(feature = "psl-validation"))]
+    #[test]
+    fn without_psl_bare_suffix_is_normalized_not_rejected() {
+        // Default build performs no PSL check — only structural normalization.
+        assert_eq!(normalize_domain_input("CO.UK.").unwrap(), "co.uk");
     }
 }

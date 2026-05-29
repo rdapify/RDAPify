@@ -9,15 +9,27 @@ homepage.workspace = true
 description = "IANA RFC 9224 bootstrap server discovery for RDAP"
 
 [dependencies]
-rdap-types = { path = "../rdap-types", version = "0.1.0" }
+rdap-types    = { path = "../rdap-types", version = "0.1.0" }
+rdap-security = { path = "../rdap-security", version = "0.1.0" }
 reqwest    = { workspace = true }
 serde      = { workspace = true }
 serde_json = { workspace = true }
 tokio      = { workspace = true }
+url        = { workspace = true }
 ipnetwork  = { workspace = true }
 dashmap    = { workspace = true }
 futures    = { workspace = true }
 bytes      = { workspace = true }
+# PSL-based input validation — OFF by default to respect the size budget.
+# Enable with `--features psl-validation`.
+addr       = { workspace = true, optional = true }
+
+[features]
+default = []
+## Validate / normalize domain inputs against the Public Suffix List before
+## lookup (reject bare public suffixes, sanitize input). Pulls in the embedded
+## PSL (~250 KB), so it is OFF by default.
+psl-validation = ["dep:addr"]
 
 [dev-dependencies]
 mockito    = { workspace = true }

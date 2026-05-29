@@ -61,6 +61,9 @@ thiserror = "2"
 url        = "2"
 ipnetwork  = "0.20"
 idna       = "1"
+# Public Suffix List (embedded ~250 KB). Optional — pulled in only behind a
+# crate feature flag so the default binary stays within the size budget.
+addr       = "0.15"
 dashmap    = "6"
 chrono     = { version = "0.4", features = ["serde"] }
 
