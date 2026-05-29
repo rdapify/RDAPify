@@ -27,7 +27,7 @@ use rdap_types::{
 };
 
 #[cfg(feature = "memory-cache")]
-use rdap_cache::{CacheStats, CacheStatus, MemoryCache};
+use rdap_cache::{CachePolicy, CacheStats, CacheStatus, MemoryCache};
 
 #[cfg(feature = "stream")]
 use tokio::sync::mpsc;
@@ -44,9 +44,9 @@ const TTL_IP: Duration = Duration::from_secs(86_400); // 24 h
 const TTL_ASN: Duration = Duration::from_secs(86_400); // 24 h
 const TTL_NAMESERVER: Duration = Duration::from_secs(21_600); // 6 h
 const TTL_ENTITY: Duration = Duration::from_secs(3_600); // 1 h
-const TTL_NEGATIVE: Duration = Duration::from_secs(600); // 10 m
-/// Maximum TTL accepted from a server's Cache-Control header.
-const TTL_MAX_ALLOWED: Duration = Duration::from_secs(86_400); // 24 h
+
+// The Cache-Control max-age clamp bounds and the negative (404) TTL live in
+// `rdap_cache::CachePolicy`, applied per query kind.
 
 // ── Query kind ────────────────────────────────────────────────────────────────
 
@@ -578,8 +578,9 @@ impl RdapClient {
     ///   the populated cache. If cache is disabled, dedup is bypassed and
     ///   each call goes through.
     ///
-    /// On 200, response is cached with a per-type TTL; on 404, the URL is
-    /// negative-cached for [`TTL_NEGATIVE`].
+    /// On 200, response is cached with a per-type TTL (honoring a clamped
+    /// upstream Cache-Control max-age); on 404, the URL is negative-cached for
+    /// a short fixed TTL. See `rdap_cache::CachePolicy`.
     async fn fetch_with_cache(
         &self,
         cache_key: &str,
@@ -722,7 +723,7 @@ impl RdapClient {
                     cache.set_with_ttl(cache_key.to_string(), value.clone(), kind.ttl());
                 }
                 Err(RdapError::HttpStatus { status: 404, .. }) => {
-                    cache.set_negative(cache_key.to_string(), TTL_NEGATIVE);
+                    cache.set_negative(cache_key.to_string(), CachePolicy::DEFAULT_NEGATIVE_TTL);
                 }
                 Err(_) => {}
             }
@@ -758,9 +759,9 @@ impl RdapClient {
 
         #[cfg(feature = "memory-cache")]
         if let Some(cache) = &self.cache {
-            let ttl = server_hint
-                .map(|h| h.min(TTL_MAX_ALLOWED))
-                .unwrap_or_else(|| kind.ttl());
+            // Honor the upstream Cache-Control max-age, clamped to a safe
+            // range, else fall back to this query type's default TTL.
+            let ttl = CachePolicy::with_default_ttl(kind.ttl()).effective_ttl(server_hint);
             cache.set_with_ttl(cache_key.to_string(), value.clone(), ttl);
         }
 

@@ -143,6 +143,77 @@ impl Default for CacheConfig {
     }
 }
 
+// ── Cache TTL policy ────────────────────────────────────────────────────────
+
+/// Policy for deriving a positive-cache TTL from an upstream
+/// `Cache-Control: max-age` hint, plus the negative-cache TTL.
+///
+/// The HTTP header is parsed upstream (by the fetcher) into an
+/// `Option<Duration>`; this struct applies the *policy*:
+///
+/// - **Honor** an upstream `max-age`, but **clamp** it into
+///   `[min_ttl, max_ttl]`. The minimum floor is deliberate: it stops an
+///   upstream from forcing a cache-busting TTL (e.g. `max-age=1`, or
+///   `max-age=0`) that would hammer the origin. The maximum ceiling stops an
+///   upstream from pinning a stale answer for an unreasonable duration.
+/// - **Fall back** to `default_ttl` (a per-query-type default) when no usable
+///   `max-age` is present (absent, or `no-store`/`no-cache`).
+#[derive(Debug, Clone, Copy)]
+pub struct CachePolicy {
+    /// Lower clamp applied to an honored upstream `max-age`.
+    pub min_ttl: Duration,
+    /// Upper clamp applied to an honored upstream `max-age`.
+    pub max_ttl: Duration,
+    /// Fallback TTL when no usable `max-age` hint is present.
+    pub default_ttl: Duration,
+    /// TTL for negative (404) cache entries.
+    pub negative_ttl: Duration,
+}
+
+impl CachePolicy {
+    /// Floor for an honored upstream `max-age` (1 minute).
+    pub const DEFAULT_MIN_TTL: Duration = Duration::from_secs(60);
+    /// Ceiling for an honored upstream `max-age` (24 hours).
+    pub const DEFAULT_MAX_TTL: Duration = Duration::from_secs(86_400);
+    /// Default negative-cache (404) TTL (10 minutes).
+    pub const DEFAULT_NEGATIVE_TTL: Duration = Duration::from_secs(600);
+
+    /// Builds a policy with the standard min/max clamp and negative TTL,
+    /// using `default_ttl` as the per-query-type fallback (e.g. 1 h for
+    /// domains, 24 h for IPs).
+    pub const fn with_default_ttl(default_ttl: Duration) -> Self {
+        Self {
+            min_ttl: Self::DEFAULT_MIN_TTL,
+            max_ttl: Self::DEFAULT_MAX_TTL,
+            default_ttl,
+            negative_ttl: Self::DEFAULT_NEGATIVE_TTL,
+        }
+    }
+
+    /// Resolves the effective positive-cache TTL for a response.
+    ///
+    /// - `Some(max_age)` → clamped into `[min_ttl, max_ttl]` (so even
+    ///   `max-age=0` yields `min_ttl`, never an instant expiry that defeats
+    ///   caching and lets an upstream be hammered).
+    /// - `None` → `default_ttl`.
+    ///
+    /// Uses `.max().min()` rather than `Duration::clamp` so a mis-ordered
+    /// `min_ttl > max_ttl` config can never panic (max wins).
+    pub fn effective_ttl(&self, upstream_max_age: Option<Duration>) -> Duration {
+        match upstream_max_age {
+            Some(age) => age.max(self.min_ttl).min(self.max_ttl),
+            None => self.default_ttl,
+        }
+    }
+}
+
+impl Default for CachePolicy {
+    fn default() -> Self {
+        // 5-minute fallback mirrors `CacheConfig::default().ttl`.
+        Self::with_default_ttl(Duration::from_secs(300))
+    }
+}
+
 // ── Cache ─────────────────────────────────────────────────────────────────────
 
 /// Thread-safe in-memory RDAP response cache with stale-while-revalidate,
@@ -554,6 +625,49 @@ mod tests {
         assert!(cache.get("key").is_none());
         // get_status() returns Stale (still within 30s stale window)
         assert!(matches!(cache.get_status("key"), CacheStatus::Stale(_)));
+    }
+
+    // ── CachePolicy ────────────────────────────────────────────────────────
+
+    #[test]
+    fn cache_policy_honors_hint_within_range() {
+        let p = CachePolicy::with_default_ttl(Duration::from_secs(3600));
+        // 2h is within [1m, 24h] → honored verbatim.
+        assert_eq!(
+            p.effective_ttl(Some(Duration::from_secs(7200))),
+            Duration::from_secs(7200)
+        );
+    }
+
+    #[test]
+    fn cache_policy_clamps_below_min() {
+        let p = CachePolicy::with_default_ttl(Duration::from_secs(3600));
+        // max-age=1 and max-age=0 are floored to the minimum (anti cache-bust).
+        assert_eq!(
+            p.effective_ttl(Some(Duration::from_secs(1))),
+            CachePolicy::DEFAULT_MIN_TTL
+        );
+        assert_eq!(
+            p.effective_ttl(Some(Duration::ZERO)),
+            CachePolicy::DEFAULT_MIN_TTL
+        );
+    }
+
+    #[test]
+    fn cache_policy_clamps_above_max() {
+        let p = CachePolicy::with_default_ttl(Duration::from_secs(3600));
+        // A week-long max-age is capped at the 24h ceiling.
+        assert_eq!(
+            p.effective_ttl(Some(Duration::from_secs(7 * 86_400))),
+            CachePolicy::DEFAULT_MAX_TTL
+        );
+    }
+
+    #[test]
+    fn cache_policy_falls_back_to_default_when_no_hint() {
+        let p = CachePolicy::with_default_ttl(Duration::from_secs(86_400));
+        assert_eq!(p.effective_ttl(None), Duration::from_secs(86_400));
+        assert_eq!(p.negative_ttl, CachePolicy::DEFAULT_NEGATIVE_TTL);
     }
 
     #[test]

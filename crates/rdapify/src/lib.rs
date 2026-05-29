@@ -9,7 +9,7 @@
 //!
 //! | Feature        | Default | Description                                      |
 //! |----------------|---------|--------------------------------------------------|
-//! | `memory-cache` | ✓       | In-memory DashMap response cache                 |
+//! | `memory-cache` | ✓       | In-memory moka response cache (TinyLFU eviction) |
 //! | `stream`       | ✓       | Async streaming query API (`tokio-stream`)       |
 //! | `batch`        |         | Batch query execution with concurrency control   |
 //! | `rate-limit`   |         | Per-registry and global rate limiting            |
@@ -57,7 +57,7 @@ pub use rdap_security::{SsrfConfig, SsrfGuard};
 // ── Feature-gated flat re-exports ────────────────────────────────────────────
 
 #[cfg(feature = "memory-cache")]
-pub use rdap_cache::{CacheConfig, CacheStats, CacheStatus, MemoryCache};
+pub use rdap_cache::{CacheConfig, CachePolicy, CacheStats, CacheStatus, MemoryCache};
 
 #[cfg(feature = "stream")]
 pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, StreamConfig};
@@ -89,7 +89,7 @@ pub mod types {
 #[cfg(feature = "memory-cache")]
 pub mod cache {
     //! In-memory response cache.
-    pub use rdap_cache::{CacheConfig, MemoryCache};
+    pub use rdap_cache::{CacheConfig, CachePolicy, MemoryCache};
 }
 
 #[cfg(feature = "stream")]
