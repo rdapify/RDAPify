@@ -18,7 +18,7 @@ fn client() -> PyResult<RdapClient> {
 fn to_py_dict<T: serde::Serialize>(py: Python<'_>, value: &T) -> PyResult<Py<PyDict>> {
     let json = serde_json::to_string(value)
         .map_err(|e| pyo3::exceptions::PyValueError::new_err(e.to_string()))?;
-    let json_module = PyModule::import_bound(py, "json")?;
+    let json_module = PyModule::import(py, "json")?;
     let result = json_module.call_method1("loads", (json,))?;
     result.extract::<Py<PyDict>>()
 }
@@ -99,7 +99,7 @@ fn domain_available(py: Python<'_>, name: &str) -> PyResult<Py<PyDict>> {
     let result = runtime()
         .block_on(c.domain_available(name))
         .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(e.to_string()))?;
-    let dict = PyDict::new_bound(py);
+    let dict = PyDict::new(py);
     dict.set_item("available", result.available)?;
     dict.set_item("expires_at", result.expires_at)?;
     Ok(dict.unbind())
@@ -115,7 +115,7 @@ fn domain_available_batch(py: Python<'_>, names: Vec<String>) -> PyResult<Vec<Py
     let results = runtime().block_on(c.domain_available_batch(names.clone(), None));
     let mut output = Vec::with_capacity(results.len());
     for (i, res) in results.into_iter().enumerate() {
-        let dict = PyDict::new_bound(py);
+        let dict = PyDict::new(py);
         let name = names.get(i).map(|s| s.as_str()).unwrap_or("?");
         match res {
             Ok(avail) => {
@@ -148,7 +148,7 @@ fn stream_asn(py: Python<'_>, queries: Vec<String>) -> PyResult<Vec<Py<PyDict>>>
     );
     let mut output = Vec::with_capacity(events.len());
     for event in events {
-        let dict = PyDict::new_bound(py);
+        let dict = PyDict::new(py);
         match event {
             AsnEvent::Result(r) => {
                 let query = r.query.to_string();
@@ -182,7 +182,7 @@ fn stream_nameserver(py: Python<'_>, queries: Vec<String>) -> PyResult<Vec<Py<Py
     );
     let mut output = Vec::with_capacity(events.len());
     for event in events {
-        let dict = PyDict::new_bound(py);
+        let dict = PyDict::new(py);
         match event {
             NameserverEvent::Result(r) => {
                 let query = r.query.clone();
