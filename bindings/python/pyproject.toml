@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "rdapify-py"
-version = "0.4.0"
+version = "0.7.0"
 description = "⚠️ DEPRECATED — RDAPify is now Rust-first. Future Python support via PyO3 after v1.0. See https://github.com/rdapify/RDAPify"
 readme = "README.md"
 license = { text = "Apache-2.0" }
