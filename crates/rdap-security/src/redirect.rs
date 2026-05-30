@@ -7,17 +7,29 @@ use crate::dns;
 use crate::error::SecurityError;
 use crate::url as url_check;
 
-/// Validates a single redirect hop from `_from` to `to`.
+/// Validates a single redirect hop from `from` to `to`.
 ///
 /// Performs the full security stack on the redirect target:
+/// 0. Origin check — reject a protocol downgrade (HTTPS → non-HTTPS).
 /// 1. URL structure validation (scheme, no credentials, no blocked IP literal).
 /// 2. DNS resolution of the target host.
 /// 3. IP validation of every resolved address.
 ///
-/// The `_from` parameter is accepted for future use (e.g., blocking
-/// protocol-downgrade redirects from HTTPS to HTTP) but is not currently
-/// inspected.
-pub async fn validate_redirect(_from: &Url, to: &Url) -> Result<(), SecurityError> {
+/// The `from` origin is inspected to block protocol-downgrade redirects.
+/// Cross-host redirects are intentionally **permitted**: RDAP bootstrap
+/// legitimately redirects to authoritative registries on other hosts, and
+/// every target host is independently re-validated by steps 1–3, so a
+/// host change carries no SSRF risk that the per-hop checks do not already
+/// cover.
+pub async fn validate_redirect(from: &Url, to: &Url) -> Result<(), SecurityError> {
+    // 0. Defense-in-depth: a secure origin must never be downgraded to an
+    //    insecure transport across a hop. This is enforced here independently
+    //    of the target-scheme policy in `validate_url`, so the invariant holds
+    //    even if that policy is ever relaxed.
+    if from.scheme() == "https" && to.scheme() != "https" {
+        return Err(SecurityError::InvalidScheme);
+    }
+
     // 1. Re-run full URL validation on the redirect target.
     url_check::validate_url(to)?;
 
@@ -46,6 +58,24 @@ mod tests {
         let rt = tokio::runtime::Runtime::new().unwrap();
         rt.block_on(async {
             let from = parse("https://rdap.example.com/");
+            let to = parse("http://rdap.example.com/");
+            assert!(matches!(
+                validate_redirect(&from, &to).await,
+                Err(SecurityError::InvalidScheme)
+            ));
+        });
+    }
+
+    #[test]
+    fn non_https_origin_does_not_trip_downgrade_check() {
+        // The origin downgrade check (step 0) only fires for an HTTPS origin.
+        // With a non-HTTPS origin it must stay inert and let `validate_url`
+        // (step 1) be the backstop that still rejects the non-HTTPS target —
+        // proving the `from`-based branch neither over-blocks nor is the only
+        // line of defence.
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        rt.block_on(async {
+            let from = parse("http://rdap.example.com/");
             let to = parse("http://rdap.example.com/");
             assert!(matches!(
                 validate_redirect(&from, &to).await,

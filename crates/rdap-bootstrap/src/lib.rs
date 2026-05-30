@@ -24,6 +24,7 @@
 //! Bootstrap files are cached in memory with a 24-hour TTL.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -36,7 +37,7 @@ use ipnetwork::IpNetwork;
 use serde::Deserialize;
 use tokio::sync::{Notify, RwLock};
 
-use rdap_security::{secure_request, HttpSecurityPolicy, SecurityError};
+use rdap_security::{read_limited, secure_request, HttpSecurityPolicy, SecurityError};
 use rdap_types::error::{RdapError, Result};
 
 /// Hard cap on bootstrap response size. IANA bootstrap files are well
@@ -168,7 +169,7 @@ pub struct Bootstrap {
     client: reqwest::Client,
     ttl: Duration,
     /// Security policy for [`secure_request`] (timeout, redirect cap). The
-    /// body size is capped separately by [`read_capped_bytes`].
+    /// body size is capped separately by [`read_limited`].
     egress_policy: HttpSecurityPolicy,
     /// When `true` (production default) every download is routed through the
     /// audited [`secure_request`] pipeline. Disabled only in tests that target
@@ -447,8 +448,12 @@ impl Bootstrap {
         }
 
         // Enforce a hard size cap *before* JSON parsing. An adversarial
-        // upstream cannot OOM us by streaming a multi-gigabyte body.
-        let body = read_capped_bytes(response, MAX_BOOTSTRAP_BODY_BYTES).await?;
+        // upstream cannot OOM us by streaming a multi-gigabyte body. The cap is
+        // applied by the audited `rdap-security` primitive so bootstrap egress
+        // shares one body-limiting implementation with the primary fetch path.
+        let body = read_limited(response, MAX_BOOTSTRAP_BODY_BYTES)
+            .await
+            .map_err(|e| map_security_error(e, &url_str, self.egress_policy.timeout))?;
 
         let file: BootstrapFile =
             serde_json::from_slice(&body).map_err(|e| RdapError::ParseError {
@@ -465,37 +470,6 @@ impl Bootstrap {
 enum Claim {
     Leader(Arc<Notify>),
     Follower(Arc<Notify>),
-}
-
-/// Reads at most `cap` bytes from `response`'s body. Returns an error
-/// if the body exceeds the cap, instead of allocating unboundedly.
-///
-/// The cap is checked across streamed chunks; a very large body is rejected
-/// after the first chunk that pushes the total over the limit, so we never
-/// hold more than `cap + chunk_size` bytes in memory.
-async fn read_capped_bytes(response: reqwest::Response, cap: usize) -> Result<Vec<u8>> {
-    use futures::StreamExt;
-
-    let mut total: Vec<u8> = Vec::with_capacity(8 * 1024);
-    let mut stream = response.bytes_stream();
-    while let Some(chunk_res) = stream.next().await {
-        let chunk: bytes::Bytes = match chunk_res {
-            Ok(b) => b,
-            Err(e) => return Err(RdapError::Network(e)),
-        };
-        if total.len().saturating_add(chunk.len()) > cap {
-            return Err(RdapError::ParseError {
-                reason: format!(
-                    "bootstrap response exceeds {} bytes (received {} so far + {} more)",
-                    cap,
-                    total.len(),
-                    chunk.len(),
-                ),
-            });
-        }
-        total.extend_from_slice(&chunk);
-    }
-    Ok(total)
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────────

@@ -1,0 +1,105 @@
+name: Bindings Verify
+
+# Build-only verification for the language bindings.
+#
+# Rationale: the main CI workflow (`ci.yml`) builds the Node.js binding only as
+# a side effect of it being a `cargo` workspace member, and never builds the
+# Python binding at all — `bindings/python` declares its own `[workspace]`, so
+# it is excluded from the root workspace and was previously verified ONLY on
+# tag push (`bindings.yml`). That left a scope gap: a PR could break the Python
+# (or napi) build and still merge green.
+#
+# This workflow closes that gap. It is PATH-FILTERED at the trigger level so it
+# runs only when a binding actually changes, and the inner `changes` job uses
+# dorny/paths-filter to build *only* the package(s) that were touched. These are
+# build-only checks (no publish, no artifact upload) — publishing remains the
+# job of the tag-triggered `bindings.yml`.
+
+on:
+  push:
+    branches: [master, main, dev]
+    paths:
+      - "bindings/nodejs/**"
+      - "bindings/python/**"
+      - ".github/workflows/bindings-verify.yml"
+  pull_request:
+    branches: [master, main, dev]
+    paths:
+      - "bindings/nodejs/**"
+      - "bindings/python/**"
+      - ".github/workflows/bindings-verify.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  CARGO_NET_RETRY: "10"
+
+jobs:
+  # ── Detect which bindings changed ─────────────────────────────────────────
+  changes:
+    name: Detect changed bindings
+    runs-on: ubuntu-latest
+    outputs:
+      nodejs: ${{ steps.filter.outputs.nodejs }}
+      python: ${{ steps.filter.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            nodejs:
+              - 'bindings/nodejs/**'
+              - 'crates/**'
+            python:
+              - 'bindings/python/**'
+              - 'crates/**'
+
+  # ── Node.js binding (build-only, no publish) ──────────────────────────────
+  nodejs:
+    name: Node.js binding (build-only)
+    needs: changes
+    if: needs.changes.outputs.nodejs == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install napi-rs CLI
+        run: npm install -g @napi-rs/cli
+
+      - name: Build native module (no publish)
+        working-directory: bindings/nodejs
+        run: |
+          npm install
+          napi build --platform --release
+
+  # ── Python binding (build-only, no publish) ───────────────────────────────
+  python:
+    name: Python binding (build-only)
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheel (no publish)
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: bindings/python
+          args: --release --out dist --find-interpreter
+          sccache: "true"
+          manylinux: auto

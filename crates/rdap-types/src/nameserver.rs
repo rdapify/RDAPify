@@ -9,8 +9,10 @@ use crate::common::{RdapEntity, RdapEvent, RdapLink, RdapRemark, RdapStatus, Res
 /// IP addresses associated with a nameserver (glue records).
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NameserverIpAddresses {
+    /// IPv4 glue addresses for this nameserver.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub v4: Vec<String>,
+    /// IPv6 glue addresses for this nameserver.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub v6: Vec<String>,
 }
@@ -38,20 +40,26 @@ pub struct NameserverResponse {
     #[serde(default)]
     pub ip_addresses: NameserverIpAddresses,
 
+    /// Current status flags for this nameserver object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub status: Vec<RdapStatus>,
 
+    /// Associated entities (e.g., technical, abuse contacts).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub entities: Vec<RdapEntity>,
 
+    /// Lifecycle events for this nameserver (registration, last changed, etc.).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub events: Vec<RdapEvent>,
 
+    /// Hyperlinks associated with this nameserver object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub links: Vec<RdapLink>,
 
+    /// Remarks and annotations from the registry.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub remarks: Vec<RdapRemark>,
 
+    /// Query metadata (source server, timestamp, cache status).
     pub meta: ResponseMeta,
 }

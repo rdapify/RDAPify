@@ -17,6 +17,9 @@ bindings/python/dist/
 bindings/python/*.whl
 bindings/python/*.so
 bindings/python/*.pyd
+# Bindings are libraries, not standalone end-user binaries, so their lockfile
+# is not committed — the workspace governs the build (mirrors the Node binding).
+bindings/python/Cargo.lock
 __pycache__/
 *.py[cod]
 

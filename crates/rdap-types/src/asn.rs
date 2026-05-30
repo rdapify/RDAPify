@@ -37,20 +37,26 @@ pub struct AsnResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Current status flags for this ASN object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub status: Vec<RdapStatus>,
 
+    /// Associated entities (e.g., registrant, technical, abuse contacts).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub entities: Vec<RdapEntity>,
 
+    /// Lifecycle events for this ASN (registration, last changed, etc.).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub events: Vec<RdapEvent>,
 
+    /// Hyperlinks associated with this ASN object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub links: Vec<RdapLink>,
 
+    /// Remarks and annotations from the registry.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub remarks: Vec<RdapRemark>,
 
+    /// Query metadata (source server, timestamp, cache status).
     pub meta: ResponseMeta,
 }

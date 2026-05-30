@@ -45,9 +45,11 @@ pub struct DomainResponse {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub events: Vec<RdapEvent>,
 
+    /// Hyperlinks associated with this domain object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub links: Vec<RdapLink>,
 
+    /// Remarks and annotations from the registry.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub remarks: Vec<RdapRemark>,
 
@@ -81,14 +83,19 @@ impl DomainResponse {
 /// Condensed registrar information extracted from the entities list.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RegistrarSummary {
+    /// Human-readable name of the registrar.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// IANA registrar ID or registry handle.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub handle: Option<String>,
+    /// Registrar's RDAP or WHOIS service URL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+    /// Email address for abuse reports to the registrar.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub abuse_email: Option<String>,
+    /// Phone number for abuse reports to the registrar.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub abuse_phone: Option<String>,
 }

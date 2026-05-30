@@ -45,6 +45,7 @@
 //! [`secure_fetch`].
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 // ── Public modules ────────────────────────────────────────────────────────────
 

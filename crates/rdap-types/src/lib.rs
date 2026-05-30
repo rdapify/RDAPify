@@ -3,6 +3,7 @@
 //! Implements RFC 9083 data structures used across the RDAPify workspace.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 pub mod asn;
 pub mod availability;

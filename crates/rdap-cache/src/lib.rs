@@ -30,7 +30,10 @@ use tokio::sync::Notify;
 
 #[derive(Debug, Clone)]
 enum CacheValue {
-    Hit(Value),
+    /// The cached JSON response, behind an [`Arc`] so a cache hit clones a
+    /// single pointer (O(1)) instead of deep-copying the whole `Value` tree.
+    /// This is what keeps the cache-warm hit path under the p99 < 50 µs budget.
+    Hit(Arc<Value>),
     Negative,
 }
 
@@ -97,13 +100,18 @@ impl Expiry<String, Arc<Entry>> for EntryExpiry {
 // ── Public types ──────────────────────────────────────────────────────────────
 
 /// Result of a cache lookup with freshness classification.
+///
+/// `Fresh`/`Stale` carry the cached value as an `Arc<Value>`: a hit hands back
+/// a cheap pointer clone, never a deep copy of the JSON tree. Callers that need
+/// to read fields just borrow (`&*value`); callers that need ownership can
+/// `(*value).clone()` explicitly — but the hot read path never has to.
 #[derive(Debug, Clone)]
 pub enum CacheStatus {
     /// Entry is within its primary TTL window.
-    Fresh(Value),
+    Fresh(Arc<Value>),
     /// Entry has exceeded its TTL but is still within the stale window.
     /// The caller should trigger a background refresh.
-    Stale(Value),
+    Stale(Arc<Value>),
     /// A recorded 404 (negative cache hit) — the resource does not exist.
     Negative,
     /// No usable entry (miss or fully expired).
@@ -346,7 +354,7 @@ impl MemoryCache {
     ///
     /// Returns `None` for stale, negative, or missing entries.
     /// Use [`get_status`](Self::get_status) to distinguish all cases.
-    pub fn get(&self, key: &str) -> Option<Value> {
+    pub fn get(&self, key: &str) -> Option<Arc<Value>> {
         match self.get_status(key) {
             CacheStatus::Fresh(v) => Some(v),
             _ => None,
@@ -383,11 +391,12 @@ impl MemoryCache {
                 if entry.is_fresh() {
                     self.hits.fetch_add(1, Ordering::Relaxed);
                     metrics_hooks::record_cache(CacheOutcome::Fresh);
-                    CacheStatus::Fresh(value.clone())
+                    // O(1) pointer clone — no deep copy of the JSON tree.
+                    CacheStatus::Fresh(Arc::clone(value))
                 } else if entry.is_in_stale_window() {
                     self.stale_hits.fetch_add(1, Ordering::Relaxed);
                     metrics_hooks::record_cache(CacheOutcome::Stale);
-                    CacheStatus::Stale(value.clone())
+                    CacheStatus::Stale(Arc::clone(value))
                 } else {
                     // Past the stale window (clock skew vs moka's expiry).
                     self.store.invalidate(key);
@@ -417,7 +426,9 @@ impl MemoryCache {
         self.store.insert(
             key,
             Arc::new(Entry {
-                value: CacheValue::Hit(value),
+                // Wrap once at insertion; every subsequent hit clones only the
+                // Arc pointer, never the underlying JSON tree.
+                value: CacheValue::Hit(Arc::new(value)),
                 inserted_at: Instant::now(),
                 ttl,
                 stale_ttl,

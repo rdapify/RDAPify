@@ -9,8 +9,10 @@ use crate::common::{RdapEntity, RdapEvent, RdapLink, RdapRemark, RdapStatus, Res
 /// IP protocol version.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum IpVersion {
+    /// Internet Protocol version 4.
     #[serde(rename = "v4")]
     V4,
+    /// Internet Protocol version 6.
     #[serde(rename = "v6")]
     V6,
 }
@@ -54,20 +56,26 @@ pub struct IpResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent_handle: Option<String>,
 
+    /// Current status flags for this IP network object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub status: Vec<RdapStatus>,
 
+    /// Associated entities (e.g., registrant, technical, abuse contacts).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub entities: Vec<RdapEntity>,
 
+    /// Lifecycle events for this IP network (registration, last changed, etc.).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub events: Vec<RdapEvent>,
 
+    /// Hyperlinks associated with this IP network object.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub links: Vec<RdapLink>,
 
+    /// Remarks and annotations from the registry.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub remarks: Vec<RdapRemark>,
 
+    /// Query metadata (source server, timestamp, cache status).
     pub meta: ResponseMeta,
 }

@@ -33,21 +33,34 @@ pub enum RdapError {
     // ── SSRF protection ───────────────────────────────────────────────────────
     /// The resolved URL targets a private, loopback, or link-local address.
     #[error("SSRF protection blocked request to {url}: {reason}")]
-    SsrfBlocked { url: String, reason: String },
+    SsrfBlocked {
+        /// The URL that was blocked.
+        url: String,
+        /// Explanation of why the address was blocked.
+        reason: String,
+    },
 
     /// The URL scheme is not HTTPS.
     #[error("Only HTTPS is allowed, got: {scheme}")]
-    InsecureScheme { scheme: String },
+    InsecureScheme {
+        /// The disallowed scheme (e.g., "http").
+        scheme: String,
+    },
 
     // ── Bootstrap (IANA server discovery) ────────────────────────────────────
     /// No RDAP server was found for the given TLD / IP range / ASN range.
     #[error("No RDAP server found for: {query}")]
-    NoServerFound { query: String },
+    NoServerFound {
+        /// The query string for which no server was found.
+        query: String,
+    },
 
     /// The IANA bootstrap file could not be fetched or parsed.
     #[error("Bootstrap fetch failed for {resource}: {source}")]
     BootstrapFetch {
+        /// The bootstrap resource type (e.g., "dns", "asn", "ipv4").
         resource: String,
+        /// The underlying error that caused the bootstrap failure.
         #[source]
         source: Box<RdapError>,
     },
@@ -59,16 +72,29 @@ pub enum RdapError {
 
     /// The RDAP server returned an HTTP error status.
     #[error("RDAP server returned HTTP {status} for {url}")]
-    HttpStatus { status: u16, url: String },
+    HttpStatus {
+        /// The HTTP status code returned by the server.
+        status: u16,
+        /// The URL that returned the error status.
+        url: String,
+    },
 
     /// The request did not complete within the configured timeout.
     #[error("Request timed out after {millis}ms: {url}")]
-    Timeout { millis: u64, url: String },
+    Timeout {
+        /// The configured timeout budget, in milliseconds, that was exceeded.
+        millis: u64,
+        /// The URL that timed out.
+        url: String,
+    },
 
     // ── Response parsing ──────────────────────────────────────────────────────
     /// The response JSON could not be deserialized into a known RDAP type.
     #[error("Failed to parse RDAP response: {reason}")]
-    ParseError { reason: String },
+    ParseError {
+        /// Description of the parse failure.
+        reason: String,
+    },
 
     /// The response is missing a required `objectClassName` field.
     #[error("RDAP response missing objectClassName")]
@@ -77,7 +103,10 @@ pub enum RdapError {
     /// The response contains an `objectClassName` that this client does not
     /// recognise.
     #[error("Unknown RDAP objectClassName: {class}")]
-    UnknownObjectClass { class: String },
+    UnknownObjectClass {
+        /// The unrecognised `objectClassName` value.
+        class: String,
+    },
 
     // ── Cache ─────────────────────────────────────────────────────────────────
     /// An internal cache operation failed (should be rare).
@@ -88,7 +117,9 @@ pub enum RdapError {
     /// A URL could not be parsed.
     #[error("Invalid URL '{url}': {source}")]
     InvalidUrl {
+        /// The URL string that could not be parsed.
         url: String,
+        /// The underlying URL parse error.
         #[source]
         source: url::ParseError,
     },
@@ -98,14 +129,22 @@ pub enum RdapError {
     ///
     /// The caller should retry after `wait_time` has elapsed.
     #[error("Rate limited for {host}: retry after {wait_time:?}")]
-    RateLimited { host: String, wait_time: Duration },
+    RateLimited {
+        /// The hostname for which the rate limit applies.
+        host: String,
+        /// Duration the caller should wait before retrying.
+        wait_time: Duration,
+    },
 
     // ── Circuit breaker ───────────────────────────────────────────────────────
     /// The per-origin circuit breaker is open and rejected the call without
     /// contacting the upstream. The breaker re-tries the upstream after its
     /// cooldown elapses; callers should not retry this error directly.
     #[error("Circuit breaker open for {origin}; upstream presumed unhealthy")]
-    CircuitOpen { origin: String },
+    CircuitOpen {
+        /// The origin (hostname) whose circuit breaker is open.
+        origin: String,
+    },
 }
 
 impl RdapError {

@@ -114,32 +114,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
-  # ── Go Binding Build Check ─────────────────────────────────────────────────
-  go-binding-build:
-    name: Go Binding (build check)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache cargo registry
-        uses: Swatinem/rust-cache@v2
-
-      - name: Build cdylib
-        run: cargo build --release
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-
-      - name: Check Go binding compiles (CGO syntax)
-        working-directory: bindings/go
-        env:
-          CGO_LDFLAGS: "-L../../target/release -lrdapify"
-          CGO_CFLAGS: "-I."
-        # `go vet` validates CGo syntax without requiring the full link step
-        run: go vet ./...
+  # ── Go Binding ────────────────────────────────────────────────────────────
+  #
+  # INTENTIONALLY NOT GATED ON PRs.
+  #
+  # The previous `go-binding-build` job ran `go vet ./...` against bindings/go,
+  # which validates CGo *syntax* only — it never invokes the C linker. Because
+  # no crate in this workspace currently produces a `librdapify` cdylib/
+  # staticlib (rdapify and rdapify-client are `rlib` only), the `-lrdapify`
+  # link step in bindings/go can never succeed. The job therefore reported a
+  # false "green" that implied a working C-ABI backstop that does not exist.
+  #
+  # The Go binding is an EXPERIMENTAL STUB — see bindings/go/README.md. It will
+  # be re-introduced as a real, link-tested CI job once a cdylib/staticlib
+  # crate-type target ships. Until then we do not gate merges on it.

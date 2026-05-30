@@ -26,12 +26,12 @@ impl Normalizer {
     pub fn domain(
         &self,
         query: &str,
-        raw: Value,
+        raw: &Value,
         source: &str,
         cached: bool,
     ) -> Result<DomainResponse> {
         let meta = make_meta(source, cached);
-        let obj = require_object(&raw)?;
+        let obj = require_object(raw)?;
         check_object_class(obj, "domain")?;
 
         let entities = parse_entities(obj.get("entities"));
@@ -70,9 +70,9 @@ impl Normalizer {
         })
     }
 
-    pub fn ip(&self, query: &str, raw: Value, source: &str, cached: bool) -> Result<IpResponse> {
+    pub fn ip(&self, query: &str, raw: &Value, source: &str, cached: bool) -> Result<IpResponse> {
         let meta = make_meta(source, cached);
-        let obj = require_object(&raw)?;
+        let obj = require_object(raw)?;
         check_object_class(obj, "ip network")?;
 
         let ip_version = obj
@@ -102,9 +102,9 @@ impl Normalizer {
         })
     }
 
-    pub fn asn(&self, query: u32, raw: Value, source: &str, cached: bool) -> Result<AsnResponse> {
+    pub fn asn(&self, query: u32, raw: &Value, source: &str, cached: bool) -> Result<AsnResponse> {
         let meta = make_meta(source, cached);
-        let obj = require_object(&raw)?;
+        let obj = require_object(raw)?;
         check_object_class(obj, "autnum")?;
 
         Ok(AsnResponse {
@@ -133,12 +133,12 @@ impl Normalizer {
     pub fn nameserver(
         &self,
         query: &str,
-        raw: Value,
+        raw: &Value,
         source: &str,
         cached: bool,
     ) -> Result<NameserverResponse> {
         let meta = make_meta(source, cached);
-        let obj = require_object(&raw)?;
+        let obj = require_object(raw)?;
         check_object_class(obj, "nameserver")?;
 
         let ip_addresses = {
@@ -183,12 +183,12 @@ impl Normalizer {
     pub fn entity(
         &self,
         query: &str,
-        raw: Value,
+        raw: &Value,
         source: &str,
         cached: bool,
     ) -> Result<EntityResponse> {
         let meta = make_meta(source, cached);
-        let obj = require_object(&raw)?;
+        let obj = require_object(raw)?;
         check_object_class(obj, "entity")?;
 
         let roles = obj
@@ -371,7 +371,7 @@ mod tests {
             ]
         });
         let res = norm()
-            .domain("example.com", raw, "https://rdap.example/", false)
+            .domain("example.com", &raw, "https://rdap.example/", false)
             .unwrap();
 
         assert_eq!(res.query, "example.com");
@@ -390,7 +390,7 @@ mod tests {
             "country": "US"
         });
         let res = norm()
-            .ip("192.0.2.0/24", raw, "https://rdap.arin.net/", false)
+            .ip("192.0.2.0/24", &raw, "https://rdap.arin.net/", false)
             .unwrap();
 
         assert_eq!(res.country.as_deref(), Some("US"));
@@ -407,7 +407,7 @@ mod tests {
             "country": "US"
         });
         let res = norm()
-            .asn(15169, raw, "https://rdap.arin.net/", false)
+            .asn(15169, &raw, "https://rdap.arin.net/", false)
             .unwrap();
 
         assert_eq!(res.query, 15169);
@@ -425,7 +425,7 @@ mod tests {
             }
         });
         let res = norm()
-            .nameserver("ns1.example.com", raw, "s", false)
+            .nameserver("ns1.example.com", &raw, "s", false)
             .unwrap();
 
         assert_eq!(res.ip_addresses.v4, vec!["192.0.2.1"]);
@@ -434,7 +434,7 @@ mod tests {
 
     #[test]
     fn domain_non_object_json_returns_error() {
-        let res = norm().domain("example.com", json!([1, 2, 3]), "s", false);
+        let res = norm().domain("example.com", &json!([1, 2, 3]), "s", false);
         assert!(res.is_err());
     }
 }

@@ -8,6 +8,7 @@
 //! | `stream`       | ✓       | Async streaming query API (tokio-stream) |
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -263,7 +264,7 @@ impl RdapClient {
             let server = self.bootstrap.for_domain(&domain).await?;
             let url = format!("{}/domain/{}", server.trim_end_matches('/'), domain);
             let (raw, cached) = self.fetch_with_cache(&key, &url, QueryKind::Domain).await?;
-            self.normalizer.domain(&domain, raw, &server, cached)
+            self.normalizer.domain(&domain, &raw, &server, cached)
         }
         .await;
         self.record_request_outcome(QueryKind::Domain, started_at, &result);
@@ -289,7 +290,7 @@ impl RdapClient {
             let key = cache_key(QueryKind::Ip, &canonical);
             let url = format!("{}/ip/{}", server.trim_end_matches('/'), ip);
             let (raw, cached) = self.fetch_with_cache(&key, &url, QueryKind::Ip).await?;
-            self.normalizer.ip(ip, raw, &server, cached)
+            self.normalizer.ip(ip, &raw, &server, cached)
         }
         .await;
         self.record_request_outcome(QueryKind::Ip, started_at, &result);
@@ -312,7 +313,7 @@ impl RdapClient {
             let server = self.bootstrap.for_asn(asn_num).await?;
             let url = format!("{}/autnum/{}", server.trim_end_matches('/'), asn_num);
             let (raw, cached) = self.fetch_with_cache(&key, &url, QueryKind::Asn).await?;
-            self.normalizer.asn(asn_num, raw, &server, cached)
+            self.normalizer.asn(asn_num, &raw, &server, cached)
         }
         .await;
         self.record_request_outcome(QueryKind::Asn, started_at, &result);
@@ -330,7 +331,7 @@ impl RdapClient {
             let (raw, cached) = self
                 .fetch_with_cache(&key, &url, QueryKind::Nameserver)
                 .await?;
-            self.normalizer.nameserver(&hostname, raw, &server, cached)
+            self.normalizer.nameserver(&hostname, &raw, &server, cached)
         }
         .await;
         self.record_request_outcome(QueryKind::Nameserver, started_at, &result);
@@ -360,7 +361,7 @@ impl RdapClient {
             );
             let url = format!("{}/entity/{}", server_url.trim_end_matches('/'), handle);
             let (raw, cached) = self.fetch_with_cache(&key, &url, QueryKind::Entity).await?;
-            self.normalizer.entity(handle, raw, server_url, cached)
+            self.normalizer.entity(handle, &raw, server_url, cached)
         }
         .await;
         self.record_request_outcome(QueryKind::Entity, started_at, &result);
@@ -418,6 +419,7 @@ impl RdapClient {
 
     // ── Streaming API (requires `stream` feature) ─────────────────────────────
 
+    /// Streams domain RDAP query results as an async channel stream.
     #[cfg(feature = "stream")]
     pub fn stream_domain(
         &self,
@@ -445,6 +447,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    /// Streams IP network RDAP query results as an async channel stream.
     #[cfg(feature = "stream")]
     pub fn stream_ip(
         &self,
@@ -472,6 +475,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    /// Streams ASN RDAP query results as an async channel stream.
     #[cfg(feature = "stream")]
     pub fn stream_asn(&self, asns: Vec<String>, config: StreamConfig) -> ReceiverStream<AsnEvent> {
         let (tx, rx) = mpsc::channel(config.buffer_size);
@@ -495,6 +499,7 @@ impl RdapClient {
         ReceiverStream::new(rx)
     }
 
+    /// Streams nameserver RDAP query results as an async channel stream.
     #[cfg(feature = "stream")]
     pub fn stream_nameserver(
         &self,
@@ -586,7 +591,7 @@ impl RdapClient {
         cache_key: &str,
         url: &str,
         kind: QueryKind,
-    ) -> Result<(serde_json::Value, bool)> {
+    ) -> Result<(Arc<serde_json::Value>, bool)> {
         // Stage D · D2 — open the top-level `rdap.query` span. The span is
         // created lazily: when the fetcher's tracing isn't sampled in (the
         // default), we use `Span::none()` and skip the request_id allocation.
@@ -732,7 +737,11 @@ impl RdapClient {
         // ── 6. Drop leader guard → notify waiting followers ───────────────
         drop(leader_guard);
 
-        Ok((fetch_result?, false))
+        // Wrap the freshly fetched value in an `Arc` so the return type matches
+        // the cache-hit path. The cache was already populated above from a
+        // (deep) clone of this value; the live caller gets the original behind
+        // a pointer, paying no second deep copy here.
+        Ok((Arc::new(fetch_result?), false))
     }
 
     /// Fetches `url` with Cache-Control hint, updating the cache with a
