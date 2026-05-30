@@ -62,9 +62,9 @@ proptest! {
     ) {
         let raw = domain_json(&name);
         let norm = Normalizer::new();
-        let r1 = norm.domain(&name, raw.clone(), &source, false)
+        let r1 = norm.domain(&name, &raw, &source, false)
             .expect("first normalization must succeed");
-        let r2 = norm.domain(&name, raw.clone(), &source, false)
+        let r2 = norm.domain(&name, &raw, &source, false)
             .expect("second normalization must succeed");
         prop_assert_eq!(r1.ldh_name, r2.ldh_name);
         prop_assert_eq!(r1.query,    r2.query);
@@ -80,7 +80,7 @@ proptest! {
     ) {
         let raw = domain_json(&upper);
         let norm = Normalizer::new();
-        let result = norm.domain(&upper, raw, "rdap.test.org", false)
+        let result = norm.domain(&upper, &raw, "rdap.test.org", false)
             .expect("normalization must not fail on structurally valid input");
         if let Some(lname) = &result.ldh_name {
             let lower = lname.to_lowercase();
@@ -101,7 +101,7 @@ proptest! {
     ) {
         let raw = domain_json(&name);
         let norm = Normalizer::new();
-        let result = norm.domain(&name, raw, "rdap.iana.org", false)
+        let result = norm.domain(&name, &raw, "rdap.iana.org", false)
             .expect("normalization must succeed");
         prop_assert_eq!(
             result.query.as_str(),
@@ -119,7 +119,7 @@ proptest! {
     ) {
         let raw = domain_json(&name);
         let norm = Normalizer::new();
-        let result = norm.domain(&name, raw, "rdap.source.org", cached)
+        let result = norm.domain(&name, &raw, "rdap.source.org", cached)
             .expect("normalization must succeed");
         prop_assert_eq!(
             result.meta.cached,
@@ -143,7 +143,8 @@ proptest! {
         cache.set(key.clone(), value.clone());
         let retrieved = cache.get(&key)
             .expect("get must return Some immediately after set");
-        prop_assert_eq!(retrieved, value);
+        // `get` now returns `Arc<Value>` — compare the pointee.
+        prop_assert_eq!(retrieved.as_ref(), &value);
     }
 
     /// A key that was never written always returns `None`.
@@ -169,7 +170,7 @@ proptest! {
         cache.set(key.clone(), serde_json::Value::String(v1));
         cache.set(key.clone(), serde_json::Value::String(v2.clone()));
         let got = cache.get(&key).expect("must have value after two writes");
-        prop_assert_eq!(got, serde_json::Value::String(v2));
+        prop_assert_eq!(got.as_ref(), &serde_json::Value::String(v2));
     }
 
     /// After `clear()`, every previously-inserted key returns `None`.

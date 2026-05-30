@@ -7,6 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] — Unreleased — Zero-copy cache hits
+
+> First release to carry a **breaking public-API change** since `0.7.0`, hence
+> the minor bump to **0.8.0** (per SemVer for a pre-1.0 line). The cache-hit
+> path no longer deep-copies the response JSON; it hands back a shared
+> `Arc<serde_json::Value>` pointer instead. Existing imports still resolve — the
+> break is in the value *type* (`Value` → `Arc<Value>`), not in names.
+
+### ⚠️ Breaking Changes
+
+- **`rdap-cache` returns `Arc<Value>` instead of owned `Value`.**
+  - `CacheStatus::Fresh` and `CacheStatus::Stale` now wrap `Arc<serde_json::Value>`.
+  - `MemoryCache::get` now returns `Option<Arc<serde_json::Value>>`.
+  - Insertion is unchanged: `set` / `set_with_ttl` still take an owned `Value`
+    and wrap it in an `Arc` internally.
+- **`rdap-core::Normalizer` methods now borrow the raw JSON.** `domain`, `ip`,
+  `asn`, `nameserver`, and `entity` take `raw: &Value` instead of `raw: Value`
+  (they only ever read it). Callers holding an `Arc<Value>` pass `&raw`; callers
+  holding an owned `Value` pass `&value`.
+- **`rdapify` facade re-exports are affected.** `CacheStatus`, `MemoryCache`,
+  and `Normalizer` are re-exported from the facade, so downstream code that
+  matched `CacheStatus::Fresh(v)` / `Stale(v)` expecting an owned `Value`, used
+  `MemoryCache::get`’s return value as a `Value`, or called a `Normalizer`
+  method with an owned `Value`, must adapt:
+  - read the cached value through the `Arc` (`&*v` / `v.as_ref()`), or
+  - take ownership explicitly with `(*v).clone()` only where an owned `Value`
+    is genuinely required.
+  - `rdapify-pro` is **unaffected** (it depends on neither `rdap-cache`’s
+    `CacheStatus` / `get` nor `Normalizer`).
+
+### 🚀 Performance
+
+- **O(1), zero-allocation cache hits.** A cache hit previously deep-cloned the
+  entire `serde_json::Value` tree — cost **O(tree size)**, scaling with response
+  size and risking the **memory-cache p99 < 50 µs** gate on large responses
+  (registrars with many entities/events, large IP objects). It is now a single
+  `Arc::clone` — an atomic refcount increment, **O(1)** and allocation-free,
+  independent of payload size.
+- **No re-clone at the client boundary.** Because `Normalizer` now borrows
+  `&Value`, the `rdapify-client` query path normalizes directly from the
+  `Arc<Value>` without converting back to an owned `Value`. End-to-end, a cache
+  hit performs **zero deep copies** of the JSON.
+- Per-entry memory grows by one `Arc` control block (~16 bytes), negligible
+  against the JSON payload; the bounded-RSS high-cardinality test still passes.
+
+### 📝 Documentation
+
+- `docs/PERFORMANCE_SPEC.md` §1.3 corrected: the memory cache is backed by
+  **moka (TinyLFU)**, not DashMap, and a hit now clones an `Arc<Value>`
+  (O(1), no deep copy).
+
+### 🔒 Security & Hardening (Phase 3)
+
+- **Redirect protocol-downgrade block.** `rdap_security::validate_redirect`
+  now inspects the redirect *origin* and rejects any HTTPS → non-HTTPS hop
+  (`SecurityError::InvalidScheme`) as defense-in-depth, independent of the
+  target-scheme policy. Cross-host redirects remain permitted — each hop is
+  independently re-validated (URL + DNS + IP), as RDAP bootstrap legitimately
+  redirects across hosts. (The previously-reserved `_from` parameter is now
+  used; no signature change.)
+- **Unified body-size limiting.** `rdap-bootstrap` now caps download size via
+  the audited `rdap_security::read_limited` primitive instead of a local
+  duplicate, sharing one implementation with the primary fetch path and adding
+  a `Content-Length` fast-path reject.
+- **Workspace-wide `#![forbid(unsafe_code)]`** extended to the binary entry
+  points (`rdap-cli`, `rdap-service`), so the 100%-safe-Rust invariant now
+  covers application binaries as well as libraries.
+
+### 🧹 Internal / Quality
+
+- **`#![deny(missing_docs)]`** enforced on the core public libraries
+  (`rdap-types`, `rdap-security`, `rdap-bootstrap`, `rdapify-client`,
+  `rdapify`); all public items are now documented. No API changes.
+
 ## [0.7.1] — Unreleased — Security maintenance
 
 > Post-`0.7.0` security maintenance: Dependabot/RustSec remediation, the MSRV

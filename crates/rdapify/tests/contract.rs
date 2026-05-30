@@ -39,7 +39,7 @@ fn contract_domain_query_is_preserved() {
     let resp = norm()
         .domain(
             "example.com",
-            common::domain_rdap_response("example.com"),
+            &common::domain_rdap_response("example.com"),
             SOURCE,
             false,
         )
@@ -54,7 +54,7 @@ fn contract_domain_meta_is_always_present() {
     let resp = norm()
         .domain(
             "example.com",
-            common::domain_rdap_response("example.com"),
+            &common::domain_rdap_response("example.com"),
             SOURCE,
             false,
         )
@@ -81,7 +81,12 @@ fn contract_domain_meta_is_always_present() {
 #[test]
 fn contract_domain_cached_flag_reflects_argument() {
     let cached_resp = norm()
-        .domain("c.com", common::domain_rdap_response("c.com"), SOURCE, true)
+        .domain(
+            "c.com",
+            &common::domain_rdap_response("c.com"),
+            SOURCE,
+            true,
+        )
         .expect("normalization must succeed");
     assert!(
         cached_resp.meta.cached,
@@ -91,7 +96,7 @@ fn contract_domain_cached_flag_reflects_argument() {
     let live_resp = norm()
         .domain(
             "c.com",
-            common::domain_rdap_response("c.com"),
+            &common::domain_rdap_response("c.com"),
             SOURCE,
             false,
         )
@@ -111,7 +116,7 @@ fn contract_domain_ldh_name_is_lowercase() {
         "status": [],
     });
     let resp = norm()
-        .domain("EXAMPLE.COM", raw, SOURCE, false)
+        .domain("EXAMPLE.COM", &raw, SOURCE, false)
         .expect("normalization must succeed");
 
     if let Some(lname) = &resp.ldh_name {
@@ -134,7 +139,7 @@ fn contract_domain_nameservers_are_lowercase() {
         ],
     });
     let resp = norm()
-        .domain("example.com", raw, SOURCE, false)
+        .domain("example.com", &raw, SOURCE, false)
         .expect("normalization must succeed");
 
     for ns in &resp.nameservers {
@@ -151,7 +156,7 @@ fn contract_domain_events_have_required_fields() {
     let resp = norm()
         .domain(
             "example.com",
-            common::domain_rdap_response("example.com"),
+            &common::domain_rdap_response("example.com"),
             SOURCE,
             false,
         )
@@ -178,7 +183,7 @@ fn contract_domain_empty_status_array_is_valid() {
         "ldhName": "nostatus.com",
     });
     let resp = norm()
-        .domain("nostatus.com", raw, SOURCE, false)
+        .domain("nostatus.com", &raw, SOURCE, false)
         .expect("empty status must be valid");
 
     assert!(
@@ -194,7 +199,7 @@ fn contract_ip_query_is_preserved() {
     let resp = norm()
         .ip(
             "8.8.8.8",
-            common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
+            &common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
             SOURCE,
             false,
         )
@@ -209,7 +214,7 @@ fn contract_ip_version_is_v4_or_v6() {
     let resp = norm()
         .ip(
             "8.8.8.8",
-            common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
+            &common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
             SOURCE,
             false,
         )
@@ -230,7 +235,7 @@ fn contract_ip_meta_is_present() {
     let resp = norm()
         .ip(
             "8.8.8.8",
-            common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
+            &common::ip_rdap_response("8.8.8.0", "8.8.8.255", "US"),
             SOURCE,
             false,
         )
@@ -247,7 +252,7 @@ fn contract_asn_start_leq_end() {
     let resp = norm()
         .asn(
             15169,
-            common::asn_rdap_response(15169, 15169, "GOOGLE"),
+            &common::asn_rdap_response(15169, 15169, "GOOGLE"),
             SOURCE,
             false,
         )
@@ -266,7 +271,7 @@ fn contract_asn_query_is_preserved() {
     let resp = norm()
         .asn(
             15169,
-            common::asn_rdap_response(15169, 15169, "GOOGLE"),
+            &common::asn_rdap_response(15169, 15169, "GOOGLE"),
             SOURCE,
             false,
         )
@@ -285,7 +290,7 @@ fn contract_nameserver_query_is_preserved() {
     let resp = norm()
         .nameserver(
             "ns1.example.com",
-            common::nameserver_rdap_response("ns1.example.com"),
+            &common::nameserver_rdap_response("ns1.example.com"),
             SOURCE,
             false,
         )
@@ -306,7 +311,7 @@ fn contract_domain_optional_fields_absent_on_minimal_response() {
         "ldhName": "minimal.com",
     });
     let resp = norm()
-        .domain("minimal.com", minimal, SOURCE, false)
+        .domain("minimal.com", &minimal, SOURCE, false)
         .expect("minimal response must normalize without error");
 
     // These are all optional in RFC 9083 — they must be absent, not panics.
@@ -329,7 +334,7 @@ fn contract_domain_json_roundtrip() {
     let resp = norm()
         .domain(
             "roundtrip.com",
-            common::domain_rdap_response("roundtrip.com"),
+            &common::domain_rdap_response("roundtrip.com"),
             SOURCE,
             false,
         )

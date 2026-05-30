@@ -21,6 +21,8 @@
 //! | 3    | not found      |
 //! | 4    | rate limited   |
 
+#![forbid(unsafe_code)]
+
 mod batch_cmd;
 mod config;
 mod error;

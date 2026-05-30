@@ -78,7 +78,7 @@ fn perf_normalizer_domain_100x_under_50ms() {
 
     let start = Instant::now();
     for _ in 0..ITERATIONS {
-        let _ = norm.domain("perf.com", raw.clone(), "rdap.perf.test", false);
+        let _ = norm.domain("perf.com", &raw, "rdap.perf.test", false);
     }
     let elapsed = start.elapsed();
 
@@ -150,7 +150,7 @@ fn perf_normalizer_average_per_call_under_500us() {
 
     let start = Instant::now();
     for _ in 0..ITERATIONS {
-        let _ = norm.domain("avg.com", raw.clone(), "rdap.avg.test", false);
+        let _ = norm.domain("avg.com", &raw, "rdap.avg.test", false);
     }
     let total = start.elapsed();
     let per_call = total / ITERATIONS as u32;
@@ -174,7 +174,7 @@ fn perf_normalizer_ip_100x_under_50ms() {
 
     let start = Instant::now();
     for _ in 0..ITERATIONS {
-        let _ = norm.ip("8.8.8.8", raw.clone(), "rdap.arin.net", false);
+        let _ = norm.ip("8.8.8.8", &raw, "rdap.arin.net", false);
     }
     let elapsed = start.elapsed();
 

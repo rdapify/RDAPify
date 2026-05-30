@@ -46,8 +46,8 @@ Network latency is upstream-bound and not the engine's responsibility.
 
 | Cache type    | Target          | Measurement                       |
 |---------------|-----------------|-----------------------------------|
-| Memory cache p99 | **< 50 µs**  | DashMap lookup — regression gate  |
-| Memory cache typical | 1–5 µs   | DashMap lookup, no deserialization|
+| Memory cache p99 | **< 50 µs**  | moka (TinyLFU) lookup — regression gate |
+| Memory cache typical | 1–5 µs   | moka lookup; hit clones an `Arc<Value>` (O(1), no deep copy, no deserialization) |
 | SQLite cache  | 3–10 ms         | Local disk, no network            |
 
 ### 1.4 Cache-warm Throughput

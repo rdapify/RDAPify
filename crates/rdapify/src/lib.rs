@@ -39,6 +39,7 @@
 //! ```
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 // ── Core re-exports (always available) ───────────────────────────────────────
 
@@ -64,22 +65,27 @@ pub use rdapify_client::{AsnEvent, DomainEvent, IpEvent, NameserverEvent, Stream
 
 // ── Always-available modules ──────────────────────────────────────────────────
 
+/// Error types for all rdapify operations.
 pub mod error {
     pub use rdap_types::error::*;
 }
 
+/// IANA bootstrap server discovery (RFC 9224).
 pub mod bootstrap {
     pub use rdap_bootstrap::Bootstrap;
 }
 
+/// Low-level HTTP fetcher and response normalizer.
 pub mod http {
     pub use rdap_core::{Fetcher, FetcherConfig, Normalizer};
 }
 
+/// SSRF protection and secure fetch utilities.
 pub mod security {
     pub use rdap_security::{SsrfConfig, SsrfGuard};
 }
 
+/// RDAP response types (RFC 9083).
 pub mod types {
     pub use rdap_types::*;
 }
